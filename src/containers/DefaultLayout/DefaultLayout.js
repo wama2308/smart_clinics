@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
-import withAuth from '../../components/withAuth';
 import { datosConexion } from '../../components/Conexion.js';
-import jwtDecode from 'jwt-decode'; 
-
 
 import {
   AppAside,

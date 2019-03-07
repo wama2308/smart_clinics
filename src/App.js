@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch, BrowserRouter } from 'react-router-dom';
+import SessionContainer from './containers/authContainer'
 import { browserHistory } from 'react-router';
 
 import './App.css';
@@ -30,7 +31,7 @@ class App extends Component {
       <HashRouter>
         <Switch>
           <Route exact path="/testuser" name="TestUser" component={TestUser} />
-          <Route exact path="/login" name="Login Page" component={Login} />
+          <Route exact path="/login" name="Login Page" component={SessionContainer} />
           <Route exact path="/register" name="Register Page" component={Register} />
           <Route exact path="/register-email" name="Register Email Page" component={RegisterEmail} />
           <Route exact path="/testpage" name="TestPage" component={TestPage} />
