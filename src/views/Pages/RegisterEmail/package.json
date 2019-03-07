@@ -1,0 +1,6 @@
+{
+  "name": "RegisterEmail",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./RegisterEmail.js"
+}

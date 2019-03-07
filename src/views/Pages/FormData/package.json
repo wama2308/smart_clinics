@@ -1,0 +1,6 @@
+{
+  "name": "FormData",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./FormData.js"
+}

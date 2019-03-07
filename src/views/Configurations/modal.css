@@ -1,0 +1,105 @@
+.image{
+   
+     margin-right: 0.5em;
+      margin-bottom: 0.5em;
+}
+.tops{
+        margin-top: 30%;
+    margin-left: 20%;
+}
+.icon{
+    padding: 0.5em;
+}
+.add {
+margin-bottom: 1rem;
+}
+.delete{
+    padding: 1rem;
+}
+.top{
+        margin-top: 11px;
+}
+.error{
+    background-color: #f87a79;
+   align-content:center;
+   border-radius: 10px;
+    color: #f8f9fa;
+  text-align: center;
+      font-weight: bold;
+}
+.hide{
+    display: none;
+}
+.show{
+    display: block;    
+}
+.Widht{
+
+     
+        align-content:center;
+        width: 100%;
+
+}
+.button{
+   
+    background: #ffff8d;
+}
+.Modal{
+    max-width: 900px;
+    width:100%;
+
+    
+    background: white;
+    
+    border-radius: 20px;
+    box-shadow: 0 0 10 px rgba(0,0,0, .4);
+
+}
+.Scroll {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+    
+}
+.custom-dialog {width:80% !important; top:20%;}
+.Modal-close{
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right: -25px;
+    top: -25px;
+    border-radius: 50%;
+    border: none;
+    background: #171c30;
+    color: white;
+    cursor: pointer;
+
+}
+
+.Modal-close:after{
+    content: "X";
+    font-weight: bold;
+    font-size: 30px;
+}
+.ModalConfirm{
+    max-width: 350px;
+    width:80%;        
+}
+.check{
+  padding: 1em;
+  padding-bottom: 1em;
+  text-align: center;
+  color:green;
+}
+.warning{
+padding: 1em;
+  padding-bottom: 1em;
+  text-align: center;
+  color:orange;
+}
+
+.sizeDiv{
+    height: 220px;    
+    text-align: center;   
+    margin:0;
+    padding:8%; 
+}

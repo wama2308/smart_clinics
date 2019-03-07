@@ -1,0 +1,6 @@
+{
+  "name": "EnterResetPassword",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./EnterResetPassword.js"
+}

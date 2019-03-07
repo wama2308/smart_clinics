@@ -1,0 +1,41 @@
+.borderButton{
+	border-width: 0px;   
+	background-color: transparent;
+}
+
+.background {
+	background-image: url(../assets/img/brand/backscs.jpg);
+	/*background-repeat: no-repeat;  */
+	background-size: 100% 100%;
+}
+
+.hide{
+    display: none;
+}
+
+.show{
+    display: block;    
+}
+
+.ModalAlert{
+    max-width: 30%;
+    width:30%;
+    background: white;    
+    border-radius: 10px;
+    box-shadow: 0 0 10 px rgba(0,0,0, .4);
+    text-align: center;
+}
+
+.check{
+  padding: 1em;
+  padding-bottom: 1em;
+  text-align: center;
+  color:green;
+}
+
+.warning{
+padding: 1em;
+  padding-bottom: 1em;
+  text-align: center;
+  color:orange;
+}
