@@ -1,7 +1,9 @@
 import authState from '../state/authState'
 import AuthService from '../core/auth/AuthService'
 
-const auth = new AuthService(['http://smartclinics.online/sc-admin/web/app.php/api/','http://localhost:8000/api/'])
+// local Url http Request 'http://localhost:8000/api/'
+
+const auth = new AuthService('http://smartclinics.online/sc-admin/web/app.php/')
 export function setState() {
     return {
       type: 'SETSTATE',
@@ -9,8 +11,8 @@ export function setState() {
     }
 }
 
-export const login = (data) => dispatch =>{
-    auth.login(data.user , data.password, (data)=>{
+export const loginAction = (data) => dispatch =>{
+    auth.login(data.username , data.password, (data)=>{
         console.log(data)
     })
 }

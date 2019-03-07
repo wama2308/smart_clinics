@@ -34,7 +34,10 @@ class Login extends Component {
 
   handleFormSubmit=(e)=> {
     e.preventDefault()
-    console.log('esto funciona')
+    this.props.action({
+      username: this.state._username,
+      password: this.state._password
+    })
   }
 
   render() {
