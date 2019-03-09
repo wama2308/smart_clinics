@@ -1,14 +1,14 @@
 import decode from "jwt-decode";
 import axios from "axios";
 
-
 export default class AuthService {
   // Initializing important variables
   constructor(domain) {
     this.domain = domain;
   }
 
-  login(_username, _password , callback ) {
+  
+  login(_username, _password , notify,  callback ) {
     const token = {
       _username,
       _password,
@@ -17,14 +17,18 @@ export default class AuthService {
         "Content-type": "application/json"
       }
     };
+    return axios.post(this.domain + "api/login", token).then(async (res) => {
+      const result = await decode(res.data.token)
+      callback({
+        logged:true,
+        ...result
+      })
+      this.setTokenInTheLocalStorage(_username);
+      this.setTokenInTheLocalStorage(res.data.token);
 
-    return axios.post(this.domain + "api/login", token).then(res => {
-      console.log('this axios login Request', res)
-    
-    //   this.setTokenInTheLocalStorage(_username);
-    //   this.setTokenInTheLocalStorage(res.data.token);
-    //   return Promise.resolve(res);
-    });
+    }).catch( error =>{
+       notify(error.toString())
+    })
   }
 
   loggedIn() {

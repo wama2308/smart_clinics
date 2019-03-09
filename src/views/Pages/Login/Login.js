@@ -15,6 +15,7 @@ import {
 import { Link } from "react-router-dom";
 import HeaderLogo from "../../../components/HeaderLogo";
 import Notifications, { notify } from "react-notify-toast";
+
 import "../../../components/style.css";
 
 class Login extends Component {
@@ -34,10 +35,15 @@ class Login extends Component {
 
   handleFormSubmit=(e)=> {
     e.preventDefault()
+    const warningMessage = { background: "#fd3232", text: "#FFFFFF" };
     this.props.action({
       username: this.state._username,
       password: this.state._password
-    })
+    },
+     (data)=>{
+        notify.show(data, 'custom', 7000, warningMessage);
+     }
+    )
   }
 
   render() {

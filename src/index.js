@@ -9,7 +9,7 @@ import {setState} from './actions/authActions'
 // disable ServiceWorker
 // import registerServiceWorker from './registerServiceWorker';
 
-store.dispatch(setState());
+// store.dispatch(setState());
 
 ReactDOM.render(
     <Provider store={store}>

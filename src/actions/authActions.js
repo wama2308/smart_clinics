@@ -11,8 +11,11 @@ export function setState() {
     }
 }
 
-export const loginAction = (data) => dispatch =>{
-    auth.login(data.username , data.password, (data)=>{
-        console.log(data)
+export const loginAction = (data, notify) => dispatch =>{
+    auth.login(data.username , data.password, notify , (data)=>{
+         dispatch({
+             type:'GET_DATA_USER',
+             payload: data
+         })
     })
 }

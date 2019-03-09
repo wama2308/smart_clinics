@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch, BrowserRouter } from 'react-router-dom';
 import SessionContainer from './containers/authContainer'
-import { browserHistory } from 'react-router';
 
 import './App.css';
 // Styles
@@ -15,18 +14,17 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'simple-line-icons/css/simple-line-icons.css';
 // Import Main styles for this application
 import './scss/style.css'
-
-// Containers
-import DefaultHeader from './containers/DefaultLayout/DefaultHeader';
+import { connect } from 'react-redux'
 import { DefaultLayout } from './containers';
+import { withRouter } from "react-router";
 // Pages
-import { Login, Page404, Page500, Register, TestUser, RegisterEmail, TestPage, ConfirmCode, FormData, EnterPassword, ResetPassword, ConfirmCodeResetPassword, EnterResetPassword } from './views/Pages';
+import {Page404, Page500, Register, TestUser, RegisterEmail, TestPage, ConfirmCode, FormData, EnterPassword, ResetPassword, ConfirmCodeResetPassword, EnterResetPassword } from './views/Pages';
 
-
-// import { renderRoutes } from 'react-router-config';
 
 class App extends Component {
+  
   render() {
+    console.log('this app container', this.props.logged)
     return (
       <HashRouter>
         <Switch>
@@ -49,5 +47,9 @@ class App extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+    logged: state.auth.get('logged')
+})
 // <Route path="/" name="Home" component={DefaultLayout} />
-export default App;
+export default connect(mapStateToProps)(App)

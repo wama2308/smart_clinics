@@ -11,7 +11,7 @@ class SessionContainer extends React.Component {
 
   render() {
     const { step } = this.state;
-    const {_loginAction} = this.props
+    const { _loginAction } = this.props
     return (
       <div>
         {(step === 1) && <Login  action={_loginAction} />}
@@ -26,7 +26,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  _loginAction : (data)=> dispatch(loginAction(data))
+  _loginAction : (data, notify)=> dispatch(loginAction(data, notify))
 })
 
-export default  connect(mapStateToProps, mapDispatchToProps)(SessionContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SessionContainer);
