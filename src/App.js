@@ -42,6 +42,8 @@ class App extends Component {
   render() {
      if(this.props.logged && this.props.location.pathname === '/login'){
         return <Redirect to="/dasboard"  />
+     }else if(!this.props.logged && this.props.location.pathname === '/'){
+       return <Redirect to="/login"/> 
      }
     return (
       <Switch>

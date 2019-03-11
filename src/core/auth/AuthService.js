@@ -7,8 +7,7 @@ export default class AuthService {
     this.domain = domain;
   }
 
-  
-  login(_username, _password , notify,  callback ) {
+  login(_username, _password, notify, callback) {
     const token = {
       _username,
       _password,
@@ -17,24 +16,37 @@ export default class AuthService {
         "Content-type": "application/json"
       }
     };
-    return axios.post(this.domain + "api/login", token).then(async (res) => {
-      const result = await decode(res.data.token)
-      await  this.setTokenInTheLocalStorage(_username);
-      await  this.setTokenInTheLocalStorage(res.data.token);
+    return axios
+      .post(this.domain + "api/login", token)
+      .then(async res => {
+        const result = await decode(res.data.token);
+        await this.setTokenInTheLocalStorage(_username);
+        await this.setTokenInTheLocalStorage(res.data.token);
 
-      callback({
-        logged:true,
-        ...result
+        callback({
+          logged: true,
+          ...result
+        });
       })
-      
-    }).catch( error =>{
-       notify(error.toString())
-    })
+      .catch(error => {
+        notify(error.toString());
+      });
   }
 
-  loggedIn() {
+  async verify(callback){
+    const token = await this.getToken();
+    if (token) {
+      const result = await decode(token);
+      callback({
+        logged: true,
+        result
+      });
+    }
+  } 
+
+  async loggedIn(callback) {
     // Checks if there is a saved token and it's still valid
-    const token = this.getToken(); // GEtting token from localstorage
+    const token = await this.getToken(); // GEtting token from localstorage
     return !!token && !this.isTokenExpired(token); // handwaiving here
   }
 
@@ -53,11 +65,11 @@ export default class AuthService {
   setEmail(idemail) {
     return localStorage.setItem("email", idemail);
   }
-  
+
   SetUsernameInTheLocalStorage(idemail) {
-   return  localStorage.setItem("email", idemail);
+    return localStorage.setItem("email", idemail);
   }
-  
+
   setTokenInTheLocalStorage(idToken) {
     // Saves user token to localStorage
     localStorage.setItem("id_token", idToken);

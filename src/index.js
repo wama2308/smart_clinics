@@ -7,12 +7,12 @@ import store from './store'
 import {Provider} from 'react-redux'
 import {HashRouter} from 'react-router-dom'
 
-// import {setState} from './actions/authActions'
+import {verify} from './actions/authActions'
 
 // disable ServiceWorker
 // import registerServiceWorker from './registerServiceWorker';
 
-// store.dispatch(setState());
+store.dispatch(verify());
 
 ReactDOM.render(
     <Provider store={store}>

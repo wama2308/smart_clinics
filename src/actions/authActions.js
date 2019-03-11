@@ -19,3 +19,13 @@ export const loginAction = (data, notify) => dispatch =>{
          })
     })
 }
+
+
+export const verify = ()=> dispatch =>{
+    auth.verify((data)=>{
+        dispatch({
+            type:'GET_DATA_USER',
+            payload: data
+        })
+    })
+}
