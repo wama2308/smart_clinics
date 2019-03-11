@@ -125,7 +125,7 @@ const Dashboard = Loadable({
 });
 
 const Configurations = Loadable({
-  loader: () => import('./views/Configurations'),
+  loader: () => import('./containers/configContainer'),
   loading: Loading,
 });
 
