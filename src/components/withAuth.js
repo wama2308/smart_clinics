@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import AuthService from './AuthService';
-import { withRouter } from 'react-router';
-import Login from '../views/Pages/Login/Login';
+import AuthService from '../core/auth/AuthService';
 import { datosConexion } from './Conexion.js'
 
 export default function withAuth(AuthComponent) {

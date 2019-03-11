@@ -10,74 +10,56 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Row,
-  CardFooter
+  Row
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import AuthService from "../../../components/AuthService";
 import HeaderLogo from "../../../components/HeaderLogo";
 import Notifications, { notify } from "react-notify-toast";
+
 import "../../../components/style.css";
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.Auth = new AuthService();
-    this.handleChange = this.handleChange.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.state = {
       _username: "",
       _password: ""
-      // login: [],
     };
   }
 
-  componentWillMount() {
-    if (this.Auth.loggedIn()) this.props.history.replace("/");
-  }
-
-  handleChange(e) {
+  handleChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value
     });
   }
 
-  handleFormSubmit(e) {
-    e.preventDefault();
-
-    this.Auth.login(this.state._username, this.state._password)
-      .then(res => {
-        /*console.log(res.data);*/
-
-        this.props.history.replace("/");
-      })
-      .catch(err => {
-        // alert(err);
-        console.log(err);
-        let warningMessage = { background: "#fd3232", text: "#FFFFFF" };
-        notify.show(
-          "Correo y/o contraseña erroneos.",
-          "custom",
-          7000,
-          warningMessage
-        );
-      });
+  handleFormSubmit=(e)=> {
+    e.preventDefault()
+    const warningMessage = { background: "#fd3232", text: "#FFFFFF" };
+    this.props.action({
+      username: this.state._username,
+      password: this.state._password
+    },
+     (data)=>{
+        notify.show(data, 'custom', 7000, warningMessage);
+     }
+    )
   }
 
   render() {
-    const top = {
-      position: "absolute",
-      width: "10%",
-      top: "20px",
-      left: "2%",
-      // paddingTop: '15px',
-      // paddingLeft: '10px',
-      textAlign: "center"
-    };
     return (
       <div className="app flex-row align-items-center background">
         <Container>
-          <div align="left" style={top}>
+          <div
+            align="left"
+            style={{
+              position: "absolute",
+              width: "10%",
+              top: "20px",
+              left: "2%",
+              textAlign: "center"
+            }}
+          >
             <HeaderLogo />
           </div>
           <Notifications />
@@ -117,30 +99,20 @@ class Login extends Component {
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button type="submit" color="success" block>
+                          <Button type="submit" color="success" block 
+                            style={{verticalAlign: 'top'}}
+                          >
                             Iniciar Sesión
                           </Button>
                         </Col>
                         <Col xs="6" className="text-right">
                           <Link to={"/reset-password"}>
-                            <Button color="link" className="px-0">
+                            <Button color="link" className="px-0 ">
                               ¿Olvidaste tu contraseña?
                             </Button>
                           </Link>
                         </Col>
                       </Row>
-                      {/*
-                      <CardFooter className="p-4">
-                        <p className="text-muted text-center">O ingresa con una de tus redes</p>
-                        <Row>
-                          <Col xs="12" sm="6">
-                            <Button className="btn-facebook" block><span>facebook</span></Button>
-                          </Col>
-                          <Col xs="12" sm="6">
-                            <Button className="btn-twitter" block><span>twitter</span></Button>
-                          </Col>
-                        </Row>
-                      </CardFooter> */}
                     </CardBody>
                   </form>
                 </Card>
