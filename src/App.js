@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import {
-  HashRouter,
   Route,
   Switch,
-  BrowserRouter,
   Redirect
 } from "react-router-dom";
 import SessionContainer from "./containers/authContainer";
@@ -42,9 +40,8 @@ import {
 class App extends Component {
   
   render() {
-     console.log(this.props )
      if(this.props.logged && this.props.location.pathname === '/login'){
-        <Redirect to="/dasboard" />
+        return <Redirect to="/dasboard"  />
      }
     return (
       <Switch>

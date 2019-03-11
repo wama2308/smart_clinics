@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
-import { datosConexion } from '../../components/Conexion.js';
 
 import {
   AppAside,
@@ -22,22 +21,6 @@ import routes from '../../routes';
 import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
-
-// let valueConexion = "";
-// let arrayConexion = Object.values(datosConexion);
-// arrayConexion.forEach(function (elemento, indice, array) {
-//     if(indice === 2){
-//         valueConexion = elemento;
-//     }            
-// });          
-
-
-// const token = window.localStorage.getItem('id_token');
-// if (token) {
-//   console.log("");  
-// }else{  
-//   window.location = valueConexion;     
-// }
 
 class DefaultLayout extends Component {
   render() {
@@ -65,7 +48,7 @@ class DefaultLayout extends Component {
                       : (null);
                   },
                 )}
-                <Redirect from="/" to="/dashboard" />
+                {/* <Redirect from="/" to="/dashboard" /> */}
               </Switch>
             </Container>
           </main>
