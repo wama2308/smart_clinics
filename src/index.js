@@ -5,7 +5,10 @@ import './index.css';
 import App from './App';
 import store from './store'
 import {Provider} from 'react-redux'
-import {setState} from './actions/authActions'
+import {HashRouter} from 'react-router-dom'
+
+// import {setState} from './actions/authActions'
+
 // disable ServiceWorker
 // import registerServiceWorker from './registerServiceWorker';
 
@@ -13,7 +16,9 @@ import {setState} from './actions/authActions'
 
 ReactDOM.render(
     <Provider store={store}>
-        <App /> 
+        <HashRouter>
+            <App /> 
+        </HashRouter>
     </Provider>,
 
     document.getElementById('root'));

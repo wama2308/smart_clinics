@@ -23,21 +23,21 @@ import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
 
-let valueConexion = "";
-let arrayConexion = Object.values(datosConexion);
-arrayConexion.forEach(function (elemento, indice, array) {
-    if(indice === 2){
-        valueConexion = elemento;
-    }            
-});          
+// let valueConexion = "";
+// let arrayConexion = Object.values(datosConexion);
+// arrayConexion.forEach(function (elemento, indice, array) {
+//     if(indice === 2){
+//         valueConexion = elemento;
+//     }            
+// });          
 
 
-const token = window.localStorage.getItem('id_token');
-if (token) {
-  console.log("");  
-}else{  
-  window.location = valueConexion;     
-}
+// const token = window.localStorage.getItem('id_token');
+// if (token) {
+//   console.log("");  
+// }else{  
+//   window.location = valueConexion;     
+// }
 
 class DefaultLayout extends Component {
   render() {
