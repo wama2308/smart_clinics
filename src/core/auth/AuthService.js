@@ -33,16 +33,17 @@ export default class AuthService {
       });
   }
 
-  async verify(callback){
+  async verify(callback) {
     const token = await this.getToken();
     if (token) {
       const result = await decode(token);
-      callback({
+      return callback({
         logged: true,
         result
       });
     }
-  } 
+    return callback({ logged: false });
+  }
 
   async loggedIn(callback) {
     // Checks if there is a saved token and it's still valid
@@ -80,9 +81,10 @@ export default class AuthService {
     return localStorage.getItem("id_token");
   }
 
-  logout() {
-    // Clear user token and profile data from localStorage
+  logout(route, callback) {
     localStorage.removeItem("id_token");
+    route();
+    callback();
   }
 
   getProfile() {

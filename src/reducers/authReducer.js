@@ -14,10 +14,10 @@ const setdata = (state,node,payload) =>   state.set(node , Array.isArray(payload
 const INITIAL_STATE = AuthState
 
 
-const authReducer = (state = INITIAL_STATE, action) => {
+const authReducer = (state = Map(), action) => {
   switch (action.type) {
-  case 'LOGOUT':{
-    return setdata(state,'logout', action.users)
+  case 'SESION_OFF':{
+    return setState(state, {logged: false })
   }
   case 'GET_DATA_USER':{
     return setState(state, action.payload)

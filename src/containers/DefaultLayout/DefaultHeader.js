@@ -20,6 +20,8 @@ import jwt_decode from "jwt-decode";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import AuthService from "../../core/auth/AuthService";
+import { connect } from "react-redux";
+import { logout } from "../../actions/authActions";
 
 const Auth = new AuthService();
 
@@ -40,8 +42,9 @@ class DefaultHeader extends Component {
   }
 
   handleLougout() {
-    Auth.logout();
-    this.props.history.replace("/Login");
+    this.props.loggout( ()=>{
+      this.props.history.replace('/login')
+    })
   }
 
   static propTypes = {
@@ -152,4 +155,13 @@ class DefaultHeader extends Component {
 DefaultHeader.propTypes = propTypes;
 DefaultHeader.defaultProps = defaultProps;
 
-export default withRouter(DefaultHeader);
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  loggout: (route) => dispatch(logout(route))
+});
+
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(DefaultHeader)
+);
