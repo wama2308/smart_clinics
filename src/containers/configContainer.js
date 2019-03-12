@@ -646,6 +646,7 @@ class configContainer extends Component {
   };
 
   render() {
+    console.log(this.props.authData.toJS())
     return (
       <div className="animated fadeIn">
         <Row>
@@ -695,7 +696,7 @@ class configContainer extends Component {
                 </div>
                 <TabContent activeTab={this.state.activeTab}>
                   <TabPane tabId={1}>
-                    < MedicalCenter/>
+                    < MedicalCenter data={this.props.medicalCenter.toJS()}/>
                   </TabPane>  
                 </TabContent>
                 <br />
@@ -708,8 +709,13 @@ class configContainer extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  medicalCenter: state.config,
+  authData: state.auth
+})
+
 const mapDispatchToProps = (dispatch) => ({
   loadMedicalCenter: ()=> dispatch(loadMedicalcenterAction()) 
 })
 
-export default  connect ( null,mapDispatchToProps)(configContainer)
+export default  connect ( mapStateToProps , mapDispatchToProps)(configContainer)
