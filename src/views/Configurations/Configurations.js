@@ -625,7 +625,7 @@ class Configurations extends Component {
       .catch(error => {
         console.log("Error consultando la api para la cantidad de sucursales");
       });
-
+      
     axios
       .get(apiCountTableBranchOffices, datos)
       .then(res => {

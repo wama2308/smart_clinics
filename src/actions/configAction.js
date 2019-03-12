@@ -15,12 +15,12 @@ export const loadMedicalcenterAction = () => dispatch => {
   axios
     .get(loadMedicalCenter, datos)
     .then(res => {
-      loadCountry(res.data.countryid, provincia => {
+      loadCountry(country => {
         dispatch({
           type: "LOAD_MEDICAL_CENTER",
           payload: {
             loading: "hide",
-            provincia,
+            country,
             ...res.data
           }
         });
@@ -31,19 +31,25 @@ export const loadMedicalcenterAction = () => dispatch => {
     });
 };
 
-const loadCountry = (id, cb) => {
-  axios({
-    method: "post",
-    url: LoadContries,
-    data: {
-      idCountry: id
-    },
-    headers: { "access-token": token }
-  })
+const loadCountry = cb => {
+  axios
+    .get(LoadContries, datos)
     .then(res => {
       cb(res.data);
     })
     .catch(error => {
-      console.log("Error consultando la api de paises para provincias", error.toString());
+      console.log(
+        "Error consultando la api de paises para Paises",
+        error.toString()
+      );
     });
 };
+
+// dispatch({
+//   type: "LOAD_MEDICAL_CENTER",
+//   payload: {
+//     loading: "hide",
+//     provincia,
+//     ...res.data
+//   }
+// });

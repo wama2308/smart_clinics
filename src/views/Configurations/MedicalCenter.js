@@ -9,6 +9,9 @@ import {
 } from "reactstrap";
 import "./loading.css";
 import "./modal.css";
+import Validator from './utils'
+
+const validator = new Validator()
 
 export default class MedicalCenter extends React.Component {
   constructor(props) {
@@ -22,6 +25,7 @@ export default class MedicalCenter extends React.Component {
       SucursalError: "",
       email: "",
       Sucursal: "",
+      selectedCountry: 0,
       SucursalValid: false,
       provinceInvalid: false,
       SucursalInValid: false,
@@ -30,11 +34,11 @@ export default class MedicalCenter extends React.Component {
       master: []
     };
   }
-
   render() {
-    const data = !this.props.data ? this.state : this.props.data
-    const provinces = data.loading === 'hide' ? data.provincia.provinces : [] 
-  
+    const data = !this.props.data ? this.state : this.props.data 
+    const country = data.country ? validator.filterCountry(data.country): []
+    const provinces = country ? country[this.state.selectedCountry] : []
+    console.log("hello ",provinces  ) 
     return (
       <div>
         <div className={data.loading} style={{ textAlign: "center" }}>
@@ -83,16 +87,17 @@ export default class MedicalCenter extends React.Component {
                       name="pais"
                       id="pais"
                       invalid={this.state.paisInvalid}
-                      onChange={this.handleChange}
+                      onChange={(event)=>{
+                          this.setState({selectedCountry: event.target.value })
+                      }}
                     >
                       <option value="">Select...</option>
-                      {provinces.map( (provincia , key) => {
+                      {country.map( (provincia , key) => {
                           return (
                             <option value={key} selected>
                               {provincia.name}
                             </option>
-                          );
-                        
+                          );  
                       })}
                     </Input>
                     <FormFeedback tooltip>{this.state.paisError}</FormFeedback>
@@ -107,29 +112,13 @@ export default class MedicalCenter extends React.Component {
                       onChange={this.handleChange_}
                     >
                       <option value="">Select...</option>
-                      {Object.keys(this.state.provinces).map((d, i) => {
-                        if (this.state.inicio == "1") {
-                          if (d == this.state.valorProvince) {
-                            return (
+                        {
+                          
+                        }
                               <option value={d} selected>
                                 {this.state.provinces[d].name}
                               </option>
-                            );
-                          } else {
-                            return (
-                              <option value={d}>
-                                {this.state.provinces[d].name}
-                              </option>
-                            );
-                          }
-                        } else if (this.state.inicio == "2") {
-                          return (
-                            <option value={d}>
-                              {this.state.provinces[d].name}
-                            </option>
-                          );
-                        }
-                      })}
+                      
                     </Input>
                     <FormFeedback tooltip>
                       {" "}
