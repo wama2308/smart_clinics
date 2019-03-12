@@ -1,9 +1,9 @@
 import React from 'react';
 import Loadable from 'react-loadable'
 import withAuth from './components/withAuth';
-
 import DefaultHeader from './containers/DefaultLayout/DefaultHeader';
 import DefaultLayout from './containers/DefaultLayout';
+import configContainer from  './containers/configContainer'
 
 function Loading() {
   return <div>Loading...</div>;
@@ -124,11 +124,6 @@ const Dashboard = Loadable({
   loading: Loading,
 });
 
-const Configurations = Loadable({
-  loader: () => import('./containers/configContainer'),
-  loading: Loading,
-});
-
 const Usuarios = Loadable({
   loader: () => import('./views/Usuarios'),
   loading: Loading,
@@ -207,8 +202,8 @@ const Widgets = Loadable({
 const routes = [
   { path: '/', exact: true, name: 'Inicio', component: DefaultLayout },
   { path: '/dashboard', name: 'Panel', component: withAuth(Dashboard, DefaultHeader) },
-  { path: '/configuration', exact: true, name: 'Configuracion', component: Configurations },
-  { path: '/configuration/Medical-center', name: 'Centro Medico', component: Configurations },
+  { path: '/configuration', exact: true, name: 'Configuracion', component: configContainer },
+  { path: '/configuration/Medical-center', name: 'Centro Medico', component: configContainer },
   { path: '/configuration/Users', name: 'Usuarios', component: Usuarios },
   { path: '/configuration/Personal', name: 'Personal', component: Personal },
   { path: '/configuration/Services', name: 'Servicios', component: Servicios },

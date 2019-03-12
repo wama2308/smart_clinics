@@ -14,6 +14,7 @@ export function setState() {
   };
 }
 
+
 export const logout = (route) => dispatch => {
   auth.logout(
     route,

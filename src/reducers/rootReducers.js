@@ -1,8 +1,8 @@
 import authReducer  from './authReducer'
+import configReducer from './configReducer'
 import {combineReducers} from 'redux';
 
-const auth = authReducer
-
 export default combineReducers({
-    auth,
+    auth : authReducer,
+    config: configReducer    
   });

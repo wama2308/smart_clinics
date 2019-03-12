@@ -1,4 +1,4 @@
-export let datosConexion = {
+export const datosConexion = {
   // "servidor" : 'http://localhost:8000/api/',
   // "servidorLogin" : 'http://localhost:8000/',
   // "tokenSesion" : '/#/login', 

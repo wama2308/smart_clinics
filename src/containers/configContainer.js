@@ -9,6 +9,7 @@ import {
     Col,
     Row,
     TabContent,
+    TabPane
 } from "reactstrap";  
 import "../views/Configurations/loading.css";
 import classnames from "classnames";
@@ -16,6 +17,8 @@ import "../views/Configurations/modal.css";
 import axios from 'axios'
 import { datosConexion } from "../components/Conexion.js";
 import MedicalCenter from '../views/Configurations/MedicalCenter'
+import { connect } from 'react-redux'
+import {loadMedicalcenterAction} from '../actions/configAction'
 import jstz from "jstz";
 
 class configContainer extends Component {
@@ -35,87 +38,9 @@ class configContainer extends Component {
     const timezone = jstz.determine();
 
     this.state = {
-      update: 0,
-      tipoDropdownOpen: false,
-      activeTab: "1",
-      country: [],
-      provincesSelect: [],
-      modal: false,
-      defaultCenter: null,
-      email: "",
-      countryid: "",
-      licenses: [],
-      branchoffices: [],
-      provinceid: "",
-      provinces: [],
-      Sucursal: "",
-      SucursalError: "",
-      countryname: "",
-      provinceedit: [],
-      editbranchoffices: [],
-      contacto: [],
-      contactoName: "",
-      contactoPhone: "",
-      contactoEmail: "",
-      posicion: "",
-      countryIdSelect: "",
-      valorProvince: "",
-      inicio: "0",
-      pais: "",
-      paisError: "",
-      provincia: "",
-      provinciaError: "",
-      SucursalInValid: false,
-      SucursalValid: false,
-      paisInvalid: false,
-      paisValid: false,
-      provinceInvalid: false,
-      provinceValid: false,
-      className: "",
-      update0: 0,
-      divContainer: "hide",
-      divLoading: "show",
-      deletediv: "hide",
-      divLoading2: "hide delete",
-      modalAlert: false,
-      claseModalConfirm: "ModalConfirm",
-      itemPos: "",
-      view: null,
-      check: "hide check",
-      warning: "hide warning",
-      ///
-      success: false,
-      delete: "",
-      sucursalesview: false,
-      tipoview: false,
-      sectorview: false,
-      paisview: false,
-      provinciaview: false,
-      addressview: false,
-      contactview: "formCodeConfirm show",
-      deleteview: "text-danger show",
-      acciones: "show",
-      button: "hide",
-      buttoncancel: "show",
-      buttonsave: "show",
-      collapse: false,
-      collapseFile: false,
-      collapseMap: false,
-      collapseSocial: false,
-      sucursaladd: 1,
-      divhide: "text-center show",
-      aceptar: "hide",
-      cancelar: "hide",
-      currencySymbol: "",
-      countSucursales: "",
-      modalWarning: false,
-      bodyAlert: "",
-      timeZ: timezone.name(),
-      countTableBranchOffices: 0,
-      //conexion: 'http://localhost:8000/api/',
-      //conexion: 'http://smartclinics.online/sc-admin/web/app.php/api/',
-      conexion: valueConexion
+      activeTab:1
     };
+
     this.view = this.view.bind(this);
     this.refresh = this.refresh.bind(this);
     this.handlekey = this.handlekey.bind(this);
@@ -185,13 +110,9 @@ class configContainer extends Component {
     let SucursalError = "";
     let paisError = "";
     let provinciaError = "";
-    let className = "";
     let SucursalInValid = false;
     let paisInvalid = false;
     let provinceInvalid = false;
-    let SucursalValid = false;
-    let paisvalid = false;
-    let provincevalid = false;
     if (this.state.Sucursal.length === 0) {
       SucursalError = "¡Ingrese el nombre!";
       SucursalInValid = true;
@@ -544,86 +465,88 @@ class configContainer extends Component {
     const apiBaseMedical = this.state.conexion + "LoadMedicalCenter";
     const apiBaseUrl = this.state.conexion + "loadCountries";
     const apiLoadCountBranchOffices =
-      this.state.conexion + "LoadCountBranchOffices";
+    this.state.conexion + "LoadCountBranchOffices";
     const apiCountTableBranchOffices =
       this.state.conexion + "countTableBranchOffices";
     //const apiLicenses = ("http://192.168.0.117:8000/api/LoadLicense");
     //const apiBaseMedical= "http://192.168.0.117:8000/api/LoadMedicalCenter";
     //const apiBaseUrl = ("http://192.168.0.117:8000/api/loadCountries");
     const token = window.localStorage.getItem("id_token");
+    
+    this.props.loadMedicalCenter()
 
     const datos = {
       headers: { "access-token": token }
     };
 
-    axios
-      .get(apiBaseMedical, datos)
-      .then(res => {
-        console.log(res);
-        this.setState({
-          branchoffices: res.data.branchoffices,
-          Sucursal: res.data.name,
-          countryid: res.data.countryid,
-          contacto: res.data.branchoffices.contacto,
-          pais: res.data.countryid,
-          provincia: res.data.provinceid,
-          valorProvince: res.data.provinceid
-        });
-        this.loadCountryId(res.data.countryid);
-      })
-      .catch(error => {
-        console.log("Error consultando la api medical center");
-      });
+    // axios
+    //   .get(apiBaseMedical, datos)
+    //   .then(res => {
+    //     console.log(res);
+    //     this.setState({
+    //       branchoffices: res.data.branchoffices,
+    //       Sucursal: res.data.name,
+    //       countryid: res.data.countryid,
+    //       contacto: res.data.branchoffices.contacto,
+    //       pais: res.data.countryid,
+    //       provincia: res.data.provinceid,
+    //       valorProvince: res.data.provinceid
+    //     });
+    //     this.loadCountryId(res.data.countryid);
+    //   })
+    //   .catch(error => {
+    //     console.log("Error consultando la api medical center");
+    //   });
 
-    axios
-      .get(apiLicenses, datos)
-      .then(res => {
-        this.setState({
-          licenses: res.data
-        });
-      })
-      .catch(error => {
-        console.log("Error consultando la api licenses");
-      });
+    // axios
+    //   .get(apiLicenses, datos)
+    //   .then(res => {
+    //     this.setState({
+    //       licenses: res.data
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log("Error consultando la api licenses");
+    //   });
 
-    axios
-      .get(apiLoadCountBranchOffices, datos)
-      .then(res => {
-        this.setState({
-          countSucursales: res.data
-        });
-      })
-      .catch(error => {
-        console.log("Error consultando la api para la cantidad de sucursales");
-      });
+    // axios
+    //   .get(apiLoadCountBranchOffices, datos)
+    //   .then(res => {
+    //     this.setState({
+    //       countSucursales: res.data
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log("Error consultando la api para la cantidad de sucursales");
+    //   });
 
-    axios
-      .get(apiCountTableBranchOffices, datos)
-      .then(res => {
-        this.setState({
-          countTableBranchOffices: res.data
-        });
-      })
-      .catch(error => {
-        console.log("Error consultando la api para la cantidad de sucursales");
-      });
+    // axios
+    //   .get(apiCountTableBranchOffices, datos)
+    //   .then(res => {
+    //     this.setState({
+    //       countTableBranchOffices: res.data
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log("Error consultando la api para la cantidad de sucursales");
+    //   });
 
-    const apiProvinces = this.state.conexion + "loadCountries";
-    // const apiProvinces = ("http://192.168.0.117:8000/api/loadCountries");
-    axios
-      .get(apiBaseUrl, datos)
-      .then(res => {
-        this.setState({
-          country: res.data
-        });
-      })
-      .catch(error => {
-        console.log("Error consultando la api paises");
-      });
-    // -----------------------------------------------------------------------------
-    this.setState({
-      email: window.localStorage.getItem("email")
-    });
+    // const apiProvinces = this.state.conexion + "loadCountries";
+    // // const apiProvinces = ("http://192.168.0.117:8000/api/loadCountries");
+    // axios
+    //   .get(apiBaseUrl, datos)
+    //   .then(res => {
+    //     this.setState({
+    //       country: res.data
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log("Error consultando la api paises");
+    //   });
+    // // -----------------------------------------------------------------------------
+    // this.setState({
+    //   email: window.localStorage.getItem("email")
+    // });
   }
 
   toggleTab(tab) {
@@ -735,10 +658,10 @@ class configContainer extends Component {
                     <NavItem>
                       <NavLink
                         className={classnames({
-                          active: this.state.activeTab === "1"
+                          active: this.state.activeTab === 1
                         })}
                         onClick={() => {
-                          this.toggleTab("1");
+                          this.toggleTab(1);
                         }}
                       >
                         Perfil Centro Medico
@@ -747,10 +670,10 @@ class configContainer extends Component {
                     <NavItem>
                       <NavLink
                         className={classnames({
-                          active: this.state.activeTab === "2"
+                          active: this.state.activeTab === 2
                         })}
                         onClick={() => {
-                          this.toggleTab("2");
+                          this.toggleTab(2);
                         }}
                       >
                         Sucursales
@@ -759,10 +682,10 @@ class configContainer extends Component {
                     <NavItem>
                       <NavLink
                         className={classnames({
-                          active: this.state.activeTab === "3"
+                          active: this.state.activeTab === 3
                         })}
                         onClick={() => {
-                          this.toggleTab("3");
+                          this.toggleTab(3);
                         }}
                       >
                         Licencias
@@ -771,7 +694,9 @@ class configContainer extends Component {
                   </Nav>
                 </div>
                 <TabContent activeTab={this.state.activeTab}>
+                  <TabPane tabId={1}>
                     < MedicalCenter/>
+                  </TabPane>  
                 </TabContent>
                 <br />
               </CardBody>
@@ -782,4 +707,9 @@ class configContainer extends Component {
     );
   }
 }
-export default configContainer;
+
+const mapDispatchToProps = (dispatch) => ({
+  loadMedicalCenter: ()=> dispatch(loadMedicalcenterAction()) 
+})
+
+export default  connect ( null,mapDispatchToProps)(configContainer)
