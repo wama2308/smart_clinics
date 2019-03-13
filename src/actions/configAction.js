@@ -46,8 +46,8 @@ const loadCountry = cb => {
     });
 };
 
-export const editMedicalCenter = data => dispatch => {
-   console.log(data)
+export const editMedicalCenter = (data, callback) => dispatch => {
+   callback()
   // axios({
   //   method: "post",
   //   url: SubmitDataMedicalCenter,

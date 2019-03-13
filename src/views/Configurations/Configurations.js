@@ -955,7 +955,7 @@ class Configurations extends Component {
                             className={this.state.aceptar}
                             onClick={this.buttonDeleteBranchOffices}
                           >
-                            Aceptar
+                            AceptarF
                           </Button>{" "}
                           <Button
                             color="secondary"

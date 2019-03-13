@@ -522,7 +522,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadMedicalCenter: () => dispatch(loadMedicalcenterAction()),
-  medicalCenterAction: data => dispatch(editMedicalCenter(data))
+  medicalCenterAction: (data , callback) => dispatch(editMedicalCenter(data, callback))
 });
 
 export default connect(

@@ -5,16 +5,14 @@ import {
   Form,
   FormGroup,
   Label,
-  FormFeedback,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Modal
+  FormFeedback
 } from "reactstrap";
 import "./loading.css";
 import "./modal.css";
-import Validator from "./utils";
 import jstz from "jstz";
+import Loading from "../../components/Modals";
+import Validator from "./utils";
+import Snackbars from '../../components/Snackbars'
 
 const validator = new Validator();
 
@@ -40,7 +38,9 @@ export default class MedicalCenter extends React.Component {
       paisInvalid: false,
       provinceInvalid: false,
       master: [],
-      name: ""
+      name: "",
+      modal:false,
+      modalType:"loading" 
     };
   }
 
@@ -56,14 +56,23 @@ export default class MedicalCenter extends React.Component {
 
   handleSubmit = async event => {
     event.preventDefault();
+    this.setState({
+      modal:true,
+      modalType:'loading'
+    })
     const valid = await this.validate();
     valid
-      ? this.props.editAction({
-          name: this.state.name,
-          idCountry: this.state.selectedCountry,
-          provinceid: this.state.provinceid,
-          timeZ: jstz.determine().name()
-        })
+      ? this.props.editAction(
+          {
+            name: this.state.name,
+            idCountry: this.state.selectedCountry,
+            provinceid: this.state.provinceid,
+            timeZ: jstz.determine().name()
+          },
+          () => {
+            this.setState({modalType:'succes'})   
+          }
+        )
       : alert("not valid");
   };
 
@@ -102,74 +111,11 @@ export default class MedicalCenter extends React.Component {
     const data = !this.props.data ? this.state : this.props.data;
     const countrys = data.country ? validator.filterCountry(data.country) : [];
     const provinces = this.filterProvinces(countrys);
-
+    
     return (
       <div>
-        <div>
-          <Modal
-            isOpen={this.state.modalAlert}
-            modalConfirm={this.modalConfirm}
-            className={this.state.claseModalConfirm}
-          >
-            <ModalHeader modalConfirm={this.modalConfirm} />
-            <ModalBody>
-              <div color="success" className={this.state.check}>
-                <FaCheckCircle size="4em" />
-              </div>
-              <div color="warning" className={this.state.warning}>
-                <FaExclamationCircle size="4em" />
-              </div>
-              <div
-                className={this.state.divLoading2}
-                style={{ textAlign: "center" }}
-              >
-                <img src="assets/loader.gif" width="20%" height="5%" />
-              </div>
-              <div align="center" className={this.state.deletediv}>
-                <h5>
-                  <b>{this.state.delete}</b>
-                </h5>
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                color="primary"
-                className={this.state.aceptar}
-                onClick={this.buttonDeleteBranchOffices}
-              >
-                Aceptar
-              </Button>{" "}
-              <Button
-                color="secondary"
-                className={this.state.cancelar}
-                onClick={this.modalCancel}
-              >
-                Cancelar
-              </Button>
-            </ModalFooter>
-          </Modal>
-        </div>
-        <div>
-          <Modal
-            isOpen={true}
-            toggle={this.toggleWarning}
-            className="ModalAlert"
-          >
-            <ModalHeader />
-            <ModalBody>
-              <div color="success" className={this.state.alertCheck}>
-                <FaCheckCircle size="4em" />
-              </div>
-              <div color="success" className={this.state.alertExc}>
-                <FaExclamationCircle size="4em" />
-              </div>
-              <h5 align="center">
-                <b>{this.state.bodyAlert}</b>
-              </h5>
-            </ModalBody>
-            <ModalFooter />
-          </Modal>
-        </div>
+        <Snackbars  message={'mensage'}  type={'success'} />}
+        {this.state.modal && <Loading type={this.state.modalType}/>}
         <div className={data.loading} style={{ textAlign: "center" }}>
           <img src="assets/loader.gif" width="20%" height="5%" />
         </div>
