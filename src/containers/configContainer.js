@@ -1,31 +1,32 @@
 import React, { Component } from "react";
 import {
-    Nav,
-    NavItem,
-    NavLink,
-    Card,
-    CardBody,
-    CardHeader,
-    Col,
-    Row,
-    TabContent,
-    TabPane
-} from "reactstrap";  
+  Nav,
+  NavItem,
+  NavLink,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Row,
+  TabContent,
+  TabPane
+} from "reactstrap";
 import "../views/Configurations/loading.css";
 import classnames from "classnames";
 import "../views/Configurations/modal.css";
-import axios from 'axios'
+import axios from "axios";
 import { datosConexion } from "../components/Conexion.js";
-import MedicalCenter from '../views/Configurations/MedicalCenter'
-import { connect } from 'react-redux'
-import {loadMedicalcenterAction} from '../actions/configAction'
+import MedicalCenter from "../views/Configurations/MedicalCenter";
+import { connect } from "react-redux";
+import {
+  loadMedicalcenterAction,
+  editMedicalCenter
+} from "../actions/configAction";
 import jstz from "jstz";
 
 class configContainer extends Component {
   constructor(props) {
     super(props);
-    this.toggleTab = this.toggleTab.bind(this);
-    this.toggle = this.toggle.bind(this);
 
     let valueConexion = "";
     let arrayConexion = Object.values(datosConexion);
@@ -38,24 +39,8 @@ class configContainer extends Component {
     const timezone = jstz.determine();
 
     this.state = {
-      activeTab:1
+      activeTab: 1
     };
-
-    this.view = this.view.bind(this);
-    this.refresh = this.refresh.bind(this);
-    this.handlekey = this.handlekey.bind(this);
-    //this.validationsu = this.validationsu.bind(this)
-    this.submitContact = this.submitContact.bind(this);
-    this.deleteContact = this.deleteContact.bind(this);
-    this.toggleCancel = this.toggleCancel.bind(this);
-    this.callChildFunction = this.callChildFunction.bind(this);
-    this.loadCountryId = this.loadCountryId.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.modaledit = this.modaledit.bind(this);
-    this.modalConfirm = this.modalConfirm.bind(this);
-    this.modalCancel = this.modalCancel.bind(this);
-    this.buttonDeleteBranchOffices = this.buttonDeleteBranchOffices.bind(this);
-    this.number_format = this.number_format.bind(this);
   }
 
   handlekey = event => {
@@ -233,119 +218,6 @@ class configContainer extends Component {
       });
   }
 
-  handleInvalidSubmit(event, errors, values) {
-    this.setState({ email: values.email, error: true });
-  }
-
-  toggle(e) {
-    let countTableBranchOffices = this.state.countTableBranchOffices;
-    let countBranchOfficesPermit = this.state.countSucursales;
-
-    if (countTableBranchOffices < countBranchOfficesPermit) {
-      this.ModalContainer.handleActionParent();
-      this.setState({
-        modal: !this.state.modal,
-        button: "btn btn-success hide",
-        buttoncancel: "show",
-        buttonsave: "show",
-        contacto: [],
-        editbranchoffices: []
-      });
-    } else {
-      this.setState({
-        alertCheck: "hide check",
-        alertExc: "show warning",
-        bodyAlert:
-          "¡Esta licencia solo permite registrar " +
-          countBranchOfficesPermit +
-          " sucursales!"
-      });
-
-      this.toggleAlert();
-
-      setTimeout(() => {
-        this.cerrarModalAlert();
-      }, 3000);
-    }
-  }
-
-  toggleCancel(id) {
-    this.setState({
-      modal: id,
-      update: 0,
-      contacto: [],
-      sucursalesview: false,
-      editbranchoffices: [],
-      tipoview: false,
-      sectorview: false,
-      paisview: false,
-      provinciaview: false,
-      addressview: false,
-      contactview: "formCodeConfirm show",
-      deleteview: "text-danger show",
-      acciones: "show",
-      button: "hide",
-      buttoncancel: "hide",
-      buttonsave: "hide",
-      collapse: false,
-      collapseFile: false,
-      collapseMap: false,
-      collapseSocial: false,
-      divhide: "text-center show"
-    });
-  }
-
-  modaledit(e) {
-    // console.log(e);
-    // console.log(this.state.medical[e].name)
-    // console.log(this.state.medical[e].contacto)
-    //this.ModalContainer.getGeoLocation()
-    this.setState({
-      modal: !this.state.modal,
-      update: 1,
-      editbranchoffices: this.state.branchoffices[e],
-      contacto: this.state.branchoffices[e].contacto,
-      posicion: e,
-      button: "btn btn-success hide",
-      buttoncancel: "show",
-      buttonsave: "show"
-    });
-  }
-
-  view(e) {
-    // console.log(e);
-    // console.log(this.state.medical[e].name)
-    // console.log(this.state.medical[e].contacto)
-    //this.ModalContainer.getGeoLocation()
-
-    this.setState({
-      modal: !this.state.modal,
-      update: 1,
-      editbranchoffices: this.state.branchoffices[e],
-      contacto: this.state.branchoffices[e].contacto,
-      posicion: e,
-      sucursalesview: true,
-      tipoview: true,
-      sectorview: true,
-      paisview: true,
-      provinciaview: true,
-      addressview: true,
-      contactview: "formCodeConfirm hide",
-      deleteview: "text-danger hide",
-      acciones: "text-center hide",
-      button: "btn btn-success show",
-      buttoncancel: "hide",
-      buttonsave: "hide",
-      collapse: true,
-      collapseFile: true,
-      collapseMap: true,
-      collapseSocial: true,
-      divhide: "text-center hide",
-      divfilehide: "row show"
-    });
-    //console.log(this.state.editbranchoffices)
-  }
-
   submitContact(name) {
     let contactsu = this.state.contacto;
     contactsu = [...name];
@@ -465,88 +337,19 @@ class configContainer extends Component {
     const apiBaseMedical = this.state.conexion + "LoadMedicalCenter";
     const apiBaseUrl = this.state.conexion + "loadCountries";
     const apiLoadCountBranchOffices =
-    this.state.conexion + "LoadCountBranchOffices";
+      this.state.conexion + "LoadCountBranchOffices";
     const apiCountTableBranchOffices =
       this.state.conexion + "countTableBranchOffices";
     //const apiLicenses = ("http://192.168.0.117:8000/api/LoadLicense");
     //const apiBaseMedical= "http://192.168.0.117:8000/api/LoadMedicalCenter";
     //const apiBaseUrl = ("http://192.168.0.117:8000/api/loadCountries");
     const token = window.localStorage.getItem("id_token");
-    
-    this.props.loadMedicalCenter()
+
+    this.props.loadMedicalCenter();
 
     const datos = {
       headers: { "access-token": token }
     };
-
-    // axios
-    //   .get(apiBaseMedical, datos)
-    //   .then(res => {
-    //     console.log(res);
-    //     this.setState({
-    //       branchoffices: res.data.branchoffices,
-    //       Sucursal: res.data.name,
-    //       countryid: res.data.countryid,
-    //       contacto: res.data.branchoffices.contacto,
-    //       pais: res.data.countryid,
-    //       provincia: res.data.provinceid,
-    //       valorProvince: res.data.provinceid
-    //     });
-    //     this.loadCountryId(res.data.countryid);
-    //   })
-    //   .catch(error => {
-    //     console.log("Error consultando la api medical center");
-    //   });
-
-    // axios
-    //   .get(apiLicenses, datos)
-    //   .then(res => {
-    //     this.setState({
-    //       licenses: res.data
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log("Error consultando la api licenses");
-    //   });
-
-    // axios
-    //   .get(apiLoadCountBranchOffices, datos)
-    //   .then(res => {
-    //     this.setState({
-    //       countSucursales: res.data
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log("Error consultando la api para la cantidad de sucursales");
-    //   });
-
-    // axios
-    //   .get(apiCountTableBranchOffices, datos)
-    //   .then(res => {
-    //     this.setState({
-    //       countTableBranchOffices: res.data
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log("Error consultando la api para la cantidad de sucursales");
-    //   });
-
-    // const apiProvinces = this.state.conexion + "loadCountries";
-    // // const apiProvinces = ("http://192.168.0.117:8000/api/loadCountries");
-    // axios
-    //   .get(apiBaseUrl, datos)
-    //   .then(res => {
-    //     this.setState({
-    //       country: res.data
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log("Error consultando la api paises");
-    //   });
-    // // -----------------------------------------------------------------------------
-    // this.setState({
-    //   email: window.localStorage.getItem("email")
-    // });
   }
 
   toggleTab(tab) {
@@ -646,7 +449,7 @@ class configContainer extends Component {
   };
 
   render() {
-    console.log(this.props.authData.toJS())
+    console.log(this.props.authData.toJS());
     return (
       <div className="animated fadeIn">
         <Row>
@@ -696,8 +499,11 @@ class configContainer extends Component {
                 </div>
                 <TabContent activeTab={this.state.activeTab}>
                   <TabPane tabId={1}>
-                    < MedicalCenter data={this.props.medicalCenter.toJS()}/>
-                  </TabPane>  
+                    <MedicalCenter
+                      editAction={this.props.medicalCenterAction}
+                      data={this.props.medicalCenter.toJS()}
+                    />
+                  </TabPane>
                 </TabContent>
                 <br />
               </CardBody>
@@ -709,13 +515,17 @@ class configContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   medicalCenter: state.config,
   authData: state.auth
-})
+});
 
-const mapDispatchToProps = (dispatch) => ({
-  loadMedicalCenter: ()=> dispatch(loadMedicalcenterAction()) 
-})
+const mapDispatchToProps = dispatch => ({
+  loadMedicalCenter: () => dispatch(loadMedicalcenterAction()),
+  medicalCenterAction: data => dispatch(editMedicalCenter(data))
+});
 
-export default  connect ( mapStateToProps , mapDispatchToProps)(configContainer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(configContainer);

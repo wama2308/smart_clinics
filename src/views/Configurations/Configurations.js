@@ -32,20 +32,10 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 import ModalContainer from "./modalcomponen";
-import FormModal from "./modal";
 import "./modal.css";
 import axios from 'axios'
 import { datosConexion } from "../../components/Conexion.js";
 import jstz from "jstz";
-
-// import {
-//   compose,
-//   withScriptjs,
-//   withGoogleMap,
-//   GoogleMap,
-//   Marker
-// } from "react-google-maps";
-
 
 class Configurations extends Component {
   constructor(props) {
@@ -261,9 +251,9 @@ class Configurations extends Component {
     return true;
   };
 
-  handleSubmit = event => {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    const isValid = this.validate();
+    const isValid =  this.validate();
     if (isValid) {
       this.setState({
         modalAlert: true,
@@ -337,7 +327,7 @@ class Configurations extends Component {
       })
       .catch(res => {
         //console.log(res, this.state.valorProvince)
-        console.log("Error modificando el medical center");
+       console.log("Error modificando el medical center");
       });
   }
 

@@ -4,6 +4,7 @@ const url = `http://smartclinics.online/sc-admin/web/app.php`;
 const loadMedicalCenter = `${url}/api/LoadMedicalCenter`;
 const loadLicence = `${url}/LoadLicense`;
 const LoadContries = `${url}/api/loadCountries`;
+const SubmitDataMedicalCenter = `${url}/api/editPerfilMedicalCenter`;
 const token = window.localStorage.getItem("id_token");
 
 const datos = {
@@ -45,11 +46,23 @@ const loadCountry = cb => {
     });
 };
 
-// dispatch({
-//   type: "LOAD_MEDICAL_CENTER",
-//   payload: {
-//     loading: "hide",
-//     provincia,
-//     ...res.data
-//   }
-// });
+export const editMedicalCenter = data => dispatch => {
+   console.log(data)
+  // axios({
+  //   method: "post",
+  //   url: SubmitDataMedicalCenter,
+  //   data: data,
+  //   headers: { "access-token": token }
+  // })
+  //   .then(() => {})
+  //   .catch(error => {
+  //     //console.log(res, this.state.valorProvince)
+  //     console.log("Error modificando el medical center", error);
+  //   });
+};
+
+//       name: this.state.Sucursal,
+//       idCountry: this.state.pais,
+//       provinceid: this.state.valorProvince,
+//       timeZ: this.state.timeZ
+
