@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { openSnackbars } from "./aplicantionActions";
 const url = `http://smartclinics.online/sc-admin/web/app.php`;
 const loadMedicalCenter = `${url}/api/LoadMedicalCenter`;
 const loadLicence = `${url}/LoadLicense`;
@@ -47,22 +47,22 @@ const loadCountry = cb => {
 };
 
 export const editMedicalCenter = (data, callback) => dispatch => {
-   callback()
-  // axios({
-  //   method: "post",
-  //   url: SubmitDataMedicalCenter,
-  //   data: data,
-  //   headers: { "access-token": token }
-  // })
-  //   .then(() => {})
-  //   .catch(error => {
-  //     //console.log(res, this.state.valorProvince)
-  //     console.log("Error modificando el medical center", error);
-  //   });
+  axios({
+    method: "post",
+    url: SubmitDataMedicalCenter,
+    data: data,
+    headers: { "access-token": token }
+  })
+    .then(() => {
+      callback();
+      dispatch(openSnackbars("success", "Operacion Exitosa"));
+    })
+    .catch(error => {
+      dispatch(openSnackbars("error", "Error modificando el medical center"));
+    });
 };
 
 //       name: this.state.Sucursal,
 //       idCountry: this.state.pais,
 //       provinceid: this.state.valorProvince,
 //       timeZ: this.state.timeZ
-

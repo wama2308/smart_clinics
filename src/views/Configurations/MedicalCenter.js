@@ -70,10 +70,12 @@ export default class MedicalCenter extends React.Component {
             timeZ: jstz.determine().name()
           },
           () => {
-            this.setState({modalType:'succes'})   
+            this.setState({
+              modal:false,
+            })   
           }
         )
-      : alert("not valid");
+      : null;
   };
 
   validate = () => {
@@ -114,7 +116,6 @@ export default class MedicalCenter extends React.Component {
     
     return (
       <div>
-        <Snackbars  message={'mensage'}  type={'success'} />}
         {this.state.modal && <Loading type={this.state.modalType}/>}
         <div className={data.loading} style={{ textAlign: "center" }}>
           <img src="assets/loader.gif" width="20%" height="5%" />
@@ -172,9 +173,9 @@ export default class MedicalCenter extends React.Component {
                       this.setState({ selectedCountry: event.target.value });
                     }}
                   >
-                    {countrys.map(country => {
+                    {countrys.map((country ,key) => {
                       return (
-                        <option value={country.id} selected>
+                        <option key={key} value={country.id}>
                           {country.name}
                         </option>
                       );
@@ -197,7 +198,7 @@ export default class MedicalCenter extends React.Component {
                   >
                     {provinces.map((province, key) => {
                       return (
-                        <option value={key} selected>
+                        <option key={key} value={key}>
                           {province.name}
                         </option>
                       );

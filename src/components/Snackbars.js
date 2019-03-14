@@ -1,51 +1,52 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import Button from '@material-ui/core/Button';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import ErrorIcon from '@material-ui/icons/Error';
-import InfoIcon from '@material-ui/icons/Info';
-import CloseIcon from '@material-ui/icons/Close';
-import green from '@material-ui/core/colors/green';
-import amber from '@material-ui/core/colors/amber';
-import IconButton from '@material-ui/core/IconButton';
-import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
-import WarningIcon from '@material-ui/icons/Warning';
-import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux'
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import Button from "@material-ui/core/Button";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import ErrorIcon from "@material-ui/icons/Error";
+import InfoIcon from "@material-ui/icons/Info";
+import CloseIcon from "@material-ui/icons/Close";
+import green from "@material-ui/core/colors/green";
+import amber from "@material-ui/core/colors/amber";
+import IconButton from "@material-ui/core/IconButton";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
+import WarningIcon from "@material-ui/icons/Warning";
+import { withStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import { closeSnackbars } from "../actions/aplicantionActions";
 
 const variantIcon = {
   success: CheckCircleIcon,
   warning: WarningIcon,
   error: ErrorIcon,
-  info: InfoIcon,
+  info: InfoIcon
 };
 
 const styles1 = theme => ({
   success: {
-    backgroundColor: green[600],
+    backgroundColor: green[600]
   },
   error: {
-    backgroundColor: theme.palette.error.dark,
+    backgroundColor: theme.palette.error.dark
   },
   info: {
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: theme.palette.primary.dark
   },
   warning: {
-    backgroundColor: amber[700],
+    backgroundColor: amber[700]
   },
   icon: {
-    fontSize: 20,
+    fontSize: 20
   },
   iconVariant: {
     opacity: 0.9,
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing.unit
   },
   message: {
-    display: 'flex',
-    alignItems: 'center',
-  },
+    display: "flex",
+    alignItems: "center"
+  }
 });
 
 function MySnackbarContent(props) {
@@ -71,7 +72,7 @@ function MySnackbarContent(props) {
           onClick={onClose}
         >
           <CloseIcon className={classes.icon} />
-        </IconButton>,
+        </IconButton>
       ]}
       {...other}
     />
@@ -83,45 +84,38 @@ MySnackbarContent.propTypes = {
   className: PropTypes.string,
   message: PropTypes.node,
   onClose: PropTypes.func,
-  variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
+  variant: PropTypes.oneOf(["success", "warning", "error", "info"]).isRequired
 };
 
 const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
 
 const styles2 = theme => ({
   margin: {
-    margin: theme.spacing.unit,
-  },
+    margin: theme.spacing.unit
+  }
 });
 
 class Snackbars extends React.Component {
-  state = {
-    open: false,
-  };
-
-  handleClick = () => {
-    this.setState({ open: true });
-  };
-
   handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
-    this.setState({ open: false });
+    this.props.close()
   };
 
   render() {
-    const { message, type } = this.props;
+    const { message, type, open } = this.props.snackBars;
+    console.log(this.props);
     return (
       <div>
         <Snackbar
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right"
           }}
-          open={this.state.open}
-          autoHideDuration={2000}
+          open={open}
+          autoHideDuration={10000}
           onClose={this.handleClose}
         >
           <MySnackbarContentWrapper
@@ -136,12 +130,14 @@ class Snackbars extends React.Component {
 }
 
 Snackbars.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => {
-    
-}
+const mapStateToProps = state => ({
+  snackBars: state.global.snackBars
+});
 
-
-export default  connect(withStyles(styles2)(Snackbars));
+export default connect(
+  mapStateToProps,
+  { close:closeSnackbars }
+)(withStyles(styles2)(Snackbars));

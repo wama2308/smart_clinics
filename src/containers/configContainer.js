@@ -383,7 +383,6 @@ class configContainer extends Component {
         });
       })
       .catch(res => {
-        //console.log(res)
         console.log("Error consultando la api de paises para provincias");
       });
   }
@@ -449,7 +448,6 @@ class configContainer extends Component {
   };
 
   render() {
-    console.log(this.props.authData.toJS());
     return (
       <div className="animated fadeIn">
         <Row>
@@ -517,7 +515,8 @@ class configContainer extends Component {
 
 const mapStateToProps = state => ({
   medicalCenter: state.config,
-  authData: state.auth
+  authData: state.auth,
+  aplication: state.global
 });
 
 const mapDispatchToProps = dispatch => ({
