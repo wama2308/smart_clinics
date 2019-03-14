@@ -106,7 +106,6 @@ class Snackbars extends React.Component {
 
   render() {
     const { message, type, open } = this.props.snackBars;
-    console.log(this.props);
     return (
       <div>
         <Snackbar
@@ -115,7 +114,7 @@ class Snackbars extends React.Component {
             horizontal: "right"
           }}
           open={open}
-          autoHideDuration={10000}
+          autoHideDuration={2000}
           onClose={this.handleClose}
         >
           <MySnackbarContentWrapper

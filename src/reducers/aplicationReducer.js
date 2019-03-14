@@ -1,4 +1,3 @@
-import {Map , List} from 'immutable'
 
 const InitalState = {
     snackBars:{

@@ -25,10 +25,9 @@ export default class MedicalCenter extends React.Component {
       provinceid: 0,
       provinces: [],
       SucursalInValid: false,
-      loading: "hide",
+      loading: "show",
       SucursalError: "",
       email: "",
-      Sucursal: "",
       selectedCountry: 0,
       SucursalError: "",
       paisError: "",
@@ -52,6 +51,10 @@ export default class MedicalCenter extends React.Component {
           name: props.data.name
         })
       : 0;
+  }
+
+  componentDidMount=()=>{
+    this.setState({loading:'show'})
   }
 
   handleSubmit = async event => {
