@@ -13,6 +13,27 @@ class Sucursales extends React.Component {
   }
   
   render() {
+
+    const data = [
+      { label: 'Sucursal',
+        value: ' name'
+      },
+      {
+        label: 'Codigo',
+        value:'code'
+      },
+      {
+        label:'Pais',
+        country:'country'
+      },
+      {
+        label:'Provincia',
+        value:'province'
+      },
+      {
+        label:'Acciones',
+      }
+    ]
     return (
       <div>
         <TabPane tabId="2">
@@ -65,7 +86,7 @@ class Sucursales extends React.Component {
               }
             </div>
             <br />
-            <Table data={this.props.sucursales} />
+            <Table labels={data} data={this.props.sucursales} />
           </div>
         </TabPane>
       </div>

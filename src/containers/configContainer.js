@@ -21,6 +21,7 @@ import {
   editMedicalCenter
 } from "../actions/configAction";
 import Sucursales from "../views/Configurations/Sucursal";
+import Licencias from '../views/Configurations/Licencias'
 
 class configContainer extends Component {
   constructor(props) {
@@ -65,7 +66,9 @@ class configContainer extends Component {
         ...branchOfficesData
       });
     });
+
     return array
+
   }
 
   render() {
@@ -126,6 +129,10 @@ class configContainer extends Component {
                   </TabPane>
                   <TabPane tabId={2}>
                     <Sucursales sucursales={DataSucursal} />
+                  </TabPane>
+
+                  <TabPane tabId={3}>
+                    <Licencias />
                   </TabPane>
                 </TabContent>
                 <br />
