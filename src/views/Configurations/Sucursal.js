@@ -1,13 +1,21 @@
 import React from "react";
 import { Button, TabPane } from "reactstrap";
 import "./loading.css";
+import ModalSucursal from "./modalcomponen";
 import { Table } from "reactstrap";
 import { FaSearch, FaUserEdit, FaMinusCircle } from "react-icons/fa";
 
 class Sucursales extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      openModal: false
+    };
   }
+
+  closeModal = () => {
+    this.setState({ openModal: !this.state.openModal });
+  };
 
   render() {
     const data = [
@@ -27,109 +35,76 @@ class Sucursales extends React.Component {
     ];
     return (
       <div>
-        <TabPane tabId="2">
-          <div className="container">
-            <div className="">
-              <p className="text-muted">
-                Ajuste la informacion de las sucursales de su Centro Medico
-              </p>
-            </div>
-            <div className="App">
-              <Button color="success" onClick={this.toggle}>
-                Agregar Sucursal
-              </Button>
-              {
-                // <ModalContainer
-                //   ref={cd => (this.ModalContainer = cd)}
-                //   edit={this.state.editbranchoffices}
-                //   contactedit={this.state.contactedit}
-                //   submitContact={this.submitContact.bind(this)}
-                //   contacto={this.state.contacto}
-                //   Toggle={this.toggleCancel.bind(this)}
-                //   modal={this.state.modal}
-                //   posicion={this.state.posicion}
-                //   update={this.state.update}
-                //   update0={this.state.update0}
-                //   delete={this.deleteContact.bind(this)}
-                //   refresh={this.refresh.bind(this)}
-                //   loadbranch={this.loadBranchOffices.bind(this)}
-                //   sucursalesview={this.state.sucursalesview}
-                //   tipoview={this.state.tipoview}
-                //   sectorview={this.state.sectorview}
-                //   paisview={this.state.paisview}
-                //   provinciaview={this.state.provinciaview}
-                //   addressview={this.state.addressview}
-                //   contactview={this.state.contactview}
-                //   deleteview={this.state.deleteview}
-                //   acciones={this.state.acciones}
-                //   button={this.state.button}
-                //   buttoncancel={this.state.buttoncancel}
-                //   buttonsave={this.state.buttonsave}
-                //   collapse={this.state.collapse}
-                //   collapseFile={this.state.collapseFile}
-                //   collapseMap={this.state.collapseMap}
-                //   collapseSocial={this.state.collapseSocial}
-                //   divhide={this.state.divhide}
-                //   sucursaladd={this.state.sucursaladd}
-                //   divfilehide={this.state.divfilehide}
-                //   success={this.props.success}
-                // />
-              }
-            </div>
-            <br />
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  {data.map((data, key) => {
-                    return <th>{data.label}</th>;
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {this.props.sucursales.map((item, i) => {
-                  return (
-                    <tr>
-                      <td>{item.name}</td>
-                      <td>{item.code}</td>
-                      <td>{item.country}</td>
-                      <td>{item.province}</td>
-                      <td>
-                        <div className="float-left">
-                          <a
-                            title="edit"
-                            className="icon"
-                            onClick={() => {
-                              this.view(item);
-                            }}
-                          >
-                            <FaSearch />
-                          </a>
-                          <a
-                            title="edit"
-                            className="icon"
-                            onClick={() => {
-                              this.modaledit(item);
-                            }}
-                          >
-                            <FaUserEdit />
-                          </a>
-                          <a
-                            className="text-danger icon"
-                            onClick={() => {
-                              this.modalConfirm(item);
-                            }}
-                          >
-                            <FaMinusCircle />{" "}
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
+        <ModalSucursal open={this.state.openModal} close={this.closeModal}/>
+        <div className="container">
+          <div className="">
+            <p className="text-muted">
+              Ajuste la informacion de las sucursales de su Centro Medico
+            </p>
           </div>
-        </TabPane>
+          <div className="App">
+            <Button color="success" onClick={()=>{
+              this.setState({openModal:true})
+            }}>
+              Agregar Sucursal
+            </Button>
+            {}
+          </div>
+          <br />
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                {data.map((data, key) => {
+                  return <th key={key}>{data.label}</th>;
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {this.props.sucursales
+                ? this.props.sucursales.map((item, i) => {
+                    return (
+                      <tr key={i}>
+                        <td>{item.name}</td>
+                        <td>{item.code}</td>
+                        <td>{item.country}</td>
+                        <td>{item.province}</td>
+                        <td>
+                          <div className="float-left">
+                            <a
+                              title="edit"
+                              className="icon"
+                              onClick={() => {
+                                this.view(item);
+                              }}
+                            >
+                              <FaSearch />
+                            </a>
+                            <a
+                              title="edit"
+                              className="icon"
+                              onClick={() => {
+                                this.modaledit(item);
+                              }}
+                            >
+                              <FaUserEdit />
+                            </a>
+                            <a
+                              className="text-danger icon"
+                              onClick={() => {
+                                this.modalConfirm(item);
+                              }}
+                            >
+                              <FaMinusCircle />{" "}
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                : null}
+            </tbody>
+          </Table>
+        </div>
       </div>
     );
   }

@@ -21,7 +21,7 @@ import {
   editMedicalCenter
 } from "../actions/configAction";
 import Sucursales from "../views/Configurations/Sucursal";
-import Licencias from '../views/Configurations/Licencias'
+import Licencias from "../views/Configurations/Licencias";
 
 class configContainer extends Component {
   constructor(props) {
@@ -66,12 +66,12 @@ class configContainer extends Component {
       });
     });
 
-    return array
-
+    return array;
   }
 
   render() {
     const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
+    console.log(this.props.medicalCenter.toJS()) 
     return (
       <div className="animated fadeIn">
         <Row>
@@ -119,21 +119,26 @@ class configContainer extends Component {
                     </NavItem>
                   </Nav>
                 </div>
-                <TabContent activeTab={this.state.activeTab}>
-                  <TabPane tabId={1}>
-                    <MedicalCenter
-                      editAction={this.props.medicalCenterAction}
-                      data={this.props.medicalCenter.toJS()}
-                    />
-                  </TabPane>
-                  <TabPane tabId={2}>
-                    <Sucursales sucursales={DataSucursal} />
-                  </TabPane>
+                {
+                  <TabContent activeTab={this.state.activeTab}>
+                    <TabPane tabId={1}>
+                      <MedicalCenter
+                        editAction={this.props.medicalCenterAction}
+                        data={this.props.medicalCenter.toJS()} 
 
-                  <TabPane tabId={3}>
-                    <Licencias licenses={this.props.medicalCenter.get('licenses')} />
-                  </TabPane>
-                </TabContent>
+                      />
+                    </TabPane>
+                    <TabPane tabId={2}>
+                      <Sucursales sucursales={DataSucursal} />
+                    </TabPane>
+
+                    <TabPane tabId={3}>
+                      <Licencias
+                        licenses={this.props.medicalCenter.get("licenses")}
+                      />
+                    </TabPane>
+                  </TabContent>
+                }
                 <br />
               </CardBody>
             </Card>

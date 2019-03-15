@@ -170,7 +170,6 @@ export default class MedicalCenter extends React.Component {
                     id="pais"
                     defaultValue={data.provinceid - 1}
                     disabled={countrys.length < 1}
-                    invnnnalid={this.state.paisInvalid}
                     onChange={event => {
                       this.setState({ selectedCountry: event.target.value });
                     }}

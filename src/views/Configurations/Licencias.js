@@ -11,18 +11,18 @@ class Licencias extends React.Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th class="text-center">Licencia</th>
-                  <th class="text-center">Numero de clientes</th>
-                  <th class="text-center">Numero de examenes</th>
-                  <th class="text-center">Monto</th>
-                  <th class="text-center">Fecha de expiracion</th>
+                  <th className="text-center">Licencia</th>
+                  <th className="text-center">Numero de clientes</th>
+                  <th className="text-center">Numero de examenes</th>
+                  <th className="text-center">Monto</th>
+                  <th className="text-center">Fecha de expiracion</th>
                 </tr>
               </thead>
               <tbody>
                 {this.props.licenses? this.props.licenses.map((item, i) => {
                   return (
-                    <tr key={i} class="text-center">
-                      <td>{ item.license_id}</td>
+                    <tr key={i} className="text-center">
+                      <td>dita sea</td>
                       <td>asdasd</td>
                       <td>qweasd</td>
                       <td>

@@ -16,13 +16,15 @@ export const loadMedicalcenterAction = () => dispatch => {
   axios
     .get(loadMedicalCenter, datos)
     .then(res => {
-      loadCountry(country => {
+      loadCountry(country => {  
+      
         dispatch({
           type: "LOAD_MEDICAL_CENTER",
           payload: {
             loading: "hide",
             country,
-            ...res.data
+            ...res.data.medical_center,
+            licenses: res.data.licenses_array
           }
         });
       });
@@ -45,6 +47,11 @@ const loadCountry = cb => {
       );
     });
 };
+
+export const loadTypes = (data) =>{
+  console.log(data)  
+}
+
 
 export const editMedicalCenter = (data, callback) => dispatch => {
   axios({
