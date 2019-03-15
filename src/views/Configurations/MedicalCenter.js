@@ -12,7 +12,6 @@ import "./modal.css";
 import jstz from "jstz";
 import Loading from "../../components/Modals";
 import Validator from "./utils";
-import Snackbars from '../../components/Snackbars'
 
 const validator = new Validator();
 
@@ -171,7 +170,7 @@ export default class MedicalCenter extends React.Component {
                     id="pais"
                     defaultValue={data.provinceid - 1}
                     disabled={countrys.length < 1}
-                    invalid={this.state.paisInvalid}
+                    invnnnalid={this.state.paisInvalid}
                     onChange={event => {
                       this.setState({ selectedCountry: event.target.value });
                     }}

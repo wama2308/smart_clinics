@@ -1,39 +1,30 @@
 import React from "react";
-import {
-  Button,
-  TabPane,
-} from "reactstrap";
+import { Button, TabPane } from "reactstrap";
 import "./loading.css";
-import Table from "../../components/Table";
+import { Table } from "reactstrap";
+import { FaSearch, FaUserEdit, FaMinusCircle } from "react-icons/fa";
 
 class Sucursales extends React.Component {
   constructor(props) {
     super(props);
-
   }
-  
-  render() {
 
+  render() {
     const data = [
-      { label: 'Sucursal',
-        value: ' name'
+      { label: "Sucursal" },
+      {
+        label: "Codigo"
       },
       {
-        label: 'Codigo',
-        value:'code'
+        label: "Pais"
       },
       {
-        label:'Pais',
-        country:'country'
+        label: "Provincia"
       },
       {
-        label:'Provincia',
-        value:'province'
-      },
-      {
-        label:'Acciones',
+        label: "Acciones"
       }
-    ]
+    ];
     return (
       <div>
         <TabPane tabId="2">
@@ -86,7 +77,57 @@ class Sucursales extends React.Component {
               }
             </div>
             <br />
-            <Table labels={data} data={this.props.sucursales} />
+            <Table hover responsive borderless>
+              <thead className="thead-light">
+                <tr>
+                  {data.map((data, key) => {
+                    return <th>{data.label}</th>;
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {this.props.sucursales.map((item, i) => {
+                  return (
+                    <tr>
+                      <td>{item.name}</td>
+                      <td>{item.code}</td>
+                      <td>{item.country}</td>
+                      <td>{item.province}</td>
+                      <td>
+                        <div className="float-left">
+                          <a
+                            title="edit"
+                            className="icon"
+                            onClick={() => {
+                              this.view(item);
+                            }}
+                          >
+                            <FaSearch />
+                          </a>
+                          <a
+                            title="edit"
+                            className="icon"
+                            onClick={() => {
+                              this.modaledit(item);
+                            }}
+                          >
+                            <FaUserEdit />
+                          </a>
+                          <a
+                            className="text-danger icon"
+                            onClick={() => {
+                              this.modalConfirm(item);
+                            }}
+                          >
+                            <FaMinusCircle />{" "}
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
           </div>
         </TabPane>
       </div>

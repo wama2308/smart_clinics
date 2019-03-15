@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Table } from "reactstrap";
 import { FaSearch, FaUserEdit, FaMinusCircle } from "react-icons/fa";
 
+
 class TableComponent extends React.Component {
   render() {
     return (

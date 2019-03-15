@@ -46,7 +46,6 @@ class configContainer extends Component {
   filterDataForSucursal(data) {
     const array = [];
     data = data.toJS();
-    console.log(data);
     const resultBranchOffices = data.branchoffices
       ? data.branchoffices.filter(filterStatusTrue => {
           return filterStatusTrue.status;
@@ -132,7 +131,7 @@ class configContainer extends Component {
                   </TabPane>
 
                   <TabPane tabId={3}>
-                    <Licencias />
+                    <Licencias licenses={this.props.medicalCenter.get('licenses')} />
                   </TabPane>
                 </TabContent>
                 <br />

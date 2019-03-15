@@ -3,7 +3,7 @@ import { Table } from "reactstrap";
 
 class Licencias extends React.Component {
   render() {
-    return (
+     return (
       <div className="container">
         <p className="text-muted">Licencias de su Centro Medico</p>
         <div className="row">
@@ -19,27 +19,19 @@ class Licencias extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {/* {Object.keys(this.state.licenses).map((item, i) => {
-                  var date = new Date(
-                    this.state.licenses[item].expiration_date.sec * 1000
-                  );
-                  var date2 = new Intl.DateTimeFormat("en-GB").format(date);
+                {this.props.licenses? this.props.licenses.map((item, i) => {
                   return (
-                    <tr class="text-center">
-                      <td>{this.state.licenses[item].license}</td>
-                      <td>{this.state.licenses[item].numberclients}</td>
-                      <td>{this.state.licenses[item].numberexams}</td>
+                    <tr key={i} class="text-center">
+                      <td>{ item.license_id}</td>
+                      <td>asdasd</td>
+                      <td>qweasd</td>
                       <td>
-                        {this.number_format(
-                          this.state.licenses[item].amount,
-                          2
-                        )}{" "}
-                        {this.state.currencySymbol}
+                        asdasd
                       </td>
-                      <td>{date2}</td>
+                      <td>qweqw</td>
                     </tr>
                   );
-                })} */}
+                }):null}
               </tbody>
             </Table>
           </div>
