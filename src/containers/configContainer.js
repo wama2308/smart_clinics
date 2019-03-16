@@ -70,8 +70,7 @@ class configContainer extends Component {
   }
 
   render() {
-    const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
-    console.log(this.props.medicalCenter.toJS()) 
+    const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter); 
     return (
       <div className="animated fadeIn">
         <Row>

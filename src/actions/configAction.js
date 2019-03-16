@@ -2,39 +2,48 @@ import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 const url = `http://smartclinics.online/sc-admin/web/app.php`;
 const loadMedicalCenter = `${url}/api/LoadMedicalCenter`;
+const loadGeneralConfiguration = `${url}/api/loadGeneralConfiguration`;
 const loadLicence = `${url}/LoadLicense`;
 const LoadContries = `${url}/api/loadCountries`;
 const SubmitDataMedicalCenter = `${url}/api/editPerfilMedicalCenter`;
-const token = window.localStorage.getItem("id_token");
 
-const datos = {
-  headers: { "access-token": token }
+const getDataToken = () => {
+  return new Promise(resolve => {
+    const token = window.localStorage.getItem("id_token");
+    const datos = {
+      headers: { "access-token": token }
+    };
+    resolve(datos);
+  });
 };
 
 export const loadMedicalcenterAction = () => dispatch => {
-  console.log(loadMedicalCenter, datos);
-  axios
-    .get(loadMedicalCenter, datos)
-    .then(res => {
-      loadCountry(country => {  
-      
-        dispatch({
-          type: "LOAD_MEDICAL_CENTER",
-          payload: {
-            loading: "hide",
-            country,
-            ...res.data.medical_center,
-            licenses: res.data.licenses_array
-          }
+  getDataToken().then(datos => {
+    axios
+      .get(loadMedicalCenter, datos)
+      .then(res => {
+        loadCountry(datos, country => {
+          dispatch({
+            type: "LOAD_MEDICAL_CENTER",
+            payload: {
+              loading: "hide",
+              country,
+              ...res.data.medical_center,
+              licenses: res.data.licenses_array
+            }
+          });
         });
+      })
+      .catch(error => {
+        console.log(
+          "Error consultando la api medical center",
+          error.toString()
+        );
       });
-    })
-    .catch(error => {
-      console.log("Error consultando la api medical center", error.toString());
-    });
+  });
 };
 
-const loadCountry = cb => {
+const loadCountry = (datos, cb) => {
   axios
     .get(LoadContries, datos)
     .then(res => {
@@ -48,25 +57,42 @@ const loadCountry = cb => {
     });
 };
 
-export const loadTypes = (data) =>{
-  console.log(data)  
-}
-
+export const loadTypes = () => dispatch => {
+  getDataToken().then(datos => {
+    axios
+      .get(loadGeneralConfiguration, datos)
+      .then(res => {
+        console.log("consultando el api2", res);
+        dispatch({
+          type: "SET_TYPE_CONFIGURATION",
+          payload: {
+            sector: res.data.sectormedicalcenter,
+            type: res.data.typemedicalcenter
+          }
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  });
+};
 
 export const editMedicalCenter = (data, callback) => dispatch => {
-  axios({
-    method: "post",
-    url: SubmitDataMedicalCenter,
-    data: data,
-    headers: { "access-token": token }
-  })
-    .then(() => {
-      callback();
-      dispatch(openSnackbars("success", "Operacion Exitosa"));
+  getDataToken().then(datos => {
+    axios({
+      method: "post",
+      url: SubmitDataMedicalCenter,
+      data: data,
+      ...datos
     })
-    .catch(error => {
-      dispatch(openSnackbars("error", "Error modificando el medical center"));
-    });
+      .then(() => {
+        callback();
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+      })
+      .catch(error => {
+        dispatch(openSnackbars("error", "Error modificando el medical center"));
+      });
+  });
 };
 
 //       name: this.state.Sucursal,

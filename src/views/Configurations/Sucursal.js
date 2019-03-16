@@ -35,7 +35,7 @@ class Sucursales extends React.Component {
     ];
     return (
       <div>
-        <ModalSucursal open={this.state.openModal} close={this.closeModal}/>
+        {this.state.openModal && <ModalSucursal open={this.state.openModal} close={this.closeModal} />}
         <div className="container">
           <div className="">
             <p className="text-muted">
@@ -43,9 +43,12 @@ class Sucursales extends React.Component {
             </p>
           </div>
           <div className="App">
-            <Button color="success" onClick={()=>{
-              this.setState({openModal:true})
-            }}>
+            <Button
+              color="success"
+              onClick={() => {
+                this.setState({ openModal: true });
+              }}
+            >
               Agregar Sucursal
             </Button>
             {}
