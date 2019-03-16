@@ -35,7 +35,6 @@ export default class MedicalCenter extends React.Component {
       SucursalValid: false,
       paisInvalid: false,
       provinceInvalid: false,
-      master: [],
       name: "",
       modal:false,
       modalType:"loading" 
@@ -102,7 +101,7 @@ export default class MedicalCenter extends React.Component {
     return true;
   };
 
-  filterProvinces = countries => {
+  filterProvinces = (countries) => {
     const array = countries.filter(countries => {
       return countries.id.includes(this.state.selectedCountry);
     });
@@ -114,7 +113,7 @@ export default class MedicalCenter extends React.Component {
   render() {
     const data = !this.props.data ? this.state : this.props.data;
     const countrys = data.country ? validator.filterCountry(data.country) : [];
-    const provinces = this.filterProvinces(countrys);
+    const provinces = validator.filterProvinces(countrys, this.state.selectedCountry);
     
     return (
       <div>

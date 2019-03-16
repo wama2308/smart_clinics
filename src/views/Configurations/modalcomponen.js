@@ -40,10 +40,15 @@ class ModalComponent extends React.Component {
     const { open, close, medicalCenter } = this.props;
     const countrys = validator.filterCountry(medicalCenter.country);
     const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
+    const provinces = validator.filterProvinces(
+      countrys,
+      countrys[0].id
+    );
     const sector = !medicalCenter.typeConfig
       ? []
       : medicalCenter.typeConfig.sector;
 
+    console.log(provinces)
     return (
       <Modal
         isOpen={open}
@@ -69,10 +74,6 @@ class ModalComponent extends React.Component {
                       type="text"
                       name="Sucursal"
                       id="Sucursal"
-                      valid={this.state.sucursalValid}
-                      disabled={this.state.sucursalesview}
-                      invalid={this.state.sucursalInValid}
-                      value={this.state.sucursal}
                       onChange={event => this.sucursal(event)}
                     />
                     <FormFeedback tooltip>
@@ -88,9 +89,6 @@ class ModalComponent extends React.Component {
                       type="text"
                       name="codigo"
                       id="codigo"
-                      disabled={this.state.codigoDisabled}
-                      invalid={this.state.codigoInValid}
-                      value={this.state.codigo}
                       onChange={event => this.codigo(event)}
                     />
                     <FormFeedback tooltip>
@@ -140,12 +138,15 @@ class ModalComponent extends React.Component {
                       type="select"
                       name="provincia"
                       id="provincia"
-                      valid={this.state.provinceValid}
-                      disabled={this.state.provinciaview}
-                      invalid={this.state.provinceInvalid}
                       onChange={event => this.provincesValidation(event)}
                     >
-                      <option value={null}>Select...</option>
+                       {provinces.map( (province, key) => {
+                        return (
+                          <option key={key} value={key}>
+                            {province.name}
+                          </option>
+                        );
+                      })}
                     </Input>
                     <FormFeedback tooltip>
                       {this.state.provinciaError}
@@ -157,10 +158,6 @@ class ModalComponent extends React.Component {
                     <Input
                       type="select"
                       name="Sector"
-                      valid={this.state.sectorValid}
-                      invalid={this.state.sectorInvalid}
-                      id="Sector"
-                      disabled={this.state.sectorview}
                       onChange={event => this.sector(event)}
                     >
                       {sector.map((sector, key) => {
@@ -183,10 +180,6 @@ class ModalComponent extends React.Component {
                       value={this.state.address}
                       name="Direccion"
                       id="Direccion"
-                      valid={this.state.direccionValid}
-                      disabled={this.state.addressview}
-                      invalid={this.state.direccionInValid}
-                      onChange={this.direccion}
                     />
                     <FormFeedback tooltip>
                       {this.state.direccionError}
