@@ -20,22 +20,16 @@ class Sucursales extends React.Component {
   render() {
     const data = [
       { label: "Sucursal" },
-      {
-        label: "Codigo"
-      },
-      {
-        label: "Pais"
-      },
-      {
-        label: "Provincia"
-      },
-      {
-        label: "Acciones"
-      }
+      { label: "Codigo"},
+      { label: "Pais" },
+      { label: "Provincia" },
+      { label: "Acciones" }
     ];
     return (
       <div>
-        {this.state.openModal && <ModalSucursal open={this.state.openModal} close={this.closeModal} />}
+        {this.state.openModal && (
+          <ModalSucursal open={this.state.openModal} close={this.closeModal} />
+        )}
         <div className="container">
           <div className="">
             <p className="text-muted">
