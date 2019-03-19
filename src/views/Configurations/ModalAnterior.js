@@ -50,7 +50,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter,
                 }            
             });     
 
-            const timezone = jstz.determine();
+            const timezone = jstz.determine();c 
 
             this.state = { 
                 modal: false,
