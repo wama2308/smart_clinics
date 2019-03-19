@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
  * CoreUI - Open Source Dashboard UI Kit
- * @version v2.1.7
+ * @version v2.1.8
  * @link https://coreui.io
  * Copyright (c) 2018 creativeLabs Łukasz Holeczek
  * Licensed under MIT (https://coreui.io/license)
@@ -1542,6 +1542,7 @@ textarea.form-control {
   position: absolute;
   top: 100%;
   z-index: 5;
+  display: none;
   max-width: 100%;
   padding: 0.25rem 0.5rem;
   margin-top: .1rem;
@@ -1549,8 +1550,7 @@ textarea.form-control {
   line-height: 1.5;
   color: #fff;
   background-color: rgba(248, 108, 107, 0.9);
-  border-radius: 0.25rem; 
-}
+  border-radius: 0.25rem; }
 
 .was-validated .form-control:invalid, .form-control.is-invalid {
   border-color: #f86c6b;
@@ -10621,6 +10621,12 @@ body {
   breakpoint-md: 768px;
   breakpoint-lg: 992px;
   breakpoint-xl: 1200px; }
+
+.was-validated .form-control:valid, .form-control.is-valid {
+  background-position: right calc(0.375em + 0.1875rem) center; }
+
+.was-validated .form-control:invalid, .form-control.is-invalid {
+  background-position: right calc(0.375em + 0.1875rem) center; }
 
 .app-header .navbar-nav .dropdown-menu-right {
   right: auto; }

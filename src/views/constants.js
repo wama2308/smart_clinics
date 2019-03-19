@@ -10,7 +10,11 @@ export const MedicalInitialValues = {
   web: "",
   contacto: "",
   telefono: "",
-  email: ""
+  email: "",
+  logo:undefined,
+  file1:undefined,
+  file2:undefined,
+  file3:undefined
 };
 
 const data = {
@@ -23,7 +27,8 @@ export const MedicalValidacion = yup.object().shape({
   direccion: yup
     .string()
     .label("Direccion")
-    .required(data.require)
+    .required(data.require),
+  logo: yup.mixed().required()  
 });
 
 export const contactos = {

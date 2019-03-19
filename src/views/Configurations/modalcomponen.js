@@ -40,8 +40,7 @@ class ModalComponent extends React.Component {
     contactos: false,
     multimedia: false,
     sociales: false,
-    dataContactos: [],
-    
+    dataContactos: []
   };
 
   componentDidMount = () => {
@@ -60,37 +59,16 @@ class ModalComponent extends React.Component {
     console.log(values);
   };
 
-  fileHandlerLogo = event => {
-    event.preventDefault();
-    if (event.target.files[0].size > 25000) {
-      this.setState({
-        logoError: "El tamaño de la imagen no esta permitido ",
-        logoInvalid: true,
-        collapseFil: true
-      });
-    } else {
-      this.setState({
-        logoError: " ",
-        logoInvalid: false
-      });
-      let selectedFile = event.target.files;
-      let fileName = "";
-      let file = null;
-      if (selectedFile.length > 0) {
-        let fileToLoad = selectedFile[0];
-        fileName = fileToLoad.name;
-        let fileReader = new FileReader();
-        fileReader.onload = function(fileLoadedEvent) {
-          file = fileLoadedEvent.target.result;
+  fileHandler = (setField, name, data) => {
+    const file = data;
+    console.log(file);
+    let reader = new FileReader();
 
-          this.setState({
-            logo: file
-          });
-        }.bind(this);
-        // Convert data to base64
-        fileReader.readAsDataURL(fileToLoad);
-      }
-    }
+    reader.readAsDataURL(data);
+
+    reader.onloadend = () => {
+      setField(name, reader.result);
+    };
   };
 
   delete = key => {
@@ -488,12 +466,19 @@ class ModalComponent extends React.Component {
                                         className="top"
                                         type="file"
                                         accept="image/*"
+                                        onChange={event =>
+                                          this.fileHandler(
+                                            setFieldValue,
+                                            "logo",
+                                            event.currentTarget.files[0]
+                                          )
+                                        }
                                         invalid={this.state.logoInvalid}
                                         valid={this.state.logoValid}
-                                        onChange={this.fileHandlerLogo}
                                       />
-                                      <FormFeedback tooltip>
-                                        {this.state.logoError}
+                                      {console.log(values)}
+                                      <FormFeedback  style={{ display: "block" }} tooltip>
+                                        {errors.logo}
                                       </FormFeedback>
                                     </div>
 
@@ -503,8 +488,13 @@ class ModalComponent extends React.Component {
                                       <Input
                                         type="file"
                                         accept="image/*"
-                                        onChange={this.fileHandleFoto1}
-                                        invalid={this.state.foto1Invalid}
+                                        onChange={event =>
+                                          this.fileHandler(
+                                            setFieldValue,
+                                            "file1",
+                                            event.currentTarget.files[0]
+                                          )
+                                        }
                                       />
                                       <FormFeedback tooltip>
                                         {this.state.foto1Error}
@@ -516,8 +506,13 @@ class ModalComponent extends React.Component {
                                       <Input
                                         type="file"
                                         accept="image/*"
-                                        onChange={this.fileHandleFoto2}
-                                        invalid={this.state.foto2Invalid}
+                                        onChange={event =>
+                                          this.fileHandler(
+                                            setFieldValue,
+                                            "file2",
+                                            event.currentTarget.files[0]
+                                          )
+                                        }
                                       />
                                       <FormFeedback tooltip>
                                         {this.state.foto2Error}
@@ -529,49 +524,49 @@ class ModalComponent extends React.Component {
                                       <Input
                                         type="file"
                                         accept="image/*"
-                                        onChange={this.fileHandleFoto3}
-                                        invalid={this.state.foto3Invalid}
+                                        onChange={event =>
+                                          this.fileHandler(
+                                            setFieldValue,
+                                            "file3",
+                                            event.currentTarget.files[0]
+                                          )
+                                        }
                                       />
-                                      <FormFeedback tooltip>
-                                        {this.state.foto3Error}
+
+                                      <FormFeedback  style={{ display: "block" }} tooltip>
+                                        {errors.logo}
                                       </FormFeedback>
                                     </div>
                                   </div>
                                 </form>
 
                                 <div className={this.state.divfilehide}>
-                                  {this.state.logo != null && (
+                                  {values.logo && (
                                     <img
                                       style={{ width: 150, height: 150 }}
                                       className="image"
-                                      src={"data:image/jpeg;" + this.state.logo}
+                                      src={values.logo}
                                     />
                                   )}
-                                  {this.state.foto1 != null && (
+                                  {values.file1 && (
                                     <img
                                       style={{ width: 150, height: 150 }}
                                       className="image"
-                                      src={
-                                        "data:image/jpeg;" + this.state.foto1
-                                      }
+                                      src={values.file1}
                                     />
                                   )}
-                                  {this.state.foto2 != null && (
+                                  {values.file2 && (
                                     <img
                                       style={{ width: 150, height: 150 }}
                                       className="image"
-                                      src={
-                                        "data:image/jpeg;" + this.state.foto2
-                                      }
+                                      src={values.file2}
                                     />
                                   )}
-                                  {this.state.foto3 != null && (
+                                  {values.file3 && (
                                     <img
                                       style={{ width: 150, height: 150 }}
                                       className="image"
-                                      src={
-                                        "data:image/jpeg;" + this.state.foto3
-                                      }
+                                      src={values.file3}
                                     />
                                   )}
                                 </div>
