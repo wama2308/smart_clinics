@@ -14,27 +14,13 @@ export const MedicalInitialValues = {
   logo:undefined,
   file1:undefined,
   file2:undefined,
-  file3:undefined
+  file3:undefined,
+  position:undefined
 };
 
 const data = {
   require: "Este campo es requerido"
 };
-
-
-const imageValidator=(value)=>{
- if(!value){return 1}
-
- let padding;
-      if(value.endsWith("==")){ padding = 2}
-      else if (value.endsWith("=")) {padding = 1;}
-      else padding = 0;
-      
-     let result =  (value.length / 4 ) * 3 - padding
-     
-    return  result = result / 1000
-
-}
 
 export const MedicalValidacion = yup.object().shape({
   sucursal: yup.string().required(data.require),
@@ -43,25 +29,8 @@ export const MedicalValidacion = yup.object().shape({
     .string()
     .label("Direccion")
     .required(data.require),
-  logo: yup.mixed().required().test(
-    "Logo",
-    "tamaño de la imagen no esta permitido",
-    value => value && imageValidator(value) <= 26 
-  ),
-  file1: yup.mixed().test(
-    "File",
-    "Tamaño de la imagen no esta permitido",
-    value => imageValidator(value) <= 26 
-  ),
-  file2: yup.mixed().test(
-    "File",
-    "Tamaño de la imagen no esta permitido",
-     value => imageValidator(value) <= 26   ),
-  file3: yup.mixed().test(
-    "File",
-    "Tamaño de la imagen no esta permitido",
-    value => imageValidator(value) <= 26 
-  )  
+  logo: yup.mixed().required('Logo es Requerido')  ,
+  position: yup.string()
 });
 
 export const contactos = {

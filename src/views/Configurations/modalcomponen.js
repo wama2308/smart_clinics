@@ -31,7 +31,7 @@ import "./geo.css";
 import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
-
+import { openSnackbars } from "../../actions/aplicantionActions";
 import MapComponent from "./map.js";
 import { MedicalInitialValues, MedicalValidacion } from "../constants";
 import { Formik } from "formik";
@@ -50,7 +50,7 @@ class ModalComponent extends React.Component {
     lat: 0,
     lng: 0,
     zoom: 14,
-    initialLocation: []
+    initialLocation: [],
   };
 
   componentDidMount = () => {
@@ -69,8 +69,6 @@ class ModalComponent extends React.Component {
     });
   };
 
-
-
   componentWillReceiveProps(props) {
     props.medicalCenter.typeConfig
       ? this.setState({
@@ -79,16 +77,21 @@ class ModalComponent extends React.Component {
       : null;
   }
 
-  refrescarMapa=()=>{
+  refrescarMapa = () => {
     this.setState({
       lat: this.state.initialLocation.lat,
       lng: this.state.initialLocation.lng,
-      zoom:13
-    })
-  }
+      zoom: 13
+    });
+  };
 
-  handleSubmit = values => {
-    console.log(values);
+  handleSubmit = (values, formik) => {
+    this.state.isMarkerShown
+      ? console.log("paso", values)
+      : this.props.openSnackbars(
+          "error",
+          "Debe seleccionar la ubicacion del su centro medico"
+        );
   };
 
   fileHandler = (setField, name, data) => {
@@ -131,7 +134,7 @@ class ModalComponent extends React.Component {
     this.setState({
       lat: suggest.location.lat,
       lng: suggest.location.lng,
-      isMarkerShown:false
+      isMarkerShown: false
     });
     let i = 6;
 
@@ -151,7 +154,7 @@ class ModalComponent extends React.Component {
     this.setState({
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
-      isMarkerShown:true
+      isMarkerShown: true
     });
   };
 
@@ -809,8 +812,8 @@ class ModalComponent extends React.Component {
                                   initialLocation={this.state.initialLocation}
                                   currentLocation={this.state.currentLatLng}
                                   handleClickmap={this.handleClickmap}
-                                  zoom={this.state.zoom}
                                   ref={cd => (this.map = cd)}
+                                  zoom={this.state.zoom}
                                 />
                                 <br />
                                 <Button
@@ -884,7 +887,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getDataTypes: () => dispatch(loadTypes())
+  getDataTypes: () => dispatch(loadTypes()),
+  openSnackbars: (type, message) => dispatch(openSnackbars(type, message))
 });
 
 export default connect(
