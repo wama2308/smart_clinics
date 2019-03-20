@@ -25,14 +25,14 @@ import {
 } from "react-icons/fa";
 import "./modal.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
-import Autocomplete from 'react-google-autocomplete';
-import Geosuggest from 'react-geosuggest';
-import './geo.css'
+import Autocomplete from "react-google-autocomplete";
+import Geosuggest from "react-geosuggest";
+import "./geo.css";
 import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
 
-import MapComponent from './map.js'
+import MapComponent from "./map.js";
 import { MedicalInitialValues, MedicalValidacion } from "../constants";
 import { Formik } from "formik";
 
@@ -44,18 +44,32 @@ class ModalComponent extends React.Component {
     contactos: false,
     multimedia: false,
     sociales: false,
-    localizacion:false,
+    localizacion: false,
     dataContactos: [],
-    lat:0,
-    lng:0,
+    isMarkerShown: false,
+    lat: 0,
+    lng: 0,
+    zoom: 14,
+    initialLocation: []
   };
 
   componentDidMount = () => {
     this.props.getDataTypes();
-    navigator.geolocation.getCurrentPosition( (position)=>{
-      this.setState({lat:position.coords.latitude , lng: position.coords.longitude })
-    })
+    navigator.geolocation.getCurrentPosition(position => {
+      const obj = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      this.setState({
+        ...obj,
+        initialLocation: {
+          ...obj
+        }
+      });
+    });
   };
+
+
 
   componentWillReceiveProps(props) {
     props.medicalCenter.typeConfig
@@ -63,6 +77,14 @@ class ModalComponent extends React.Component {
           loading: "hide"
         })
       : null;
+  }
+
+  refrescarMapa=()=>{
+    this.setState({
+      lat: this.state.initialLocation.lat,
+      lng: this.state.initialLocation.lng,
+      zoom:13
+    })
   }
 
   handleSubmit = values => {
@@ -102,21 +124,36 @@ class ModalComponent extends React.Component {
     reset({ ...values, ...initialContacts });
   };
 
-
-  onSuggestSelect=(suggest)=>{
-    this.setState({lat: suggest.location.lat, lng: suggest.location.lng})
-  }
-  
-
-
-  handleClickmap(event: google.maps.MouseEvent | google.maps.IconMouseEvent){
-      
+  onSuggestSelect = suggest => {
+    if (!suggest) {
+      return;
+    }
     this.setState({
-        lat:event.latLng.lat(),
-        lng: event.latLng.lng(),        
-    })
-    let i = 0;
-}
+      lat: suggest.location.lat,
+      lng: suggest.location.lng,
+      isMarkerShown:false
+    });
+    let i = 6;
+
+    let mapzoom = setInterval(() => {
+      if (this.state.zoom === 15) {
+        clearInterval(mapzoom);
+      } else {
+        i = i + 1;
+        this.setState({ zoom: i });
+      }
+    }, 200);
+  };
+
+  handleClickmap = (
+    event: google.maps.MouseEvent | google.maps.IconMouseEvent
+  ) => {
+    this.setState({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+      isMarkerShown:true
+    });
+  };
 
   render() {
     const { open, close, medicalCenter } = this.props;
@@ -134,7 +171,7 @@ class ModalComponent extends React.Component {
       province: 0,
       sector: 0
     };
-  
+
     return (
       <Modal
         isOpen={open}
@@ -734,17 +771,21 @@ class ModalComponent extends React.Component {
                             </Card>
                           </Collapse>
                         </div>
-                        <hr />                  
+                        <hr />
                         <div>
                           <Button
                             color="primary"
-                            onClick={()=> this.setState({localizacion: !this.state.localizacion}) } 
+                            onClick={() =>
+                              this.setState({
+                                localizacion: !this.state.localizacion
+                              })
+                            }
                             style={{ marginBottom: "1rem" }}
                           >
                             Localizacion
                           </Button>
                           <Collapse isOpen={this.state.localizacion}>
-                            <Card>  
+                            <Card>
                               <CardBody>
                                 <div>
                                   <Geosuggest
@@ -752,7 +793,8 @@ class ModalComponent extends React.Component {
                                     onSuggestSelect={this.onSuggestSelect}
                                     location={
                                       new google.maps.LatLng(
-                                        this.state.lat, this.state.lng
+                                        this.state.lat,
+                                        this.state.lng
                                       )
                                     }
                                     radius="20"
@@ -760,14 +802,14 @@ class ModalComponent extends React.Component {
                                 </div>
 
                                 <MapComponent
-                                  lat={ this.state.lat}
-                                  lng={ this.state.lng}
-                                  isMarkerShown={this.state.isMarkerShown}
+                                  lat={this.state.lat}
+                                  lng={this.state.lng}
                                   onMarkerClick={this.handleMarkerClick}
+                                  isMarkerShown={this.state.isMarkerShown}
+                                  initialLocation={this.state.initialLocation}
                                   currentLocation={this.state.currentLatLng}
                                   handleClickmap={this.handleClickmap}
-                                  zoom={16}
-                                  zoomchange={this.state.zoomchange}
+                                  zoom={this.state.zoom}
                                   ref={cd => (this.map = cd)}
                                 />
                                 <br />
@@ -816,7 +858,7 @@ class ModalComponent extends React.Component {
                             </ModalBody>
                           </Modal>
                         </div>
-                     </div>
+                      </div>
                     </ModalBody>
                     <ModalFooter>
                       <Button color="danger" onClick={close}>
