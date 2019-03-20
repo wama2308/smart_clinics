@@ -56,12 +56,13 @@ class configContainer extends Component {
       let dataCountryAndPRovince = data.country.filter(country => {
         return country.id.includes(branchOfficesData.countryId);
       });
-      dataCountryAndPRovince =
-        dataCountryAndPRovince.length < 0 ? "" : dataCountryAndPRovince[0];
-      array.push({
+      dataCountryAndPRovince = dataCountryAndPRovince[0];
+
+       const id = dataCountryAndPRovince.name ===  'Argentina' ? 0 : branchOfficesData.provinceId
+        array.push({
         country: dataCountryAndPRovince.name,
         province:
-          dataCountryAndPRovince.provinces[branchOfficesData.provinceId].name,
+          dataCountryAndPRovince.provinces[id].name,
         ...branchOfficesData
       });
     });
@@ -70,7 +71,7 @@ class configContainer extends Component {
   }
 
   render() {
-    const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter); 
+    const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
     return (
       <div className="animated fadeIn">
         <Row>
@@ -123,7 +124,7 @@ class configContainer extends Component {
                     <TabPane tabId={1}>
                       <MedicalCenter
                         editAction={this.props.medicalCenterAction}
-                        data={this.props.medicalCenter.toJS()} 
+                        data={this.props.medicalCenter.toJS()}
 
                       />
                     </TabPane>

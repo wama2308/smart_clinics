@@ -32,8 +32,10 @@ import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
 import { openSnackbars } from "../../actions/aplicantionActions";
+import {setDataSucursal} from '../../actions/configAction'
 import MapComponent from "./map.js";
 import { MedicalInitialValues, MedicalValidacion } from "../constants";
+import jstz from 'jstz'
 import { Formik } from "formik";
 
 const validator = new Validator();
@@ -50,7 +52,7 @@ class ModalComponent extends React.Component {
     lat: 0,
     lng: 0,
     zoom: 14,
-    initialLocation: [],
+    initialLocation: []
   };
 
   componentDidMount = () => {
@@ -86,17 +88,29 @@ class ModalComponent extends React.Component {
   };
 
   handleSubmit = (values, formik) => {
-    this.state.isMarkerShown
-      ? console.log("paso", values)
-      : this.props.openSnackbars(
-          "error",
-          "Debe seleccionar la ubicacion del su centro medico"
-        );
+    if (this.state.isMarkerShown) {
+     const obj ={
+       ...values,
+       contactos:this.state.dataContactos,
+       posicion: this.state.initialLocation,
+       lat: this.state.lat,
+       log: this.state.lng,
+       timeZ: jstz.determine().name()
+     }
+
+     this.props.setDataSucursal(obj)
+    } else {
+      this.props.openSnackbars(
+        "error",
+        "Debe seleccionar la ubicacion del su centro medico"
+      );
+    }
   };
 
   fileHandler = (setField, name, data) => {
     const file = data;
-    if (file) {
+    if (!file) {
+      return
     }
     let reader = new FileReader();
 
@@ -162,17 +176,16 @@ class ModalComponent extends React.Component {
     const { open, close, medicalCenter } = this.props;
     const countrys = validator.filterCountry(medicalCenter.country);
     const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
-    const provinces = validator.filterProvinces(countrys, countrys[0].id);
     const sector = !medicalCenter.typeConfig
       ? []
       : medicalCenter.typeConfig.sector;
 
     const InititalValues = {
       ...MedicalInitialValues,
-      country: countrys[0].id,
-      type: 0,
-      province: 0,
-      sector: 0
+      idCountry: countrys[0].id.toString(),
+      type: "0",
+      provincesid: "0",
+      sector: "0"
     };
 
     return (
@@ -201,10 +214,14 @@ class ModalComponent extends React.Component {
                 handleBlur,
                 resetForm
               }) => {
-                const ButtonDisabled =
-                  values.contacto.length < 1 &&
-                  values.telefono.length < 1 &&
+                 const ButtonDisabled =
+                  values.contacto.length < 1 ||
+                  values.telefono.length < 1 ||
                   values.email.length < 1;
+                const provinces = validator.filterProvinces(
+                  countrys,
+                  values.idCountry
+                );
                 return (
                   <div>
                     <ModalHeader>Configuracion Centro Medicos</ModalHeader>
@@ -237,15 +254,16 @@ class ModalComponent extends React.Component {
                           </Label>
                           <Input
                             type="text"
-                            name="codigo"
+                            name="code"
+                            value={values.code}
                             id="codigo"
                             onChange={event =>
-                              setFieldValue("codigo", event.target.value)
+                              setFieldValue("code", event.target.value)
                             }
                           />
-                          {errors.codigo && touched.codigo && (
+                          {errors.code && touched.code && (
                             <FormFeedback style={{ display: "block" }} tooltip>
-                              {errors.codigo}
+                              {errors.code}
                             </FormFeedback>
                           )}
                         </FormGroup>
@@ -258,7 +276,7 @@ class ModalComponent extends React.Component {
                             id="tipo"
                             value={values.type}
                             onChange={event =>
-                              setFieldValue("type", event.target.value)
+                              setFieldValue("type", event.target.value.toString() )
                             }
                           >
                             {type.map((type, key) => {
@@ -279,9 +297,9 @@ class ModalComponent extends React.Component {
                           <Input
                             type="select"
                             name="pais"
-                            value={values.country}
+                            value={values.idCountry}
                             onChange={event =>
-                              setFieldValue("country", event.target.value)
+                              setFieldValue("idCountry", event.target.value.toString())
                             }
                           >
                             {countrys.map(country => {
@@ -302,8 +320,9 @@ class ModalComponent extends React.Component {
                             type="select"
                             name="provincia"
                             id="provincia"
+                            value={values.provincesid}
                             onChange={event =>
-                              setFieldValue("provincia", event.target.value)
+                              setFieldValue("provincesid", event.target.value.toString())
                             }
                           >
                             {provinces.map((province, key) => {
@@ -324,8 +343,9 @@ class ModalComponent extends React.Component {
                           <Input
                             type="select"
                             name="Sector"
+                            value={values.sector}
                             onChange={event =>
-                              setFieldValue("sector", event.target.value)
+                              setFieldValue("sector", event.target.value.toString())
                             }
                           >
                             {sector.map((sector, key) => {
@@ -580,21 +600,21 @@ class ModalComponent extends React.Component {
                                           type="file"
                                           accept="image/*"
                                           onBlur={handleBlur}
-                                          name="file1"
+                                          name="foto1"
                                           onChange={event =>
                                             this.fileHandler(
                                               setFieldValue,
-                                              "file1",
+                                              "foto1",
                                               event.currentTarget.files[0]
                                             )
                                           }
                                         />
-                                        {errors.file1 && touched.file1 && (
+                                        {errors.foto1 && touched.foto1 && (
                                           <FormFeedback
                                             style={{ display: "block" }}
                                             tooltip
                                           >
-                                            {errors.file1}
+                                            {errors.foto1}
                                           </FormFeedback>
                                         )}
                                       </div>
@@ -605,21 +625,21 @@ class ModalComponent extends React.Component {
                                           type="file"
                                           accept="image/*"
                                           onBlur={handleBlur}
-                                          name="file2"
+                                          name="foto2"
                                           onChange={event =>
                                             this.fileHandler(
                                               setFieldValue,
-                                              "file2",
+                                              "foto2",
                                               event.currentTarget.files[0]
                                             )
                                           }
                                         />
-                                        {errors.file2 && touched.file2 && (
+                                        {errors.foto2 && touched.foto2 && (
                                           <FormFeedback
                                             style={{ display: "block" }}
                                             tooltip
                                           >
-                                            {errors.file2}
+                                            {errors.foto2}
                                           </FormFeedback>
                                         )}
                                       </div>
@@ -630,21 +650,21 @@ class ModalComponent extends React.Component {
                                           type="file"
                                           accept="image/*"
                                           onBlur={handleBlur}
-                                          name="file3"
+                                          name="foto3"
                                           onChange={event =>
                                             this.fileHandler(
                                               setFieldValue,
-                                              "file3",
+                                              "foto3",
                                               event.currentTarget.files[0]
                                             )
                                           }
                                         />
-                                        {errors.file3 && touched.file3 && (
+                                        {errors.foto3 && touched.foto3 && (
                                           <FormFeedback
                                             style={{ display: "block" }}
                                             tooltip
                                           >
-                                            {errors.file3}
+                                            {errors.foto3}
                                           </FormFeedback>
                                         )}
                                       </div>
@@ -888,7 +908,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getDataTypes: () => dispatch(loadTypes()),
-  openSnackbars: (type, message) => dispatch(openSnackbars(type, message))
+  openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
+  setDataSucursal: (data)=>dispatch(setDataSucursal(data))
 });
 
 export default connect(
