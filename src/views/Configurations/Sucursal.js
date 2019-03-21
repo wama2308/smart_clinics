@@ -50,7 +50,6 @@ class Sucursales extends React.Component {
   };
 
   render() {
-    console.log(this.props.sucursales);
     const data = [
       { label: "Sucursal" },
       { label: "Codigo" },

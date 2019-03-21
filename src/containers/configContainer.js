@@ -45,6 +45,18 @@ class configContainer extends Component {
     }
   }
 
+  NumberSucursales =(data)=>{
+   const trueSucursales = data.branchoffices?data.branchoffices.filter((sucursal)=>{
+        sucursal.status === true
+    }):[]
+    let PermitedSucursal = 0
+    for (let index = 0; index < data.licenses.length; index++) {
+      const PermitedSucursal = PermitedSucursal + licencias[index].numberbranchOffices
+    }
+
+    console.log("licencias", PermitedSucursal)
+  }
+
   filterDataForSucursal(data) {
     const array = [];
     data = data.toJS();
@@ -69,6 +81,8 @@ class configContainer extends Component {
 
   render() {
     const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
+    NumberSucursales(sucursales, )
+    console.log(this.props.medicalCenter.toJS())
     return (
       <div className="animated fadeIn">
         <Row>
