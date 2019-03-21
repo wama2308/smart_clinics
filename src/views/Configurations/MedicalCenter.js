@@ -10,7 +10,7 @@ import {
 import "./loading.css";
 import "./modal.css";
 import jstz from "jstz";
-import Loading from "../../components/Modals";
+import {Loading} from "../../components/Modals";
 import Validator from "./utils";
 
 const validator = new Validator();
@@ -37,7 +37,7 @@ export default class MedicalCenter extends React.Component {
       provinceInvalid: false,
       name: "",
       modal:false,
-      modalType:"loading" 
+      modalType:"loading"
     };
   }
 
@@ -73,7 +73,7 @@ export default class MedicalCenter extends React.Component {
           () => {
             this.setState({
               modal:false,
-            })   
+            })
           }
         )
       : null;
@@ -114,7 +114,7 @@ export default class MedicalCenter extends React.Component {
     const data = !this.props.data ? this.state : this.props.data;
     const countrys = data.country ? validator.filterCountry(data.country) : [];
     const provinces = validator.filterProvinces(countrys, this.state.selectedCountry);
-    
+
     return (
       <div>
         {this.state.modal && <Loading type={this.state.modalType}/>}

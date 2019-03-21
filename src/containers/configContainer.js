@@ -18,8 +18,10 @@ import MedicalCenter from "../views/Configurations/MedicalCenter";
 import { connect } from "react-redux";
 import {
   loadMedicalcenterAction,
-  editMedicalCenter
+  editMedicalCenter,
+  deleteSucursal
 } from "../actions/configAction";
+import {openConfirmDialog} from '../actions/aplicantionActions'
 import Sucursales from "../views/Configurations/Sucursal";
 import Licencias from "../views/Configurations/Licencias";
 
@@ -129,7 +131,7 @@ class configContainer extends Component {
                       />
                     </TabPane>
                     <TabPane tabId={2}>
-                      <Sucursales sucursales={DataSucursal} />
+                      <Sucursales sucursales={DataSucursal}  deleteSucursal={this.props.deleteSucursal} confirm={this.props.confirm}/>
                     </TabPane>
 
                     <TabPane tabId={3}>
@@ -158,7 +160,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadMedicalCenter: () => dispatch(loadMedicalcenterAction()),
   medicalCenterAction: (data, callback) =>
-    dispatch(editMedicalCenter(data, callback))
+  dispatch(editMedicalCenter(data, callback)),
+  confirm: (message, callback)=> dispatch(openConfirmDialog(message, callback)),
+  deleteSucursal: (key, time)=> dispatch(deleteSucursal(key , time))
 });
 
 export default connect(

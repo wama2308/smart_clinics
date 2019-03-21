@@ -5,7 +5,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import "../views/Configurations/loading.css";
 import "../views/Configurations/modal.css";
 
-export default function Loading(props) {
+export function Loading(props) {
   console.log(props);
   return (
     <div>
@@ -48,15 +48,54 @@ export default function Loading(props) {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary">
-              AceptarF
-            </Button>{" "}
-            <Button color="secondary" >
-              Cancelar
-            </Button>
+            <Button color="primary">AceptarF</Button>{" "}
+            <Button color="secondary">Cancelar</Button>
           </ModalFooter>
         </Modal>
       )}
     </div>
   );
+}
+
+export class Alert extends React.Component {
+  handleOk = () => {
+    this.props.callback(true);
+    this.props.close()
+  };
+
+  handleNotOk = () => {
+    this.props.callback(false);
+    this.props.close()
+  };
+
+  render() {
+    console.log(this.props);
+    return (
+      <Modal
+        isOpen={this.props.open}
+      >
+        <ModalHeader>{this.props.title}</ModalHeader>
+        <ModalBody
+          style={{
+            minHeight: 120,
+            justifyContent: "center",
+            display: "flex",
+            alignItems: 'center',
+            fontSize:15
+          }}
+        >
+          {this.props.info}{" "}
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={this.handleNotOk}>
+            Cancel
+          </Button>
+          <Button color="primary" onClick={this.handleOk}>
+            OK
+          </Button>{" "}
+
+        </ModalFooter>
+      </Modal>
+    );
+  }
 }

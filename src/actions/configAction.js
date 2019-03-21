@@ -7,6 +7,7 @@ const loadLicence = `${url}/LoadLicense`;
 const LoadContries = `${url}/api/loadCountries`;
 const SubmitDataMedicalCenter = `${url}/api/editPerfilMedicalCenter`;
 const saveSucursal = `${url}/api/saveBranchOffices`
+const deleteSucursalApi = `${url}/api/deleteSucursal`
 
 const getDataToken = () => {
   return new Promise(resolve => {
@@ -113,6 +114,27 @@ export const setDataSucursal=(data)=> dispatch => {
       dispatch(openSnackbars('error', error.toString()))
     });
     })
+}
+
+
+export const deleteSucursal=(key , time)=> dispatch=>{
+  getDataToken().then(datos => {
+    axios({
+      method: "post",
+      url: deleteSucursalApi,
+      data: {
+        posicion: key,
+        timeZ: time
+      },
+      ...datos
+    })
+      .then(res => {
+        dispatch (openSnackbars('success', 'Operacion Exitosa'))
+      })
+      .catch(res => {
+
+      });
+  })
 }
 
 //       name: this.state.Sucursal,

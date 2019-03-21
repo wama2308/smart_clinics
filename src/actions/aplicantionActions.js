@@ -5,7 +5,7 @@ export const openSnackbars=(type, message)=>{
         payload:{
            type,
            message,
-           open:true 
+           open:true
         }
     }
 }
@@ -14,5 +14,21 @@ export const openSnackbars=(type, message)=>{
 export const closeSnackbars = ()=>{
     return {
         type:'CLOSE_SNACKBARS',
-    } 
+    }
+}
+
+
+export const closeDialog = () => {
+  return {
+    type:'CLOSE_CONFIRM',
+  }
+}
+
+export const openConfirmDialog = (message, callback) => {
+  return {
+    type:'OPEN_CONFIRM',
+    payload:{
+      message, callback
+    }
+  }
 }

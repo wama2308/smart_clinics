@@ -4,7 +4,7 @@ import "./loading.css";
 import ModalSucursal from "./modalcomponen";
 import { Table } from "reactstrap";
 import { FaSearch, FaUserEdit, FaMinusCircle } from "react-icons/fa";
-
+import jstz from "jstz";
 class Sucursales extends React.Component {
   constructor(props) {
     super(props);
@@ -16,6 +16,20 @@ class Sucursales extends React.Component {
   closeModal = () => {
     this.setState({ openModal: !this.state.openModal });
   };
+
+
+  delete=(key)=>{
+    const message={
+      title:'Eliminar Sucursal',
+      info:'¿Esta seguro que desea eliminar esta Sucursal?'
+    }
+    this.props.confirm(message , (res)=>{
+      if(res){
+        this.props.deleteSucursal( key , jstz.determine().name())
+      }
+    })
+
+  }
 
   render() {
     const data = [
@@ -88,7 +102,7 @@ class Sucursales extends React.Component {
                             <a
                               className="text-danger icon"
                               onClick={() => {
-                                this.modalConfirm(item);
+                                this.delete(i);
                               }}
                             >
                               <FaMinusCircle />{" "}

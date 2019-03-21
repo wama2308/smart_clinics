@@ -17,6 +17,8 @@ import "./scss/style.css";
 import { connect } from "react-redux";
 import { DefaultLayout } from "./containers";
 import { withRouter } from "react-router";
+import {closeDialog} from './actions/aplicantionActions'
+
 // Pages
 import {
   Page404,
@@ -33,6 +35,7 @@ import {
   EnterResetPassword
 } from "./views/Pages";
 import Snackbars from "./components/Snackbars";
+import {Alert} from './components/Modals'
 
 class App extends Component {
   render() {
@@ -44,6 +47,7 @@ class App extends Component {
     return (
       <div>
         <Snackbars />
+        <Alert {...this.props.alert}  close={this.props.closeDialog}/>
         <Switch>
           <Route exact path="/testuser" name="TestUser" component={TestUser} />
           <Route
@@ -111,7 +115,13 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  logged: state.auth.get("logged")
+  logged: state.auth.get("logged"),
+  alert: state.global.confirm
 });
+
+const mapDispatchToProps = (dispatch) => ({
+  closeDialog: ()=>dispatch(closeDialog())
+})
+
 // <Route path="/" name="Home" component={DefaultLayout} />
-export default withRouter(connect(mapStateToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
