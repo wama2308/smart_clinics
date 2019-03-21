@@ -1,13 +1,15 @@
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
-const url = `http://smartclinics.online/sc-admin/web/app.php`;
+// const url = `http://smartclinics.online/sc-admin/web/app.php`;
+
+const url =`http://192.168.1.127:8000`
 const loadMedicalCenter = `${url}/api/LoadMedicalCenter`;
 const loadGeneralConfiguration = `${url}/api/loadGeneralConfiguration`;
 const loadLicence = `${url}/LoadLicense`;
 const LoadContries = `${url}/api/loadCountries`;
 const SubmitDataMedicalCenter = `${url}/api/editPerfilMedicalCenter`;
 const saveSucursal = `${url}/api/saveBranchOffices`
-const deleteSucursalApi = `${url}/api/deleteSucursal`
+const deleteSucursalApi = `${url}/api/deleteBranchOffices`
 
 const getDataToken = () => {
   return new Promise(resolve => {
@@ -98,7 +100,7 @@ export const editMedicalCenter = (data, callback) => dispatch => {
 };
 
 
-export const setDataSucursal=(data)=> dispatch => {
+export const setDataSucursal=(data, close)=> dispatch => {
     console.log('malditasea el guevo de juedas y el de ezequiel juntos', data )
     getDataToken().then(datos =>{
       axios({
@@ -109,6 +111,7 @@ export const setDataSucursal=(data)=> dispatch => {
     })
     .then((res)=>{
       dispatch (openSnackbars('success', 'Operacion Exitosa'))
+      close()
     })
     .catch((error)=>{
       dispatch(openSnackbars('error', error.toString()))

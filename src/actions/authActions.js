@@ -2,9 +2,10 @@ import authState from "../state/authState";
 import AuthService from "../core/auth/AuthService";
 
 // local Url http Request 'http://localhost:8000/api/'
-
+const url =`http://192.168.1.127:8000`
 const auth = new AuthService(
-  "http://smartclinics.online/sc-admin/web/app.php/"
+  // "http://smartclinics.online/sc-admin/web/app.php/"
+  `http://192.168.1.127:8000/`
 );
 
 export function setState() {

@@ -48,13 +48,8 @@ class configContainer extends Component {
   filterDataForSucursal(data) {
     const array = [];
     data = data.toJS();
-    const resultBranchOffices = data.branchoffices
-      ? data.branchoffices.filter(filterStatusTrue => {
-          return filterStatusTrue.status;
-        })
-      : [];
 
-    resultBranchOffices.map(branchOfficesData => {
+      data.branchoffices ? data.branchoffices.map(branchOfficesData => {
       let dataCountryAndPRovince = data.country.filter(country => {
         return country.id.includes(branchOfficesData.countryId);
       });
@@ -67,7 +62,7 @@ class configContainer extends Component {
           dataCountryAndPRovince.provinces[id].name,
         ...branchOfficesData
       });
-    });
+    }):[]
 
     return array;
   }

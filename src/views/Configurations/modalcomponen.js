@@ -32,10 +32,10 @@ import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import {setDataSucursal} from '../../actions/configAction'
+import { setDataSucursal } from "../../actions/configAction";
 import MapComponent from "./map.js";
 import { MedicalInitialValues, MedicalValidacion } from "../constants";
-import jstz from 'jstz'
+import jstz from "jstz";
 import { Formik } from "formik";
 
 const validator = new Validator();
@@ -49,8 +49,8 @@ class ModalComponent extends React.Component {
     localizacion: false,
     dataContactos: [],
     isMarkerShown: false,
-    lat: 0,
-    lng: 0,
+    lat: null,
+    lng: null,
     zoom: 14,
     initialLocation: []
   };
@@ -77,6 +77,15 @@ class ModalComponent extends React.Component {
           loading: "hide"
         })
       : null;
+
+    props.dataEdit
+      ? this.setState({
+          dataContactos: props.dataEdit.contacto,
+          // lat: props.lat,
+          // lng: props.log,
+          isMarkerShown: true
+        })
+      : null;
   }
 
   refrescarMapa = () => {
@@ -88,17 +97,21 @@ class ModalComponent extends React.Component {
   };
 
   handleSubmit = (values, formik) => {
+    this.setState({ loading: "show" });
     if (this.state.isMarkerShown) {
-     const obj ={
-       ...values,
-       contactos:this.state.dataContactos,
-       posicion: this.state.initialLocation,
-       lat: this.state.lat,
-       log: this.state.lng,
-       timeZ: jstz.determine().name()
-     }
+      const obj = {
+        ...values,
+        sucursal: values.name,
+        contactos: this.state.dataContactos,
+        posicion: this.state.initialLocation,
+        lat: this.state.lat,
+        log: this.state.lng,
+        timeZ: jstz.determine().name()
+      };
 
-     this.props.setDataSucursal(obj)
+      this.props.setDataSucursal(obj, () => {
+        this.props.close();
+      });
     } else {
       this.props.openSnackbars(
         "error",
@@ -110,7 +123,7 @@ class ModalComponent extends React.Component {
   fileHandler = (setField, name, data) => {
     const file = data;
     if (!file) {
-      return
+      return;
     }
     let reader = new FileReader();
 
@@ -122,6 +135,9 @@ class ModalComponent extends React.Component {
   };
 
   delete = key => {
+    if (this.props.disabled) {
+      return;
+    }
     const data = this.state.dataContactos;
     const array = data.filter((data, i) => {
       return key !== i;
@@ -132,7 +148,7 @@ class ModalComponent extends React.Component {
   addedContact = (values, reset) => {
     const obj = {
       telefono: values.telefono,
-      contacto: values.contacto,
+      contacto: values.contactoN,
       email: values.email
     };
     const initialContacts = { telefono: "", contacto: "", email: "" };
@@ -142,7 +158,7 @@ class ModalComponent extends React.Component {
   };
 
   onSuggestSelect = suggest => {
-    if (!suggest) {
+    if (!suggest || this.props.disabled) {
       return;
     }
     this.setState({
@@ -165,6 +181,9 @@ class ModalComponent extends React.Component {
   handleClickmap = (
     event: google.maps.MouseEvent | google.maps.IconMouseEvent
   ) => {
+    if (this.props.disabled) {
+      return;
+    }
     this.setState({
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
@@ -173,6 +192,7 @@ class ModalComponent extends React.Component {
   };
 
   render() {
+    const { dataEdit, disabled } = this.props;
     const { open, close, medicalCenter } = this.props;
     const countrys = validator.filterCountry(medicalCenter.country);
     const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
@@ -180,12 +200,17 @@ class ModalComponent extends React.Component {
       ? []
       : medicalCenter.typeConfig.sector;
 
+    const values = this.props.dataEdit
+      ? this.props.dataEdit
+      : MedicalInitialValues;
+
+    console.log(values);
     const InititalValues = {
-      ...MedicalInitialValues,
-      idCountry: countrys[0].id.toString(),
-      type: "0",
-      provincesid: "0",
-      sector: "0"
+      ...values,
+      idCountry: dataEdit ? dataEdit.countryId : countrys[0].id.toString(),
+      type: dataEdit ? dataEdit.type : "0",
+      provincesid: dataEdit ? dataEdit.provincesid : "0",
+      sector: dataEdit ? dataEdit.sector : "0"
     };
 
     return (
@@ -214,10 +239,10 @@ class ModalComponent extends React.Component {
                 handleBlur,
                 resetForm
               }) => {
-                 const ButtonDisabled =
-                  values.contacto.length < 1 ||
-                  values.telefono.length < 1 ||
-                  values.email.length < 1;
+                const ButtonDisabled = false || disabled;
+                //   values.contacto.length < 1 ||
+                //   values.telefono.length < 1 ||
+                //   values.email.length < 1;
                 const provinces = validator.filterProvinces(
                   countrys,
                   values.idCountry
@@ -233,17 +258,18 @@ class ModalComponent extends React.Component {
                           </Label>
                           <Input
                             type="text"
-                            name="sucursal"
-                            value={values.sucursal}
+                            name="name"
+                            value={values.name}
+                            disabled={disabled}
                             id="Sucursal"
                             onBlur={handleBlur}
                             onChange={event =>
-                              setFieldValue("sucursal", event.target.value)
+                              setFieldValue("name", event.target.value)
                             }
                           />
-                          {errors.sucursal && touched.sucursal && (
+                          {errors.name && touched.name && (
                             <FormFeedback style={{ display: "block" }} tooltip>
-                              {errors.sucursal}
+                              {errors.name}
                             </FormFeedback>
                           )}
                         </FormGroup>
@@ -255,6 +281,7 @@ class ModalComponent extends React.Component {
                           <Input
                             type="text"
                             name="code"
+                            disabled={disabled}
                             value={values.code}
                             id="codigo"
                             onChange={event =>
@@ -273,10 +300,14 @@ class ModalComponent extends React.Component {
                           <Input
                             type="select"
                             name="tipo"
+                            disabled={disabled}
                             id="tipo"
                             value={values.type}
                             onChange={event =>
-                              setFieldValue("type", event.target.value.toString() )
+                              setFieldValue(
+                                "type",
+                                event.target.value.toString()
+                              )
                             }
                           >
                             {type.map((type, key) => {
@@ -297,9 +328,13 @@ class ModalComponent extends React.Component {
                           <Input
                             type="select"
                             name="pais"
+                            disabled={disabled}
                             value={values.idCountry}
                             onChange={event =>
-                              setFieldValue("idCountry", event.target.value.toString())
+                              setFieldValue(
+                                "idCountry",
+                                event.target.value.toString()
+                              )
                             }
                           >
                             {countrys.map(country => {
@@ -320,9 +355,13 @@ class ModalComponent extends React.Component {
                             type="select"
                             name="provincia"
                             id="provincia"
+                            disabled={disabled}
                             value={values.provincesid}
                             onChange={event =>
-                              setFieldValue("provincesid", event.target.value.toString())
+                              setFieldValue(
+                                "provincesid",
+                                event.target.value.toString()
+                              )
                             }
                           >
                             {provinces.map((province, key) => {
@@ -344,8 +383,12 @@ class ModalComponent extends React.Component {
                             type="select"
                             name="Sector"
                             value={values.sector}
+                            disabled={disabled}
                             onChange={event =>
-                              setFieldValue("sector", event.target.value.toString())
+                              setFieldValue(
+                                "sector",
+                                event.target.value.toString()
+                              )
                             }
                           >
                             {sector.map((sector, key) => {
@@ -367,6 +410,7 @@ class ModalComponent extends React.Component {
                             type="text"
                             value={values.direccion}
                             name="Direccion"
+                            disabled={disabled}
                             id="Direccion"
                             onChange={event =>
                               setFieldValue("direccion", event.target.value)
@@ -408,17 +452,18 @@ class ModalComponent extends React.Component {
                                     <Input
                                       type="text"
                                       name="contacto"
-                                      value={values.contacto}
+                                      disabled={disabled}
+                                      value={values.contactoN}
                                       id="Sucursal"
                                       onBlur={handleBlur}
                                       onChange={event =>
                                         setFieldValue(
-                                          "contacto",
+                                          "contactoN",
                                           event.target.value
                                         )
                                       }
                                     />
-                                    {errors.contacto && touched.contacto && (
+                                    {errors.contactoN && touched.contactoN && (
                                       <FormFeedback
                                         style={{ display: "block" }}
                                         tooltip
@@ -435,6 +480,7 @@ class ModalComponent extends React.Component {
                                       value={values.telefono}
                                       id="Sucursal"
                                       onBlur={handleBlur}
+                                      disabled={disabled}
                                       onChange={event =>
                                         setFieldValue(
                                           "telefono",
@@ -459,6 +505,7 @@ class ModalComponent extends React.Component {
                                       name="email"
                                       value={values.email}
                                       id="Sucursal"
+                                      disabled={disabled}
                                       onBlur={handleBlur}
                                       onChange={event =>
                                         setFieldValue(
@@ -572,6 +619,7 @@ class ModalComponent extends React.Component {
                                           type="file"
                                           onBlur={handleBlur}
                                           name="logo"
+                                          disabled={disabled}
                                           accept="image/*"
                                           onChange={event =>
                                             this.fileHandler(
@@ -600,6 +648,7 @@ class ModalComponent extends React.Component {
                                           type="file"
                                           accept="image/*"
                                           onBlur={handleBlur}
+                                          disabled={disabled}
                                           name="foto1"
                                           onChange={event =>
                                             this.fileHandler(
@@ -625,6 +674,7 @@ class ModalComponent extends React.Component {
                                           type="file"
                                           accept="image/*"
                                           onBlur={handleBlur}
+                                          disabled={disabled}
                                           name="foto2"
                                           onChange={event =>
                                             this.fileHandler(
@@ -650,6 +700,7 @@ class ModalComponent extends React.Component {
                                           type="file"
                                           accept="image/*"
                                           onBlur={handleBlur}
+                                          disabled={disabled}
                                           name="foto3"
                                           onChange={event =>
                                             this.fileHandler(
@@ -735,6 +786,7 @@ class ModalComponent extends React.Component {
                                       <Input
                                         placeholder="Ingrese Twitter de Centro Medico"
                                         value={values.twitter}
+                                        disabled={disabled}
                                         onChange={event =>
                                           setFieldValue(
                                             "twitter",
@@ -750,6 +802,7 @@ class ModalComponent extends React.Component {
                                       <Input
                                         placeholder="Ingrese Instagram de Centro Medico"
                                         value={values.instagram}
+                                        disabled={disabled}
                                         onChange={event =>
                                           setFieldValue(
                                             "instagram",
@@ -765,6 +818,7 @@ class ModalComponent extends React.Component {
                                       <Input
                                         placeholder="Ingrese Facebook de Centro Medico"
                                         value={values.facebook}
+                                        disabled={disabled}
                                         onChange={event =>
                                           setFieldValue(
                                             "facebook",
@@ -780,6 +834,7 @@ class ModalComponent extends React.Component {
                                       <Input
                                         placeholder="Ingrese la web del Centro Medico"
                                         value={values.web}
+                                        disabled={disabled}
                                         onChange={event =>
                                           setFieldValue(
                                             "web",
@@ -811,22 +866,36 @@ class ModalComponent extends React.Component {
                             <Card>
                               <CardBody>
                                 <div>
-                                  <Geosuggest
-                                    placeholder="Buscar en el mapa"
-                                    onSuggestSelect={this.onSuggestSelect}
-                                    location={
-                                      new google.maps.LatLng(
-                                        this.state.lat,
-                                        this.state.lng
-                                      )
-                                    }
-                                    radius="20"
-                                  />
+                                  {!this.props.disabled &&
+                                    <Geosuggest
+                                      placeholder="Buscar en el mapa"
+                                      onSuggestSelect={this.onSuggestSelect}
+                                      location={
+                                        new google.maps.LatLng(
+                                          this.state.lat
+                                            ? this.state.lat
+                                            : this.props.dataEdit.lat,
+                                          this.state.lng
+                                            ? this.state.lng
+                                            : this.props.dataEdit.log
+                                        )
+                                      }
+                                      radius="20"
+                                    />
+                                  }
                                 </div>
 
                                 <MapComponent
-                                  lat={this.state.lat}
-                                  lng={this.state.lng}
+                                  lat={
+                                    this.state.lat
+                                      ? this.state.lat
+                                      : this.props.dataEdit.lat
+                                  }
+                                  lng={
+                                    this.state.lng
+                                      ? this.state.lng
+                                      : this.props.dataEdit.log
+                                  }
                                   onMarkerClick={this.handleMarkerClick}
                                   isMarkerShown={this.state.isMarkerShown}
                                   initialLocation={this.state.initialLocation}
@@ -909,7 +978,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getDataTypes: () => dispatch(loadTypes()),
   openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
-  setDataSucursal: (data)=>dispatch(setDataSucursal(data))
+  setDataSucursal: (data, cb) => dispatch(setDataSucursal(data, cb))
 });
 
 export default connect(

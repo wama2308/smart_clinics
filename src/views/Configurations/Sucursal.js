@@ -9,32 +9,51 @@ class Sucursales extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      openModal: false
+      openModal: false,
+      dataEdit: null,
+      disabled: false
     };
   }
 
   closeModal = () => {
-    this.setState({ openModal: !this.state.openModal });
+    this.setState({
+      openModal: !this.state.openModal,
+      dataEdit: null,
+      disabled: false
+    });
   };
 
-
-  delete=(key)=>{
-    const message={
-      title:'Eliminar Sucursal',
-      info:'¿Esta seguro que desea eliminar esta Sucursal?'
-    }
-    this.props.confirm(message , (res)=>{
-      if(res){
-        this.props.deleteSucursal( key , jstz.determine().name())
+  view = item => {
+    this.setState({
+      dataEdit: item,
+      openModal: true,
+      disabled: true
+    });
+  };
+  delete = key => {
+    const message = {
+      title: "Eliminar Sucursal",
+      info: "¿Esta seguro que desea eliminar esta Sucursal?"
+    };
+    this.props.confirm(message, res => {
+      if (res) {
+        this.props.deleteSucursal(key, jstz.determine().name());
       }
-    })
+    });
+  };
 
-  }
+  modaledit = item => {
+    this.setState({
+      dataEdit: item,
+      openModal: true
+    });
+  };
 
   render() {
+    console.log(this.props.sucursales);
     const data = [
       { label: "Sucursal" },
-      { label: "Codigo"},
+      { label: "Codigo" },
       { label: "Pais" },
       { label: "Provincia" },
       { label: "Acciones" }
@@ -42,7 +61,12 @@ class Sucursales extends React.Component {
     return (
       <div>
         {this.state.openModal && (
-          <ModalSucursal open={this.state.openModal} close={this.closeModal} />
+          <ModalSucursal
+            open={this.state.openModal}
+            dataEdit={this.state.dataEdit}
+            close={this.closeModal}
+            disabled={this.state.disabled}
+          />
         )}
         <div className="container">
           <div className="">
@@ -73,44 +97,46 @@ class Sucursales extends React.Component {
             <tbody>
               {this.props.sucursales
                 ? this.props.sucursales.map((item, i) => {
-                    return (
-                      <tr key={i}>
-                        <td>{item.name}</td>
-                        <td>{item.code}</td>
-                        <td>{item.country}</td>
-                        <td>{item.province}</td>
-                        <td>
-                          <div className="float-left">
-                            <a
-                              title="edit"
-                              className="icon"
-                              onClick={() => {
-                                this.view(item);
-                              }}
-                            >
-                              <FaSearch />
-                            </a>
-                            <a
-                              title="edit"
-                              className="icon"
-                              onClick={() => {
-                                this.modaledit(item);
-                              }}
-                            >
-                              <FaUserEdit />
-                            </a>
-                            <a
-                              className="text-danger icon"
-                              onClick={() => {
-                                this.delete(i);
-                              }}
-                            >
-                              <FaMinusCircle />{" "}
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
-                    );
+                    if (item.status) {
+                      return (
+                        <tr key={i}>
+                          <td>{item.name}</td>
+                          <td>{item.code}</td>
+                          <td>{item.country}</td>
+                          <td>{item.province}</td>
+                          <td>
+                            <div className="float-left">
+                              <a
+                                title="edit"
+                                className="icon"
+                                onClick={() => {
+                                  this.view(item);
+                                }}
+                              >
+                                <FaSearch />
+                              </a>
+                              <a
+                                title="edit"
+                                className="icon"
+                                onClick={() => {
+                                  this.modaledit(item);
+                                }}
+                              >
+                                <FaUserEdit />
+                              </a>
+                              <a
+                                className="text-danger icon"
+                                onClick={() => {
+                                  this.delete(i);
+                                }}
+                              >
+                                <FaMinusCircle />{" "}
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    }
                   })
                 : null}
             </tbody>

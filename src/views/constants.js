@@ -3,13 +3,13 @@ import * as yup from "yup";
 
 export const MedicalInitialValues = {
   posicion: undefined,
-  sucursal: '',
+  name: '',
   code: '',
   idCountry: '',
   provincesid: '',
   type: '',
   sector: '',
-  contacto:'',
+  contactoN:'',
   telefono:'',
   email:'',
   logo: undefined,
@@ -42,7 +42,7 @@ const imageValidator=(value)=>{
  }
 
  export const MedicalValidacion = yup.object().shape({
-   sucursal: yup.string().required(data.require),
+   name: yup.string().required(data.require),
    code: yup.string().required(data.require),
    direccion: yup
      .string()

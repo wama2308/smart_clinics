@@ -9,7 +9,8 @@ const InitalState = {
       open:false,
       message:'',
       callback: undefined
-    }
+    },
+    openModalExists: false
 }
 
 const AplicationReducers = (state = InitalState , action) => {
@@ -27,6 +28,8 @@ const AplicationReducers = (state = InitalState , action) => {
   case 'CLOSE_CONFIRM':{
     return {...state , confirm:{...state.confirm , open:false  }}
   }
+
+
   default:
     return state;
   }
