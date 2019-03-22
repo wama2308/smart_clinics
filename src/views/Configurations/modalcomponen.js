@@ -32,7 +32,7 @@ import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { setDataSucursal , branchEdit } from "../../actions/configAction";
+import { setDataSucursal, branchEdit } from "../../actions/configAction";
 import MapComponent from "./map.js";
 import { MedicalInitialValues, MedicalValidacion } from "../constants";
 import jstz from "jstz";
@@ -97,27 +97,28 @@ class ModalComponent extends React.Component {
   handleSubmit = (values, formik) => {
     this.setState({ loading: "show" });
     if (this.state.isMarkerShown) {
-      delete values.provinceId
+      delete values.provinceId;
       const obj = {
         ...values,
         sucursal: values.name,
         contactos: this.state.dataContactos,
-        posicion: this.state.initialLocation,
+        posicion: !this.props.dataEdit
+          ? this.state.initialLocation
+          : this.props.dataEdit.key,
         lat: this.state.lat,
         log: this.state.lng,
         timeZ: jstz.determine().name()
       };
-       console.log(obj)
-      if(!this.props.dataEdit){
+      console.log("dios mio", obj , this.props.dataEdit);
+      if (!this.props.dataEdit) {
         this.props.setDataSucursal(obj, () => {
           this.props.close();
         });
-      }else{
+      } else {
         this.props.branchEdit(obj, () => {
           this.props.close();
         });
       }
-
     } else {
       this.props.openSnackbars(
         "error",
@@ -217,8 +218,6 @@ class ModalComponent extends React.Component {
       provincesid: dataEdit ? dataEdit.provinceId : "0",
       sector: dataEdit ? dataEdit.sector : "0"
     };
-
-    console.log(InititalValues)
 
     return (
       <Modal
@@ -970,8 +969,7 @@ class ModalComponent extends React.Component {
                         <div>
                           <Button color="danger" onClick={close}>
                             Cancel
-                          </Button>
-                          {' '}
+                          </Button>{" "}
                           <Button onClick={handleSubmit} color="primary">
                             Guardar
                           </Button>
@@ -997,7 +995,7 @@ const mapDispatchToProps = dispatch => ({
   getDataTypes: () => dispatch(loadTypes()),
   openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
   setDataSucursal: (data, cb) => dispatch(setDataSucursal(data, cb)),
-  branchEdit: ( data , callback ) => dispatch( branchEdit( data , callback ))
+  branchEdit: (data, callback) => dispatch(branchEdit(data, callback))
 });
 
 export default connect(

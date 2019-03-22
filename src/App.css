@@ -1,1 +1,8 @@
+.iconButtons{
+  position: relative;
+  top: -10px
+}
 
+.iconTable {
+ font-size: 19px !important;
+}

@@ -5,6 +5,9 @@ import ModalSucursal from "./modalcomponen";
 import { Table } from "reactstrap";
 import { FaSearch, FaUserEdit, FaMinusCircle } from "react-icons/fa";
 import jstz from "jstz";
+import IconButton from "@material-ui/core/IconButton";
+import { Delete, Edit, Visibility } from "@material-ui/icons";
+
 class Sucursales extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +21,7 @@ class Sucursales extends React.Component {
   add = () => {
     this.props.permits
       ? this.setState({ openModal: true })
-      :this.props.openSnackbars(
+      : this.props.openSnackbars(
           "error",
           "¡Esta licencia no permite agregar mas sucursales!"
         );
@@ -51,9 +54,12 @@ class Sucursales extends React.Component {
     });
   };
 
-  modaledit = item => {
+  modaledit = (item, key) => {
     this.setState({
-      dataEdit: item,
+      dataEdit: {
+        ...item,
+        key: key
+      },
       openModal: true
     });
   };
@@ -109,32 +115,35 @@ class Sucursales extends React.Component {
                           <td>{item.province}</td>
                           <td>
                             <div className="float-left">
-                              <a
-                                title="edit"
-                                className="icon"
+                              <IconButton
+                                aria-label="Delete"
+                                className="iconButtons"
                                 onClick={() => {
                                   this.view(item);
                                 }}
                               >
-                                <FaSearch />
-                              </a>
-                              <a
-                                title="edit"
-                                className="icon"
+                                <Visibility className="iconTable" />
+                              </IconButton>
+
+                              <IconButton
+                                aria-label="Delete"
+                                className="iconButtons"
                                 onClick={() => {
-                                  this.modaledit(item);
+                                  this.modaledit(item, i);
                                 }}
                               >
-                                <FaUserEdit />
-                              </a>
-                              <a
-                                className="text-danger icon"
+                                <Edit className="iconTable" />
+                              </IconButton>
+
+                              <IconButton
+                                className="iconButtons"
+                                aria-label="Delete"
                                 onClick={() => {
                                   this.delete(i);
                                 }}
                               >
-                                <FaMinusCircle />{" "}
-                              </a>
+                                <Delete className="iconTable" />
+                              </IconButton>
                             </div>
                           </td>
                         </tr>
