@@ -7,8 +7,9 @@ const loadGeneralConfiguration = `${url}/api/loadGeneralConfiguration`;
 const loadLicence = `${url}/LoadLicense`;
 const LoadContries = `${url}/api/loadCountries`;
 const SubmitDataMedicalCenter = `${url}/api/editPerfilMedicalCenter`;
-const saveSucursal = `${url}/api/saveBranchOffices`
-const deleteSucursalApi = `${url}/api/deleteBranchOffices`
+const saveSucursal = `${url}/api/saveBranchOffices`;
+const deleteSucursalApi = `${url}/api/deleteBranchOffices`;
+const editBranchUrl = `${url}/api/editBranchOffices`;
 
 const getDataToken = () => {
   return new Promise(resolve => {
@@ -98,28 +99,26 @@ export const editMedicalCenter = (data, callback) => dispatch => {
   });
 };
 
-
-export const setDataSucursal=(data, close)=> dispatch => {
-    console.log('malditasea el guevo de juedas y el de ezequiel juntos', data )
-    getDataToken().then(datos =>{
-      axios({
-        method: 'post',
-        url: saveSucursal,
-        data: data,
-        ...datos
+export const setDataSucursal = (data, close) => dispatch => {
+  console.log("malditasea el guevo de juedas y el de ezequiel juntos", data);
+  getDataToken().then(datos => {
+    axios({
+      method: "post",
+      url: saveSucursal,
+      data: data,
+      ...datos
     })
-    .then((res)=>{
-      dispatch (openSnackbars('success', 'Operacion Exitosa'))
-      close()
-    })
-    .catch((error)=>{
-      dispatch(openSnackbars('error', error.toString()))
-    });
-    })
-}
+      .then(res => {
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+        close();
+      })
+      .catch(error => {
+        dispatch(openSnackbars("error", error.toString()));
+      });
+  });
+};
 
-
-export const deleteSucursal=(key , time)=> dispatch=>{
+export const deleteSucursal = (key, time) => dispatch => {
   getDataToken().then(datos => {
     axios({
       method: "post",
@@ -131,13 +130,30 @@ export const deleteSucursal=(key , time)=> dispatch=>{
       ...datos
     })
       .then(res => {
-        dispatch (openSnackbars('success', 'Operacion Exitosa'))
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
       })
-      .catch(res => {
+      .catch(res => {});
+  });
+};
 
+export const branchEdit = (data, callback) => dispatch => {
+  console.log('entro en editar')
+  getDataToken().then(datos => {
+    axios({
+      method: "post",
+      url: editBranchUrl,
+      data: data,
+      ...datos
+    })
+      .then(() => {
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+        callback();
+      })
+      .catch(error => {
+        dispatch(openSnackbars("error", error.toString()  ));
       });
-  })
-}
+  });
+};
 
 //       name: this.state.Sucursal,
 //       idCountry: this.state.pais,

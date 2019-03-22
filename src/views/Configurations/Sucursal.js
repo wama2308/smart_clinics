@@ -16,7 +16,6 @@ class Sucursales extends React.Component {
   }
 
   add = () => {
-    console.log(this.props.permits);
     this.props.permits
       ? this.setState({ openModal: true })
       :this.props.openSnackbars(

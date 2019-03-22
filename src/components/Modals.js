@@ -69,7 +69,6 @@ export class Alert extends React.Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <Modal
         isOpen={this.props.open}

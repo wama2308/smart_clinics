@@ -32,7 +32,7 @@ import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { setDataSucursal } from "../../actions/configAction";
+import { setDataSucursal , branchEdit } from "../../actions/configAction";
 import MapComponent from "./map.js";
 import { MedicalInitialValues, MedicalValidacion } from "../constants";
 import jstz from "jstz";
@@ -81,8 +81,6 @@ class ModalComponent extends React.Component {
     props.dataEdit
       ? this.setState({
           dataContactos: props.dataEdit.contacto,
-          // lat: props.lat,
-          // lng: props.log,
           isMarkerShown: true
         })
       : null;
@@ -99,6 +97,7 @@ class ModalComponent extends React.Component {
   handleSubmit = (values, formik) => {
     this.setState({ loading: "show" });
     if (this.state.isMarkerShown) {
+      delete values.provinceId
       const obj = {
         ...values,
         sucursal: values.name,
@@ -108,10 +107,17 @@ class ModalComponent extends React.Component {
         log: this.state.lng,
         timeZ: jstz.determine().name()
       };
+       console.log(obj)
+      if(!this.props.dataEdit){
+        this.props.setDataSucursal(obj, () => {
+          this.props.close();
+        });
+      }else{
+        this.props.branchEdit(obj, () => {
+          this.props.close();
+        });
+      }
 
-      this.props.setDataSucursal(obj, () => {
-        this.props.close();
-      });
     } else {
       this.props.openSnackbars(
         "error",
@@ -204,14 +210,15 @@ class ModalComponent extends React.Component {
       ? this.props.dataEdit
       : MedicalInitialValues;
 
-    console.log(values);
     const InititalValues = {
       ...values,
       idCountry: dataEdit ? dataEdit.countryId : countrys[0].id.toString(),
       type: dataEdit ? dataEdit.type : "0",
-      provincesid: dataEdit ? dataEdit.provincesid : "0",
+      provincesid: dataEdit ? dataEdit.provinceId : "0",
       sector: dataEdit ? dataEdit.sector : "0"
     };
+
+    console.log(InititalValues)
 
     return (
       <Modal
@@ -989,7 +996,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getDataTypes: () => dispatch(loadTypes()),
   openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
-  setDataSucursal: (data, cb) => dispatch(setDataSucursal(data, cb))
+  setDataSucursal: (data, cb) => dispatch(setDataSucursal(data, cb)),
+  branchEdit: ( data , callback ) => dispatch( branchEdit( data , callback ))
 });
 
 export default connect(

@@ -90,7 +90,6 @@ export default class MedicalCenter extends React.Component {
     if (this.state.name.length < 2) {
       SucursalError = "¡Escriba el nombre completo de su centro medico !";
       SucursalInValid = true;
-    }
     if (SucursalError) {
       this.setState({
         SucursalError,
@@ -98,7 +97,8 @@ export default class MedicalCenter extends React.Component {
       });
       return false;
     }
-    return true;
+    return true;}
+
   };
 
   filterProvinces = (countries) => {
@@ -139,7 +139,7 @@ export default class MedicalCenter extends React.Component {
                     type="text"
                     name="Sucursal"
                     id="Sucursal"
-                    value={this.state.name}
+                    value={this.props.data.name}
                     maxLength="40"
                     onChange={event => {
                       this.setState({ name: event.target.value });
@@ -167,7 +167,7 @@ export default class MedicalCenter extends React.Component {
                     type="select"
                     name="pais"
                     id="pais"
-                    defaultValue={data.provinceid - 1}
+                    value={this.state.selectedCountry}
                     disabled={countrys.length < 1}
                     onChange={event => {
                       this.setState({ selectedCountry: event.target.value });
@@ -175,7 +175,7 @@ export default class MedicalCenter extends React.Component {
                   >
                     {countrys.map((country ,key) => {
                       return (
-                        <option key={key} value={country.id}>
+                        <option key={country.id} value={country.id}>
                           {country.name}
                         </option>
                       );

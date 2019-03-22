@@ -21,7 +21,10 @@ import {
   editMedicalCenter,
   deleteSucursal
 } from "../actions/configAction";
-import { openConfirmDialog,openSnackbars } from "../actions/aplicantionActions";
+import {
+  openConfirmDialog,
+  openSnackbars
+} from "../actions/aplicantionActions";
 import Sucursales from "../views/Configurations/Sucursal";
 import Licencias from "../views/Configurations/Licencias";
 
@@ -34,7 +37,9 @@ class configContainer extends Component {
   }
 
   componentDidMount = () => {
-    this.props.loadMedicalCenter();
+    this.props.medicalCenter.get("active")
+      ? null : this.props.loadMedicalCenter()
+
   };
 
   toggleTab(tab) {
@@ -45,14 +50,12 @@ class configContainer extends Component {
     }
   }
 
+  //  Verification of the license to be able to add another branch
+
   numberSucursales = data => {
     if (!data.branchoffices) {
       return;
     }
-
-    console.log("desde la funcion", data);
-
-   //  Verification of the license to be able to add another branch
 
     const trueBranches = data.branchoffices.filter(sucursal => {
       sucursal.status === true;
@@ -74,14 +77,16 @@ class configContainer extends Component {
 
   // Array of data to send to the branches component
 
-  getCurrencyName = (data) =>{
-    if(!data.countryid){return }
-   const result = data.country.find(data=>{
-     console.log(data.id === data.countryid)
-   })
+  getCurrencyName = data => {
+    if (!data.countryid) {
+      return;
+    }
+    const result = data.country.find(item => {
+      return item.id === data.countryid;
+    });
 
-   console.log(result)
-  }
+    return result.currencySymbol;
+  };
 
   filterDataForSucursal(data) {
     const array = [];
@@ -112,8 +117,8 @@ class configContainer extends Component {
   render() {
     const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
     const permits = this.numberSucursales(this.props.medicalCenter.toJS());
+    const symbol = this.getCurrencyName(this.props.medicalCenter.toJS());
 
-    this.getCurrencyName(this.props.medicalCenter.toJS());
     return (
       <div className="animated fadeIn">
         <Row>
@@ -182,6 +187,7 @@ class configContainer extends Component {
                     <TabPane tabId={3}>
                       <Licencias
                         licenses={this.props.medicalCenter.get("licenses")}
+                        symbol={symbol}
                       />
                     </TabPane>
                   </TabContent>
@@ -205,11 +211,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadMedicalCenter: () => dispatch(loadMedicalcenterAction()),
   medicalCenterAction: (data, callback) =>
-  dispatch(editMedicalCenter(data, callback)),
+    dispatch(editMedicalCenter(data, callback)),
   confirm: (message, callback) =>
-  dispatch(openConfirmDialog(message, callback)),
+    dispatch(openConfirmDialog(message, callback)),
   deleteSucursal: (key, time) => dispatch(deleteSucursal(key, time)),
-  openSnackbars: (type, message)=>dispatch(openSnackbars(type, message))
+  openSnackbars: (type, message) => dispatch(openSnackbars(type, message))
 });
 
 export default connect(
