@@ -15,6 +15,16 @@ class Sucursales extends React.Component {
     };
   }
 
+  add = () => {
+    console.log(this.props.permits);
+    this.props.permits
+      ? this.setState({ openModal: true })
+      :this.props.openSnackbars(
+          "error",
+          "¡Esta licencia no permite agregar mas sucursales!"
+        );
+  };
+
   closeModal = () => {
     this.setState({
       openModal: !this.state.openModal,
@@ -74,12 +84,7 @@ class Sucursales extends React.Component {
             </p>
           </div>
           <div className="App">
-            <Button
-              color="success"
-              onClick={() => {
-                this.setState({ openModal: true });
-              }}
-            >
+            <Button color="success" onClick={() => this.add()}>
               Agregar Sucursal
             </Button>
             {}

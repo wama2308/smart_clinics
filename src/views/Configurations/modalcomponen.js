@@ -866,7 +866,7 @@ class ModalComponent extends React.Component {
                             <Card>
                               <CardBody>
                                 <div>
-                                  {!this.props.disabled &&
+                                  {!this.props.disabled && (
                                     <Geosuggest
                                       placeholder="Buscar en el mapa"
                                       onSuggestSelect={this.onSuggestSelect}
@@ -882,7 +882,7 @@ class ModalComponent extends React.Component {
                                       }
                                       radius="20"
                                     />
-                                  }
+                                  )}
                                 </div>
 
                                 <MapComponent
@@ -952,13 +952,24 @@ class ModalComponent extends React.Component {
                         </div>
                       </div>
                     </ModalBody>
+
                     <ModalFooter>
-                      <Button color="danger" onClick={close}>
-                        Cancel
-                      </Button>
-                      <Button onClick={handleSubmit} color="primary">
-                        Guardar
-                      </Button>
+                      {this.props.disabled && (
+                        <Button color="secondary" onClick={close}>
+                          volver
+                        </Button>
+                      )}
+                      {!this.props.disabled && (
+                        <div>
+                          <Button color="danger" onClick={close}>
+                            Cancel
+                          </Button>
+                          {' '}
+                          <Button onClick={handleSubmit} color="primary">
+                            Guardar
+                          </Button>
+                        </div>
+                      )}
                     </ModalFooter>
                   </div>
                 );

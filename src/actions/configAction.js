@@ -1,8 +1,7 @@
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
-// const url = `http://smartclinics.online/sc-admin/web/app.php`;
-
-const url =`http://192.168.1.127:8000`
+const url = `http://smartclinics.online/sc-admin/web/app.php`;
+// const url =`http://192.168.1.127:8000`
 const loadMedicalCenter = `${url}/api/LoadMedicalCenter`;
 const loadGeneralConfiguration = `${url}/api/loadGeneralConfiguration`;
 const loadLicence = `${url}/LoadLicense`;

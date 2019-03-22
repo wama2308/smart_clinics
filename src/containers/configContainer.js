@@ -21,7 +21,7 @@ import {
   editMedicalCenter,
   deleteSucursal
 } from "../actions/configAction";
-import {openConfirmDialog} from '../actions/aplicantionActions'
+import { openConfirmDialog,openSnackbars } from "../actions/aplicantionActions";
 import Sucursales from "../views/Configurations/Sucursal";
 import Licencias from "../views/Configurations/Licencias";
 
@@ -45,44 +45,75 @@ class configContainer extends Component {
     }
   }
 
-  NumberSucursales =(data)=>{
-   const trueSucursales = data.branchoffices?data.branchoffices.filter((sucursal)=>{
-        sucursal.status === true
-    }):[]
-    let PermitedSucursal = 0
-    for (let index = 0; index < data.licenses.length; index++) {
-      const PermitedSucursal = PermitedSucursal + licencias[index].numberbranchOffices
+  numberSucursales = data => {
+    if (!data.branchoffices) {
+      return;
     }
 
-    console.log("licencias", PermitedSucursal)
+    console.log("desde la funcion", data);
+
+   //  Verification of the license to be able to add another branch
+
+    const trueBranches = data.branchoffices.filter(sucursal => {
+      sucursal.status === true;
+    });
+
+    let allowedBranches = 0;
+    let countSucursals = 0;
+    data.licenses.map((license, key) => {
+      countSucursals =
+        license.numberbranchOffices === null ? 0 : license.numberbranchOffices;
+      if (key === 1) {
+        allowedBranches = countSucursals;
+      }
+      allowedBranches = allowedBranches + countSucursals;
+    });
+
+    return trueBranches > countSucursals;
+  };
+
+  // Array of data to send to the branches component
+
+  getCurrencyName = (data) =>{
+    if(!data.countryid){return }
+   const result = data.country.find(data=>{
+     console.log(data.id === data.countryid)
+   })
+
+   console.log(result)
   }
 
   filterDataForSucursal(data) {
     const array = [];
     data = data.toJS();
 
-      data.branchoffices ? data.branchoffices.map(branchOfficesData => {
-      let dataCountryAndPRovince = data.country.filter(country => {
-        return country.id.includes(branchOfficesData.countryId);
-      });
-      dataCountryAndPRovince = dataCountryAndPRovince[0];
+    data.branchoffices
+      ? data.branchoffices.map(branchOfficesData => {
+          let dataCountryAndPRovince = data.country.filter(country => {
+            return country.id.includes(branchOfficesData.countryId);
+          });
+          dataCountryAndPRovince = dataCountryAndPRovince[0];
 
-       const id = dataCountryAndPRovince.name ===  'Argentina' ? 0 : branchOfficesData.provinceId
-        array.push({
-        country: dataCountryAndPRovince.name,
-        province:
-          dataCountryAndPRovince.provinces[id].name,
-        ...branchOfficesData
-      });
-    }):[]
+          const id =
+            dataCountryAndPRovince.name === "Argentina"
+              ? 0
+              : branchOfficesData.provinceId;
+          array.push({
+            country: dataCountryAndPRovince.name,
+            province: dataCountryAndPRovince.provinces[id].name,
+            ...branchOfficesData
+          });
+        })
+      : [];
 
     return array;
   }
 
   render() {
     const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
-    NumberSucursales(sucursales, )
-    console.log(this.props.medicalCenter.toJS())
+    const permits = this.numberSucursales(this.props.medicalCenter.toJS());
+
+    this.getCurrencyName(this.props.medicalCenter.toJS());
     return (
       <div className="animated fadeIn">
         <Row>
@@ -136,11 +167,16 @@ class configContainer extends Component {
                       <MedicalCenter
                         editAction={this.props.medicalCenterAction}
                         data={this.props.medicalCenter.toJS()}
-
                       />
                     </TabPane>
                     <TabPane tabId={2}>
-                      <Sucursales sucursales={DataSucursal}  deleteSucursal={this.props.deleteSucursal} confirm={this.props.confirm}/>
+                      <Sucursales
+                        openSnackbars={this.props.openSnackbars}
+                        permits={permits}
+                        sucursales={DataSucursal}
+                        deleteSucursal={this.props.deleteSucursal}
+                        confirm={this.props.confirm}
+                      />
                     </TabPane>
 
                     <TabPane tabId={3}>
@@ -170,8 +206,10 @@ const mapDispatchToProps = dispatch => ({
   loadMedicalCenter: () => dispatch(loadMedicalcenterAction()),
   medicalCenterAction: (data, callback) =>
   dispatch(editMedicalCenter(data, callback)),
-  confirm: (message, callback)=> dispatch(openConfirmDialog(message, callback)),
-  deleteSucursal: (key, time)=> dispatch(deleteSucursal(key , time))
+  confirm: (message, callback) =>
+  dispatch(openConfirmDialog(message, callback)),
+  deleteSucursal: (key, time) => dispatch(deleteSucursal(key, time)),
+  openSnackbars: (type, message)=>dispatch(openSnackbars(type, message))
 });
 
 export default connect(

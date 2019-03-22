@@ -3,6 +3,7 @@ import { Table } from "reactstrap";
 
 class Licencias extends React.Component {
   render() {
+     console.log('la licencia' , this.props.licenses)
      return (
       <div className="container">
         <p className="text-muted">Licencias de su Centro Medico</p>
@@ -22,9 +23,9 @@ class Licencias extends React.Component {
                 {this.props.licenses? this.props.licenses.map((item, i) => {
                   return (
                     <tr key={i} className="text-center">
-                      <td>dita sea</td>
-                      <td>asdasd</td>
-                      <td>qweasd</td>
+                      <td>{item.license}</td>
+                      <td>{item.numberclients}</td>
+                      <td>{item.numberexams}</td>
                       <td>
                         asdasd
                       </td>
