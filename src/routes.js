@@ -5,6 +5,8 @@ import DefaultHeader from './containers/DefaultLayout/DefaultHeader';
 import DefaultLayout from './containers/DefaultLayout';
 import configContainer from  './containers/configContainer'
 
+import servicesContainer from  './containers/servicesContainer'
+
 function Loading() {
   return <div>Loading...</div>;
 }
@@ -206,7 +208,7 @@ const routes = [
   { path: '/configuration/Medical-center', name: 'Centro Medico', component: configContainer },
   { path: '/configuration/Users', name: 'Usuarios', component: Usuarios },
   { path: '/configuration/Personal', name: 'Personal', component: Personal },
-  { path: '/configuration/Services', name: 'Servicios', component: Servicios },
+  { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
   { path: '/administrative/sales', name: 'Ventas', component: Ventas },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
