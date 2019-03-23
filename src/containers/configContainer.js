@@ -72,7 +72,8 @@ class configContainer extends Component {
       allowedBranches = allowedBranches + countSucursals;
     });
 
-    return trueBranches > countSucursals;
+    return true
+    // trueBranches > countSucursals;
   };
 
   // Array of data to send to the branches component

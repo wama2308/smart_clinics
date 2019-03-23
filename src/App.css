@@ -6,3 +6,9 @@
 .iconTable {
  font-size: 19px !important;
 }
+
+.float-left{
+  height: 25px;
+}
+
+.sizeIconButton{  height: 25px;}

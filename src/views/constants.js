@@ -9,9 +9,6 @@ export const MedicalInitialValues = {
   provincesid: '',
   type: '',
   sector: '',
-  contactoN:'',
-  telefono:'',
-  email:'',
   logo: undefined,
   foto1: undefined,
   foto2: undefined,
@@ -48,6 +45,7 @@ const imageValidator=(value)=>{
      .string()
      .label("Direccion")
      .required(data.require),
+   email: yup.string().email(),
    logo: yup.mixed().required().test(
      "Logo",
      "tamaño de la imagen no esta permitido",

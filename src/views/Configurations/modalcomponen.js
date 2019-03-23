@@ -35,6 +35,8 @@ import { openSnackbars } from "../../actions/aplicantionActions";
 import { setDataSucursal, branchEdit } from "../../actions/configAction";
 import MapComponent from "./map.js";
 import { MedicalInitialValues, MedicalValidacion } from "../constants";
+import IconButton from "@material-ui/core/IconButton";
+import { Delete } from "@material-ui/icons";
 import jstz from "jstz";
 import { Formik } from "formik";
 
@@ -95,11 +97,19 @@ class ModalComponent extends React.Component {
   };
 
   handleSubmit = (values, formik) => {
+    if (this.state.dataContactos.length === 0) {
+      this.props.openSnackbars("error", "¡Debe Agregar almenos un contacto!");
+      return;
+    }
+
     this.setState({ loading: "show" });
     if (this.state.isMarkerShown) {
       delete values.provinceId;
       const obj = {
         ...values,
+        contactoN: "",
+        telefono: "",
+        email: "",
         sucursal: values.name,
         contactos: this.state.dataContactos,
         posicion: !this.props.dataEdit
@@ -109,7 +119,7 @@ class ModalComponent extends React.Component {
         log: this.state.lng,
         timeZ: jstz.determine().name()
       };
-      console.log("dios mio", obj , this.props.dataEdit);
+
       if (!this.props.dataEdit) {
         this.props.setDataSucursal(obj, () => {
           this.props.close();
@@ -213,6 +223,9 @@ class ModalComponent extends React.Component {
 
     const InititalValues = {
       ...values,
+      contactoN: "",
+      telefono: "",
+      email: "",
       idCountry: dataEdit ? dataEdit.countryId : countrys[0].id.toString(),
       type: dataEdit ? dataEdit.type : "0",
       provincesid: dataEdit ? dataEdit.provinceId : "0",
@@ -245,10 +258,13 @@ class ModalComponent extends React.Component {
                 handleBlur,
                 resetForm
               }) => {
-                const ButtonDisabled = false || disabled;
-                //   values.contacto.length < 1 ||
-                //   values.telefono.length < 1 ||
-                //   values.email.length < 1;
+                const ButtonDisabled =
+                  values.contactoN.length < 1 ||
+                  values.telefono.length < 1 ||
+                  values.email.length < 1 ||
+                  errors.email ||
+                  disabled;
+
                 const provinces = validator.filterProvinces(
                   countrys,
                   values.idCountry
@@ -520,12 +536,12 @@ class ModalComponent extends React.Component {
                                         )
                                       }
                                     />
-                                    {errors.contacto && touched.contacto && (
+                                    {errors.email && touched.email && (
                                       <FormFeedback
                                         style={{ display: "block" }}
                                         tooltip
                                       >
-                                        {errors.sucursal}
+                                        {errors.email}
                                       </FormFeedback>
                                     )}
                                   </FormGroup>
@@ -568,20 +584,17 @@ class ModalComponent extends React.Component {
                                             <td
                                               className={this.state.deleteview}
                                             >
-                                              <a
-                                                onClick={() => {
-                                                  this.delete(i);
-                                                }}
-                                                className={
-                                                  this.state.deleteview
-                                                }
-                                              >
-                                                <FaMinusCircle
-                                                  style={{
-                                                    cursor: "pontier"
+                                              <div className="sizeIconButton">
+                                                <IconButton
+                                                  className="iconButtons"
+                                                  aria-label="Delete"
+                                                  onClick={() => {
+                                                    this.delete(i);
                                                   }}
-                                                />
-                                              </a>
+                                                >
+                                                  <Delete className="iconTable" />
+                                                </IconButton>
+                                              </div>
                                             </td>
                                           </tr>
                                         );
