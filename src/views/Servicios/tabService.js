@@ -3,7 +3,6 @@ import { Table } from "reactstrap";
 import { FaFileAlt } from "react-icons/fa";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility } from "@material-ui/icons";
-
 export default class tabService extends React.Component {
   constructor(props) {
     super(props);
@@ -26,7 +25,7 @@ export default class tabService extends React.Component {
                   <th style={{ width: "30%" }}>Servicio</th>
                   <th style={{ width: "30%" }}>Categoria</th>
                   <th style={{ width: "15%" }}>Modificado</th>
-                  <th style={{ width: "15%" }}>Acciones</th>
+                  <th style={{ width: "15%" , textAlign:'center' }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>

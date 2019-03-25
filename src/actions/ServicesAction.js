@@ -5,6 +5,8 @@ import { openSnackbars } from "./aplicantionActions";
 const loadService = `${url}/api/LoadServicesPreloaded`;
 const loadPlantillasUrl = `${url}/api/LoadTemplates`;
 const loadPlantillasTinymceUrl = `${url}/api/LoadTemplatesTinymce`;
+const loadOriginalserviceUrl = `${url}/api/LoadServicesPreloadedOriginalId`;
+const loadCatergoriaUrl = `${url}/api/LoadSelectCategory`;
 
 export const getDataServices = () => dispatch => {
   getDataToken().then(data => {
@@ -15,7 +17,7 @@ export const getDataServices = () => dispatch => {
           dispatch({
             type: "GET_DATA_SERVICE",
             payload: {
-              loading:true,
+              loading: true,
               plantillas: result,
               servicios: res.data
             }
@@ -52,5 +54,29 @@ const loadPlantillasTinymce = (data, action, cb) => {
     })
     .catch(error => {
       action(openSnackbars("error", error.toString()));
+    });
+};
+
+export const loadOriginalService = () => dispatch => {
+  getDataToken().then(data => {
+    axios.get(loadOriginalserviceUrl, data).then(res => {
+      loadCategoria(data, dispatch, result => {
+        console.log({
+          serviceOriginal: res.data,
+          categoria: result
+        })
+      });
+    });
+  });
+};
+
+const loadCategoria = (data, dispatch, cb) => {
+  axios
+    .get(loadCatergoriaUrl, data)
+    .then(res => {
+      cb(res.data);
+    })
+    .catch(error => {
+      dispatch(openSnackbars("error", error.toString()));
     });
 };
