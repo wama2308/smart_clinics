@@ -16,7 +16,10 @@ import "../views/Servicios/loading.css";
 import TabService from "../views/Servicios/tabService";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { getDataServices } from "../actions/ServicesAction";
+import {
+  getDataServices,
+  loadOriginalService
+} from "../actions/ServicesAction";
 
 class ServicesContainer extends React.Component {
   constructor(props) {
@@ -32,7 +35,6 @@ class ServicesContainer extends React.Component {
   };
 
   componentWillReceiveProps = props => {
-    console.log(props)
     props.loading ? this.setState({ loading: props.loading }) : null;
   };
 
@@ -85,7 +87,11 @@ class ServicesContainer extends React.Component {
                 {this.state.loading && (
                   <TabContent activeTab={this.state.activeTab}>
                     <TabPane tabId={1}>
-                      <TabService data={dataService} />
+                      <TabService
+                        data={dataService}
+                        getdataModal={this.props.getDataModalService}
+                        serviceModalData={this.props.serviceModalData}
+                      />
                     </TabPane>
                     <TabPane tabId={2}>Plantillas</TabPane>
                   </TabContent>
@@ -112,10 +118,13 @@ class ServicesContainer extends React.Component {
 const mapStateToProps = state => ({
   loading: state.service.get("loading"),
   service: state.service.get("servicios"),
-  pantilla: state.service.get("plantillas")
+  pantilla: state.service.get("plantillas"),
+  serviceModalData: state.service.get("ModalService")
 });
 const mapDispatchToProps = dispatch => ({
-  getData: () => dispatch(getDataServices())
+  getData: () => dispatch(getDataServices()),
+  getDataModalService: (obj) => dispatch(loadOriginalService(obj))
+
 });
 
 export default connect(

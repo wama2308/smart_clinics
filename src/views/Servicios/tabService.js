@@ -3,16 +3,39 @@ import { Table } from "reactstrap";
 import { FaFileAlt } from "react-icons/fa";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility } from "@material-ui/icons";
+import ModalServicio from "./modalsServicio/ModalServicio";
 export default class tabService extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      divLoadingTable: "show"
+      divLoadingTable: "show",
+      modal: false
     };
   }
+
+  closeModal = () => {
+    this.setState({
+      modal: false
+    });
+  };
+
+  openModal = (license, service) => {
+    this.setState({ modal: true, license, service });
+  };
+
   render() {
     return (
       <div className="container">
+        {this.state.modal && (
+          <ModalServicio
+            open={this.state.modal}
+            getdataModal={this.props.getdataModal}
+            close={this.closeModal}
+            licenseID={this.state.license}
+            serviceID={this.state.service}
+            serviceModalData={this.props.serviceModalData}
+          />
+        )}
         <form
           className="formCodeConfirm"
           // onSubmit={this.handleSaveServicio.bind(this)}
@@ -25,7 +48,9 @@ export default class tabService extends React.Component {
                   <th style={{ width: "30%" }}>Servicio</th>
                   <th style={{ width: "30%" }}>Categoria</th>
                   <th style={{ width: "15%" }}>Modificado</th>
-                  <th style={{ width: "15%" , textAlign:'center' }}>Acciones</th>
+                  <th style={{ width: "15%", textAlign: "center" }}>
+                    Acciones
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -47,7 +72,10 @@ export default class tabService extends React.Component {
                               aria-label="Delete"
                               className="iconButtons"
                               onClick={() => {
-                                // this.view(item);
+                                this.openModal(
+                                  service.licenseId,
+                                  service.serviceId
+                                );
                               }}
                             >
                               <FaFileAlt className="iconTable" />

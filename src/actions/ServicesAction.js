@@ -57,14 +57,26 @@ const loadPlantillasTinymce = (data, action, cb) => {
     });
 };
 
-export const loadOriginalService = () => dispatch => {
+export const loadOriginalService = obj => dispatch => {
   getDataToken().then(data => {
-    axios.get(loadOriginalserviceUrl, data).then(res => {
+    axios({
+      method: "post",
+      url: loadOriginalserviceUrl,
+      data: {
+        licenseId: obj.licenseId,
+        serviceId: obj.serviceId
+      },
+      ...data
+    }).then(res => {
       loadCategoria(data, dispatch, result => {
-        console.log({
-          serviceOriginal: res.data,
-          categoria: result
-        })
+        dispatch({
+          type: "GET_DATA_MODAL_SERVICE",
+          payload: {
+            loading: "hide",
+            serviceOriginal: res.data,
+            categoria: result
+          }
+        });
       });
     });
   });
