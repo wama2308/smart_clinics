@@ -1,6 +1,6 @@
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
-const url = `http://smartclinics.online/sc-admin/web/app.php`;
+export const url = `http://smartclinics.online/sc-admin/web/app.php`;
 // const url =`http://192.168.1.127:8000`
 const loadMedicalCenter = `${url}/api/LoadMedicalCenter`;
 const loadGeneralConfiguration = `${url}/api/loadGeneralConfiguration`;
@@ -11,7 +11,7 @@ const saveSucursal = `${url}/api/saveBranchOffices`;
 const deleteSucursalApi = `${url}/api/deleteBranchOffices`;
 const editBranchUrl = `${url}/api/editBranchOffices`;
 
-const getDataToken = () => {
+export const getDataToken = () => {
   return new Promise(resolve => {
     const token = window.localStorage.getItem("id_token");
     const datos = {
@@ -154,6 +154,9 @@ export const branchEdit = (data, callback) => dispatch => {
       });
   });
 };
+
+
+
 
 //       name: this.state.Sucursal,
 //       idCountry: this.state.pais,

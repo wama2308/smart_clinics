@@ -8,7 +8,6 @@ const setEdit=(state, newData)=>{
 
 }
 
-
 const configReducer = (state = Map(), action) => {
   switch (action.type) {
     case "LOAD_MEDICAL_CENTER": {

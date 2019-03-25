@@ -13,16 +13,28 @@ import {
 } from "reactstrap";
 import "../views/Servicios/Services.css";
 import "../views/Servicios/loading.css";
-//
+import TabService from "../views/Servicios/tabService";
+import { connect } from "react-redux";
 import classnames from "classnames";
+import { getDataServices } from "../actions/ServicesAction";
 
 class ServicesContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       activeTab: 1
     };
   }
+
+  componentDidMount = () => {
+    this.props.getData();
+  };
+
+  componentWillReceiveProps = props => {
+    console.log(props)
+    props.loading ? this.setState({ loading: props.loading }) : null;
+  };
 
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -33,6 +45,7 @@ class ServicesContainer extends React.Component {
   }
 
   render() {
+    const dataService = this.props.service ? this.props.service : [];
     return (
       <div className="animated fadeIn">
         <Row>
@@ -69,12 +82,23 @@ class ServicesContainer extends React.Component {
                     </NavItem>
                   </Nav>
                 </div>
-                {
+                {this.state.loading && (
                   <TabContent activeTab={this.state.activeTab}>
-                    <TabPane tabId={1}>Servicios</TabPane>
+                    <TabPane tabId={1}>
+                      <TabService data={dataService} />
+                    </TabPane>
                     <TabPane tabId={2}>Plantillas</TabPane>
                   </TabContent>
-                }
+                )}
+                {!this.state.loading && (
+                  <TabContent activeTab={this.state.activeTab}>
+                    <br />
+                    <div align="center" className={this.state.divLoadingTable}>
+                      <img src="assets/loader.gif" width="20%" height="5%" />
+                    </div>
+                  </TabContent>
+                )}
+
                 <br />
               </CardBody>
             </Card>
@@ -85,4 +109,16 @@ class ServicesContainer extends React.Component {
   }
 }
 
-export default ServicesContainer;
+const mapStateToProps = state => ({
+  loading: state.service.get("loading"),
+  service: state.service.get("servicios"),
+  pantilla: state.service.get("plantillas")
+});
+const mapDispatchToProps = dispatch => ({
+  getData: () => dispatch(getDataServices())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ServicesContainer);
