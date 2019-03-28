@@ -37,7 +37,7 @@ const loadPlantillas = (data, action, cb) => {
       loadPlantillasTinymce(data, action, result => {
         cb({
           ...res.data,
-          ...result
+          tinymce: result
         });
       });
     })

@@ -91,6 +91,7 @@ class ServicesContainer extends React.Component {
                         data={dataService}
                         getdataModal={this.props.getDataModalService}
                         serviceModalData={this.props.serviceModalData}
+                        plantilla={this.props.pantilla}
                       />
                     </TabPane>
                     <TabPane tabId={2}>Plantillas</TabPane>

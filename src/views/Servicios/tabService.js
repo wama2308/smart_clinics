@@ -24,6 +24,7 @@ export default class tabService extends React.Component {
   };
 
   render() {
+   console.log("other" , this.props.pantilla)
     return (
       <div className="container">
         {this.state.modal && (
@@ -34,6 +35,7 @@ export default class tabService extends React.Component {
             licenseID={this.state.license}
             serviceID={this.state.service}
             serviceModalData={this.props.serviceModalData}
+            plantilla={this.props.plantilla}
           />
         )}
         <form

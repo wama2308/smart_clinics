@@ -16,6 +16,8 @@ import "../Services.css";
 import "../loading.css";
 import { Formik } from "formik";
 import Select from "react-select";
+import { Editor } from "@tinymce/tinymce-react";
+import numeral from 'numeral'
 
 class ModalServicio extends React.Component {
   constructor(props) {
@@ -42,8 +44,46 @@ class ModalServicio extends React.Component {
       : null;
   };
 
+  dataFilterView = data => {
+    let obj = {
+      servicio: "",
+      category: "",
+      amount: "",
+      fields: [],
+      format: ""
+    };
+    if (!data) {
+      return obj;
+    }
+    return (obj = {
+      servicio: data.serviceName,
+      category: data.category,
+      amount: data.amount,
+      format: data.format,
+      fields: data.fields
+    });
+  };
+
+  contextMenu = data => {
+    let dataFields = data;
+    let fields = dataFields.toString();
+    let fields_split = fields.split(",");
+    let fields_lenght = fields_split.length;
+    let fields_replace = fields.replace(/,/g, " | ");
+
+    return fields_replace;
+  };
+
   render() {
-    const { open, close } = this.props;
+    const { open, close, serviceModalData, plantilla } = this.props;
+    const data = !serviceModalData
+      ? undefined
+      : serviceModalData.serviceOriginal;
+    const Initialvalue = this.dataFilterView(data);
+
+    const contextMenu = this.contextMenu(Initialvalue.fields);
+
+    numeral(Initialvalue.amount).format('0,0.00')
     return (
       <Modal isOpen={open} toggle={close} className="Modal">
         {this.state.loading === "show" && (
@@ -54,7 +94,7 @@ class ModalServicio extends React.Component {
         {this.state.loading === "hide" && (
           <Formik
             // onSubmit={this.handleSubmit}
-            // initialValues={InititalValues}
+            initialValues={Initialvalue}
             // validationSchema={MedicalValidacion}
             render={({
               values,
@@ -74,9 +114,10 @@ class ModalServicio extends React.Component {
                     <FormGroup className="top form-group col-sm-12">
                       <Label for="servicio">Servicio</Label>
                       <Input
-                        disabled={this.state.varDisabled}
                         name="servicio"
                         id="servicio"
+                        value={values.servicio}
+                        disabled={true}
                         type="text"
                         placeholder="Servicio"
                       />
@@ -90,9 +131,10 @@ class ModalServicio extends React.Component {
                         <Select
                           isSearchable="true"
                           name="categoria"
-                          value={this.state.selectedCategoriaOption}
+                          value={values.category}
+                          isDisabled={true}
                           onChange={this.handleChangeSelectCategory}
-                          options={this.props.categoria}
+                          options={serviceModalData.categoria}
                         />
                       </div>
                       <div className="errorSelect">
@@ -107,14 +149,17 @@ class ModalServicio extends React.Component {
                       <Label for="monto">Monto</Label>
                       <InputGroup>
                         <InputGroupAddon addonType="prepend">
-                          {this.state.currencySymbol}
+                          {data.currencySymbol}
                         </InputGroupAddon>
                         <Input
+
                           name="monto"
                           id="monto"
+                          type='number'
+                          disabled={true}
                           onKeyUp={this.handlekeyMonto}
                           onChange={this.handleChange}
-                          value={this.state.monto}
+                          value={numeral(values.amount).format('0,0.00')}
                         />
                       </InputGroup>
                       <FormFeedback tooltip>
@@ -124,36 +169,38 @@ class ModalServicio extends React.Component {
                     <FormGroup className="top form-group col-sm-12">
                       <Label for="categoria">Formato</Label>
                       <div className={this.state.divFormato}>
-                        {/* <Editor
-                  apiKey="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=oq05o4hhb17qaasizya3qaal9dnl5pbc189e4mxw09npjjmj"
-                  initialValue={this.state.contentFormat}
-                  init={{
-                    language_url: "http://smartclinics.online/sc-front/es.js",
-                    height: 500,
-                    theme: "modern",
-                    plugins:
-                      "print preview fullpage paste searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help",
-                    toolbar:
-                      "formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | demoItem | paciente",
-                    image_advtab: true,
-                    templates: arrayTemplates,
-                    contextmenu: contexMenu,
-                    setup: function(editor) {
-                      var miArray = arrayContextMenu;
-                      miArray.forEach(function(valor, indice, array) {
-                        editor.addMenuItem(valor, {
-                          text: valor,
-                          context: "tools",
-                          onclick: function() {
-                            editor.insertContent(valor.toString());
-                          }
-                        });
-                      });
-                    }
-                  }}
-                  onChange={this.handleEditorChange}
-                  disabled={this.state.varDisabled}
-                /> */}
+                        <Editor
+                          apiKey="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=oq05o4hhb17qaasizya3qaal9dnl5pbc189e4mxw09npjjmj"
+                          initialValue={values.format}
+                          init={{
+                            language_url:
+                              "http://smartclinics.online/sc-front/es.js",
+                            height: 500,
+                            theme: "modern",
+                            plugins:
+                              "print preview fullpage paste searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help",
+                            toolbar:
+                              "formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | demoItem | paciente",
+                            image_advtab: true,
+                            templates: plantilla.tinymce,
+                            contextmenu: contextMenu,
+                            setup: function(editor) {
+                              values.fields.forEach(function(
+                                valor,
+                              ) {
+                                editor.addMenuItem(valor, {
+                                  text: valor,
+                                  context: "tools",
+                                  onclick: function() {
+                                    editor.insertContent(valor.toString());
+                                  }
+                                });
+                              });
+                            }
+                          }}
+                          onChange={this.handleEditorChange}
+                          disabled={this.state.varDisabled}
+                        />
                       </div>
                       <div className="errorSelect">
                         {this.state.formatoError}
