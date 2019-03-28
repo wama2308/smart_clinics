@@ -23,13 +23,15 @@ import {
   loadOriginalService,
   loadModifiedService
 } from "../../../actions/ServicesAction";
+import Cleave from "cleave.js/react";
+import jstz from 'jstz';
 
 class ModalServicio extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: "show",
-      amount:0,
+      amount: 0
     };
   }
 
@@ -51,6 +53,15 @@ class ModalServicio extends React.Component {
           loading: props.serviceModalData.loading
         })
       : null;
+  };
+
+  handleSubmit = value => {
+     const obj = {
+       ...value,
+       licenseId: this.props.licenseID,
+       serviceId: this.props.serviceID,
+       timeZ: jstz.determine().name()
+     }
   };
 
   dataFilterView = data => {
@@ -83,22 +94,6 @@ class ModalServicio extends React.Component {
     return fields_replace;
   };
 
-  amount = data => {
-    const thousand_separator = ",";
-    var number_string = data.toString().replace(/,/g,''),
-
-      rest = number_string.length % 3,
-      result = number_string.substr(0, rest),
-      thousands = number_string.substr(rest).match(/\d{3}/gi);
-    if (thousands) {
-      let separator = rest ? thousand_separator : "";
-      result += separator + thousands.join(thousand_separator);
-
-    }
-    console.log("00,00,00,00".toString().replace(/,/g,''))
-    this.setState({amount:result})
-  };
-
   render() {
     const { open, close, serviceModalData, plantilla, disabled } = this.props;
     const data = !serviceModalData
@@ -107,7 +102,7 @@ class ModalServicio extends React.Component {
     const Initialvalue = this.dataFilterView(data);
 
     const contextMenu = this.contextMenu(Initialvalue.fields);
-    console.log(this.state.amount);
+    console.log(Initialvalue);
     return (
       <Modal isOpen={open} toggle={close} className="Modal">
         {this.state.loading === "show" && (
@@ -117,7 +112,7 @@ class ModalServicio extends React.Component {
         )}
         {this.state.loading === "hide" && (
           <Formik
-            // onSubmit={this.handleSubmit}
+            onSubmit={this.handleSubmit}
             initialValues={Initialvalue}
             // validationSchema={MedicalValidacion}
             render={({
@@ -129,6 +124,7 @@ class ModalServicio extends React.Component {
               handleBlur,
               resetForm
             }) => {
+              console.log(errors);
               return (
                 <div>
                   <ModalHeader toggle={this.props.close}>
@@ -180,13 +176,22 @@ class ModalServicio extends React.Component {
                         <InputGroupAddon addonType="prepend">
                           {data.currencySymbol}
                         </InputGroupAddon>
-                        <Input
-                          name="monto"
-                          id="monto"
-                          type="number"
-                          disabled={disabled}
-                          onChange={event =>  this.amount(event.target.value)}
-                          value={this.state.amount}
+                        <Cleave
+                          style={{
+                            width: "96%",
+                            height: 35,
+                            border: "1.5px solid",
+                            borderColor: "#e4e7ea",
+                            borderRadius: 5
+                          }}
+                          options={{
+                            numeral: true,
+                            numeralThousandsGroupStyle: "thousand"
+                          }}
+                          value={values.amount}
+                          onChange={e => {
+                            setFieldValue("amount", e.target.value);
+                          }}
                         />
                       </InputGroup>
                       <FormFeedback tooltip>
@@ -233,21 +238,16 @@ class ModalServicio extends React.Component {
                     </FormGroup>
                   </ModalBody>
                   <ModalFooter>
-                    <Button
-                      className={this.state.buttonCancel}
-                      color="danger"
-                      onClick={this.props.close}
-                    >
+                    <Button color="danger" onClick={this.props.close}>
                       Cancelar
                     </Button>
                     <Button
-                      className={this.state.buttonSave}
+                      className={this.state.buttonave}
                       color="primary"
-                      onClick={this.handleSaveServicio}
+                      onClick={handleSubmit}
                     >
                       Guadar
                     </Button>
-                    {/*<Button className={this.state.buttonCancel} color="danger" onClick={this.prueba}>Cancelar</Button>*/}
                   </ModalFooter>
                 </div>
               );

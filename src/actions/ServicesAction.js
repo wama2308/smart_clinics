@@ -8,6 +8,7 @@ const loadPlantillasTinymceUrl = `${url}/api/LoadTemplatesTinymce`;
 const loadOriginalserviceUrl = `${url}/api/LoadServicesPreloadedOriginalId`;
 const loadCatergoriaUrl = `${url}/api/LoadSelectCategory`;
 const LoadServicesPreloadedId = `${url}/api/LoadServicesPreloadedId`;
+const editServiceUrl = `${url}/api/EditService`;
 
 export const getDataServices = () => dispatch => {
   getDataToken().then(data => {
@@ -117,4 +118,19 @@ const loadCategoria = (data, dispatch, cb) => {
     .catch(error => {
       dispatch(openSnackbars("error", error.toString()));
     });
+};
+
+const editServices = datos => dispatch => {
+  getDataToken().then(data => {
+    axios({
+      method: "post",
+      url: editServiceUrl,
+      data: {
+        ...datos
+      },
+      ...data
+    }).then(res => {
+      dispatch(openSnackbars("success", "Operacion Exitosa"));
+    });
+  });
 };

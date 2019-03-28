@@ -17,7 +17,8 @@ export default class tabService extends React.Component {
 
   closeModal = () => {
     this.setState({
-      modal: false
+      modal: false,
+      type:1
     });
   };
 
