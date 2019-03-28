@@ -120,7 +120,7 @@ const loadCategoria = (data, dispatch, cb) => {
     });
 };
 
-const editServices = datos => dispatch => {
+export const editServices = datos => dispatch => {
   getDataToken().then(data => {
     axios({
       method: "post",

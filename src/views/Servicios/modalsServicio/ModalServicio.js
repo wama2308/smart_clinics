@@ -21,7 +21,8 @@ import numeral from "numeral";
 import { connect } from "react-redux";
 import {
   loadOriginalService,
-  loadModifiedService
+  loadModifiedService,
+  editServices
 } from "../../../actions/ServicesAction";
 import Cleave from "cleave.js/react";
 import jstz from 'jstz';
@@ -62,6 +63,7 @@ class ModalServicio extends React.Component {
        serviceId: this.props.serviceID,
        timeZ: jstz.determine().name()
      }
+    this.props.editServices(obj)
   };
 
   dataFilterView = data => {
@@ -76,7 +78,7 @@ class ModalServicio extends React.Component {
       return obj;
     }
     return (obj = {
-      service: data.serviceName,
+      service: data.service,
       category: data.category,
       amount: data.amount,
       format: data.format,
@@ -261,5 +263,5 @@ class ModalServicio extends React.Component {
 
 export default connect(
   null,
-  { loadOriginalService, loadModifiedService }
+  { loadOriginalService, loadModifiedService , editServices }
 )(ModalServicio);
