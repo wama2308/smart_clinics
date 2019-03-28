@@ -17,13 +17,19 @@ import "../loading.css";
 import { Formik } from "formik";
 import Select from "react-select";
 import { Editor } from "@tinymce/tinymce-react";
-import numeral from 'numeral'
+import numeral from "numeral";
+import { connect } from "react-redux";
+import {
+  loadOriginalService,
+  loadModifiedService
+} from "../../../actions/ServicesAction";
 
 class ModalServicio extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: "show"
+      loading: "show",
+      amount:0,
     };
   }
 
@@ -32,8 +38,11 @@ class ModalServicio extends React.Component {
       licenseId: this.props.licenseID,
       serviceId: this.props.serviceID
     };
-
-    this.props.getdataModal(obj);
+    if (this.props.type === 1) {
+      this.props.loadOriginalService(obj);
+    } else {
+      this.props.loadModifiedService(obj);
+    }
   };
 
   componentWillReceiveProps = props => {
@@ -56,7 +65,7 @@ class ModalServicio extends React.Component {
       return obj;
     }
     return (obj = {
-      servicio: data.serviceName,
+      service: data.serviceName,
       category: data.category,
       amount: data.amount,
       format: data.format,
@@ -74,16 +83,31 @@ class ModalServicio extends React.Component {
     return fields_replace;
   };
 
+  amount = data => {
+    const thousand_separator = ",";
+    var number_string = data.toString().replace(/,/g,''),
+
+      rest = number_string.length % 3,
+      result = number_string.substr(0, rest),
+      thousands = number_string.substr(rest).match(/\d{3}/gi);
+    if (thousands) {
+      let separator = rest ? thousand_separator : "";
+      result += separator + thousands.join(thousand_separator);
+
+    }
+    console.log("00,00,00,00".toString().replace(/,/g,''))
+    this.setState({amount:result})
+  };
+
   render() {
-    const { open, close, serviceModalData, plantilla } = this.props;
+    const { open, close, serviceModalData, plantilla, disabled } = this.props;
     const data = !serviceModalData
       ? undefined
       : serviceModalData.serviceOriginal;
     const Initialvalue = this.dataFilterView(data);
 
     const contextMenu = this.contextMenu(Initialvalue.fields);
-
-    numeral(Initialvalue.amount).format('0,0.00')
+    console.log(this.state.amount);
     return (
       <Modal isOpen={open} toggle={close} className="Modal">
         {this.state.loading === "show" && (
@@ -117,9 +141,12 @@ class ModalServicio extends React.Component {
                         name="servicio"
                         id="servicio"
                         value={values.servicio}
-                        disabled={true}
+                        disabled={disabled}
                         type="text"
                         placeholder="Servicio"
+                        onChange={event => {
+                          setFieldValue("service", event.target.value);
+                        }}
                       />
                       <FormFeedback tooltip>
                         {this.state.servicioError}
@@ -132,8 +159,10 @@ class ModalServicio extends React.Component {
                           isSearchable="true"
                           name="categoria"
                           value={values.category}
-                          isDisabled={true}
-                          onChange={this.handleChangeSelectCategory}
+                          isDisabled={disabled}
+                          onChange={event => {
+                            setFieldValue("category", event.target.value);
+                          }}
                           options={serviceModalData.categoria}
                         />
                       </div>
@@ -152,14 +181,12 @@ class ModalServicio extends React.Component {
                           {data.currencySymbol}
                         </InputGroupAddon>
                         <Input
-
                           name="monto"
                           id="monto"
-                          type='number'
-                          disabled={true}
-                          onKeyUp={this.handlekeyMonto}
-                          onChange={this.handleChange}
-                          value={numeral(values.amount).format('0,0.00')}
+                          type="number"
+                          disabled={disabled}
+                          onChange={event =>  this.amount(event.target.value)}
+                          value={this.state.amount}
                         />
                       </InputGroup>
                       <FormFeedback tooltip>
@@ -185,9 +212,7 @@ class ModalServicio extends React.Component {
                             templates: plantilla.tinymce,
                             contextmenu: contextMenu,
                             setup: function(editor) {
-                              values.fields.forEach(function(
-                                valor,
-                              ) {
+                              values.fields.forEach(function(valor) {
                                 editor.addMenuItem(valor, {
                                   text: valor,
                                   context: "tools",
@@ -199,7 +224,7 @@ class ModalServicio extends React.Component {
                             }
                           }}
                           onChange={this.handleEditorChange}
-                          disabled={this.state.varDisabled}
+                          disabled={disabled}
                         />
                       </div>
                       <div className="errorSelect">
@@ -209,18 +234,18 @@ class ModalServicio extends React.Component {
                   </ModalBody>
                   <ModalFooter>
                     <Button
-                      className={this.state.buttonSave}
-                      color="primary"
-                      onClick={this.handleSaveServicio}
-                    >
-                      Guadar
-                    </Button>
-                    <Button
                       className={this.state.buttonCancel}
                       color="danger"
                       onClick={this.props.close}
                     >
                       Cancelar
+                    </Button>
+                    <Button
+                      className={this.state.buttonSave}
+                      color="primary"
+                      onClick={this.handleSaveServicio}
+                    >
+                      Guadar
                     </Button>
                     {/*<Button className={this.state.buttonCancel} color="danger" onClick={this.prueba}>Cancelar</Button>*/}
                   </ModalFooter>
@@ -234,4 +259,7 @@ class ModalServicio extends React.Component {
   }
 }
 
-export default ModalServicio;
+export default connect(
+  null,
+  { loadOriginalService, loadModifiedService }
+)(ModalServicio);

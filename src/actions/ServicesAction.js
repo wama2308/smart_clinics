@@ -7,6 +7,7 @@ const loadPlantillasUrl = `${url}/api/LoadTemplates`;
 const loadPlantillasTinymceUrl = `${url}/api/LoadTemplatesTinymce`;
 const loadOriginalserviceUrl = `${url}/api/LoadServicesPreloadedOriginalId`;
 const loadCatergoriaUrl = `${url}/api/LoadSelectCategory`;
+const LoadServicesPreloadedId = `${url}/api/LoadServicesPreloadedId`;
 
 export const getDataServices = () => dispatch => {
   getDataToken().then(data => {
@@ -62,6 +63,31 @@ export const loadOriginalService = obj => dispatch => {
     axios({
       method: "post",
       url: loadOriginalserviceUrl,
+      data: {
+        licenseId: obj.licenseId,
+        serviceId: obj.serviceId
+      },
+      ...data
+    }).then(res => {
+      loadCategoria(data, dispatch, result => {
+        dispatch({
+          type: "GET_DATA_MODAL_SERVICE",
+          payload: {
+            loading: "hide",
+            serviceOriginal: res.data,
+            categoria: result
+          }
+        });
+      });
+    });
+  });
+};
+
+export const loadModifiedService = obj => dispatch => {
+  getDataToken().then(data => {
+    axios({
+      method: "post",
+      url: LoadServicesPreloadedId,
       data: {
         licenseId: obj.licenseId,
         serviceId: obj.serviceId

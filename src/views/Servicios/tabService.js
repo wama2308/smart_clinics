@@ -9,7 +9,9 @@ export default class tabService extends React.Component {
     super(props);
     this.state = {
       divLoadingTable: "show",
-      modal: false
+      modal: false,
+      disabled: true,
+      type: 1
     };
   }
 
@@ -19,23 +21,36 @@ export default class tabService extends React.Component {
     });
   };
 
-  openModal = (license, service) => {
-    this.setState({ modal: true, license, service });
+  openModal = (license, service, type) => {
+    if (type === 1) {
+      this.setState({ modal: true, license, service, disabled: true });
+    } else if (type === 2) {
+      this.setState({ modal: true, license, service, type: 2, disabled: true });
+    } else {
+      this.setState({
+        modal: true,
+        license,
+        service,
+        type: 2,
+        disabled: false
+      });
+    }
   };
 
   render() {
-   console.log("other" , this.props.pantilla)
+    console.log("other", this.props.pantilla);
     return (
       <div className="container">
         {this.state.modal && (
           <ModalServicio
             open={this.state.modal}
-            getdataModal={this.props.getdataModal}
             close={this.closeModal}
             licenseID={this.state.license}
             serviceID={this.state.service}
             serviceModalData={this.props.serviceModalData}
             plantilla={this.props.plantilla}
+            disabled={this.state.disabled}
+            type={this.state.type}
           />
         )}
         <form
@@ -47,10 +62,10 @@ export default class tabService extends React.Component {
               <thead className="thead-light">
                 <tr>
                   <th style={{ width: "10%" }}>Nro</th>
-                  <th style={{ width: "30%" }}>Servicio</th>
+                  <th style={{ width: "30%" }}>Servic io</th>
                   <th style={{ width: "30%" }}>Categoria</th>
                   <th style={{ width: "15%" }}>Modificado</th>
-                  <th style={{ width: "15%", textAlign: "center" }}>
+                  <th style={{ minWidth: 154, textAlign: "center" }}>
                     Acciones
                   </th>
                 </tr>
@@ -76,7 +91,8 @@ export default class tabService extends React.Component {
                               onClick={() => {
                                 this.openModal(
                                   service.licenseId,
-                                  service.serviceId
+                                  service.serviceId,
+                                  1
                                 );
                               }}
                             >
@@ -88,7 +104,11 @@ export default class tabService extends React.Component {
                               aria-label="Delete"
                               className="iconButtons"
                               onClick={() => {
-                                // this.modaledit(item, i);
+                                this.openModal(
+                                  service.licenseId,
+                                  service.serviceId,
+                                  2
+                                );
                               }}
                             >
                               <Visibility className="iconTable" />
@@ -99,7 +119,11 @@ export default class tabService extends React.Component {
                               className="iconButtons"
                               aria-label="Delete"
                               onClick={() => {
-                                // this.delete(i);
+                                this.openModal(
+                                  service.licenseId,
+                                  service.serviceId,
+                                  3
+                                );
                               }}
                             >
                               <Edit className="iconTable" />
