@@ -20,6 +20,7 @@ import {
   getDataServices,
   loadOriginalService
 } from "../actions/ServicesAction";
+import Plantillas from '../views/Servicios/plantilla'
 
 class ServicesContainer extends React.Component {
   constructor(props) {
@@ -94,7 +95,7 @@ class ServicesContainer extends React.Component {
                         plantilla={this.props.pantilla}
                       />
                     </TabPane>
-                    <TabPane tabId={2}>Plantillas</TabPane>
+                    <TabPane tabId={2}><Plantillas/></TabPane>
                   </TabContent>
                 )}
                 {!this.state.loading && (
