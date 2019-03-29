@@ -17,7 +17,6 @@ import "../loading.css";
 import { Formik } from "formik";
 import Select from "react-select";
 import { Editor } from "@tinymce/tinymce-react";
-import numeral from "numeral";
 import { connect } from "react-redux";
 import {
   loadOriginalService,
@@ -25,7 +24,8 @@ import {
   editServices
 } from "../../../actions/ServicesAction";
 import Cleave from "cleave.js/react";
-import jstz from 'jstz';
+import jstz from "jstz";
+import * as yup from "yup";
 
 class ModalServicio extends React.Component {
   constructor(props) {
@@ -57,13 +57,20 @@ class ModalServicio extends React.Component {
   };
 
   handleSubmit = value => {
-     const obj = {
-       ...value,
-       licenseId: this.props.licenseID,
-       serviceId: this.props.serviceID,
-       timeZ: jstz.determine().name()
-     }
-    this.props.editServices(obj)
+    this.setState({
+      loading: "show"
+    });
+    const obj = {
+      ...value,
+      category: value.category.value,
+      licenseId: this.props.licenseID,
+      serviceId: this.props.serviceID,
+      timeZ: jstz.determine().name()
+    };
+    this.props.editServices(obj, () => {
+      this.setState({ loading: "hide" });
+      this.props.close();
+    });
   };
 
   dataFilterView = data => {
@@ -78,7 +85,7 @@ class ModalServicio extends React.Component {
       return obj;
     }
     return (obj = {
-      service: data.service,
+      service: data.serviceName,
       category: data.category,
       amount: data.amount,
       format: data.format,
@@ -104,7 +111,11 @@ class ModalServicio extends React.Component {
     const Initialvalue = this.dataFilterView(data);
 
     const contextMenu = this.contextMenu(Initialvalue.fields);
-    console.log(Initialvalue);
+
+    const validationSchema = yup.object().shape({
+      service: yup.string().required("Este Campo es Requerido")
+    });
+
     return (
       <Modal isOpen={open} toggle={close} className="Modal">
         {this.state.loading === "show" && (
@@ -116,7 +127,7 @@ class ModalServicio extends React.Component {
           <Formik
             onSubmit={this.handleSubmit}
             initialValues={Initialvalue}
-            // validationSchema={MedicalValidacion}
+            validationSchema={validationSchema}
             render={({
               values,
               handleSubmit,
@@ -126,7 +137,6 @@ class ModalServicio extends React.Component {
               handleBlur,
               resetForm
             }) => {
-              console.log(errors);
               return (
                 <div>
                   <ModalHeader toggle={this.props.close}>
@@ -138,17 +148,20 @@ class ModalServicio extends React.Component {
                       <Input
                         name="servicio"
                         id="servicio"
-                        value={values.servicio}
+                        value={values.service}
                         disabled={disabled}
                         type="text"
+                        onBlur={handleBlur}
                         placeholder="Servicio"
                         onChange={event => {
                           setFieldValue("service", event.target.value);
                         }}
                       />
-                      <FormFeedback tooltip>
-                        {this.state.servicioError}
-                      </FormFeedback>
+                      {touched.servicio && errors.service && (
+                        <FormFeedback style={{ display: "block" }} tooltip>
+                          {errors.service}
+                        </FormFeedback>
+                      )}
                     </FormGroup>
                     <FormGroup className="top form-group col-sm-12">
                       <Label for="categoria">Categoria</Label>
@@ -159,7 +172,7 @@ class ModalServicio extends React.Component {
                           value={values.category}
                           isDisabled={disabled}
                           onChange={event => {
-                            setFieldValue("category", event.target.value);
+                            setFieldValue("category", event);
                           }}
                           options={serviceModalData.categoria}
                         />
@@ -230,7 +243,9 @@ class ModalServicio extends React.Component {
                               });
                             }
                           }}
-                          onChange={this.handleEditorChange}
+                          onChange={event => {
+                            setFieldValue("format", event.level.content);
+                          }}
                           disabled={disabled}
                         />
                       </div>
@@ -247,6 +262,7 @@ class ModalServicio extends React.Component {
                       className={this.state.buttonave}
                       color="primary"
                       onClick={handleSubmit}
+                      disabled={disabled}
                     >
                       Guadar
                     </Button>
@@ -263,5 +279,5 @@ class ModalServicio extends React.Component {
 
 export default connect(
   null,
-  { loadOriginalService, loadModifiedService , editServices }
+  { loadOriginalService, loadModifiedService, editServices }
 )(ModalServicio);

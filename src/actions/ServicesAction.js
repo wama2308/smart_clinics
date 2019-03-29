@@ -120,7 +120,7 @@ const loadCategoria = (data, dispatch, cb) => {
     });
 };
 
-export const editServices = datos => dispatch => {
+export const editServices = (datos, loaded) => dispatch => {
   getDataToken().then(data => {
     axios({
       method: "post",
@@ -130,6 +130,7 @@ export const editServices = datos => dispatch => {
       },
       ...data
     }).then(res => {
+      loaded();
       dispatch(openSnackbars("success", "Operacion Exitosa"));
     });
   });

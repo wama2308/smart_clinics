@@ -63,7 +63,7 @@ export default class tabService extends React.Component {
               <thead className="thead-light">
                 <tr>
                   <th style={{ width: "10%" }}>Nro</th>
-                  <th style={{ width: "30%" }}>Servic io</th>
+                  <th style={{ width: "30%" }}>Servicio</th>
                   <th style={{ width: "30%" }}>Categoria</th>
                   <th style={{ width: "15%" }}>Modificado</th>
                   <th style={{ minWidth: 154, textAlign: "center" }}>
