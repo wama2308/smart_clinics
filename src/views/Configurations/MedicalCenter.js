@@ -10,7 +10,7 @@ import {
 import "./loading.css";
 import "./modal.css";
 import jstz from "jstz";
-import {Loading} from "../../components/Modals";
+import { Loading } from "../../components/Modals";
 import Validator from "./utils";
 
 const validator = new Validator();
@@ -36,8 +36,8 @@ export default class MedicalCenter extends React.Component {
       paisInvalid: false,
       provinceInvalid: false,
       name: "",
-      modal:false,
-      modalType:"loading"
+      modal: false,
+      modalType: "loading"
     };
   }
 
@@ -51,17 +51,21 @@ export default class MedicalCenter extends React.Component {
       : 0;
   }
 
-  componentDidMount=()=>{
-    this.setState({loading:'show'})
-  }
+  componentDidMount = () => {
+    this.setState({ loading: "show" });
+    if (this.props.data.name) {
+      this.setState({ name: this.props.data.name });
+    }
+  };
 
   handleSubmit = async event => {
     event.preventDefault();
     this.setState({
-      modal:true,
-      modalType:'loading'
-    })
+      modal: true,
+      modalType: "loading"
+    });
     const valid = await this.validate();
+    console.log(valid);
     valid
       ? this.props.editAction(
           {
@@ -72,11 +76,11 @@ export default class MedicalCenter extends React.Component {
           },
           () => {
             this.setState({
-              modal:false,
-            })
+              modal: false
+            });
           }
         )
-      : null;
+      : this.setState({ modal: false });
   };
 
   validate = () => {
@@ -90,18 +94,19 @@ export default class MedicalCenter extends React.Component {
     if (this.state.name.length < 2) {
       SucursalError = "¡Escriba el nombre completo de su centro medico !";
       SucursalInValid = true;
-    if (SucursalError) {
-      this.setState({
-        SucursalError,
-        SucursalInValid
-      });
-      return false;
+      if (SucursalError) {
+        this.setState({
+          SucursalError,
+          SucursalInValid
+        });
+        return false;
+      }
+      return true;
     }
-    return true;}
-
+    return true;
   };
 
-  filterProvinces = (countries) => {
+  filterProvinces = countries => {
     const array = countries.filter(countries => {
       return countries.id.includes(this.state.selectedCountry);
     });
@@ -113,14 +118,14 @@ export default class MedicalCenter extends React.Component {
   render() {
     const data = !this.props.data ? this.state : this.props.data;
     const countrys = data.country ? validator.filterCountry(data.country) : [];
-    const provinces = validator.filterProvinces(countrys, this.state.selectedCountry);
+    const provinces = validator.filterProvinces(
+      countrys,
+      this.state.selectedCountry
+    );
 
     return (
       <div>
-        {this.state.modal && <Loading type={this.state.modalType}/>}
-        <div className={data.loading} style={{ textAlign: "center" }}>
-          <img src="assets/loader.gif" width="20%" height="5%" />
-        </div>
+        {this.state.modal && <Loading type={this.state.modalType} />}
         {data.loading === "hide" && (
           <div>
             <Form className="formCodeConfirm" onSubmit={this.handleSubmit}>
@@ -139,7 +144,7 @@ export default class MedicalCenter extends React.Component {
                     type="text"
                     name="Sucursal"
                     id="Sucursal"
-                    value={this.props.data.name}
+                    value={this.state.name}
                     maxLength="40"
                     onChange={event => {
                       this.setState({ name: event.target.value });
@@ -173,7 +178,7 @@ export default class MedicalCenter extends React.Component {
                       this.setState({ selectedCountry: event.target.value });
                     }}
                   >
-                    {countrys.map((country ,key) => {
+                    {countrys.map((country, key) => {
                       return (
                         <option key={country.id} value={country.id}>
                           {country.name}

@@ -32,14 +32,15 @@ class configContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: 1
+      activeTab: 1,
+      loading: "show"
     };
   }
 
   componentDidMount = () => {
     this.props.medicalCenter.get("active")
-      ? null : this.props.loadMedicalCenter()
-
+      ? null
+      : this.props.loadMedicalCenter();
   };
 
   toggleTab(tab) {
@@ -51,6 +52,12 @@ class configContainer extends Component {
   }
 
   //  Verification of the license to be able to add another branch
+
+  componentWillReceiveProps = props => {
+    props.medicalCenter.get("loading")
+      ? this.setState({ loading: "hide" })
+      : null;
+  };
 
   numberSucursales = data => {
     if (!data.branchoffices) {
@@ -72,7 +79,7 @@ class configContainer extends Component {
       allowedBranches = allowedBranches + countSucursals;
     });
 
-    return true
+    return true;
     // trueBranches > countSucursals;
   };
 
@@ -167,7 +174,7 @@ class configContainer extends Component {
                     </NavItem>
                   </Nav>
                 </div>
-                {
+                {this.state.loading === "hide" && (
                   <TabContent activeTab={this.state.activeTab}>
                     <TabPane tabId={1}>
                       <MedicalCenter
@@ -192,7 +199,16 @@ class configContainer extends Component {
                       />
                     </TabPane>
                   </TabContent>
-                }
+                )}
+
+                {this.state.loading === "show" && (
+                  <TabContent activeTab={this.state.activeTab}>
+                    <div className={"show"} style={{ textAlign: "center" }}>
+                      <img src="assets/loader.gif" width="20%" height="5%" />
+                    </div>
+                  </TabContent>
+                )}
+
                 <br />
               </CardBody>
             </Card>

@@ -82,6 +82,7 @@ export const loadTypes = () => dispatch => {
 };
 
 export const editMedicalCenter = (data, callback) => dispatch => {
+  console.log('se ejecuto')
   getDataToken().then(datos => {
     axios({
       method: "post",
