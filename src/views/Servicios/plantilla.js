@@ -4,6 +4,8 @@ import { Button, Table } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
 import ModalPlantilla from "./modalsServicio/ModalPlantilla";
+import jstz from "jstz";
+
 import "./Services.css";
 import "./loading.css";
 
@@ -12,7 +14,8 @@ class Plantillas extends React.Component {
     super(props);
     this.state = {
       openModal: false,
-      disabled: false
+      disabled: false,
+      editTemplate: ""
     };
   }
 
@@ -23,8 +26,39 @@ class Plantillas extends React.Component {
     });
   };
 
+  view = (item) => {
+    this.setState({
+      editTemplate: item,
+      openModal: true,
+      disabled: true
+    });
+  };
+
+  edit = (item, key) => {
+    this.setState({
+      editTemplate: { ...item, key },
+      openModal: true,
+      disabled: false
+    });
+  };
+
+  delete = id => {
+    const obj = {
+      title: "Eliminar Plantilla",
+      info: "¿Esta seguro que desea eliminar esta plantilla?"
+    };
+    this.props.alert(obj, data => {
+      if (data) {
+        this.props.delete({
+          time: jstz.determine().name(),
+          id
+        });
+      }
+    });
+  };
+
   render() {
-    const mockData = [1, 2, 3, 4];
+    let count = [];
     return (
       <div className="container">
         {this.state.openModal && (
@@ -32,42 +66,40 @@ class Plantillas extends React.Component {
             open={this.state.openModal}
             close={this.closeModal}
             disabled={this.state.disabled}
+            edit={this.state.editTemplate}
           />
         )}
-        <form
-          className="formCodeConfirm"
-          // onSubmit={this.handleSavePlantilla.bind(this)}
-        >
-          <div className="row">
-            <Button
-              color="success"
-              onClick={() => this.setState({ openModal: true })}
-            >
-              Agregar
-            </Button>
-          </div>
-          <br />
+        <div className="row">
+          <Button
+            color="success"
+            onClick={() => this.setState({ openModal: true })}
+          >
+            Agregar
+          </Button>
+        </div>
+        <br />
 
-          <div>
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th style={{ width: "30%" }}>Nro</th>
-                  <th style={{ width: "40%" }}>Plantilla</th>
-                  <th style={{ width: "30%", textAlign: "center" }}>
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockData != null &&
-                  mockData.map((plantilla, i) => {
+        <div>
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th style={{ width: "30%" }}>Nro</th>
+                <th style={{ width: "40%" }}>Plantilla</th>
+                <th style={{ width: "30%", textAlign: "center" }}>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.props.template.length > 0 &&
+                this.props.template.map((template, i) => {
+
+                  if (template.status === true) {
+                    count.push(i)
                     return (
                       <tr key={i}>
                         <td scope="row" style={{ width: "30%" }}>
-                          {i + 1}
+                          {count.length}
                         </td>
-                        <td style={{ width: "40%" }}>{"hello"}</td>
+                        <td style={{ width: "40%" }}>{template.template}</td>
                         <td
                           style={{ display: "flex", justifyContent: "center" }}
                         >
@@ -77,11 +109,7 @@ class Plantillas extends React.Component {
                                 aria-label="Delete"
                                 className="iconButtons"
                                 onClick={() => {
-                                  // this.openModal(
-                                  //   service.licenseId,
-                                  //   service.serviceId,
-                                  //   1
-                                  // );
+                                  this.view(template);
                                 }}
                               >
                                 <Visibility className="iconTable" />
@@ -91,13 +119,9 @@ class Plantillas extends React.Component {
                               <IconButton
                                 aria-label="Delete"
                                 className="iconButtons"
-                                // onClick={() => {
-                                //   this.openModal(
-                                //     service.licenseId,
-                                //     service.serviceId,
-                                //     2
-                                //   );
-                                // }}
+                                onClick={() => {
+                                  this.edit(template, i);
+                                }}
                               >
                                 <Edit className="iconTable" />
                               </IconButton>
@@ -106,13 +130,9 @@ class Plantillas extends React.Component {
                               <IconButton
                                 className="iconButtons"
                                 aria-label="Delete"
-                                // onClick={() => {
-                                //   this.openModal(
-                                //     service.licenseId,
-                                //     service.serviceId,
-                                //     3
-                                //   );
-                                // }}
+                                onClick={() => {
+                                  this.delete(i);
+                                }}
                               >
                                 <Delete className="iconTable" />
                               </IconButton>
@@ -121,11 +141,11 @@ class Plantillas extends React.Component {
                         </td>
                       </tr>
                     );
-                  })}
-              </tbody>
-            </Table>
-          </div>
-        </form>
+                  }
+                })}
+            </tbody>
+          </Table>
+        </div>
       </div>
     );
   }

@@ -15,14 +15,18 @@ import "../loading.css";
 import { Formik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
 import { connect } from "react-redux";
-import {
-  loadOriginalService,
-  loadModifiedService,
-  editServices
-} from "../../../actions/ServicesAction";
+import { SavePlantillas, editPlantilla } from "../../../actions/ServicesAction";
 import jstz from "jstz";
 import * as yup from "yup";
 
+let InitialValues = {
+  plantilla: "",
+  formato: ""
+};
+const validationSchema = yup.object().shape({
+  plantilla: yup.string().required("Este Campo es Requerido"),
+  formato: yup.string().required("Este Campo es Requerido")
+});
 class ModalPlatinlla extends React.Component {
   constructor(props) {
     super(props);
@@ -35,12 +39,38 @@ class ModalPlatinlla extends React.Component {
 
   componentWillReceiveProps = props => {};
 
-  handleSubmit = value => {};
+  handleSubmit = value => {
+    this.setState({ loading: "show" });
+    value.timeZ = jstz.determine().name();
+    if (!this.props.edit.template) {
+      this.props.SavePlantillas(value, () => {
+        this.setState({ loading: "hide" });
+        this.props.close();
+      });
+    } else {
+      this.props.editPlantilla(
+        {
+          ...value,
+          posicion: this.props.edit.key
+        },
+        () => {
+          this.setState({ loading: "hide" });
+          this.props.close();
+        }
+      );
+    }
+  };
 
   dataFilterView = data => {};
 
   render() {
-    const {open ,close, disabled} = this.props
+    const { open, close, disabled, edit } = this.props;
+    const value = edit.template
+      ? (InitialValues = {
+          plantilla: edit.template,
+          formato: edit.content
+        })
+      : InitialValues;
     return (
       <Modal isOpen={open} toggle={close} className="Modal">
         {this.state.loading === "show" && (
@@ -51,8 +81,8 @@ class ModalPlatinlla extends React.Component {
         {this.state.loading === "hide" && (
           <Formik
             onSubmit={this.handleSubmit}
-            // initialValues={Initialvalue}
-            // validationSchema={validationSchema}
+            initialValues={value}
+            validationSchema={validationSchema}
             render={({
               values,
               handleSubmit,
@@ -62,6 +92,7 @@ class ModalPlatinlla extends React.Component {
               handleBlur,
               resetForm
             }) => {
+              console.log(touched, errors);
               return (
                 <div>
                   <ModalHeader toggle={this.props.close}>
@@ -71,20 +102,20 @@ class ModalPlatinlla extends React.Component {
                     <FormGroup className="top form-group col-sm-12">
                       <Label for="servicio">Plantilla</Label>
                       <Input
-                        name="servicio"
-                        id="servicio"
-                        // value={values.service}
+                        name="plantilla"
+                        id="plantilla"
+                        value={values.plantilla}
                         disabled={disabled}
                         type="text"
-                        // onBlur={handleBlur}
+                        onBlur={handleBlur}
                         placeholder="Plantilla"
-                        // onChange={event => {
-                        //   setFieldValue("service", event.target.value);
-                        // }}
+                        onChange={event => {
+                          setFieldValue("plantilla", event.target.value);
+                        }}
                       />
-                      {touched.servicio && errors.service && (
+                      {touched.plantilla && errors.plantilla && (
                         <FormFeedback style={{ display: "block" }} tooltip>
-                          {errors.service}
+                          {errors.plantilla}
                         </FormFeedback>
                       )}
                     </FormGroup>
@@ -94,9 +125,9 @@ class ModalPlatinlla extends React.Component {
                       <div className={this.state.divFormato}>
                         <Editor
                           apiKey="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=oq05o4hhb17qaasizya3qaal9dnl5pbc189e4mxw09npjjmj"
-                          initialValue={this.state.contentFormatPlantilla}
+                          initialValue={values.formato}
                           init={{
-                            height: 500,
+                            height: 350,
                             theme: "modern",
                             plugins:
                               "print preview fullpage paste searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help",
@@ -104,13 +135,19 @@ class ModalPlatinlla extends React.Component {
                               "formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | demoItem | paciente",
                             image_advtab: true
                           }}
-                          onChange={this.handleEditorPlantillaChange}
-                          disabled={this.state.varDisabled}
+                          onChange={event => {
+                            setFieldValue("formato", event.level.content);
+                          }}
+                          name="formato"
+                          onBlur={handleBlur}
+                          disabled={disabled}
                         />
                       </div>
-                      <div className="errorSelect">
-                        {this.state.formatoError}
-                      </div>
+                      {touched.formato && errors.formato && (
+                        <FormFeedback style={{ display: "block" }} tooltip>
+                          {errors.formato}
+                        </FormFeedback>
+                      )}
                     </FormGroup>
                   </ModalBody>
                   <ModalFooter>
@@ -138,5 +175,5 @@ class ModalPlatinlla extends React.Component {
 
 export default connect(
   null,
-  { loadOriginalService, loadModifiedService, editServices }
+  { SavePlantillas, editPlantilla }
 )(ModalPlatinlla);

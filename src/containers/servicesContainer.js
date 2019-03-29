@@ -18,9 +18,12 @@ import { connect } from "react-redux";
 import classnames from "classnames";
 import {
   getDataServices,
-  loadOriginalService
+  loadOriginalService,
+  deletePlantillas
 } from "../actions/ServicesAction";
-import Plantillas from '../views/Servicios/plantilla'
+
+import { openConfirmDialog } from "../actions/aplicantionActions";
+import Plantillas from "../views/Servicios/plantilla";
 
 class ServicesContainer extends React.Component {
   constructor(props) {
@@ -49,6 +52,9 @@ class ServicesContainer extends React.Component {
 
   render() {
     const dataService = this.props.service ? this.props.service : [];
+    const dataPlantilla = this.props.plantilla
+      ? this.props.plantilla.templates
+      : [];
     return (
       <div className="animated fadeIn">
         <Row>
@@ -92,10 +98,16 @@ class ServicesContainer extends React.Component {
                         data={dataService}
                         getdataModal={this.props.getDataModalService}
                         serviceModalData={this.props.serviceModalData}
-                        plantilla={this.props.pantilla}
+                        plantilla={this.props.plantilla}
                       />
                     </TabPane>
-                    <TabPane tabId={2}><Plantillas/></TabPane>
+                    <TabPane tabId={2}>
+                      <Plantillas
+                        template={dataPlantilla}
+                        alert={this.props.alert}
+                        delete={this.props.delete}
+                      />
+                    </TabPane>
                   </TabContent>
                 )}
                 {!this.state.loading && (
@@ -120,13 +132,14 @@ class ServicesContainer extends React.Component {
 const mapStateToProps = state => ({
   loading: state.service.get("loading"),
   service: state.service.get("servicios"),
-  pantilla: state.service.get("plantillas"),
+  plantilla: state.service.get("plantillas"),
   serviceModalData: state.service.get("ModalService")
 });
 const mapDispatchToProps = dispatch => ({
   getData: () => dispatch(getDataServices()),
-  getDataModalService: (obj) => dispatch(loadOriginalService(obj))
-
+  getDataModalService: obj => dispatch(loadOriginalService(obj)),
+  alert: (obj, callback) => dispatch(openConfirmDialog(obj, callback)),
+  delete:(obj)=> dispatch(deletePlantillas(obj))
 });
 
 export default connect(

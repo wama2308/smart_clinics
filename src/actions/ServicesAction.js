@@ -9,6 +9,9 @@ const loadOriginalserviceUrl = `${url}/api/LoadServicesPreloadedOriginalId`;
 const loadCatergoriaUrl = `${url}/api/LoadSelectCategory`;
 const LoadServicesPreloadedId = `${url}/api/LoadServicesPreloadedId`;
 const editServiceUrl = `${url}/api/EditService`;
+const saveTemplateUrl = `${url}/api/saveTemplate`;
+const deletePlantillasUrl = `${url}/api/deleteTemplateId`;
+const editPlatillaurl = `${url}/api/editTemplate`;
 
 export const getDataServices = () => dispatch => {
   getDataToken().then(data => {
@@ -132,6 +135,50 @@ export const editServices = (datos, loaded) => dispatch => {
     }).then(res => {
       loaded();
       dispatch(openSnackbars("success", "Operacion Exitosa"));
+    });
+  });
+};
+
+export const SavePlantillas = (obj, callback) => dispatch => {
+  getDataToken().then(data => {
+    axios({
+      method: "post",
+      url: saveTemplateUrl,
+      data: obj,
+      ...data
+    }).then(res => {
+      callback();
+      dispatch(openSnackbars("success", "Operacion Exitosa"));
+    });
+  });
+};
+
+export const deletePlantillas = obj => dispatch => {
+  getDataToken().then(data => {
+    axios({
+      method: "post",
+      url: deletePlantillasUrl,
+      data: {
+        posicion: obj.id,
+        timeZ: obj.time
+      },
+      ...data
+    }).then(() => {
+      dispatch(openSnackbars("success", "Operacion Exitosa"));
+    });
+  });
+};
+
+export const editPlantilla = (obj, callback )=> dispatch => {
+  getDataToken().then(data => {
+    axios({
+      method: "post",
+      url: editPlatillaurl,
+      data: obj,
+      ...data
+    }).then(() => {
+        callback()
+       dispatch(openSnackbars("success", "Operacion Exitosa"));
     });
   });
 };
