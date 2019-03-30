@@ -157,6 +157,13 @@ export const branchEdit = (data, callback) => dispatch => {
 };
 
 
+export const SetDataSave=(data)=>{
+  return{
+    type:"SET_DATA_BRACHN_OFFICE",
+    payload: data
+  }
+}
+
 
 
 //       name: this.state.Sucursal,
