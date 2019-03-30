@@ -4,7 +4,7 @@ import withAuth from './components/withAuth';
 import DefaultHeader from './containers/DefaultLayout/DefaultHeader';
 import DefaultLayout from './containers/DefaultLayout';
 import configContainer from  './containers/configContainer'
-
+import UserContainer from './containers/UsersContainer'
 import servicesContainer from  './containers/servicesContainer'
 
 function Loading() {
@@ -206,7 +206,7 @@ const routes = [
   { path: '/dashboard', name: 'Panel', component: withAuth(Dashboard, DefaultHeader) },
   { path: '/configuration', exact: true, name: 'Configuracion', component: configContainer },
   { path: '/configuration/Medical-center', name: 'Centro Medico', component: configContainer },
-  { path: '/configuration/Users', name: 'Usuarios', component: Usuarios },
+  { path: '/configuration/Users', name: 'Usuarios', component: UserContainer },
   { path: '/configuration/Personal', name: 'Personal', component: Personal },
   { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
   { path: '/administrative/sales', name: 'Ventas', component: Ventas },
