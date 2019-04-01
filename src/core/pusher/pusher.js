@@ -14,9 +14,11 @@ export default class PusherApi {
   }
 
   executeAllPusher() {
-    console.log
+
     branchOffice.bind('save', data => {
       this.store.dispatch(SetDataSave(data))
     });
+
+
   }
 }

@@ -1,7 +1,6 @@
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
-export const url = `http://smartclinics.online/sc-admin/web/app.php`;
-// const url =`http://192.168.1.127:8000`
+import { getDataToken, url } from "../core/connection";
 const loadMedicalCenter = `${url}/api/LoadMedicalCenter`;
 const loadGeneralConfiguration = `${url}/api/loadGeneralConfiguration`;
 const loadLicence = `${url}/LoadLicense`;
@@ -11,15 +10,6 @@ const saveSucursal = `${url}/api/saveBranchOffices`;
 const deleteSucursalApi = `${url}/api/deleteBranchOffices`;
 const editBranchUrl = `${url}/api/editBranchOffices`;
 
-export const getDataToken = () => {
-  return new Promise(resolve => {
-    const token = window.localStorage.getItem("id_token");
-    const datos = {
-      headers: { "access-token": token }
-    };
-    resolve(datos);
-  });
-};
 
 export const loadMedicalcenterAction = () => dispatch => {
   getDataToken().then(datos => {
@@ -82,7 +72,7 @@ export const loadTypes = () => dispatch => {
 };
 
 export const editMedicalCenter = (data, callback) => dispatch => {
-  console.log('se ejecuto')
+  console.log("se ejecuto");
   getDataToken().then(datos => {
     axios({
       method: "post",
@@ -138,7 +128,7 @@ export const deleteSucursal = (key, time) => dispatch => {
 };
 
 export const branchEdit = (data, callback) => dispatch => {
-  console.log('entro en editar')
+  console.log("entro en editar");
   getDataToken().then(datos => {
     axios({
       method: "post",
@@ -151,20 +141,17 @@ export const branchEdit = (data, callback) => dispatch => {
         callback();
       })
       .catch(error => {
-        dispatch(openSnackbars("error", error.toString()  ));
+        dispatch(openSnackbars("error", error.toString()));
       });
   });
 };
 
-
-export const SetDataSave=(data)=>{
-  return{
-    type:"SET_DATA_BRACHN_OFFICE",
+export const SetDataSave = data => {
+  return {
+    type: "SET_DATA_BRACHN_OFFICE",
     payload: data
-  }
-}
-
-
+  };
+};
 
 //       name: this.state.Sucursal,
 //       idCountry: this.state.pais,
