@@ -123,6 +123,12 @@ export default class MedicalCenter extends React.Component {
       this.state.selectedCountry
     );
 
+    console.log(
+       this.props.data.countryid,
+       this.props.data.provinceid,
+    )
+
+
     return (
       <div>
         {this.state.modal && <Loading type={this.state.modalType} />}

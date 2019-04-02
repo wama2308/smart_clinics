@@ -6,12 +6,12 @@ import App from './App';
 import store from './store'
 import {Provider} from 'react-redux'
 import {HashRouter} from 'react-router-dom'
-import PusherApi from './core/pusher/pusher'
+// import PusherApi from './core/pusher/pusher'
 import {verify} from './actions/authActions'
 
 // disable ServiceWorker
 // import registerServiceWorker from './registerServiceWorker';
-new PusherApi(store)
+// new PusherApi(store)
 store.dispatch(verify());
 
 ReactDOM.render(

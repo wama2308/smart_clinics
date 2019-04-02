@@ -60,7 +60,7 @@ class ServicesContainer extends React.Component {
         <Row>
           <Col>
             <Card>
-              <CardHeader>Configuracion del Centro Medico</CardHeader>
+              <CardHeader>Servicios</CardHeader>
               <CardBody>
                 <div>
                   <Nav tabs>

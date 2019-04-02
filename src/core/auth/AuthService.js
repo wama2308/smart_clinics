@@ -17,7 +17,7 @@ export default class AuthService {
       }
     };
     return axios
-      .post(this.domain + "api/login", token)
+      .post(this.domain + "/api/login", token)
       .then(async res => {
         const result = await decode(res.data.token);
         await this.setTokenInTheLocalStorage(_username);
