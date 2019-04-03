@@ -32,19 +32,10 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 import ModalContainer from "./modalcomponen";
-import FormModal from "./modal";
 import "./modal.css";
 import axios from 'axios'
 import { datosConexion } from "../../components/Conexion.js";
 import jstz from "jstz";
-
-// import {
-//   compose,
-//   withScriptjs,
-//   withGoogleMap,
-//   GoogleMap,
-//   Marker
-// } from "react-google-maps";
 
 
 class Configurations extends Component {

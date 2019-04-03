@@ -16,20 +16,19 @@ const MapComponent = compose(
   <GoogleMap
     onClick={props.handleClickmap}
  
-
+    ref={(map) =>
+      map && 
+      map.panTo({lat: props.lat, lng:  props.lng})}
+      defaultCenter={{ lat:  props.lat, lng:  props.lng }}
    defaultZoom={props.zoom}
    zoom={props.zoom}
-   
-   ref={(map) =>
-    map && 
-    map.panTo({lat: props.currentLocation.lat, lng: props.currentLocation.lng})}
-    defaultCenter={{ lat: props.currentLocation.lat, lng: props.currentLocation.lng }}
 
   >
 {props.isMarkerShown && <Marker 
 
-  position={{ lat: props.lat, lng: props.lng }} 
-  onClick={props.onMarkerClick} />}
+  position={{ lat:props.lat , lng: props.lng}} 
+  // onClick={props.onMarkerClick}
+   />}
   </GoogleMap>
 )
 

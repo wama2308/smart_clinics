@@ -33,6 +33,11 @@ export default {
           name: 'Servicios',
           url: '/configuration/Services',
           icon: 'icon-puzzle',
+        },
+        {
+          name:'Personal Externo',
+          url:'/configuration/personalExterno',
+          icon: 'fa fa-user-circle-o',
         }
       ],
     },

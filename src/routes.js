@@ -1,9 +1,12 @@
 import React from 'react';
 import Loadable from 'react-loadable'
 import withAuth from './components/withAuth';
-
 import DefaultHeader from './containers/DefaultLayout/DefaultHeader';
 import DefaultLayout from './containers/DefaultLayout';
+import configContainer from  './containers/configContainer'
+import UserContainer from './containers/UsersContainer'
+import servicesContainer from  './containers/servicesContainer'
+import ExternalContainer from './containers/externalContainer'
 
 function Loading() {
   return <div>Loading...</div>;
@@ -124,11 +127,6 @@ const Dashboard = Loadable({
   loading: Loading,
 });
 
-const Configurations = Loadable({
-  loader: () => import('./views/Configurations'),
-  loading: Loading,
-});
-
 const Usuarios = Loadable({
   loader: () => import('./views/Usuarios'),
   loading: Loading,
@@ -207,11 +205,12 @@ const Widgets = Loadable({
 const routes = [
   { path: '/', exact: true, name: 'Inicio', component: DefaultLayout },
   { path: '/dashboard', name: 'Panel', component: withAuth(Dashboard, DefaultHeader) },
-  { path: '/configuration', exact: true, name: 'Configuracion', component: Configurations },
-  { path: '/configuration/Medical-center', name: 'Centro Medico', component: Configurations },
-  { path: '/configuration/Users', name: 'Usuarios', component: Usuarios },
+  { path: '/configuration', exact: true, name: 'Configuracion', component: configContainer },
+  { path: '/configuration/Medical-center', name: 'Centro Medico', component: configContainer },
+  { path: '/configuration/personalExterno', name: 'Personal Externo', component: ExternalContainer },
+  { path: '/configuration/Users', name: 'Usuarios', component: UserContainer },
   { path: '/configuration/Personal', name: 'Personal', component: Personal },
-  { path: '/configuration/Services', name: 'Servicios', component: Servicios },
+  { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
   { path: '/administrative/sales', name: 'Ventas', component: Ventas },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },

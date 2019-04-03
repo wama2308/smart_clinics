@@ -1,8 +1,14 @@
 import authReducer  from './authReducer'
+import configReducer from './configReducer'
+import AplicationReducers from './aplicationReducer'
 import {combineReducers} from 'redux';
-
-const auth = authReducer
+import serviceReducer from './serviceReducer'
+import userReducer from './UsersReducers'
 
 export default combineReducers({
-    auth,
+    auth : authReducer,
+    config: configReducer,
+    global: AplicationReducers,
+    service: serviceReducer,
+    usersRoles: userReducer
   });
