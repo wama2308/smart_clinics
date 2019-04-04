@@ -8,8 +8,10 @@ import {
   CardBody,
   CardHeader,
   TabContent,
-  TabPane
+  TabPane,
+  Button
 } from "reactstrap";
+import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal";
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
 class EnternalContainer extends React.Component {
@@ -17,7 +19,8 @@ class EnternalContainer extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      activeTab: 1
+      activeTab: 1,
+      openModal: false
     };
   }
 
@@ -28,6 +31,10 @@ class EnternalContainer extends React.Component {
       });
     }
   }
+
+  close = () => {
+    this.setState({ openModal: false });
+  };
 
   render() {
     const data = [
@@ -62,9 +69,17 @@ class EnternalContainer extends React.Component {
 
     return (
       <Container>
+        <ExternalModal open={this.state.openModal} close={this.close} />
         <Card>
           <CardHeader>Centros Medicos Afiliados</CardHeader>
           <CardBody>
+            <Button
+              color="success"
+              style={{ marginBottom: 10 }}
+              onClick={() => this.setState({ openModal: true })}
+            >
+              Solicitar Afiliacion
+            </Button>
             <Nav tabs>
               <NavItem>
                 <NavLink

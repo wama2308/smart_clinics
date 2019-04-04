@@ -13,7 +13,7 @@ class BodyExternal extends React.Component {
       {
         label: "Estatus"
       },
-      { label: "Nombre del centro medico" },
+      { label: "Centro medico" },
       { label: "Direccion" },
       { label: "Provincia" },
       { label: "Acciones" }
@@ -47,7 +47,7 @@ class BodyExternal extends React.Component {
                             aria-label="Delete"
                             className="iconButtons"
                             onClick={() => {
-                              this.view(item);
+                              // this.view(item);
                             }}
                           >
                             <Visibility className="iconTable" />
@@ -57,7 +57,7 @@ class BodyExternal extends React.Component {
                             aria-label="Delete"
                             className="iconButtons"
                             onClick={() => {
-                              this.modaledit(item, i);
+                              // this.modaledit(item, i);
                             }}
                           >
                             <Edit className="iconTable" />
@@ -67,7 +67,7 @@ class BodyExternal extends React.Component {
                             className="iconButtons"
                             aria-label="Delete"
                             onClick={() => {
-                              this.delete(i);
+                              // this.delete(i);
                             }}
                           >
                             <Delete className="iconTable" />
