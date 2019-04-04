@@ -64,6 +64,7 @@ class ModalComponent extends React.Component {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
+      console.log(obj)
       this.setState({
         ...obj,
         initialLocation: {
@@ -206,6 +207,11 @@ class ModalComponent extends React.Component {
       lng: event.latLng.lng(),
       isMarkerShown: true
     });
+
+    console.log({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    })
   };
 
   render() {
