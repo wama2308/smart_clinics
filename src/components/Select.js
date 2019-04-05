@@ -1,28 +1,70 @@
-import React from 'react'
-import { Input } from 'reactstrap'
-import styled from 'styled-components'
+import React from "react";
+import { Input } from "reactstrap";
+import styled from "styled-components";
 
 class SelectComponent extends React.Component {
-  render(){
-    return(
-      <div style={{minWidth:'40%'}} >
-        <Select
-         placeholder='search...'
-        />
-        <div>
+  constructor(props) {
+    super(props);
+    this.state = {
+      over: 2,
+      clicked: false
+    };
+  }
 
-        </div>
+  onOver = () => {
+    console.log('over')
+    this.setState({ over: 2 });
+  };
+
+  mouseOut = () => {
+    console.log('out')
+    this.setState({ over: 1 });
+  };
+
+  handleClick = () => {
+    this.setState({ clicked: true });
+  };
+
+
+
+  handleBlur = () => {
+    this.setState({ clicked: false });
+  };
+
+  render() {
+    return (
+      <div style={{ minWidth: "40%" }}>
+        <Select
+          placeholder="search..."
+          theme={this.state.over}
+          onMouseOver={this.onOver}
+          onClick={this.handleClick}
+          onBlur={this.handleBlur}
+          onMouseOut={this.mouseOut}
+        />
+        {this.state.clicked && <BodySearch  onClick={this.handleClick}  onBlur={this.handleBlur} />}
       </div>
-    )
+    );
   }
 }
 
-export default SelectComponent
+export default SelectComponent;
 
-const Select =  styled(Input)`
-  border-radius:20px 20px;
-  height:40px;
-  &:hover{
-    box-shadow: 0px 1.5px 7px 0px rgba(134,117,117,0.75)
+const Select = styled(Input)`
+  border-radius: ${props => (props.theme === 2 ? "20px 20px 0px 0px" : "20px 20px")};
+  height: 40px;
+  &:hover {
+    box-shadow: 0px 1.5px 7px 0px rgba(134, 117, 117, 0.75);
   }
-`
+`;
+
+const BodySearch = styled.div`
+  position: absolute;
+  height: 230px;
+  width: 38.5%;
+  z-index: 2;
+  background: white;
+  /* border-top: 1px solid black; */
+  top: 57px;
+  box-shadow: 0px 1.5px 7px 0px rgba(134, 117, 117, 0.75);
+`;
