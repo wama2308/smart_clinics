@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "reactstrap";
 import styled from "styled-components";
-
+import {connect } from 'react-redux'
 class SelectComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -25,8 +25,6 @@ class SelectComponent extends React.Component {
     this.setState({ clicked: true });
   };
 
-
-
   handleBlur = () => {
     this.setState({ clicked: false });
   };
@@ -39,16 +37,19 @@ class SelectComponent extends React.Component {
           theme={this.state.over}
           onMouseOver={this.onOver}
           onClick={this.handleClick}
-          onBlur={this.handleBlur}
           onMouseOut={this.mouseOut}
         />
-        {this.state.clicked && <BodySearch  onClick={this.handleClick}  onBlur={this.handleBlur} />}
+        {!this.props.outside && <BodySearch  onClick={this.handleClick}  />}
       </div>
     );
   }
 }
 
-export default SelectComponent;
+const mapStateToProps= state=>({
+  outside: state.global.outside
+})
+
+export default connect(mapStateToProps, null)(SelectComponent)
 
 const Select = styled(Input)`
   border-radius: ${props => (props.theme === 2 ? "20px 20px 0px 0px" : "20px 20px")};

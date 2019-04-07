@@ -14,6 +14,7 @@ import styled from "styled-components";
 import Map from "./Map";
 import Select from "../../../components/Select";
 import Body from "./bodyModal";
+import OutsideClick from '../../../components/OutsideClick'
 
 class ExternalModal extends React.Component {
   constructor(props) {
@@ -55,8 +56,11 @@ class ExternalModal extends React.Component {
     return (
       <Modal isOpen={open} toggle={close} style={{ minWidth: "65%" }}>
         <HeaderModal>
+
           <h5 style={{margin:0}}> Modal title </h5>
-          <Select />
+          <OutsideClick>
+             <Select />
+          </OutsideClick>
         </HeaderModal>
         <ModalBody>
           {!this.state.seleted && (

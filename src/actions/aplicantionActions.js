@@ -32,3 +32,29 @@ export const openConfirmDialog = (message, callback) => {
     }
   }
 }
+
+
+export const outsideClick = ()=>{
+  return {
+    type:'OUT_CLICK',
+    payload:true
+  }
+}
+
+
+
+export const insideClick = ()=>{
+  return {
+    type:'OUT_CLICK',
+    payload: false  
+  }
+}
+
+
+
+export const search =(data)=>{
+  return {
+   type:'SEARCH',
+   payload: data
+  }
+}

@@ -10,7 +10,8 @@ const InitalState = {
       message:'',
       callback: undefined
     },
-    openModalExists: false
+    openModalExists: false,
+    outside:true,
 }
 
 const AplicationReducers = (state = InitalState , action) => {
@@ -27,6 +28,10 @@ const AplicationReducers = (state = InitalState , action) => {
 
   case 'CLOSE_CONFIRM':{
     return {...state , confirm:{...state.confirm , open:false  }}
+  }
+
+  case 'OUT_CLICK': {
+    return {...state , outside : action.payload}
   }
 
 
