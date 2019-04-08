@@ -48,3 +48,22 @@ export const data = [
       "https://i.pinimg.com/originals/7f/9b/9a/7f9b9a39639b9ca8bb6f1cba6e35d041.png"
   }
 ];
+
+export const selectOptions = [
+  {
+    id: "1",
+    name: "laboratorio"
+  },
+  {
+    id: "2",
+    name: "clinica"
+  },
+  {
+    id: "3",
+    name: "hospital"
+  },
+  {
+    id: "4",
+    name: "vererinaria"
+  }
+];

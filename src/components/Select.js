@@ -1,70 +1,95 @@
 import React from "react";
-import { Input } from "reactstrap";
+import { Input, ListGroup, ListGroupItem } from "reactstrap";
 import styled from "styled-components";
 
-class SelectComponent extends React.Component {
+class SearchComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      over: 2,
-      clicked: false
+      over: "no",
+      clicked: "no",
     };
   }
 
   onOver = () => {
-    console.log('over')
-    this.setState({ over: 2 });
+    this.setState({ over: "yes" });
   };
 
   mouseOut = () => {
-    console.log('out')
-    this.setState({ over: 1 });
+    this.setState({ over: "no" });
   };
 
   handleClick = () => {
-    this.setState({ clicked: true });
+    console.log('hello')
+    this.setState({ clicked: "yes" });
   };
 
-
-
   handleBlur = () => {
-    this.setState({ clicked: false });
+    console.log("asdasd");
+    this.setState({ clicked: "no" });
   };
 
   render() {
     return (
-      <div style={{ minWidth: "40%" }}>
+      <Container  onFocus={this.handleBlur} onClick={this.handleClick}>
         <Select
           placeholder="search..."
           theme={this.state.over}
+          value={this.state.selected}
+          clicked={this.state.clicked}
+          value={this.props.value}
+          onChange={event => this.props.searchAtion(event.target.value)}
           onMouseOver={this.onOver}
-          onClick={this.handleClick}
-          onBlur={this.handleBlur}
           onMouseOut={this.mouseOut}
         />
-        {this.state.clicked && <BodySearch  onClick={this.handleClick}  onBlur={this.handleBlur} />}
-      </div>
+        {this.state.clicked === "yes" && (
+          <BodySearch>
+            {this.props.options.map(option => {
+              return (
+                <ListGroup key={option.id}>
+                  <ListGroupItem
+                    onClick={() => this.props.searchAtion(option.name)}
+                  >
+                    {option.name}
+                  </ListGroupItem>
+                </ListGroup>
+              );
+            })}
+          </BodySearch>
+        )}
+      </Container>
     );
   }
 }
 
-export default SelectComponent;
+export default SearchComponent;
 
 const Select = styled(Input)`
-  border-radius: ${props => (props.theme === 2 ? "20px 20px 0px 0px" : "20px 20px")};
+  border-radius: ${props =>
+    props.clicked === "yes" ? "20px 20px 0px 0px" : "20px 20px"};
   height: 40px;
   &:hover {
     box-shadow: 0px 1.5px 7px 0px rgba(134, 117, 117, 0.75);
   }
 `;
 
-const BodySearch = styled.div`
+const Container = styled.div`
+  min-width: 40%;
   position: absolute;
+  z-index: 1;
+  top: 2%;
+  right: 1%;
+`;
+
+const BodySearch = styled.div`
   height: 230px;
-  width: 38.5%;
+  width: 100%;
   z-index: 2;
   background: white;
   /* border-top: 1px solid black; */
   top: 57px;
   box-shadow: 0px 1.5px 7px 0px rgba(134, 117, 117, 0.75);
 `;
+
+// props =>
+//

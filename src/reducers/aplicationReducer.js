@@ -1,3 +1,4 @@
+import { search } from "../actions/aplicantionActions";
 
 const InitalState = {
     snackBars:{
@@ -10,7 +11,8 @@ const InitalState = {
       message:'',
       callback: undefined
     },
-    openModalExists: false
+    openModalExists: false,
+    search:''
 }
 
 const AplicationReducers = (state = InitalState , action) => {
@@ -28,7 +30,9 @@ const AplicationReducers = (state = InitalState , action) => {
   case 'CLOSE_CONFIRM':{
     return {...state , confirm:{...state.confirm , open:false  }}
   }
-
+  case 'SEARCH_DATA':{
+    return {...state , search: action.payload}
+  }
 
   default:
     return state;

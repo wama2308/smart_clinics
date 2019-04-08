@@ -9,11 +9,13 @@ import {
   CardHeader,
   CardBody
 } from "reactstrap";
-import { data } from "./mockData";
+import { data, selectOptions } from "./mockData";
 import styled from "styled-components";
 import Map from "./Map";
-import Select from "../../../components/Select";
+import Search from "../../../components/Select";
 import Body from "./bodyModal";
+import { search } from "../../../actions/aplicantionActions";
+import { connect } from "react-redux";
 
 class ExternalModal extends React.Component {
   constructor(props) {
@@ -41,7 +43,6 @@ class ExternalModal extends React.Component {
   };
 
   mouseOver = value => {
-    console.log(value);
     this.setState({ selectedMarker: value });
   };
 
@@ -51,12 +52,15 @@ class ExternalModal extends React.Component {
 
   render() {
     const { open, close } = this.props;
-
     return (
       <Modal isOpen={open} toggle={close} style={{ minWidth: "65%" }}>
-        <HeaderModal>
-          <h5 style={{margin:0}}> Modal title </h5>
-          <Select />
+        <HeaderModal >
+          <h5 style={{ margin: 7 }}> Modal title </h5>
+          <Search
+            options={selectOptions}
+            searchAtion={this.props.search}
+            value={this.props.searchData}
+          />
         </HeaderModal>
         <ModalBody>
           {!this.state.seleted && (
@@ -106,7 +110,14 @@ class ExternalModal extends React.Component {
   }
 }
 
-export default ExternalModal;
+const mapStateToProps = state => ({
+  searchData: state.global.search
+});
+
+export default connect(
+  mapStateToProps,
+  { search }
+)(ExternalModal);
 
 const HeaderCard = styled(CardHeader)`
   display: flex;
