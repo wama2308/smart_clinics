@@ -15,6 +15,34 @@ const setStoreDeleteInfoEmailUser = (state, payload) => {
 	return Map(estado);
 }
 
+const setStoreAddSucursal = (state, payload) => {
+	let estado = state.toJS();
+	estado.userIdView.sucursal = payload;
+	return Map(estado);
+}
+
+const setStoreDeleteSucursal = (state, payload) => {
+	let estado = state.toJS();
+	var listSucursal = estado.userIdView.sucursal;
+    listSucursal.splice(payload, 1);
+	estado.userIdView.sucursal = listSucursal;
+	return Map(estado);
+}
+
+const setStoreDeleteUserIdView = (state, payload) => {
+	let estado = state.toJS();
+	estado.userIdView.email = payload.email;
+	estado.userIdView.sucursal = payload.sucursal;
+	return Map(estado);
+}
+
+const setStoreEditUserView = (state, payload) => {
+	let estado = state.toJS();
+	estado.userIdView.email = payload.email;
+	estado.userIdView.sucursal = payload.sucursal;
+	return Map(estado);
+}
+
 const userReducer = (state = Map(), action) => {
   switch (action.type) {
 
@@ -38,6 +66,22 @@ const userReducer = (state = Map(), action) => {
 	  case 'DELETE_DATA_INFO_USER': {
 	  	//console.log("store",state.toJS());
 	  	return setStoreDeleteInfoEmailUser(state, action.payload)
+	  }
+
+	  case 'LOAD_USER_ID': {
+	  	return setStoreEditUserView(state, action.payload)
+	  }
+
+	  case 'ADD_SUCURSAL': {
+	  	return setStoreAddSucursal(state, action.payload)
+	  }
+
+	  case 'DELETE_SUCURSAL': {
+	  	return setStoreDeleteSucursal(state, action.payload)
+	  }
+
+	  case 'DELETE_USER_ID_VIEW': {
+	  	return setStoreDeleteUserIdView(state, action.payload)
 	  }
 
 	  default:

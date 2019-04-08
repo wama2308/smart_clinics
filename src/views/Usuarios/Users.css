@@ -1,4 +1,4 @@
-.Modal{
+.ModalUsersRoles{
     max-width: 955px;
     width:100%;    
     background: white;    
@@ -39,7 +39,7 @@
 	border-left: 1px solid #f86c6b;
 }
 
-.sizeDivGroup{
+.sizeDivGroupRoles{
     height: 40px;
 }
 
@@ -86,8 +86,8 @@ padding: 1em;
     overflow-y: auto;    
 }
 
-.select {
-    width: 88%;
+.selectUsersRoles {
+    width: 89%;
     
 }
 

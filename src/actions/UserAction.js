@@ -1,7 +1,7 @@
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
-const url = `http://smartclinics.online/sc-admin/web/app.php`;
-// const url = `http://localhost:8000`;
+//const url = `http://smartclinics.online/sc-admin/web/app.php`;
+const url = `http://localhost:8000`;
 const LoadRoles = `${url}/api/LoadRoles`;
 const LoadAllUsersNoMaster = `${url}/api/LoadAllUsersNoMaster`;
 const LoadPermitsMedicalCenter = `${url}/api/LoadPermitsMedicalCenter`;
@@ -11,6 +11,10 @@ const LoadRolId = `${url}/api/LoadRolId`;
 const editRol = `${url}/api/editRol`;
 const ValidateEmailUserNoMaster = `${url}/api/ValidateEmailUserNoMaster`;
 const LoadSelectBranchOffices = `${url}/api/LoadSelectBranchOffices`;
+const saveUserNoMaster = `${url}/api/saveUserNoMaster`;
+const LoadIdUsersNoMaster = `${url}/api/LoadIdUsersNoMaster`;
+const editUserNoMaster = `${url}/api/editUserNoMaster`;
+const DeleteUserNoMaster = `${url}/api/DeleteUserNoMaster`;
 
 
 const rolNew = {
@@ -76,7 +80,13 @@ export const LoadAllUsersNoMasterFunction = () => dispatch => {
                   totalBranchOffices,
                   arrayBranchOffices,
                   permits,
-                  modules
+                  modules,
+                  userIdView: {
+                    loading: "hide",
+                    email: '',
+                    sucursal: []
+                  }
+                  
                 }
               });
             });
@@ -257,9 +267,132 @@ export const deleteInfoUser = (clean, exist) => dispatch => {
   });
 };
 
+export const saveUserNoMasterAction = (data, callback) => dispatch => {
+  getPosts().then(datos =>{
+    axios({
+      method: "post",
+      url: saveUserNoMaster,
+      data: data,
+      headers: datos.headers
+    })
+      .then(() => {
+        callback();
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+      })
+      .catch(error => {
+        dispatch(openSnackbars("error", "Error guardando el usuario"));
+      });
+    }).catch(() => {
+      console.log('Problemas con el token');
+    });
+};
 
+export const editUserNoMasterAction = (data, callback) => dispatch => {
+  getPosts().then(datos =>{
+    axios({
+      method: "post",
+      url: editUserNoMaster,
+      data: data,
+      headers: datos.headers
+    })
+      .then(() => {
+        callback();
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+      })
+      .catch(error => {
+        dispatch(openSnackbars("error", "Error editando el usuario"));
+      });
+    }).catch(() => {
+      console.log('Problemas con el token');
+    });
+};
 
+export const LoadIdUsersNoMasterFunction = (userId) => dispatch => {
+  getPosts().then(datos =>{
+    axios({
+      method: 'post',
+      url: LoadIdUsersNoMaster,
+      data: {
+          id: userId
+      },
+      headers: datos.headers
+    })
+    .then(res => {
+        dispatch({
+          type: "LOAD_USER_ID",
+          payload: {
+            email:res.data.email,
+            sucursal:res.data.sucursal,
+            loading: "hide"
+          }
+        });
+      })
+      .catch(error => {
+        console.log("Error consultando la api para consultar los detalles del usuario por id", error.toString());
+      });
 
+  }).catch(() => {
+    console.log('Problemas con el token');
+  });
+};
+
+export const DeleteUserNoMasterAction = (userId) => dispatch => {
+  getPosts().then(datos =>{
+    axios({
+      method: 'post',
+      url: DeleteUserNoMaster,
+      data: {
+          userId: userId                
+      },
+      headers: datos.headers
+    })
+      .then(() => {        
+        dispatch(openSnackbars("success", "Usuario eliminado con exito"));
+      })
+      .catch(error => {
+        dispatch(openSnackbars("error", "Error eliminando el usuario"));
+      });
+    }).catch(() => {
+      console.log('Problemas con el token');
+    });
+};
+
+export const addSucursalFunction = (arraySucursal) => dispatch => {
+  getPosts().then(datos =>{
+    dispatch({
+      type: "ADD_SUCURSAL",
+      payload: arraySucursal      
+    });
+  }).catch(() => {
+    console.log('Problemas con el token');
+  });
+};
+
+export const deleteSucursalFunction = (key) => dispatch => {
+  getPosts().then(datos =>{
+    dispatch({
+        type: "DELETE_SUCURSAL",
+        payload: key      
+      }      
+    );    
+  }).catch(() => {
+    console.log('Problemas con el token');
+  });
+};
+
+export const deleteUserIdView = () => dispatch => {
+  getPosts().then(datos =>{
+    dispatch({
+      type: "DELETE_USER_ID_VIEW",
+      payload: {
+        email: '',
+        sucursal: []
+      }
+    });
+  }).catch(() => {
+    console.log('Problemas con el token');
+  });
+};
 
 /***************************TEST WAMA***************************/
 export const testFunction = () => dispatch => {

@@ -19,11 +19,18 @@ import {
   LoadAllUsersNoMasterFunction,
   saveRolAction,
   editRolAction,
-  LoadRolIdFunction
+  LoadRolIdFunction,
+  saveUserNoMasterAction,
+  LoadIdUsersNoMasterFunction,
+  editUserNoMasterAction,
+  DeleteUserNoMasterAction,  
+  addSucursalFunction,
+  deleteSucursalFunction
 } from "../actions/UserAction";
 import MedicalCenter from "../views/Configurations/MedicalCenter";
 import UsersList from "../views/Usuarios/UsersList";
 import RolesList from "../views/Usuarios/RolesList";
+import { openConfirmDialog } from "../actions/aplicantionActions";
 
 class UsersContainer extends Component {
   constructor(props) {
@@ -51,7 +58,7 @@ class UsersContainer extends Component {
     // console.log(this.props.usersRoles.get("users"));
     // const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
     // console.log("loading", this.props.usersRoles.get("loading"));
-    console.log(this.props)
+    //console.log(this.props)
     return (
       <div className="animated fadeIn">
         <Row>
@@ -85,6 +92,13 @@ class UsersContainer extends Component {
                               modules={this.props.usersRoles.get('modules')}
                               saveRolAction = {this.props.saveRolAction}
                               LoadRolIdFunction = {this.props.LoadRolIdFunction}
+                              saveUserNoMasterAction = {this.props.saveUserNoMasterAction}
+                              editUserNoMasterAction = {this.props.editUserNoMasterAction}
+                              LoadIdUsersNoMasterFunction = {this.props.LoadIdUsersNoMasterFunction}
+                              DeleteUserNoMasterAction = {this.props.DeleteUserNoMasterAction}
+                              confirmDeleteUser = {this.props.confirmDeleteUser}
+                              addSucursalFunction = {this.props.addSucursalFunction}
+                              deleteSucursalFunction = {this.props.deleteSucursalFunction}
                             />
                           </TabPane>
                           <TabPane tabId="2">
@@ -124,7 +138,14 @@ const mapDispatchToProps = dispatch => ({
   loadUsersRoles: () => dispatch(LoadAllUsersNoMasterFunction()),
   saveRolAction: (data, callback) => dispatch(saveRolAction(data, callback)),
   editRolAction: (data, callback) => dispatch(editRolAction(data, callback)),
-  LoadRolIdFunction: pos => dispatch(LoadRolIdFunction(pos))
+  LoadRolIdFunction: pos => dispatch(LoadRolIdFunction(pos)),
+  LoadIdUsersNoMasterFunction: id => dispatch(LoadIdUsersNoMasterFunction(id)),
+  saveUserNoMasterAction: (data, callback) => dispatch(saveUserNoMasterAction(data, callback)),  
+  editUserNoMasterAction: (data, callback) => dispatch(editUserNoMasterAction(data, callback)),  
+  DeleteUserNoMasterAction: (userId) => dispatch(DeleteUserNoMasterAction(userId)),  
+  addSucursalFunction: (arraySucursal) => dispatch(addSucursalFunction(arraySucursal)),  
+  deleteSucursalFunction: (key, callback) => dispatch(deleteSucursalFunction(key, callback)),  
+  confirmDeleteUser: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
 });
 
 export default connect(
