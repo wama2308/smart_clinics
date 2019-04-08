@@ -4,8 +4,10 @@ const setState = (state, newState) => state.set();
 const setData = (state, node , payload ) => state.set( node , payload);
 
 const setEdit=(state, newData)=>{
- return 2
+   state = state.toJS()
+   state.branchoffices = newData
 
+  return Map(state)
 }
 
 const configReducer = (state = Map(), action) => {
@@ -20,6 +22,9 @@ const configReducer = (state = Map(), action) => {
     case'EDIT_MEDICAL_SUCURSALES':
       return setEdit(state, action.payload)
 
+    case 'SET_DATA_BRACHN_OFFICE':{
+       return setEdit(state, action.payload)
+    }
     default:
       return state;
   }

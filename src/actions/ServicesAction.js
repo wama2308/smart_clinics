@@ -1,7 +1,7 @@
-import { getDataToken, url } from "./configAction";
+
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
-
+import { getDataToken, url } from "../core/connection";
 const loadService = `${url}/api/LoadServicesPreloaded`;
 const loadPlantillasUrl = `${url}/api/LoadTemplates`;
 const loadPlantillasTinymceUrl = `${url}/api/LoadTemplatesTinymce`;

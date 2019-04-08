@@ -193,7 +193,7 @@ class ModalServicio extends React.Component {
                         </InputGroupAddon>
                         <Cleave
                           style={{
-                            width: "96%",
+                            width: "95%",
                             height: 35,
                             border: "1.5px solid",
                             borderColor: "#e4e7ea",
