@@ -111,7 +111,7 @@ class RolesList extends React.Component {
                 <tr>
                   <th className="text-left">Nro</th>
                   <th className="text-left">Usuario</th>
-                  <th className="text-left" style={{'min-width':"155px"}}>Acciones</th>                  
+                  <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                  
                 </tr>
               </thead>
               <tbody>
@@ -120,7 +120,7 @@ class RolesList extends React.Component {
                   <tr key={i} className="text-left">
                     <td>{ i + 1 }</td>
                     <td>{ user.email }</td>
-                    <td style={{'min-width':"155px"}}>
+                    <td style={{'minWidth':"155px"}}>
                       <div style={{'height':"15px"}} className={"text-left"} >
                         <IconButton aria-label="Delete" title="Ver Usuario" className="iconButtons" onClick={() => { this.openUser(2, i, user.id); }}><Visibility className="iconTable" /></IconButton>
                         <IconButton aria-label="Delete" title="Editar Usuario" className="iconButtons" onClick={() => { this.openUser(3, i, user.id); }}><Edit className="iconTable" /></IconButton>
