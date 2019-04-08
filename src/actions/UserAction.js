@@ -59,36 +59,7 @@ function getPosts() {
     }
   });
 }
-
 export const LoadAllUsersNoMasterFunction = () => dispatch => {
-<<<<<<< HEAD
-  getPosts().then(datos =>{
-  axios.get(LoadAllUsersNoMaster, datos)
-  .then(res => {
-      LoadRolesFunction(datos, (roles) => {
-        LoadSelectBranchOfficesFunction(datos, (arrayBranchOffices) => {
-          const objectBranchOffices = Object.keys(arrayBranchOffices)
-          const totalBranchOffices = objectBranchOffices.length
-          LoadPermitsMedicalCenterFunction(datos, (permits) => {
-            LoadModulesMedicalCenterFunction(datos, (modules) => {
-              dispatch({
-                type: "LOAD_USERS_ROLES",
-                payload: {
-                  loading: "hide",
-                  ...roles,
-                  ...res.data,
-                  totalBranchOffices,
-                  arrayBranchOffices,
-                  permits,
-                  modules,
-                  userIdView: {
-                    loading: "hide",
-                    email: '',
-                    sucursal: []
-                  }
-
-                }
-=======
   getPosts()
     .then(datos => {
       axios
@@ -109,11 +80,15 @@ export const LoadAllUsersNoMasterFunction = () => dispatch => {
                       totalBranchOffices,
                       arrayBranchOffices,
                       permits,
-                      modules
+                      modules,
+                      userIdView: {
+                        loading: "hide",
+                        email: "",
+                        sucursal: []
+                      }
                     }
                   });
                 });
->>>>>>> dev
               });
             });
           });
@@ -316,137 +291,149 @@ export const deleteInfoUser = (clean, exist) => dispatch => {
     });
 };
 
-<<<<<<< HEAD
 export const saveUserNoMasterAction = (data, callback) => dispatch => {
-  getPosts().then(datos =>{
-    axios({
-      method: "post",
-      url: saveUserNoMaster,
-      data: data,
-      headers: datos.headers
-    })
-      .then(() => {
-        callback();
-        dispatch(openSnackbars("success", "Operacion Exitosa"));
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: saveUserNoMaster,
+        data: data,
+        headers: datos.headers
       })
-      .catch(error => {
-        dispatch(openSnackbars("error", "Error guardando el usuario"));
-      });
-    }).catch(() => {
-      console.log('Problemas con el token');
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error guardando el usuario"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
     });
 };
 
 export const editUserNoMasterAction = (data, callback) => dispatch => {
-  getPosts().then(datos =>{
-    axios({
-      method: "post",
-      url: editUserNoMaster,
-      data: data,
-      headers: datos.headers
-    })
-      .then(() => {
-        callback();
-        dispatch(openSnackbars("success", "Operacion Exitosa"));
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: editUserNoMaster,
+        data: data,
+        headers: datos.headers
       })
-      .catch(error => {
-        dispatch(openSnackbars("error", "Error editando el usuario"));
-      });
-    }).catch(() => {
-      console.log('Problemas con el token');
-    });
-};
-
-export const LoadIdUsersNoMasterFunction = (userId) => dispatch => {
-  getPosts().then(datos =>{
-    axios({
-      method: 'post',
-      url: LoadIdUsersNoMaster,
-      data: {
-          id: userId
-      },
-      headers: datos.headers
-    })
-    .then(res => {
-        dispatch({
-          type: "LOAD_USER_ID",
-          payload: {
-            email:res.data.email,
-            sucursal:res.data.sucursal,
-            loading: "hide"
-          }
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error editando el usuario"));
         });
-      })
-      .catch(error => {
-        console.log("Error consultando la api para consultar los detalles del usuario por id", error.toString());
-      });
-
-  }).catch(() => {
-    console.log('Problemas con el token');
-  });
-};
-
-export const DeleteUserNoMasterAction = (userId) => dispatch => {
-  getPosts().then(datos =>{
-    axios({
-      method: 'post',
-      url: DeleteUserNoMaster,
-      data: {
-          userId: userId
-      },
-      headers: datos.headers
     })
-      .then(() => {
-        dispatch(openSnackbars("success", "Usuario eliminado con exito"));
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const LoadIdUsersNoMasterFunction = userId => dispatch => {
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: LoadIdUsersNoMaster,
+        data: {
+          id: userId
+        },
+        headers: datos.headers
       })
-      .catch(error => {
-        dispatch(openSnackbars("error", "Error eliminando el usuario"));
+        .then(res => {
+          dispatch({
+            type: "LOAD_USER_ID",
+            payload: {
+              email: res.data.email,
+              sucursal: res.data.sucursal,
+              loading: "hide"
+            }
+          });
+        })
+        .catch(error => {
+          console.log(
+            "Error consultando la api para consultar los detalles del usuario por id",
+            error.toString()
+          );
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const DeleteUserNoMasterAction = userId => dispatch => {
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: DeleteUserNoMaster,
+        data: {
+          userId: userId
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Usuario eliminado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error eliminando el usuario"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const addSucursalFunction = arraySucursal => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "ADD_SUCURSAL",
+        payload: arraySucursal
       });
-    }).catch(() => {
-      console.log('Problemas con el token');
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
     });
 };
 
-export const addSucursalFunction = (arraySucursal) => dispatch => {
-  getPosts().then(datos =>{
-    dispatch({
-      type: "ADD_SUCURSAL",
-      payload: arraySucursal
-    });
-  }).catch(() => {
-    console.log('Problemas con el token');
-  });
-};
-
-export const deleteSucursalFunction = (key) => dispatch => {
-  getPosts().then(datos =>{
-    dispatch({
+export const deleteSucursalFunction = key => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
         type: "DELETE_SUCURSAL",
         payload: key
-      }
-    );
-  }).catch(() => {
-    console.log('Problemas con el token');
-  });
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
 };
 
 export const deleteUserIdView = () => dispatch => {
-  getPosts().then(datos =>{
-    dispatch({
-      type: "DELETE_USER_ID_VIEW",
-      payload: {
-        email: '',
-        sucursal: []
-      }
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "DELETE_USER_ID_VIEW",
+        payload: {
+          email: "",
+          sucursal: []
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
     });
-  }).catch(() => {
-    console.log('Problemas con el token');
-  });
 };
 
-=======
->>>>>>> dev
-/***************************TEST WAMA***************************/
+ /***************************TEST WAMA***************************/
 export const testFunction = () => dispatch => {
   getPosts()
     .then(datos => {
@@ -460,4 +447,4 @@ export const testFunction = () => dispatch => {
     .catch(() => {
       console.log("Problemas con el token");
     });
-};
+}
