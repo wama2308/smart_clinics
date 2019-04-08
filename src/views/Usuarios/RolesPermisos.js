@@ -21,22 +21,14 @@ class RolesPermisos extends React.Component {
 			modalRoles: false,
             rol: '',
             rolError: "",
-            rolInvalid: false,
-            selected: [],
-            selectedNuevoRol:[],    
-            divListBox: "",
-            divListBoxNuevoRol:'',
-            selectedError: "",
+            rolInvalid: false,            
+            selectedNuevoRol:[], 
+            divListBoxNuevoRol:'',            
             selectedErrorNuevoRol:'',
             modules: [],
             onlyModules: [],
             selectedInvalid: 0,  
             selectedInvalidNuevoRol:0,
-
-            rolSelect:[],
-            selectedRolOption:null,
-            divSelectRol:'',
-            rolSelectError:'',
             rolIdView: '',
             imageButton: <FaPlusCircle size="1em"/>,
             varDisabled: false,
@@ -75,13 +67,9 @@ class RolesPermisos extends React.Component {
             }            
         });                
         this.setState({ 
-            selectedRolOption,
-            rolSelectError: '',
-            divSelectRol: '',
-            divListBox: "",
-            selectedError: "",  
             rolIdView: valueActualRol                            
-        });             
+        });     
+        this.props.valorSelectRol(selectedRolOption);        
     }
 
     toggleNuevoRol = () => {
@@ -100,11 +88,7 @@ class RolesPermisos extends React.Component {
     }
 
     toggleTab(tab){
-        if (this.state.activeTab !== tab) {
-            this.setState({
-                activeTab: tab
-            });
-        }
+        this.props.valorTab(tab);     
     }   
 
     cleanNewRol = () => {
@@ -121,24 +105,7 @@ class RolesPermisos extends React.Component {
     }   
 
     onChange = (selected) => {
-        if(Object.keys(selected).length === 0 )
-        {
-            this.setState({ 
-                selected, 
-                selectedInvalid: 0, 
-                divListBox: "borderColor",
-                selectedError: "¡Seleccione los permisos!" 
-            });
-        }
-        else
-        {
-            this.setState({ 
-                selected, 
-                selectedInvalid: 1, 
-                divListBox: "",
-                selectedError: "",                
-            });
-        }              
+        this.props.valorSelectPermisos(selected);                   
     }  
 
     onChangeNuevoRol = (selectedNuevoRol) => {
@@ -218,13 +185,7 @@ class RolesPermisos extends React.Component {
         })
     }    
 
-    componentWillReceiveProps=(props)=>{
-        //console.log("hijos ",props)
-        /*this.setState({
-            modules: props.modules,
-            onlyModules: props.onlyModules
-        })*/        
-    }
+    componentWillReceiveProps=(props)=>{}
 
     openRoles = (option, rolId) => {  
         if(!rolId){
@@ -239,7 +200,6 @@ class RolesPermisos extends React.Component {
                 disabled: true,
                 showHide: 'hide',             
             })
-
         }
     }
 
@@ -251,7 +211,7 @@ class RolesPermisos extends React.Component {
 
 	render() {   
         return (
-            <div>      
+            <div>  
                 <ModalRoles 
                     option = {this.state.option}
                     modal = {this.state.modal}
@@ -262,39 +222,38 @@ class RolesPermisos extends React.Component {
                     modules = {this.props.modules}         
                     permits = {this.props.permits}  
                     valorCloseModalRoles={this.valorCloseModalRoles}  
-                /> 
+                />             
         		<Nav tabs>
                     <NavItem>
-                        <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
+                        <NavLink className={classnames({ active: this.props.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
                             Roles
                         </NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
+                        <NavLink className={classnames({ active: this.props.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
                             Permisos-Especiales
                         </NavLink>
                     </NavItem>                
                 </Nav>
-                <TabContent activeTab={this.state.activeTab}>
+                <TabContent activeTab={this.props.activeTab}>
                     <TabPane tabId="1">
                         <FormGroup className="top form-group col-sm-12">
                             <Label for="rol">Rol</Label>
-                            <div className={this.state.divSelectRol}>                                                                        
-                                <InputGroup className="top form-group col-sm-20">                                                                
-                                    <Select isDisabled={this.state.varDisabled} className="select" name="rol" value={this.state.selectedRolOption} onChange={this.handleChangeSelectRol} options={this.props.rolSelect} />&nbsp;
+                            <div className={this.props.divSelectRol}>                                                                        
+                                <InputGroup className="form-group col-sm-20">                                                                
+                                    <Select isDisabled={this.state.varDisabled} className="selectUsersRoles" name="rol" value={this.props.selectedRolOption} onChange={this.handleChangeSelectRol} options={this.props.rolSelect} />&nbsp;
                                     <div style={{width:'-2%'}}>
                                         <Button title="Ver Rol" className={this.state.ocultarBotones} disabled={this.state.varDisabled} onClick={() => { this.openRoles(2, this.state.rolIdView); }}><FaSearch size="1em"/></Button>&nbsp;
                                         <Button title="Agregar Rol" disabled={this.state.varDisabled} onClick={this.toggleNuevoRol} id="">{this.state.imageButton}</Button>
                                     </div>
-                                </InputGroup>
+                                </InputGroup>                                
                             </div>
-                            <div className="errorSelect">{this.state.rolSelectError}</div>                                                                                                                                                                                                        
+                            <div className="errorSelect">{this.props.rolSelectError}</div>                                                                                                                                                                                                        
                         </FormGroup>       
                         <FormGroup className="top form-group col-sm-12">
                             <Collapse isOpen={this.state.collapseNuevoRol}>
                             <Card >
-                            <CardBody >
-                            {/*<form className="formCodeConfirm" onSubmit={this.handleSaveRoles.bind(this)}> */}
+                            <CardBody >                            
                                 <FormGroup className="top form-group col-sm-12">                                                                 
                                     <Label for="rol">Rol</Label>
                                     <Input disabled={this.state.varDisabled} invalid={this.state.rolInvalid} name="rol" id="rol" onKeyUp={this.handlekeyRol} onChange={this.handleChange} value={this.state.rol} type="text" placeholder="Rol" />
@@ -312,8 +271,7 @@ class RolesPermisos extends React.Component {
                                         <Button className="" color="primary" onClick={this.handleSaveRoles}>Guardar</Button>&nbsp;&nbsp; 
                                         <Button className="" color="danger" onClick={this.cleanNewRol}>Cancelar</Button> 
                                     </div>
-                                </FormGroup>  
-                            {/*</form>*/}
+                                </FormGroup>                              
                             </CardBody>
                             </Card>    
                             </Collapse>
@@ -323,10 +281,10 @@ class RolesPermisos extends React.Component {
                     <TabPane tabId="2">
                         <FormGroup className="top form-group col-sm-12">
                             <Label for="modules">Modulos-Permisos</Label>
-                                <div className={this.state.divListBox}>
-                                    <DualListBox disabled={this.state.varDisabled} className="borderColor" canFilter invalid name="modules" id="modules" options={this.state.modules} selected={this.state.selected} onChange={this.onChange} />
+                                <div className={this.props.divListBox}>
+                                    <DualListBox disabled={this.state.varDisabled} className="borderColor" canFilter invalid name="modules" id="modules" options={this.state.modules} selected={this.props.selected} onChange={this.onChange} />
                                 </div>
-                                <div className="error">{this.state.selectedError}</div>  
+                                <div className="error">{this.props.selectedError}</div>  
                             <hr className={this.state.ocultarBotones}/>
                         </FormGroup>  
                     </TabPane>

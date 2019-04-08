@@ -2,7 +2,6 @@ import authState from "../state/authState";
 import AuthService from "../core/auth/AuthService";
 import { url } from "../core/connection";
 
-console.log(url)
 const auth = new AuthService(
    url
 );
