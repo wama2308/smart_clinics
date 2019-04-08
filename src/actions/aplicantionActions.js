@@ -1,42 +1,55 @@
-
-export const openSnackbars=(type, message)=>{
-    return {
-        type:'OPEN_SNACKBARS',
-        payload:{
-           type,
-           message,
-           open:true
-        }
+export const openSnackbars = (type, message) => {
+  return {
+    type: "OPEN_SNACKBARS",
+    payload: {
+      type,
+      message,
+      open: true
     }
-}
+  };
+};
 
-
-export const closeSnackbars = ()=>{
-    return {
-        type:'CLOSE_SNACKBARS',
-    }
-}
-
+export const closeSnackbars = () => {
+  return {
+    type: "CLOSE_SNACKBARS"
+  };
+};
 
 export const closeDialog = () => {
   return {
-    type:'CLOSE_CONFIRM',
-  }
-}
+    type: "CLOSE_CONFIRM"
+  };
+};
 
 export const openConfirmDialog = (message, callback) => {
   return {
-    type:'OPEN_CONFIRM',
-    payload:{
-      message, callback
+    type: "OPEN_CONFIRM",
+    payload: {
+      message,
+      callback
     }
-  }
-}
+  };
+};
 
-
-export const search =( data )=>{
+export const outsideClick = () => {
   return {
-    type:'SEARCH_DATA',
+    type: "OUT_CLICK",
+    payload: true
+  };
+};
+
+export const insideClick = () => {
+  return {
+    type: "OUT_CLICK",
+    payload: false
+  };
+};
+
+
+export const search =(data)=>{
+  console.log('porque vale')
+  return {
+    type: "SEARCH_DATA",
     payload: data
-  }
+  };
 }

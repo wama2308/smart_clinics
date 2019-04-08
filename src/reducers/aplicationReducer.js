@@ -12,7 +12,8 @@ const InitalState = {
       callback: undefined
     },
     openModalExists: false,
-    search:''
+    search:'',
+    outside:true,
 }
 
 const AplicationReducers = (state = InitalState , action) => {
@@ -33,6 +34,11 @@ const AplicationReducers = (state = InitalState , action) => {
   case 'SEARCH_DATA':{
     return {...state , search: action.payload}
   }
+
+  case 'OUT_CLICK': {
+    return {...state , outside : action.payload}
+  }
+
 
   default:
     return state;

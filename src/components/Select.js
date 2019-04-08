@@ -1,89 +1,84 @@
 import React from "react";
 import { Input, ListGroup, ListGroupItem } from "reactstrap";
 import styled from "styled-components";
+import { search , outsideClick } from "../actions/aplicantionActions";
+import { connect } from "react-redux";
 
-class SearchComponent extends React.Component {
+class SelectComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      over: "no",
-      clicked: "no",
+      over: 2,
+      clicked: false
     };
   }
 
   onOver = () => {
-    this.setState({ over: "yes" });
+    this.setState({ over: 2 });
   };
 
   mouseOut = () => {
-    this.setState({ over: "no" });
-  };
-
-  handleClick = () => {
-    console.log('hello')
-    this.setState({ clicked: "yes" });
-  };
-
-  handleBlur = () => {
-    console.log("asdasd");
-    this.setState({ clicked: "no" });
+    this.setState({ over: 1 });
   };
 
   render() {
+    console.log(this.props);
     return (
-      <Container  onFocus={this.handleBlur} onClick={this.handleClick}>
+      <div style={{ minWidth: "40%" }}>
         <Select
           placeholder="search..."
-          theme={this.state.over}
-          value={this.state.selected}
-          clicked={this.state.clicked}
-          value={this.props.value}
-          onChange={event => this.props.searchAtion(event.target.value)}
+          theme={!this.props.outside? 'yes': 'no'}
           onMouseOver={this.onOver}
+          onClick={this.handleClick}
+          value={this.props.value}
           onMouseOut={this.mouseOut}
+          onChange={event => this.props.search(event.target.value)}
         />
-        {this.state.clicked === "yes" && (
+        {!this.props.outside && (
           <BodySearch>
             {this.props.options.map(option => {
               return (
-                <ListGroup key={option.id}>
-                  <ListGroupItem
-                    onClick={() => this.props.searchAtion(option.name)}
+                <List key={option.id}>
+                  <ListGroupItem className='list-contend'
+                    onClick={() =>{ this.props.search(option.name)
+                    this.props.outsideClick()
+                    }}
                   >
                     {option.name}
                   </ListGroupItem>
-                </ListGroup>
+                </List>
               );
             })}
           </BodySearch>
         )}
-      </Container>
+      </div>
     );
   }
 }
 
-export default SearchComponent;
+const mapStateToProps = state => ({
+  outside: state.global.outside,
+  value: state.global.search
+});
+
+export default connect(
+  mapStateToProps,
+  { search , outsideClick }
+)(SelectComponent);
 
 const Select = styled(Input)`
   border-radius: ${props =>
-    props.clicked === "yes" ? "20px 20px 0px 0px" : "20px 20px"};
+    props.theme === 'yes' ? "20px 20px 0px 0px" : "20px 20px"};
   height: 40px;
   &:hover {
     box-shadow: 0px 1.5px 7px 0px rgba(134, 117, 117, 0.75);
   }
 `;
 
-const Container = styled.div`
-  min-width: 40%;
-  position: absolute;
-  z-index: 1;
-  top: 2%;
-  right: 1%;
-`;
-
 const BodySearch = styled.div`
-  height: 230px;
-  width: 100%;
+  position: absolute;
+  min-height:50px;
+  width: 38.5%;
   z-index: 2;
   background: white;
   /* border-top: 1px solid black; */
@@ -91,5 +86,12 @@ const BodySearch = styled.div`
   box-shadow: 0px 1.5px 7px 0px rgba(134, 117, 117, 0.75);
 `;
 
-// props =>
-//
+
+const List = styled(ListGroup)`
+  cursor: pointer;
+  .list-contend{
+    &:hover{
+      background:#d7e0e4;
+    }
+  }
+`;

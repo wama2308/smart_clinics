@@ -14,8 +14,9 @@ import styled from "styled-components";
 import Map from "./Map";
 import Search from "../../../components/Select";
 import Body from "./bodyModal";
-import { search } from "../../../actions/aplicantionActions";
 import { connect } from "react-redux";
+import OutsideClick from "../../../components/OutsideClick";
+import BodyModal from "./bodyModal";
 
 class ExternalModal extends React.Component {
   constructor(props) {
@@ -54,15 +55,27 @@ class ExternalModal extends React.Component {
     const { open, close } = this.props;
     return (
       <Modal isOpen={open} toggle={close} style={{ minWidth: "65%" }}>
-        <HeaderModal >
-          <h5 style={{ margin: 7 }}> Modal title </h5>
-          <Search
-            options={selectOptions}
-            searchAtion={this.props.search}
-            value={this.props.searchData}
-          />
+        <HeaderModal>
+          <h5 style={{ margin: 0 }}> Modal title </h5>
+          <div style={{ width: "40%" }}>
+            {!this.state.seleted && (
+              <OutsideClick>
+                <Search options={selectOptions} />
+              </OutsideClick>
+            )}
+          </div>
+          {this.state.seleted && (
+            <div>
+              <Button
+                color="success"
+                onClick={() => this.setState({ seleted: false })}
+              >
+                New location
+              </Button>
+            </div>
+          )}
         </HeaderModal>
-        <ModalBody>
+        <ModalBody style={{padding:0}}>
           {!this.state.seleted && (
             <Map
               selectedMarker={this.state.selectedMarker}
@@ -73,29 +86,11 @@ class ExternalModal extends React.Component {
               deletePosition={this.deletePosition}
               googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwl7QwHKe7NFx28t-CbMDTUdQMFVrjEz4&callback=initMap"
               loadingElement={<div style={{ height: `100%` }} />}
-              containerElement={<div style={{ height: `400px` }} />}
+              containerElement={<div style={{ height: `500px` }} />}
               mapElement={<div style={{ height: `100%` }} />}
             />
           )}
-          {this.state.seleted && (
-            <Card style={{ height: 400 }}>
-              <HeaderCard>
-                <div>Informacion del centro medico</div>
-
-                <div>
-                  <Button
-                    color="success"
-                    onClick={() => this.setState({ seleted: false })}
-                  >
-                    Location
-                  </Button>
-                </div>
-              </HeaderCard>
-              <CardBody>
-                <Body />
-              </CardBody>
-            </Card>
-          )}
+          {this.state.seleted && <BodyModal />}
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={close}>
@@ -116,7 +111,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { search }
+  null
 )(ExternalModal);
 
 const HeaderCard = styled(CardHeader)`
