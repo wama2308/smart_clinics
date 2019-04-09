@@ -13,6 +13,7 @@ class RolesList extends React.Component {
       modalFooter: '',
       action: '',
       disabled: '',
+      disabledEmail: '',
       showHide: '',
       option:0,
       position: 0,
@@ -22,15 +23,20 @@ class RolesList extends React.Component {
 
   openUser = (option, pos, userId) => {  
     if(option === 1){
-      this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Registrar Usuario',
-        modalFooter:'Guardar',
-        disabled: false,
-        showHide: 'show',
-        position: 0,        
-      })
+      if(this.props.totalBranchOffices > 0){                
+        this.setState({
+          modal:true,
+          option:option,
+          modalHeader:'Registrar Usuario',
+          modalFooter:'Guardar',
+          disabled: false,
+          disabledEmail: false,
+          showHide: 'show',
+          position: 0,        
+        });      
+      }else{
+          this.props.alert("warning", "¡Antes de registrar un usuario debe registrar una sucursal!");
+      }      
     }else if(option === 2){
       this.props.LoadIdUsersNoMasterFunction(userId);
       this.setState({
@@ -39,6 +45,7 @@ class RolesList extends React.Component {
         modalHeader:'Ver Usuario',
         modalFooter:'Guardar',
         disabled: true,
+        disabledEmail: true,
         showHide: 'hide',
         position: pos,        
       })
@@ -50,6 +57,7 @@ class RolesList extends React.Component {
         modalHeader:'Editar Usuario',
         modalFooter:'Editar',
         disabled: false,
+        disabledEmail: true,
         showHide: 'show',
         userIdEdit: userId,        
       })
@@ -75,8 +83,7 @@ class RolesList extends React.Component {
     });                    
   } 
 
-  render() {
-      const test = "hola";
+  render() {      
      return (
       <div className="container">      
         <ModalUser 
@@ -85,6 +92,7 @@ class RolesList extends React.Component {
           modalHeader = {this.state.modalHeader}
           modalFooter = {this.state.modalFooter}
           disabled = {this.state.disabled}
+          disabledEmail = {this.state.disabledEmail}
           showHide = {this.state.showHide}
           modules = {this.props.modules}         
           permits = {this.props.permits}  
@@ -111,7 +119,7 @@ class RolesList extends React.Component {
                 <tr>
                   <th className="text-left">Nro</th>
                   <th className="text-left">Usuario</th>
-                  <th className="text-left" style={{'min-width':"155px"}}>Acciones</th>                  
+                  <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                  
                 </tr>
               </thead>
               <tbody>
@@ -120,7 +128,7 @@ class RolesList extends React.Component {
                   <tr key={i} className="text-left">
                     <td>{ i + 1 }</td>
                     <td>{ user.email }</td>
-                    <td style={{'min-width':"155px"}}>
+                    <td style={{'minWidth':"155px"}}>
                       <div style={{'height':"15px"}} className={"text-left"} >
                         <IconButton aria-label="Delete" title="Ver Usuario" className="iconButtons" onClick={() => { this.openUser(2, i, user.id); }}><Visibility className="iconTable" /></IconButton>
                         <IconButton aria-label="Delete" title="Editar Usuario" className="iconButtons" onClick={() => { this.openUser(3, i, user.id); }}><Edit className="iconTable" /></IconButton>

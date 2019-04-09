@@ -391,12 +391,15 @@ export const DeleteUserNoMasterAction = userId => dispatch => {
     });
 };
 
-export const addSucursalFunction = arraySucursal => dispatch => {
+export const addSucursalFunction = (email, arraySucursal) => dispatch => {
   getPosts()
     .then(datos => {
       dispatch({
         type: "ADD_SUCURSAL",
-        payload: arraySucursal
+        payload: {
+          email: email,
+          arraySucursal: arraySucursal
+        }
       });
     })
     .catch(() => {
@@ -426,6 +429,19 @@ export const deleteUserIdView = () => dispatch => {
           email: "",
           sucursal: []
         }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const addEmailStoreAction = email => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "ADD_EMAIL_STORE",
+        payload: email
       });
     })
     .catch(() => {

@@ -58,7 +58,6 @@ class RolesPermisos extends React.Component {
     } 
 
     handleChangeSelectRol = (selectedRolOption) => {
-        /*console.log(selectedRolOption);*/
         let valueActualRol = "";
         let arrayRol = Object.values(selectedRolOption);
         arrayRol.forEach(function (elemento, indice, array) {
@@ -203,7 +202,7 @@ class RolesPermisos extends React.Component {
         }
     }
 
-    valorCloseModalRoles = (valor) => {            
+    valorCloseModalRoles = (valor) => {       
         this.setState({
             modal: valor,          
         });                    
