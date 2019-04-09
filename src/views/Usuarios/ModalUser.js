@@ -10,7 +10,7 @@ import axios from 'axios';
 import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
-import { ValidateEmailUserNoMasterFunction, deleteInfoUser, deleteUserIdView} from "../../actions/UserAction";
+import { ValidateEmailUserNoMasterFunction, deleteInfoUser, deleteUserIdView, addEmailStoreAction} from "../../actions/UserAction";
 import ModalInfoUserEmail from './ModalInfoUserEmail.js';
 import RolesPermisos from './RolesPermisos.js';
 import SucursalesList from './SucursalesList.js';
@@ -87,32 +87,7 @@ class ModalUser extends React.Component {
         }
     } 
 
-	openUser = (option) => {	 
-        
-        if(option === "1")
-        {            
-            if(this.state.totalBranchOffices > 0){                
-                this.setState({
-                    modalUser: true,                                 
-                });      
-            }else{
-                this.props.alert("warning", "¡Antes de registrar un usuario debe registrar una sucursal!");
-            }
-        }
-        else if (option === "2"){
-            //this.props.LoadRolViewId(this.props.position);
-            this.setState({
-                modalUser: true,                                 
-            });      
-        }else if(option === "3"){
-            //this.props.LoadRolViewId(this.props.position);
-            this.setState({
-                modalUser: true,                  
-            }); 
-        }
-    }
-
-    handlekey= event =>{
+	handlekey= event =>{
         this.setState({
             emailError: '',
             emailInvalid: false
@@ -140,7 +115,7 @@ class ModalUser extends React.Component {
             loading:'show'
         });   
         this.props.valorCloseModalRoles(false);    
-        this.props.deleteUserIdView();      
+        this.props.deleteUserIdView();            
     }  
 
     pruebaOnBlur = (e) => {
@@ -151,6 +126,7 @@ class ModalUser extends React.Component {
         });     
         if(value !== ""){
             this.props.ValidateEmailUserNoMasterFunction(value);
+            this.props.addEmailStoreAction(value);
         }
         
     }     
@@ -355,7 +331,7 @@ class ModalUser extends React.Component {
                 )                                                                                
             });              
         }    
-        this.props.addSucursalFunction(this.state.listSucursales);
+        this.props.addSucursalFunction(this.state.email, this.state.listSucursales);
         this.setState({
             selectedSucursalOption: null,
             selectedRolOption: null,
@@ -386,12 +362,8 @@ class ModalUser extends React.Component {
     componentWillReceiveProps=(props)=>{
         this.setState({
             modalUser: props.modal,
-            selected:[],
-            selectedRolOption: null,
-            selectedSucursalOption: null,
             loading:'show'            
         });        
-
         if(props.aplication.snackBars){
             if(props.aplication.snackBars.open === true){
                 this.setState({email:''})
@@ -422,16 +394,16 @@ class ModalUser extends React.Component {
             this.setState({email:''})
         }  
 
-        if(props.option !== 1){            
+        if(props.option !== 1){   
             this.setState({
                 loading:'hide',
                 email: props.usersRoles.userIdView.email,
                 listSucursales: props.usersRoles.userIdView.sucursal,                           
             })              
-        }else{            
+        }else{  
             this.setState({
                 loading:'hide',
-                email: '',
+                email: props.usersRoles.userIdView.email,
                 listSucursales: props.usersRoles.userIdView.sucursal,                
             })   
         }                   
@@ -544,7 +516,7 @@ class ModalUser extends React.Component {
                             <form className="formCodeConfirm" onSubmit={this.handleSaveUser.bind(this)}> 
                                 <FormGroup className="top form-group col-sm-12">                                                                 
                                     <Label for="email">Email</Label>
-                                    <Input autoFocus={this.state.focus} disabled={this.props.disabled} invalid={this.state.emailInvalid} name="email" id="email" onKeyUp={this.handlekey} onChange={this.handleChange} value={this.state.email} onBlur={this.pruebaOnBlur} type="text" placeholder="ejemplo@gmail.com" />
+                                    <Input autoFocus={this.state.focus} disabled={this.props.disabledEmail} invalid={this.state.emailInvalid} name="email" id="email" onKeyUp={this.handlekey} onChange={this.handleChange} value={this.state.email} onBlur={this.pruebaOnBlur} type="text" placeholder="ejemplo@gmail.com" />
                                     <FormFeedback tooltip>{this.state.emailError}</FormFeedback>                                                            
                                 </FormGroup>
                                 {
@@ -629,6 +601,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   ValidateEmailUserNoMasterFunction: (email) => dispatch(ValidateEmailUserNoMasterFunction(email)),    
   deleteInfoUser: (clean, exist) => dispatch(deleteInfoUser(clean, exist)),  
+  addEmailStoreAction: (email) => dispatch(addEmailStoreAction(email)),  
   alert: (type, message) => dispatch(openSnackbars(type, message)), 
   confirmDeleteBranchOffices: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
   confirmDeleteBranchOffices: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
