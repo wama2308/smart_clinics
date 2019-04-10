@@ -2,10 +2,24 @@ import React from "react";
 import { Table , Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-
+import PreRegistro from './PreRegistro/PreRegistro'
 class BodyExternal extends React.Component {
+  constructor(props){
+    super(props)
+    this.state={
+      openModal:false
+    }
+  }
+  ViewModal =()=>{
+    this.setState({openModal:true})
+  }
+
+  closeModal=()=>{
+    this.setState({openModal: false})
+  }
+
+
   render() {
-    const array = [1, 2, 3];
     const data = [
       {
         label: "Nombre"
@@ -20,9 +34,7 @@ class BodyExternal extends React.Component {
     ];
     return (
       <div>
-        {/* <div className="App">
-          <Button color="success">Agregar Sucursal</Button>
-        </div> */}
+        <PreRegistro open={this.state.openModal} close={this.closeModal} />
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
@@ -44,34 +56,14 @@ class BodyExternal extends React.Component {
                       <td>
                         <div className="float-left">
                           <IconButton
-                            aria-label="Delete"
                             className="iconButtons"
                             onClick={() => {
-                              // this.view(item);
+                              this.ViewModal();
                             }}
                           >
                             <Visibility className="iconTable" />
                           </IconButton>
 
-                          <IconButton
-                            aria-label="Delete"
-                            className="iconButtons"
-                            onClick={() => {
-                              // this.modaledit(item, i);
-                            }}
-                          >
-                            <Edit className="iconTable" />
-                          </IconButton>
-
-                          <IconButton
-                            className="iconButtons"
-                            aria-label="Delete"
-                            onClick={() => {
-                              // this.delete(i);
-                            }}
-                          >
-                            <Delete className="iconTable" />
-                          </IconButton>
                         </div>
                       </td>
                     </tr>

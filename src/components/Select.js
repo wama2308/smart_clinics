@@ -34,7 +34,7 @@ class SelectComponent extends React.Component {
           onMouseOut={this.mouseOut}
           onChange={event => this.props.search(event.target.value)}
         />
-        {!this.props.outside && (
+        {!this.props.outside && this.props.options  && (
           <BodySearch>
             {this.props.options.map(option => {
               return (

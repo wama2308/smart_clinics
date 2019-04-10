@@ -261,19 +261,7 @@
             "@types/react": {
               "version": "16.8.10",
               "from": "@types/react@16.8.10",
-              "resolved": "https://registry.npmjs.org/@types/react/-/react-16.8.10.tgz",
-              "dependencies": {
-                "@types/prop-types": {
-                  "version": "15.7.0",
-                  "from": "@types/prop-types@15.7.0",
-                  "resolved": "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.0.tgz"
-                },
-                "csstype": {
-                  "version": "2.6.3",
-                  "from": "csstype@2.6.3",
-                  "resolved": "https://registry.npmjs.org/csstype/-/csstype-2.6.3.tgz"
-                }
-              }
+              "resolved": "https://registry.npmjs.org/@types/react/-/react-16.8.10.tgz"
             }
           }
         },
@@ -3822,6 +3810,35 @@
           "version": "15.7.2",
           "from": "prop-types@15.7.2",
           "resolved": "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
+        }
+      }
+    },
+    "react-rating": {
+      "version": "1.6.2",
+      "from": "react-rating",
+      "resolved": "https://registry.npmjs.org/react-rating/-/react-rating-1.6.2.tgz",
+      "dependencies": {
+        "@types/lodash": {
+          "version": "4.14.123",
+          "from": "@types/lodash@^4.14.105",
+          "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.123.tgz"
+        },
+        "@types/react": {
+          "version": "16.8.10",
+          "from": "@types/react@16.8.10",
+          "resolved": "https://registry.npmjs.org/@types/react/-/react-16.8.10.tgz",
+          "dependencies": {
+            "@types/prop-types": {
+              "version": "15.7.0",
+              "from": "@types/prop-types@15.7.0",
+              "resolved": "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.0.tgz"
+            },
+            "csstype": {
+              "version": "2.6.3",
+              "from": "csstype@2.6.3",
+              "resolved": "https://registry.npmjs.org/csstype/-/csstype-2.6.3.tgz"
+            }
+          }
         }
       }
     },

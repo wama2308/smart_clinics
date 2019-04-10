@@ -7,13 +7,12 @@ import {
   ModalFooter,
   Card,
   CardHeader,
-  CardBody
+  CardBody,
 } from "reactstrap";
-import { data, selectOptions } from "./mockData";
+import { data, selectOptions } from "../mockData";
 import styled from "styled-components";
 import Map from "./Map";
 import Search from "../../../components/Select";
-import Body from "./bodyModal";
 import { connect } from "react-redux";
 import OutsideClick from "../../../components/OutsideClick";
 import BodyModal from "./bodyModal";
@@ -50,6 +49,7 @@ class ExternalModal extends React.Component {
   deletePosition = () => {
     this.setState({ selectedMarker: false });
   };
+
 
   render() {
     const { open, close } = this.props;
@@ -90,7 +90,7 @@ class ExternalModal extends React.Component {
               mapElement={<div style={{ height: `100%` }} />}
             />
           )}
-          {this.state.seleted && <BodyModal />}
+          {this.state.seleted && <BodyModal  dataSelected={this.state.selectedMarker} />}
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={close}>
