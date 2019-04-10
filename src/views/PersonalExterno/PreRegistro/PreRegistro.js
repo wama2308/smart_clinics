@@ -51,13 +51,13 @@ class ModalComponent extends React.Component {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      console.log(obj);
-      // this.setState({
-      //   ...obj,
-      //   initialLocation: {
-      //     ...obj
-      //   }
-      // });
+
+      this.setState({
+        ...obj,
+        initialLocation: {
+          ...obj
+        }
+      });
     });
   };
 
@@ -478,7 +478,7 @@ class ModalComponent extends React.Component {
                           </Collapse>
                         </div>
 
-                        {/* <div>
+                        <div>
                           <Button
                             color="primary"
                             onClick={() =>
@@ -493,31 +493,15 @@ class ModalComponent extends React.Component {
                           <Collapse isOpen={this.state.localizacion}>
                             <Card>
                               <CardBody>
-                                <div>
-                                  {!this.props.disabled && (
-                                    <Geosuggest
-                                      placeholder="Buscar en el mapa"
-                                      onSuggestSelect={this.onSuggestSelect}
-                                      location={
-                                        new google.maps.LatLng(this.state.lat
-
-                                          this.state.lng
-
-                                        )
-                                      }
-                                      radius="20"
-                                    />
-                                  )}
-                                </div>
 
                                 <Map
                                   lat={this.state.lat}
                                   lng={this.state.lng}
-                                  onMarkerClick={this.handleMarkerClick}
+                                  // onMarkerClick={this.handleMarkerClick}
                                   isMarkerShown={this.state.isMarkerShown}
                                   initialLocation={this.state.initialLocation}
                                   currentLocation={this.state.currentLatLng}
-                                  handleClickmap={this.handleClickmap}
+                                  // handleClickmap={this.handleClickmap}
                                   ref={cd => (this.map = cd)}
                                 />
                                 <br />
@@ -525,7 +509,7 @@ class ModalComponent extends React.Component {
                             </Card>
                           </Collapse>
                         </div>
-                        <hr /> */}
+                        <hr />
                       </div>
                     </ModalBody>
 
