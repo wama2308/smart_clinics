@@ -21,8 +21,10 @@ import { ExternalInitialValues } from "./constants";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
 import Validator from "../../Configurations/utils";
-import Visitor from './Visitor'
+import Visitor from "./Visitor";
 import Map from "../../Configurations/map";
+import { filterDirection } from "../../../core/utils";
+import Geocode from "react-geocode";
 
 import { Formik } from "formik";
 
@@ -31,16 +33,18 @@ const validator = new Validator();
 class ModalComponent extends React.Component {
   constructor(props) {
     super(props);
+    Geocode.setApiKey("AIzaSyDwl7QwHKe7NFx28t-CbMDTUdQMFVrjEz4&callback");
     this.state = {
       loading: "hide",
       contactos: false,
       localizacion: false,
       dataContactos: [],
       isMarkerShown: false,
-      visitador:false,
+      visitador: false,
       lat: null,
       lng: null,
-      zoom: 14
+      zoom: 14,
+      exactDirection: ""
     };
   }
 
@@ -52,6 +56,10 @@ class ModalComponent extends React.Component {
         lng: position.coords.longitude
       };
 
+      Geocode.fromLatLng(obj.lat, obj.lng).then(rest => {
+        this.setState({ exactDirection: rest.results[0].formatted_address });
+      });
+
       this.setState({
         ...obj,
         initialLocation: {
@@ -61,14 +69,53 @@ class ModalComponent extends React.Component {
     });
   };
 
+  onSuggestSelect = suggest => {
+    if (!suggest || this.props.disabled) {
+      return;
+    }
+    this.setState({
+      lat: suggest.location.lat,
+      lng: suggest.location.lng,
+      isMarkerShown: false
+    });
+    let i = 6;
+
+    let mapzoom = setInterval(() => {
+      if (this.state.zoom === 15) {
+        clearInterval(mapzoom);
+      } else {
+        i = i + 1;
+        this.setState({ zoom: i });
+      }
+    }, 200);
+  };
+
+  handleClickmap = (
+    event: google.maps.MouseEvent | google.maps.IconMouseEvent
+  ) => {
+    if (this.props.disabled) {
+      return;
+    }
+    Geocode.fromLatLng(event.latLng.lat(), event.latLng.lng()).then(rest => {
+      this.setState({ exactDirection: rest.results[0].formatted_address });
+    });
+
+    this.setState({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+      isMarkerShown: true
+    });
+  };
+
   render() {
-    const { open, close, disabled } = this.props;
+    const { open, close, disabled, } = this.props;
     // const countrys = validator.filterCountry(medicalCenter.country);
     // const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
     // const sector = !medicalCenter.typeConfig
     //   ? []
     //   : medicalCenter.typeConfig.sector;
 
+    console.log(this.props)
     const InititalValues = {
       ExternalInitialValues,
       contactoN: "",
@@ -85,6 +132,7 @@ class ModalComponent extends React.Component {
         isOpen={open}
         aria-labelledby="contained-modal-title-lg"
         className="Modal"
+        style={{ minWidth: "65%" }}
       >
         {this.state.loading === "show" && (
           <div align="center" className={"show"} style={{ padding: "5%" }}>
@@ -216,62 +264,6 @@ class ModalComponent extends React.Component {
                         </FormGroup>
 
                         <FormGroup className="top form-group col-sm-6">
-                          <Label for="tipo">Pais</Label>
-                          <Input
-                            type="select"
-                            name="pais"
-                            disabled={disabled}
-                            value={values.idCountry}
-                            onChange={event =>
-                              setFieldValue(
-                                "idCountry",
-                                event.target.value.toString()
-                              )
-                            }
-                          >
-                            <option value="0">Select</option>
-                            {/* {countrys.map(country => {
-                              return (
-                                <option key={country.id} value={country.id}>
-                                  {country.name}
-                                </option>
-                              );
-                            })} */}
-                          </Input>
-                          <FormFeedback tooltip>
-                            {this.state.tipoError}
-                          </FormFeedback>
-                        </FormGroup>
-                        <FormGroup className="top form-group col-sm-6">
-                          <Label for="provincia">Provincia</Label>
-                          <Input
-                            type="select"
-                            name="provincia"
-                            id="provincia"
-                            disabled={disabled}
-                            value={values.provincesid}
-                            onChange={event =>
-                              setFieldValue(
-                                "provincesid",
-                                event.target.value.toString()
-                              )
-                            }
-                          >
-                            <option value="0">Select</option>
-                            {/* {provinces.map((province, key) => {
-                              return (
-                                <option key={key} value={key}>
-                                  {province.name}
-                                </option>
-                              );
-                            })} */}
-                          </Input>
-                          <FormFeedback tooltip>
-                            {this.state.provinciaError}
-                          </FormFeedback>
-                        </FormGroup>
-
-                        <FormGroup className="top form-group col-sm-6">
                           <Label for="tipo">Sector</Label>
                           <Input
                             type="select"
@@ -297,6 +289,42 @@ class ModalComponent extends React.Component {
                           <FormFeedback tooltip>
                             {this.state.sectorError}
                           </FormFeedback>
+                        </FormGroup>
+
+                        <FormGroup className="top form-group col-sm-12">
+                          <Label for="codigo" className="mr-sm-2">
+                            Direccion
+                          </Label>
+
+                          <div
+                            style={{
+                              height: 400,
+                              width: "100%"
+                            }}
+                          >
+                            <Map
+                              lat={this.state.lat}
+                              lng={this.state.lng}
+                              onMarkerClick={this.handleMarkerClick}
+                              isMarkerShown={this.state.isMarkerShown}
+                              initialLocation={this.state.initialLocation}
+                              handleClickmap={this.handleClickmap}
+                              zoom={this.state.zoom}
+                            />
+                          </div>
+                          <Input
+                            type="textarea"
+                            name="code"
+                            rows={5}
+                            disabled={true}
+                            value={this.state.exactDirection}
+                            id="codigo"
+                          />
+                          {errors.code && touched.code && (
+                            <FormFeedback style={{ display: "block" }} tooltip>
+                              {errors.code}
+                            </FormFeedback>
+                          )}
                         </FormGroup>
                       </div>
                       <hr />
@@ -473,42 +501,11 @@ class ModalComponent extends React.Component {
                           >
                             Visitador
                           </Button>
-                          <Collapse  isOpen={this.state.visitador}>
-                            <Visitor/>
+                          <Collapse isOpen={this.state.visitador}>
+                            <Visitor />
                           </Collapse>
                         </div>
 
-                        <div>
-                          <Button
-                            color="primary"
-                            onClick={() =>
-                              this.setState({
-                                localizacion: !this.state.localizacion
-                              })
-                            }
-                            style={{ marginBottom: "1rem" }}
-                          >
-                            Localizacion
-                          </Button>
-                          <Collapse isOpen={this.state.localizacion}>
-                            <Card>
-                              <CardBody>
-
-                                <Map
-                                  lat={this.state.lat}
-                                  lng={this.state.lng}
-                                  // onMarkerClick={this.handleMarkerClick}
-                                  isMarkerShown={this.state.isMarkerShown}
-                                  initialLocation={this.state.initialLocation}
-                                  currentLocation={this.state.currentLatLng}
-                                  // handleClickmap={this.handleClickmap}
-                                  ref={cd => (this.map = cd)}
-                                />
-                                <br />
-                              </CardBody>
-                            </Card>
-                          </Collapse>
-                        </div>
                         <hr />
                       </div>
                     </ModalBody>

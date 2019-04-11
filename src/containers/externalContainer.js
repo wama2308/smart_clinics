@@ -14,6 +14,7 @@ import {
 import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal";
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
+import { dataView } from "../views/PersonalExterno/mockData";
 class EnternalContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -36,37 +37,19 @@ class EnternalContainer extends React.Component {
     this.setState({ openModal: false });
   };
 
+  filterData = data => {
+    const payload = {
+      pendiente: data.filter(data => data.status === "pendiente"),
+      aprobado: data.filter(data => data.status === "aprobado"),
+      rechazado: data.filter(data => data.status === "rechazado")
+    };
+
+    return payload
+  };
+
   render() {
-    const data = [
-      {
-        nombre: "kevin",
-        status: "Aprobado",
-        ncm: "asdasd",
-        direccion: "asdasd",
-        provincia: "asdasd"
-      }
-    ];
-
-    const dat2 = [
-      {
-        nombre: "velasco",
-        status: "Rechazado",
-        ncm: "asdasd",
-        direccion: "asdasd",
-        provincia: "asdasd"
-      }
-    ];
-
-    const dat3 = [
-      {
-        nombre: "ortega",
-        status: "Pendiente",
-        ncm: "asdasd",
-        direccion: "asdasd",
-        provincia: "asdasd"
-      }
-    ];
-
+    const result = this.filterData(dataView);
+    console.log(result)
     return (
       <Container>
         <ExternalModal open={this.state.openModal} close={this.close} />
@@ -122,13 +105,13 @@ class EnternalContainer extends React.Component {
             {this.state.loading && (
               <TabContent activeTab={this.state.activeTab}>
                 <TabPane tabId={1}>
-                  <BodyExternal type={data} />
+                  <BodyExternal type={result.aprobado} />
                 </TabPane>
                 <TabPane tabId={2}>
-                  <BodyExternal type={dat2} />
+                  <BodyExternal type={result.rechazado} />
                 </TabPane>
                 <TabPane tabId={3}>
-                  <BodyExternal type={dat3} />
+                  <BodyExternal type={result.pendiente} />
                 </TabPane>
               </TabContent>
             )}

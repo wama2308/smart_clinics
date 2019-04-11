@@ -3,6 +3,7 @@ import { Table , Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import PreRegistro from './PreRegistro/PreRegistro'
+
 class BodyExternal extends React.Component {
   constructor(props){
     super(props)
@@ -28,7 +29,7 @@ class BodyExternal extends React.Component {
         label: "Estatus"
       },
       { label: "Centro medico" },
-      { label: "Direccion" },
+      { label: "pais" },
       { label: "Provincia" },
       { label: "Acciones" }
     ];
@@ -51,7 +52,7 @@ class BodyExternal extends React.Component {
                       <td>{item.nombre}</td>
                       <td>{item.status}</td>
                       <td>{item.ncm}</td>
-                      <td>{item.direccion}</td>
+                      <td>{item.pais}</td>
                       <td>{item.provincia}</td>
                       <td>
                         <div className="float-left">
@@ -63,6 +64,14 @@ class BodyExternal extends React.Component {
                           >
                             <Visibility className="iconTable" />
                           </IconButton>
+                          <IconButton
+                            className="iconButtons"
+                            onClick={() => {
+                              // this.ViewModal();
+                            }}
+                          >
+                                <Delete className="iconTable" />
+                              </IconButton>
 
                         </div>
                       </td>
