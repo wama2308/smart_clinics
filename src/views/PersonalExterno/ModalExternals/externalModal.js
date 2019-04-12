@@ -16,6 +16,7 @@ import Search from "../../../components/Select";
 import { connect } from "react-redux";
 import OutsideClick from "../../../components/OutsideClick";
 import BodyModal from "./bodyModal";
+import {AllMedicalOffices} from '../../../actions/externalAction'
 
 class ExternalModal extends React.Component {
   constructor(props) {
@@ -28,6 +29,7 @@ class ExternalModal extends React.Component {
   }
 
   componentDidMount = () => {
+    this.props.AllMedicalOffices()
     navigator.geolocation.getCurrentPosition(position => {
       const obj = {
         lat: position.coords.latitude,
@@ -35,7 +37,9 @@ class ExternalModal extends React.Component {
       };
 
       this.setState({ initialPosition: obj });
-    });
+    }, error=>{
+      console.log('this error' , error)
+   });
   };
 
   handleClick = value => {
@@ -53,6 +57,7 @@ class ExternalModal extends React.Component {
 
   render() {
     const { open, close } = this.props;
+    console.log(this.props.branchs)
     return (
       <Modal isOpen={open} toggle={close} style={{ minWidth: "65%" }}>
         <HeaderModal>
@@ -106,12 +111,13 @@ class ExternalModal extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  searchData: state.global.search
+  searchData: state.global.search,
+  branchs: state.external.get('allBranchs')
 });
 
 export default connect(
   mapStateToProps,
-  null
+  {AllMedicalOffices}
 )(ExternalModal);
 
 const HeaderCard = styled(CardHeader)`

@@ -66,6 +66,8 @@ class ModalComponent extends React.Component {
           ...obj
         }
       });
+    },error=>{
+       console.log('this error' , error)
     });
   };
 

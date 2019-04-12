@@ -3,6 +3,7 @@ import configReducer from './configReducer'
 import AplicationReducers from './aplicationReducer'
 import {combineReducers} from 'redux';
 import serviceReducer from './serviceReducer'
+import externalReducer from './externalReducer'
 import userReducer from './UsersReducers'
 
 export default combineReducers({
@@ -10,5 +11,6 @@ export default combineReducers({
     config: configReducer,
     global: AplicationReducers,
     service: serviceReducer,
-    usersRoles: userReducer
+    usersRoles: userReducer,
+    external: externalReducer
   });

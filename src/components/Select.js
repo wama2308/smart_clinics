@@ -77,8 +77,9 @@ const Select = styled(Input)`
 
 const BodySearch = styled.div`
   position: absolute;
-  min-height:50px;
+  min-height:215px;
   width: 38.5%;
+  border-radius: 0px 0px 20px 20px;
   z-index: 2;
   background: white;
   /* border-top: 1px solid black; */

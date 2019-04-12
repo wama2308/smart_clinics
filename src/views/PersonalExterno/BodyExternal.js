@@ -19,6 +19,15 @@ class BodyExternal extends React.Component {
     this.setState({openModal: false})
   }
 
+  delete=(id)=>{
+    const obj = {
+      title:'Eliminar Personal Externo',
+      info:'Esta seguro que desea Eliminar Personal externo'
+    }
+    this.props.deleteData(obj , (res)=>{
+      console.log(res)
+    })
+  }
 
   render() {
     const data = [
@@ -67,7 +76,7 @@ class BodyExternal extends React.Component {
                           <IconButton
                             className="iconButtons"
                             onClick={() => {
-                              // this.ViewModal();
+                               this.delete(i);
                             }}
                           >
                                 <Delete className="iconTable" />

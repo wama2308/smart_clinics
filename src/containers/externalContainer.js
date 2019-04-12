@@ -15,6 +15,9 @@ import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
 import { dataView } from "../views/PersonalExterno/mockData";
+import {openConfirmDialog} from '../actions/aplicantionActions'
+
+import { connect  } from 'react-redux'
 class EnternalContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -49,10 +52,9 @@ class EnternalContainer extends React.Component {
 
   render() {
     const result = this.filterData(dataView);
-    console.log(result)
     return (
       <Container>
-        <ExternalModal open={this.state.openModal} close={this.close} />
+      {this.state.openModal &&  <ExternalModal open={this.state.openModal} close={this.close} />}
         <Card>
           <CardHeader>Centros Medicos Afiliados</CardHeader>
           <CardBody>
@@ -105,13 +107,13 @@ class EnternalContainer extends React.Component {
             {this.state.loading && (
               <TabContent activeTab={this.state.activeTab}>
                 <TabPane tabId={1}>
-                  <BodyExternal type={result.aprobado} />
+                  <BodyExternal deleteData={this.props.deleteData} type={result.aprobado} />
                 </TabPane>
                 <TabPane tabId={2}>
-                  <BodyExternal type={result.rechazado} />
+                  <BodyExternal type={result.rechazado}  deleteData={this.props.deleteData}/>
                 </TabPane>
                 <TabPane tabId={3}>
-                  <BodyExternal type={result.pendiente} />
+                  <BodyExternal deleteData={this.props.deleteData} type={result.pendiente} />
                 </TabPane>
               </TabContent>
             )}
@@ -136,7 +138,11 @@ class EnternalContainer extends React.Component {
   }
 }
 
-export default EnternalContainer;
+const mapDispatchToProps=(dispatch)=>({
+  deleteData: (message , callback) => dispatch(openConfirmDialog(message, callback))
+})
+
+export default  connect(null , mapDispatchToProps) ( EnternalContainer)
 
 const Container = styled.div`
   display: grid;
