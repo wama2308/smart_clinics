@@ -54,8 +54,8 @@ class BodyExternal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.type
-              ? this.props.type.map((item, i) => {
+            {this.props.data
+              ? this.props.data.map((item, i) => {
                   return (
                     <tr key={i}>
                       <td>{item.nombre}</td>

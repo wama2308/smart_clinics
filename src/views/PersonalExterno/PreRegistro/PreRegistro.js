@@ -117,7 +117,6 @@ class ModalComponent extends React.Component {
     //   ? []
     //   : medicalCenter.typeConfig.sector;
 
-    console.log(this.props)
     const InititalValues = {
       ExternalInitialValues,
       contactoN: "",

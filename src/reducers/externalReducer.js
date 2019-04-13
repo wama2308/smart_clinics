@@ -6,8 +6,8 @@ const externalReducer = (state = Map(), action) => {
     case "GET_ALL_BRANCHS":
       return setData(state, "allBranchs", action.payload);
 
-    // case'EDIT_MEDICAL_SUCURSALES':
-    //   return setEdit(state, action.payload)
+    case'ALL_EXTERNAL_STAFF':
+      return setData(state, 'allExternalStaff' , action.payload)
 
     default:
       return state;

@@ -15,14 +15,15 @@ import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
 import { dataView } from "../views/PersonalExterno/mockData";
-import {openConfirmDialog} from '../actions/aplicantionActions'
+import { openConfirmDialog } from "../actions/aplicantionActions";
+import { allExternalStaff } from "../actions/externalAction";
 
-import { connect  } from 'react-redux'
+import { connect } from "react-redux";
 class EnternalContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
+      loading: false,
       activeTab: 1,
       openModal: false
     };
@@ -36,8 +37,19 @@ class EnternalContainer extends React.Component {
     }
   }
 
+  componentDidMount = () => {
+    this.props.allExternalStaff();
+  };
+
   close = () => {
     this.setState({ openModal: false });
+  };
+
+  componentWillReceiveProps = props => {
+    console.log(props.externalStaff)
+    props.externalStaff
+      ? this.setState({ loading: props.externalStaff.loading })
+      : null;
   };
 
   filterData = data => {
@@ -47,14 +59,17 @@ class EnternalContainer extends React.Component {
       rechazado: data.filter(data => data.status === "rechazado")
     };
 
-    return payload
+    return payload;
   };
 
   render() {
     const result = this.filterData(dataView);
+    console.log("el estado",this.state)
     return (
       <Container>
-      {this.state.openModal &&  <ExternalModal open={this.state.openModal} close={this.close} />}
+        {this.state.openModal && (
+          <ExternalModal open={this.state.openModal} close={this.close} />
+        )}
         <Card>
           <CardHeader>Centros Medicos Afiliados</CardHeader>
           <CardBody>
@@ -107,25 +122,35 @@ class EnternalContainer extends React.Component {
             {this.state.loading && (
               <TabContent activeTab={this.state.activeTab}>
                 <TabPane tabId={1}>
-                  <BodyExternal deleteData={this.props.deleteData} type={result.aprobado} />
+                  <BodyExternal
+                    deleteData={this.props.deleteData}
+                    data={result.approved}
+                    type={'Aprobado'}
+                  />
                 </TabPane>
                 <TabPane tabId={2}>
-                  <BodyExternal type={result.rechazado}  deleteData={this.props.deleteData}/>
+                  <BodyExternal
+                    type={'Pendiente'}
+                    data={result.cancelled}
+                    deleteData={this.props.deleteData}
+                  />
                 </TabPane>
                 <TabPane tabId={3}>
-                  <BodyExternal deleteData={this.props.deleteData} type={result.pendiente} />
+                  <BodyExternal
+                    deleteData={this.props.deleteData}
+                    data={result.pending}
+                    type={'Rechazado'}
+                  />
                 </TabPane>
               </TabContent>
             )}
             {!this.state.loading && (
               <TabContent
                 activeTab={this.state.activeTab}
-                style={{ height: "90%" }}
               >
                 <br />
                 <div
                   align="center"
-                  style={{ paddingTop: "10%", paddingBottom: "10%" }}
                 >
                   <img src="assets/loader.gif" width="20%" height="5%" />
                 </div>
@@ -138,11 +163,20 @@ class EnternalContainer extends React.Component {
   }
 }
 
-const mapDispatchToProps=(dispatch)=>({
-  deleteData: (message , callback) => dispatch(openConfirmDialog(message, callback))
-})
+const mapStateToProps = state => ({
+  externalStaff: state.external.get("allExternalStaff")
+});
 
-export default  connect(null , mapDispatchToProps) ( EnternalContainer)
+const mapDispatchToProps = dispatch => ({
+  deleteData: (message, callback) =>
+    dispatch(openConfirmDialog(message, callback)),
+  allExternalStaff: () => dispatch(allExternalStaff())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EnternalContainer);
 
 const Container = styled.div`
   display: grid;

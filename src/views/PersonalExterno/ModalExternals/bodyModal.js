@@ -43,8 +43,8 @@ export default class Body extends React.Component {
           <div className="details-header">
             <div className="details-image">
               <img
-                src="http://159.203.108.178/uploads/images/74/5674174cdbf70_Santa%20Isabel-04.jpg"
-                alt="Smiley face"
+                src="http://www.wirelesssystems.co.th/images/nophoto.jpg"
+                alt="Smiley fachttps://image.shutterstock.com/image-vector/no-image-available-icon-template-260nw-1036735678.jpge"
                 style={{
                   maxWidth: "100%",
                   display: "block",

@@ -24,20 +24,20 @@ const MapWithAMarker = compose(
           <Marker
             key={i}
             icon={{
-              url: `${marker.logo}`,
+              url:`${marker.logo}`,
               scaledSize: { width: 20, height: 20 }
             }}
             onClick={onClick}
             onMouseOver={()=>props.over(marker)}
             onMouseOut={props.deletePosition}
-            position={{ lat: marker.lat, lng: marker.lng }}
+            position={{ lat: marker.lat, lng: marker.log }}
           >
             {props.selectedMarker.lat === marker.lat &&
               props.selectedMarker.lng === marker.lng && (
                 <InfoWindow>
                   <div>
                     <h4 style={{ borderBottom: "1px solid #eadfd1" }}>
-                      {marker.title}
+                      {marker.name}
                     </h4>
                     <br />
                     <div style={{ paddingBottom: 20 }}>
