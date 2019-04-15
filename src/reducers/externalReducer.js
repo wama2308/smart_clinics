@@ -9,6 +9,8 @@ const externalReducer = (state = Map(), action) => {
     case'ALL_EXTERNAL_STAFF':
       return setData(state, 'allExternalStaff' , action.payload)
 
+    case'SELECTED_BRANCH_OFFICE':
+      return setData( state , 'selectedBranchs', action.payload )
     default:
       return state;
   }

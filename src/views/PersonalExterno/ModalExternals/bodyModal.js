@@ -22,21 +22,20 @@ import {
 export default class Body extends React.Component {
   render() {
     const {
-      title,
-      type,
-      sucursal,
-      direccion,
-      telefono,
-      email,
-      services
+      name,
+      address,
+      services,
+      medical_center,
+      contact
     } = this.props.dataSelected;
 
     const data = [
+      { label: "Numero" },
       { label: "Nombre" },
-      { label: "Tipo" },
-      { label: "Especialista" }
-    ];
+      { label: "Tipo" }
 
+    ];
+    console.log(this.props.dataSelected)
     return (
       <Container>
         <Details className="item-container1 border2">
@@ -59,7 +58,7 @@ export default class Body extends React.Component {
                   <ListItemText
                     primary={
                       <Typography variant="title" color="inherit">
-                        {title}
+                        {medical_center}
                       </Typography>
                     }
                     secondary={
@@ -87,7 +86,7 @@ export default class Body extends React.Component {
                           203 opiniones
                         </Typography>
                         <Typography style={{ color: "white" }} variant="body2">
-                          {type}
+                          {this.props.dataSelected.type}
                         </Typography>
                       </React.Fragment>
                     }
@@ -107,7 +106,7 @@ export default class Body extends React.Component {
                 <ListItemIcon>
                   <LocalHospital />
                 </ListItemIcon>
-                <ListItemText inset primary={sucursal} />
+                <ListItemText inset primary={name} />
               </ListItem>
             </List>
           </div>
@@ -122,25 +121,19 @@ export default class Body extends React.Component {
                 <ListItemIcon>
                   <Place />
                 </ListItemIcon>
-                <ListItemText inset primary={direccion} />
+                <ListItemText inset primary={address} />
               </ListItem>
               <ListItem button>
                 <ListItemIcon>
                   <Drafts />
                 </ListItemIcon>
-                <ListItemText inset primary={email} />
-              </ListItem>
-              <ListItem button onClick={this.handleClick}>
-                <ListItemIcon>
-                  <Inbox />
-                </ListItemIcon>
-                <ListItemText inset primary="Inbox" />
+                <ListItemText inset primary={contact[0].email} />
               </ListItem>
               <ListItem button onClick={this.handleClick}>
                 <ListItemIcon>
                   <Phone />
                 </ListItemIcon>
-                <ListItemText inset primary={telefono} />
+                <ListItemText inset primary={contact[0].telefono} />
               </ListItem>
             </List>
           </div>
@@ -163,9 +156,10 @@ export default class Body extends React.Component {
                 ? services.map((item, i) => {
                     return (
                       <tr key={i}>
+                        <td>{i}</td>
                         <td>{item.name}</td>
                         <td>{item.type}</td>
-                        <td>{item.especialista}</td>
+
                       </tr>
                     );
                   })

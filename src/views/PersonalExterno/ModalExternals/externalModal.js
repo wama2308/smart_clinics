@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  CardHeader,
-} from "reactstrap";
+import { Button, Modal, ModalBody, ModalFooter, CardHeader } from "reactstrap";
 import { data, selectOptions } from "../mockData";
 import styled from "styled-components";
 import Map from "./Map";
@@ -13,11 +7,18 @@ import Search from "../../../components/Select";
 import { connect } from "react-redux";
 import OutsideClick from "../../../components/OutsideClick";
 import BodyModal from "./bodyModal";
-import { AllMedicalOffices } from "../../../actions/externalAction";
+import {
+  AllMedicalOffices,
+  allBranchsInformation,
+  subcriptionRequest
+} from "../../../actions/externalAction";
+import Geocode from "react-geocode";
+import { filterDirectionExact , getIdMedicalCenter } from "../../../core/utils";
 
 class ExternalModal extends React.Component {
   constructor(props) {
     super(props);
+    Geocode.setApiKey("AIzaSyDwl7QwHKe7NFx28t-CbMDTUdQMFVrjEz4&callback");
     this.state = {
       selectedMarker: false,
       initialPosition: false,
@@ -27,15 +28,18 @@ class ExternalModal extends React.Component {
   }
 
   componentDidMount = () => {
-    this.props.AllMedicalOffices();
     navigator.geolocation.getCurrentPosition(
       position => {
         const obj = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-
         this.setState({ initialPosition: obj });
+        Geocode.fromLatLng(obj.lat, obj.lng).then(res => {
+          const array = res.results;
+          const result = filterDirectionExact(array);
+          this.props.AllMedicalOffices(result);
+        });
       },
       error => {
         console.log("this error", error);
@@ -48,7 +52,15 @@ class ExternalModal extends React.Component {
   };
 
   handleClick = value => {
-    this.setState({ seleted: true });
+    this.setState({loading:'show'})
+    const obj = {
+      id_medical: value.medical_center_id,
+      branchoffices_id: value._id
+    };
+    this.props.allBranchsInformation(obj, ()=>{
+      this.setState({seleted:true})
+      this.setState({loading:'hide'})
+    })
   };
 
   mouseOver = value => {
@@ -58,6 +70,13 @@ class ExternalModal extends React.Component {
   deletePosition = () => {
     this.setState({ selectedMarker: false });
   };
+
+
+  handleSubmit=()=>{
+    getIdMedicalCenter()
+    // this.props.subcriptionRequest()
+  }
+
 
   render() {
     const { open, close } = this.props;
@@ -105,15 +124,15 @@ class ExternalModal extends React.Component {
                   mapElement={<div style={{ height: `100%` }} />}
                 />
               )}
-              {this.state.seleted && (
-                <BodyModal dataSelected={this.state.selectedMarker} />
+              {(this.state.seleted && this.props.selectedMarker ) && (
+                <BodyModal dataSelected={this.props.selectedMarker}  />
               )}
             </ModalBody>
             <ModalFooter>
               <Button color="secondary" onClick={close}>
                 Cancel
               </Button>
-              <Button color="primary" onClick={() => alert("save")}>
+              <Button color="primary" onClick={()=> this.handleSubmit()}>
                 Enviar peticion
               </Button>
             </ModalFooter>
@@ -126,12 +145,13 @@ class ExternalModal extends React.Component {
 
 const mapStateToProps = state => ({
   searchData: state.global.search,
-  branchs: state.external.get("allBranchs")
+  branchs: state.external.get("allBranchs"),
+  selectedMarker: state.external.get('selectedBranchs')
 });
 
 export default connect(
   mapStateToProps,
-  { AllMedicalOffices }
+  { AllMedicalOffices, allBranchsInformation, subcriptionRequest }
 )(ExternalModal);
 
 const HeaderCard = styled(CardHeader)`

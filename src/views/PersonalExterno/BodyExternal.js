@@ -42,7 +42,9 @@ class BodyExternal extends React.Component {
       { label: "Provincia" },
       { label: "Acciones" }
     ];
+    console.log(this.props)
     return (
+
       <div>
         <PreRegistro open={this.state.openModal} close={this.closeModal} />
         <Table hover responsive borderless>
@@ -58,11 +60,11 @@ class BodyExternal extends React.Component {
               ? this.props.data.map((item, i) => {
                   return (
                     <tr key={i}>
-                      <td>{item.nombre}</td>
-                      <td>{item.status}</td>
-                      <td>{item.ncm}</td>
-                      <td>{item.pais}</td>
-                      <td>{item.provincia}</td>
+                      <td>{item.name}</td>
+                      <td>{this.props.type}</td>
+                      <td>{item.medical_center}</td>
+                      <td>{item.country}</td>
+                      <td>{item.province}</td>
                       <td>
                         <div className="float-left">
                           <IconButton

@@ -22,7 +22,6 @@ class SelectComponent extends React.Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <div style={{ minWidth: "40%" }}>
         <Select

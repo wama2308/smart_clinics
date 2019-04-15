@@ -63,8 +63,8 @@ class EnternalContainer extends React.Component {
   };
 
   render() {
-    const result = this.filterData(dataView);
-    console.log("el estado",this.state)
+    const value  =  this.props.externalStaff
+    console.log(value)
     return (
       <Container>
         {this.state.openModal && (
@@ -124,21 +124,21 @@ class EnternalContainer extends React.Component {
                 <TabPane tabId={1}>
                   <BodyExternal
                     deleteData={this.props.deleteData}
-                    data={result.approved}
+                    data={value.data.approved}
                     type={'Aprobado'}
                   />
                 </TabPane>
                 <TabPane tabId={2}>
                   <BodyExternal
                     type={'Pendiente'}
-                    data={result.cancelled}
+                    data={value.data.cancelled}
                     deleteData={this.props.deleteData}
                   />
                 </TabPane>
                 <TabPane tabId={3}>
                   <BodyExternal
                     deleteData={this.props.deleteData}
-                    data={result.pending}
+                    data={value.data.pending}
                     type={'Rechazado'}
                   />
                 </TabPane>
