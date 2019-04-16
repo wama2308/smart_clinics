@@ -37,8 +37,10 @@ class ExternalModal extends React.Component {
         this.setState({ initialPosition: obj });
         Geocode.fromLatLng(obj.lat, obj.lng).then(res => {
           const array = res.results;
-          const result = filterDirectionExact(array);
-          this.props.AllMedicalOffices(result);
+         filterDirectionExact(array, (res)=>{
+            this.props.AllMedicalOffices(res);
+          });
+
         });
       },
       error => {
@@ -58,8 +60,7 @@ class ExternalModal extends React.Component {
       branchoffices_id: value._id
     };
     this.props.allBranchsInformation(obj, ()=>{
-      this.setState({seleted:true})
-      this.setState({loading:'hide'})
+      this.setState({loading:'hide', seleted:true})
     })
   };
 
@@ -72,14 +73,23 @@ class ExternalModal extends React.Component {
   };
 
 
-  handleSubmit=()=>{
-    getIdMedicalCenter()
-    // this.props.subcriptionRequest()
+  handleSubmit= async()=>{
+    this.setState({loading:'show'})
+    const result = await getIdMedicalCenter()
+    const obj = {
+      id: result,
+      medical_id: this.props.selectedMarker.medical_center_id,
+      branch_id: this.props.selectedMarker._id,
+    }
+    this.props.subcriptionRequest(obj, ()=>{
+      this.props.close()
+    })
   }
 
 
   render() {
     const { open, close } = this.props;
+    console.log(this.props.branchs)
     return (
       <Modal isOpen={open} toggle={close} style={{ minWidth: "65%" }}>
         {this.state.loading === "show" && (

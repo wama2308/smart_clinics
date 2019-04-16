@@ -46,25 +46,35 @@ class EnternalContainer extends React.Component {
   };
 
   componentWillReceiveProps = props => {
-    console.log(props.externalStaff)
+    console.log(props.externalStaff);
     props.externalStaff
       ? this.setState({ loading: props.externalStaff.loading })
       : null;
   };
 
-  filterData = data => {
-    const payload = {
-      pendiente: data.filter(data => data.status === "pendiente"),
-      aprobado: data.filter(data => data.status === "aprobado"),
-      rechazado: data.filter(data => data.status === "rechazado")
-    };
+  filterData = value => {
+    try {
+      const payload = {
+        pending: value.data.filter(data => data.status === "PENDING"),
+        approved: value.data.filter(data => data.status === "APPROVED"),
+        cancelled: value.data.filter(data => data.status === "CANCELLED")
+      };
 
-    return payload;
+      return payload;
+    } catch (error) {
+      const payload = {
+        pending: [],
+        aprovved: [],
+        cancelled: []
+      };
+      return payload;
+    }
   };
 
   render() {
-    const value  =  this.props.externalStaff
-    console.log(value)
+    const value = this.props.externalStaff;
+    const result = this.filterData(value);
+    console.log(result);
     return (
       <Container>
         {this.state.openModal && (
@@ -124,34 +134,30 @@ class EnternalContainer extends React.Component {
                 <TabPane tabId={1}>
                   <BodyExternal
                     deleteData={this.props.deleteData}
-                    data={value.data.approved}
-                    type={'Aprobado'}
+                    data={result.approved}
+                    type={"Aprobado"}
                   />
                 </TabPane>
                 <TabPane tabId={2}>
                   <BodyExternal
-                    type={'Pendiente'}
-                    data={value.data.cancelled}
+                    type={"Rechazado"}
+                    data={result.cancelled}
                     deleteData={this.props.deleteData}
                   />
                 </TabPane>
                 <TabPane tabId={3}>
                   <BodyExternal
                     deleteData={this.props.deleteData}
-                    data={value.data.pending}
-                    type={'Rechazado'}
+                    data={result.pending}
+                    type={"Pendiente"}
                   />
                 </TabPane>
               </TabContent>
             )}
             {!this.state.loading && (
-              <TabContent
-                activeTab={this.state.activeTab}
-              >
+              <TabContent activeTab={this.state.activeTab}>
                 <br />
-                <div
-                  align="center"
-                >
+                <div align="center">
                   <img src="assets/loader.gif" width="20%" height="5%" />
                 </div>
               </TabContent>

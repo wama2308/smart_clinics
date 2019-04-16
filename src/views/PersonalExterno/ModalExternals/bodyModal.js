@@ -35,7 +35,6 @@ export default class Body extends React.Component {
       { label: "Tipo" }
 
     ];
-    console.log(this.props.dataSelected)
     return (
       <Container>
         <Details className="item-container1 border2">

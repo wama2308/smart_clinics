@@ -20,13 +20,14 @@ const MapWithAMarker = compose(
     >
       {props.markers.map((marker, i) => {
         const onClick = props.onClick.bind(this, marker);
+        console.log("data",marker)
         return (
           <Marker
             key={i}
-            icon={{
-              url:`${marker.logo}`,
-              scaledSize: { width: 20, height: 20 }
-            }}
+            // icon={{
+            //   url:`${marker.logo}`,
+            //   scaledSize: { width: 20, height: 20 }
+            // }}
             onClick={onClick}
             onMouseOver={()=>props.over(marker)}
             onMouseOut={props.deletePosition}

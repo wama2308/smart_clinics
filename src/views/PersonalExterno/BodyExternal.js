@@ -42,7 +42,7 @@ class BodyExternal extends React.Component {
       { label: "Provincia" },
       { label: "Acciones" }
     ];
-    console.log(this.props)
+
     return (
 
       <div>
@@ -60,9 +60,9 @@ class BodyExternal extends React.Component {
               ? this.props.data.map((item, i) => {
                   return (
                     <tr key={i}>
-                      <td>{item.name}</td>
+                      <td>{item.name_branchoffices}</td>
                       <td>{this.props.type}</td>
-                      <td>{item.medical_center}</td>
+                      <td>{item.name_medical_center}</td>
                       <td>{item.country}</td>
                       <td>{item.province}</td>
                       <td>
