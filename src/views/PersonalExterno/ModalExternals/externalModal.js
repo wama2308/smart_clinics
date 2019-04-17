@@ -75,9 +75,7 @@ class ExternalModal extends React.Component {
 
   handleSubmit= async()=>{
     this.setState({loading:'show'})
-    const result = await getIdMedicalCenter()
     const obj = {
-      id: result,
       medical_id: this.props.selectedMarker.medical_center_id,
       branch_id: this.props.selectedMarker._id,
     }
@@ -89,7 +87,6 @@ class ExternalModal extends React.Component {
 
   render() {
     const { open, close } = this.props;
-    console.log(this.props.branchs)
     return (
       <Modal isOpen={open} toggle={close} style={{ minWidth: "65%" }}>
         {this.state.loading === "show" && (

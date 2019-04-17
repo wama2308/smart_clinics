@@ -71,15 +71,14 @@ export const allBranchsInformation = (obj, callback) => dispatch => {
 };
 
 export const subcriptionRequest = (obj, callback) => dispatch => {
-  console.log('obj', obj)
+
   getDataToken().then(data => {
     axios({
       method: "POST",
       url: subscribeExternalStaff,
       data: {
-        external_id: obj.id,
-        medical_id: obj.medical_id,
-        branch_id: obj.branch_id,
+        external_id: obj.medical_id,
+        branchoffices_id: obj.branch_id
       },
       ...data
     })

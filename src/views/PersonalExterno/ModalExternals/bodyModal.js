@@ -35,6 +35,7 @@ export default class Body extends React.Component {
       { label: "Tipo" }
 
     ];
+    console.log("data",this.props.dataSelected)
     return (
       <Container>
         <Details className="item-container1 border2">
@@ -132,7 +133,7 @@ export default class Body extends React.Component {
                 <ListItemIcon>
                   <Phone />
                 </ListItemIcon>
-                <ListItemText inset primary={contact[0].telefono} />
+                <ListItemText inset primary={contact[0].phone} />
               </ListItem>
             </List>
           </div>
