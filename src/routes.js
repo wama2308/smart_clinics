@@ -5,6 +5,7 @@ import DefaultHeader from './containers/DefaultLayout/DefaultHeader';
 import DefaultLayout from './containers/DefaultLayout';
 import configContainer from  './containers/configContainer'
 import UserContainer from './containers/UsersContainer'
+import DistributorContainers from './containers/DistributorContainers'
 import servicesContainer from  './containers/servicesContainer'
 import ExternalContainer from './containers/externalContainer'
 
@@ -209,6 +210,7 @@ const routes = [
   { path: '/configuration/Medical-center', name: 'Centro Medico', component: configContainer },
   { path: '/configuration/personalExterno', name: 'Personal Externo', component: ExternalContainer },
   { path: '/configuration/Users', name: 'Usuarios', component: UserContainer },
+  { path: '/configuration/Proveedor', name: 'Proveedor', component: DistributorContainers },
   { path: '/configuration/Personal', name: 'Personal', component: Personal },
   { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
   { path: '/administrative/sales', name: 'Ventas', component: Ventas },

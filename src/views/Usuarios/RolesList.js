@@ -99,7 +99,7 @@ class RolesList extends React.Component {
                     <td>{ i + 1 }</td>
                     <td>{ rol.rol }</td>
                     <td>
-                      <div  className="float-left" >
+                      <div className="float-left" >
                         <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openRoles(2, i, rol._id); }}><Visibility className="iconTable" /></IconButton>
                         <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openRoles(3, i, rol._id); }}><Edit className="iconTable" /></IconButton>                        
                       </div>
