@@ -22,7 +22,7 @@ export default {
         {
           name: 'Usuarios',
           url: '/configuration/Users',
-          icon: 'fa fa-user-circle',
+          icon: 'fa fa-group',
         },
         {
           name: 'Personal-Cargos',
@@ -37,6 +37,11 @@ export default {
         {
           name:'Personal Externo',
           url:'/configuration/personalExterno',
+          icon: 'fa fa-user-circle-o',
+        },
+        {
+          name:'Proveedor',
+          url:'/configuration/Proveedor',
           icon: 'fa fa-user-circle-o',
         }
       ],

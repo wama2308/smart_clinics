@@ -92,14 +92,15 @@ class RolesPermisos extends React.Component {
 
     cleanNewRol = () => {
         this.setState({
-            rolInvalid: false,                     
             rol: '',
+            rolInvalid: false,                     
+            rolError: '',             
             selectedInvalidNuevoRol: 0, 
             divListBoxNuevoRol: "",
             selectedErrorNuevoRol: "",
             selectedNuevoRol: [],        
             imageButton: <FaPlusCircle size="1em"/>,
-            collapseNuevoRol: false,rolError: '', 
+            collapseNuevoRol: false,            
         })        
     }   
 
