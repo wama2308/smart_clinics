@@ -28,6 +28,7 @@ class DistributorContainers extends Component {
 
   render() {   
     //console.log("props ", this.props.distributor.toJS()); 
+    console.log("props ", this.props.aplication.dataGeneral); 
     return (
       <div className="animated fadeIn">
         <Row>
@@ -43,6 +44,7 @@ class DistributorContainers extends Component {
                       listDistributor={this.props.distributor.get("data")}
                       LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
                       DeleteDistributorAction={this.props.DeleteDistributorAction}
+                      dataGeneral={this.props.aplication.dataGeneral}
                     />                
                   </div>
                 :

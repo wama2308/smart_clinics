@@ -1,8 +1,6 @@
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
-import { arrayPais } from "../views/Distributor/datosDistributor";
-
 const loadCountriesArray = `${url}/api/loadCountriesArray`;
 const queryNationalPayments = `${url}/api/queryNationalPayments`;
 const listCountryProvider = `${url}/api/listCountryProvider`;
@@ -15,50 +13,24 @@ export const LoadDistributorFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
     	axios.get(listCountryProvider, datos)
-    	.then(res => {
-		    loadCountriesArrayFunction(datos, arrayPaises => {
-          queryNationalPaymentsFunction(datos, nationalPayments => {
-            dispatch({
-              type: "LOAD_DISTRIBUTOR",
-              payload: {
-                loading: "hide",
-                data: res.data,
-                paises: arrayPaises,
-                typeIdentity: nationalPayments,                      
-                contacs: [],
-                tableContac: 0
-              }
-            });
-          });  
-        });  				
+    	.then(res => {		    
+        dispatch({
+          type: "LOAD_DISTRIBUTOR",
+          payload: {
+            loading: "hide",
+            data: res.data,                
+            contacs: [],
+            tableContac: 0
+          }
+        });          		
     	})
-        .catch(error => {
-  			console.log("Error consultando la api de usuarios no master",error.toString());
-        });
+      .catch(error => {
+			console.log("Error consultando la api de usuarios no master",error.toString());
+      });
       
     })
     .catch(() => {
       console.log("Problemas con el token");
-    });
-};
-
-const queryNationalPaymentsFunction = (datos, execute) => {
-  axios.get(queryNationalPayments, datos)
-    .then(res => {
-      execute(res.data.type_identity);
-    })
-    .catch(error => {
-      console.log("Error consultando la api de national payments", error.toString());
-    });
-};
-
-const loadCountriesArrayFunction = (datos, execute) => {
-  axios.get(loadCountriesArray, datos)
-    .then(res => {
-      execute(res.data);
-    })
-    .catch(error => {
-      console.log("Error consultando la api de paises", error.toString());
     });
 };
 
