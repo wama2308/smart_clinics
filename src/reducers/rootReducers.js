@@ -5,6 +5,7 @@ import {combineReducers} from 'redux';
 import serviceReducer from './serviceReducer'
 import externalReducer from './externalReducer'
 import userReducer from './UsersReducers'
+import DistributorReducers from './DistributorReducers'
 
 export default combineReducers({
     auth : authReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
     global: AplicationReducers,
     service: serviceReducer,
     usersRoles: userReducer,
-    external: externalReducer
+    external: externalReducer,
+    distributor: DistributorReducers,
   });

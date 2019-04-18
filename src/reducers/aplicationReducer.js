@@ -14,6 +14,7 @@ const InitalState = {
     openModalExists: false,
     search:'',
     outside:true,
+    dataGeneral: null
 }
 
 const AplicationReducers = (state = InitalState , action) => {
@@ -27,7 +28,6 @@ const AplicationReducers = (state = InitalState , action) => {
   case 'OPEN_CONFIRM':{
     return {...state , confirm:{open:true , ...action.payload.message , callback:  action.payload.callback }}
   }
-
   case 'CLOSE_CONFIRM':{
     return {...state , confirm:{...state.confirm , open:false  }}
   }
@@ -38,11 +38,11 @@ const AplicationReducers = (state = InitalState , action) => {
   case 'OUT_CLICK': {
     return {...state , outside : action.payload}
   }
-
-
+    case 'CONFIG_GENERAl':{
+    return {...state , dataGeneral:action.payload }
+  }
   default:
     return state;
-  }
 };
 
 export default AplicationReducers;

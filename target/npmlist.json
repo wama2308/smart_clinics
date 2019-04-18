@@ -261,7 +261,19 @@
             "@types/react": {
               "version": "16.8.10",
               "from": "@types/react@16.8.10",
-              "resolved": "https://registry.npmjs.org/@types/react/-/react-16.8.10.tgz"
+              "resolved": "https://registry.npmjs.org/@types/react/-/react-16.8.10.tgz",
+              "dependencies": {
+                "@types/prop-types": {
+                  "version": "15.7.0",
+                  "from": "@types/prop-types@15.7.0",
+                  "resolved": "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.0.tgz"
+                },
+                "csstype": {
+                  "version": "2.6.3",
+                  "from": "csstype@2.6.3",
+                  "resolved": "https://registry.npmjs.org/csstype/-/csstype-2.6.3.tgz"
+                }
+              }
             }
           }
         },

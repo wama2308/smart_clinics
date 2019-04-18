@@ -27,7 +27,6 @@ import {
   addSucursalFunction,
   deleteSucursalFunction
 } from "../actions/UserAction";
-import MedicalCenter from "../views/Configurations/MedicalCenter";
 import UsersList from "../views/Usuarios/UsersList";
 import RolesList from "../views/Usuarios/RolesList";
 import { openSnackbars, openConfirmDialog } from "../actions/aplicantionActions";

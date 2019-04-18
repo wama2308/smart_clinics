@@ -17,7 +17,7 @@ import "./scss/style.css";
 import { connect } from "react-redux";
 import { DefaultLayout } from "./containers";
 import { withRouter } from "react-router";
-import {closeDialog} from './actions/aplicantionActions'
+import {closeDialog, ConfigGeneralFunction} from './actions/aplicantionActions'
 
 // Pages
 import {
@@ -38,8 +38,17 @@ import Snackbars from "./components/Snackbars";
 import {Alert} from './components/Modals'
 
 class App extends Component {
+  componentWillReceiveProps=(props)=>{
+    console.log(props.aplication)
+    if((props.logged) && (props.aplication === null))
+    {
+      this.props.ConfigGeneralFunction(); 
+    }    
+  }
   render() {
-    if (this.props.logged && this.props.location.pathname === "/login") {
+    console.log("render ",this.props.logged)
+    
+    if (this.props.logged && this.props.location.pathname === "/login") {      
       return <Redirect to="/dasboard" />;
     } else if (!this.props.logged && this.props.location.pathname === "/") {
       return <Redirect to="/login" />;
@@ -116,11 +125,13 @@ class App extends Component {
 
 const mapStateToProps = state => ({
   logged: state.auth.get("logged"),
-  alert: state.global.confirm
+  alert: state.global.confirm,
+  aplication: state.global.dataGeneral
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  closeDialog: ()=>dispatch(closeDialog())
+  closeDialog: ()=>dispatch(closeDialog()),
+  ConfigGeneralFunction: ()=>dispatch(ConfigGeneralFunction())
 })
 
 // <Route path="/" name="Home" component={DefaultLayout} />

@@ -15,13 +15,13 @@ class RolesList extends React.Component {
       disabled: '',
       showHide: '',
       option:0,
-      position: 0,      
-    };    
+      position: 0,
+    };
   }
 
   componentDidMount(){}
 
-  openRoles = (option, pos, rolId) => {  
+  openRoles = (option, pos, rolId) => {
     if(option === 1){
       this.setState({
         modal:true,
@@ -29,7 +29,7 @@ class RolesList extends React.Component {
         modalHeader:'Registrar Rol',
         modalFooter:'Guardar',
         disabled: false,
-        showHide: 'show',              
+        showHide: 'show',
       })
     }else if(option === 2){
       this.props.LoadRolIdFunction(rolId);
@@ -39,7 +39,7 @@ class RolesList extends React.Component {
         modalHeader:'Ver Rol',
         modalFooter:'Guardar',
         disabled: true,
-        showHide: 'hide',             
+        showHide: 'hide',
       })
     }else if(option === 3){
       this.props.LoadRolIdFunction(rolId);
@@ -50,35 +50,35 @@ class RolesList extends React.Component {
         modalFooter:'Editar',
         disabled: false,
         showHide: 'show',
-        position: pos,        
+        position: pos,
       })
-    }  
-  }  
+    }
+  }
 
-  valorCloseModalRoles = (valor) => {            
+  valorCloseModalRoles = (valor) => {
     this.setState({
-        modal: valor,          
-    });                    
-  } 
+        modal: valor,
+    });
+  }
 
   render() {
      return (
       <div className="container">
-       <ModalRoles 
+       <ModalRoles
           option = {this.state.option}
           modal = {this.state.modal}
           modalHeader = {this.state.modalHeader}
           modalFooter = {this.state.modalFooter}
           disabled = {this.state.disabled}
           showHide = {this.state.showHide}
-          modules = {this.props.modules}         
-          permits = {this.props.permits}  
+          modules = {this.props.modules}
+          permits = {this.props.permits}
           saveRolAction = {this.props.saveRolAction}
           editRolAction = {this.props.editRolAction}
           position = {this.state.position}
-          valorCloseModalRoles={this.valorCloseModalRoles}  
+          valorCloseModalRoles={this.valorCloseModalRoles}
         />
-        
+
         <Button color="success" onClick={() => { this.openRoles(1); }}>Agregar</Button>
         <br />
         <br />
@@ -89,7 +89,7 @@ class RolesList extends React.Component {
                 <tr>
                   <th className="text-left">Nro</th>
                   <th className="text-left">Rol</th>
-                  <th className="text-left">Acciones</th>                  
+                  <th className="text-left">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -99,11 +99,11 @@ class RolesList extends React.Component {
                     <td>{ i + 1 }</td>
                     <td>{ rol.rol }</td>
                     <td>
-                      <div  className="float-left" >
+                      <div className="float-left" >
                         <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openRoles(2, i, rol._id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openRoles(3, i, rol._id); }}><Edit className="iconTable" /></IconButton>                        
+                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openRoles(3, i, rol._id); }}><Edit className="iconTable" /></IconButton>
                       </div>
-                    </td>                    
+                    </td>
                   </tr>
                 );
                })
