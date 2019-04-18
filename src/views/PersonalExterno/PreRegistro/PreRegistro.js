@@ -20,22 +20,19 @@ import { connect } from "react-redux";
 import { ExternalInitialValues } from "./constants";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
-import Validator from "../../Configurations/utils";
+import { viewDataExternal } from "../../../actions/externalAction";
 import Visitor from "./Visitor";
 import Map from "../../Configurations/map";
-import { filterDirection } from "../../../core/utils";
 import Geocode from "react-geocode";
 
 import { Formik } from "formik";
-
-const validator = new Validator();
 
 class ModalComponent extends React.Component {
   constructor(props) {
     super(props);
     Geocode.setApiKey("AIzaSyDwl7QwHKe7NFx28t-CbMDTUdQMFVrjEz4&callback");
     this.state = {
-      loading: "hide",
+      loading: "show",
       contactos: false,
       localizacion: false,
       dataContactos: [],
@@ -50,25 +47,42 @@ class ModalComponent extends React.Component {
 
   componentDidMount = () => {
     // this.props.getDataTypes();
-    navigator.geolocation.getCurrentPosition(position => {
-      const obj = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const obj = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
 
-      Geocode.fromLatLng(obj.lat, obj.lng).then(rest => {
-        this.setState({ exactDirection: rest.results[0].formatted_address });
-      });
+        this.props.viewDataExternal(this.props.ids);
 
-      this.setState({
-        ...obj,
-        initialLocation: {
-          ...obj
-        }
-      });
-    },error=>{
-       console.log('this error' , error)
-    });
+        this.setState({
+          ...obj,
+          initialLocation: {
+            ...obj
+          }
+        });
+      },
+      error => {
+        console.log("this error", error);
+      }
+    );
+  };
+
+  componentWillReceiveProps = props => {
+    props.viewData
+      ? Geocode.fromLatLng(props.viewData.lat, props.viewData.log).then(
+          rest => {
+            this.setState({
+              loading: props.viewData.loading,
+              lat: props.viewData.lat,
+              lng: props.viewData.log,
+              isMarkerShown: true,
+              exactDirection: rest.results[0].formatted_address
+            });
+          }
+        )
+      : null;
   };
 
   onSuggestSelect = suggest => {
@@ -110,7 +124,7 @@ class ModalComponent extends React.Component {
   };
 
   render() {
-    const { open, close, disabled, } = this.props;
+    const { open, close, disabled, viewData } = this.props;
     // const countrys = validator.filterCountry(medicalCenter.country);
     // const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
     // const sector = !medicalCenter.typeConfig
@@ -118,16 +132,8 @@ class ModalComponent extends React.Component {
     //   : medicalCenter.typeConfig.sector;
 
     const InititalValues = {
-      ExternalInitialValues,
-      contactoN: "",
-      telefono: "",
-      email: "",
-      idCountry: "0",
-      type: "0",
-      provincesid: "0",
-      sector: "0"
+      ...viewData
     };
-
     return (
       <Modal
         isOpen={open}
@@ -155,12 +161,12 @@ class ModalComponent extends React.Component {
                 handleBlur,
                 resetForm
               }) => {
-                const ButtonDisabled =
-                  values.contactoN.length < 1 ||
-                  values.telefono.length < 1 ||
-                  values.email.length < 1 ||
-                  errors.email ||
-                  disabled;
+                const ButtonDisabled = true;
+                // values.contactoN.length < 1 ||
+                // values.telefono.length < 1 ||
+                // values.email.length < 1 ||
+                // errors.email ||
+                // disabled;
 
                 // const provinces = validator.filterProvinces(
                 //   countrys,
@@ -214,26 +220,31 @@ class ModalComponent extends React.Component {
                           )}
                         </FormGroup>
 
-                        <FormGroup className="top form-group col-sm-6">
-                          <Label for="codigo" className="mr-sm-2">
-                            Correo De Afiliacion
-                          </Label>
-                          <Input
-                            type="text"
-                            name="code"
-                            disabled={disabled}
-                            value={values.code}
-                            id="codigo"
-                            onChange={event =>
-                              setFieldValue("code", event.target.value)
-                            }
-                          />
-                          {errors.code && touched.code && (
-                            <FormFeedback style={{ display: "block" }} tooltip>
-                              {errors.code}
-                            </FormFeedback>
-                          )}
-                        </FormGroup>
+                        {!disabled && (
+                          <FormGroup className="top form-group col-sm-6">
+                            <Label for="codigo" className="mr-sm-2">
+                              Correo De Afiliacion
+                            </Label>
+                            <Input
+                              type="text"
+                              name="code"
+                              disabled={disabled}
+                              value={values.code}
+                              id="codigo"
+                              onChange={event =>
+                                setFieldValue("code", event.target.value)
+                              }
+                            />
+                            {errors.code && touched.code && (
+                              <FormFeedback
+                                style={{ display: "block" }}
+                                tooltip
+                              >
+                                {errors.code}
+                              </FormFeedback>
+                            )}
+                          </FormGroup>
+                        )}
 
                         <FormGroup className="top form-group col-sm-6">
                           <Label for="tipo">Tipo</Label>
@@ -281,7 +292,7 @@ class ModalComponent extends React.Component {
                             <option value="0">Select</option>
                             {/* {sector.map((sector, key) => {
                               return (
-                                <option key={key} value={key}>
+                                <option key={key} value={key}>disabled
                                   {sector}
                                 </option>
                               );
@@ -303,21 +314,24 @@ class ModalComponent extends React.Component {
                               width: "100%"
                             }}
                           >
-                            <Map
-                              lat={this.state.lat}
-                              lng={this.state.lng}
-                              onMarkerClick={this.handleMarkerClick}
-                              isMarkerShown={this.state.isMarkerShown}
-                              initialLocation={this.state.initialLocation}
-                              handleClickmap={this.handleClickmap}
-                              zoom={this.state.zoom}
-                            />
+                            {this.state.lat && (
+                              <Map
+                                lat={this.state.lat}
+                                lng={this.state.lng}
+                                onMarkerClick={this.handleMarkerClick}
+                                isMarkerShown={this.state.isMarkerShown}
+                                initialLocation={this.state.initialLocation}
+                                handleClickmap={this.handleClickmap}
+                                zoom={this.state.zoom}
+                              />
+                            )}
                           </div>
                           <Input
                             type="textarea"
                             name="code"
                             rows={5}
                             disabled={true}
+                            style={{ backgroundColor: "white" }}
                             value={this.state.exactDirection}
                             id="codigo"
                           />
@@ -347,101 +361,107 @@ class ModalComponent extends React.Component {
                         <Collapse isOpen={this.state.contactos}>
                           <Card>
                             <CardBody>
-                              <Form className={this.state.contactview} id="2">
-                                <p className="text-muted">
-                                  Agregue la informacion de los contactos
-                                </p>
-                                <div className="row">
-                                  <FormGroup className="top form-group col-sm-6">
-                                    <Label className="mr-sm-2">Contactos</Label>
-                                    <Input
-                                      type="text"
-                                      name="contacto"
-                                      disabled={disabled}
-                                      value={values.contactoN}
-                                      id="Sucursal"
-                                      onBlur={handleBlur}
-                                      onChange={event =>
-                                        setFieldValue(
-                                          "contactoN",
-                                          event.target.value
-                                        )
-                                      }
-                                    />
-                                    {errors.contactoN && touched.contactoN && (
-                                      <FormFeedback
-                                        style={{ display: "block" }}
-                                        tooltip
-                                      >
-                                        {errors.sucursal}
-                                      </FormFeedback>
-                                    )}
-                                  </FormGroup>
-                                  <FormGroup className="top form-group col-sm-6">
-                                    <Label className="mr-sm-2">Telefono</Label>
-                                    <Input
-                                      type="number"
-                                      name="telefono"
-                                      value={values.telefono}
-                                      id="Sucursal"
-                                      onBlur={handleBlur}
-                                      disabled={disabled}
-                                      onChange={event =>
-                                        setFieldValue(
-                                          "telefono",
-                                          event.target.value
-                                        )
-                                      }
-                                    />
-                                    {errors.contacto && touched.contacto && (
-                                      <FormFeedback
-                                        style={{ display: "block" }}
-                                        tooltip
-                                      >
-                                        {errors.sucursal}
-                                      </FormFeedback>
-                                    )}
-                                  </FormGroup>
+                              {!disabled && (
+                                <Form className={this.state.contactview} id="2">
+                                  <p className="text-muted">
+                                    Agregue la informacion de los contactos
+                                  </p>
+                                  <div className="row">
+                                    <FormGroup className="top form-group col-sm-6">
+                                      <Label className="mr-sm-2">
+                                        Contactos
+                                      </Label>
+                                      <Input
+                                        type="text"
+                                        name="contacto"
+                                        disabled={disabled}
+                                        value={values.contactoN}
+                                        id="Sucursal"
+                                        onBlur={handleBlur}
+                                        onChange={event =>
+                                          setFieldValue(
+                                            "contactoN",
+                                            event.target.value
+                                          )
+                                        }
+                                      />
+                                      {errors.contactoN && touched.contactoN && (
+                                        <FormFeedback
+                                          style={{ display: "block" }}
+                                          tooltip
+                                        >
+                                          {errors.sucursal}
+                                        </FormFeedback>
+                                      )}
+                                    </FormGroup>
+                                    <FormGroup className="top form-group col-sm-6">
+                                      <Label className="mr-sm-2">
+                                        Telefono
+                                      </Label>
+                                      <Input
+                                        type="number"
+                                        name="telefono"
+                                        value={values.telefono}
+                                        id="Sucursal"
+                                        onBlur={handleBlur}
+                                        disabled={disabled}
+                                        onChange={event =>
+                                          setFieldValue(
+                                            "telefono",
+                                            event.target.value
+                                          )
+                                        }
+                                      />
+                                      {errors.contacto && touched.contacto && (
+                                        <FormFeedback
+                                          style={{ display: "block" }}
+                                          tooltip
+                                        >
+                                          {errors.sucursal}
+                                        </FormFeedback>
+                                      )}
+                                    </FormGroup>
 
-                                  <FormGroup className="top form-group col-sm-6">
-                                    <Label className="mr-sm-2">email</Label>
-                                    <Input
-                                      type="text"
-                                      name="email"
-                                      value={values.email}
-                                      id="Sucursal"
-                                      disabled={disabled}
-                                      onBlur={handleBlur}
-                                      onChange={event =>
-                                        setFieldValue(
-                                          "email",
-                                          event.target.value
-                                        )
-                                      }
-                                    />
-                                    {errors.email && touched.email && (
-                                      <FormFeedback
-                                        style={{ display: "block" }}
-                                        tooltip
-                                      >
-                                        {errors.email}
-                                      </FormFeedback>
-                                    )}
-                                  </FormGroup>
-                                </div>
-                                <div>
-                                  <Button
-                                    disabled={ButtonDisabled}
-                                    onClick={() => {
-                                      this.addedContact(values, resetForm);
-                                    }}
-                                    className="add top"
-                                    color="primary"
-                                  >
-                                    Añadir
-                                  </Button>
-                                </div>
-                              </Form>
+                                    <FormGroup className="top form-group col-sm-6">
+                                      <Label className="mr-sm-2">email</Label>
+                                      <Input
+                                        type="text"
+                                        name="email"
+                                        value={values.email}
+                                        id="Sucursal"
+                                        disabled={disabled}
+                                        onBlur={handleBlur}
+                                        onChange={event =>
+                                          setFieldValue(
+                                            "email",
+                                            event.target.value
+                                          )
+                                        }
+                                      />
+                                      {errors.email && touched.email && (
+                                        <FormFeedback
+                                          style={{ display: "block" }}
+                                          tooltip
+                                        >
+                                          {errors.email}
+                                        </FormFeedback>
+                                      )}
+                                    </FormGroup>
+                                  </div>
+                                  <div>
+                                    <Button
+                                      disabled={ButtonDisabled}
+                                      onClick={() => {
+                                        this.addedContact(values, resetForm);
+                                      }}
+                                      className="add top"
+                                      color="primary"
+                                    >
+                                      Añadir
+                                    </Button>
+                                  </div>
+                                </Form>
+                              )}
                               <Table hover responsive borderless>
                                 <thead className="thead-light">
                                   <tr className="text-center">
@@ -454,35 +474,32 @@ class ModalComponent extends React.Component {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {this.state.dataContactos.length > 0 &&
-                                    this.state.dataContactos.map(
-                                      (contacto, i) => {
-                                        return (
-                                          <tr key={i} className="text-center">
-                                            <td>{contacto.contacto}</td>
-                                            <td>{contacto.telefono}</td>
-                                            <td className="text-center">
-                                              {contacto.email}
-                                            </td>
-                                            <td
-                                              className={this.state.deleteview}
-                                            >
-                                              <div className="sizeIconButton">
-                                                <IconButton
-                                                  className="iconButtons"
-                                                  aria-label="Delete"
-                                                  onClick={() => {
-                                                    this.delete(i);
-                                                  }}
-                                                >
-                                                  <Delete className="iconTable" />
-                                                </IconButton>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        );
-                                      }
-                                    )}
+                                  {values.contact &&
+                                    values.contact.map((contacto, i) => {
+                                      return (
+                                        <tr key={i} className="text-center">
+                                          <td>{contacto.name}</td>
+                                          <td>{contacto.phone}</td>
+                                          <td className="text-center">
+                                            {contacto.email}
+                                          </td>
+                                          <td className={this.state.deleteview}>
+                                            <div className="sizeIconButton">
+                                              <IconButton
+                                                className="iconButtons"
+                                                aria-label="Delete"
+                                                disabled={disabled}
+                                                onClick={() => {
+                                                  this.delete(i);
+                                                }}
+                                              >
+                                                <Delete className="iconTable" />
+                                              </IconButton>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
                                 </tbody>
                               </Table>
                             </CardBody>
@@ -540,7 +557,8 @@ class ModalComponent extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  countrysData: state.config
+  countrysData: state.config,
+  viewData: state.external.get("viewExternalSelected")
 });
 
 // const mapDispatchToProps = dispatch => ({
@@ -549,5 +567,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  null
+  { viewDataExternal }
 )(ModalComponent);

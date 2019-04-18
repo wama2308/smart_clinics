@@ -33,6 +33,7 @@ export default class Visitor extends React.Component {
           <div className="info-container">
             <List
               component="nav"
+              style={{borderRight:"1px solid #c8ced3"}}
               subheader={
                 <ListSubheader component="div">
                   Detalles del visitador
@@ -109,7 +110,7 @@ export default class Visitor extends React.Component {
               apiKey="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=oq05o4hhb17qaasizya3qaal9dnl5pbc189e4mxw09npjjmj"
               // initialValue={values.formato}
               init={{
-                height:215,
+                height:400,
                 theme: "modern",
                 plugins:
                   "print preview fullpage paste searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help",
@@ -134,19 +135,21 @@ export default class Visitor extends React.Component {
 const Container = styled(CardBody)`
   display: grid;
   grid-column-gap: 10px;
-  grid-template-columns: 40% 60%;
+  grid-template-columns: 100%;
   min-height: 350px;
   padding: 0px;
 
   .info {
     &-container {
       border-right: 1px solid #c8ced3;
+      display: grid;
+      grid-template-columns: 50% 50%;
     }
   }
 
   .result{
     &-container{
-      width:98%
+      width:99.7%
     }
   }
 `;

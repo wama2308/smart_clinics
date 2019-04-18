@@ -6,6 +6,7 @@ const queryAllBranchOfficesExternalStaff = `${url}/api/queryAllBranchOfficesExte
 const allExternalStaffUrl = `${url}/api/querySubscribeExternalStaff`;
 const allBranchsInformationUrl = `${url}/api/queryOneBranchOfficesExternalStaff`;
 const subscribeExternalStaff = `${url}/api/subscribeExternalStaff`;
+const getOnlySternalData =`${url}/api/queryOneBranchOfficesPetitionExternalStaff`
 
 export const AllMedicalOffices = obj => dispatch => {
   const normalice = {
@@ -91,3 +92,27 @@ export const subcriptionRequest = (obj, callback) => dispatch => {
       });
   });
 };
+
+
+
+export const viewDataExternal=(obj)=> dispatch=>{
+  getDataToken().then(data=>{
+    axios({
+      method:'POST',
+      url:getOnlySternalData,
+      data:{
+        id_medical:obj.id_medical_center,
+        branchoffices_id:obj.id_branchoffices
+      },
+      ...data
+    }).then(resp =>{
+      dispatch({
+        type:'VIEW_EXTERNAL_DATA_SELECTED',
+        payload:{
+          loading:'hide',
+          ...resp.data
+        }
+      })
+    })
+  })
+}

@@ -1,33 +1,37 @@
 import React from "react";
-import { Table , Button } from "reactstrap";
+import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-import PreRegistro from './PreRegistro/PreRegistro'
+import PreRegistro from "./PreRegistro/PreRegistro";
 
 class BodyExternal extends React.Component {
-  constructor(props){
-    super(props)
-    this.state={
-      openModal:false
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: false,
+      ids: null
+    };
   }
-  ViewModal =()=>{
-    this.setState({openModal:true})
-  }
-
-  closeModal=()=>{
-    this.setState({openModal: false})
-  }
-
-  delete=(id)=>{
+  ViewModal = data => {
     const obj = {
-      title:'Eliminar Personal Externo',
-      info:'Esta seguro que desea Eliminar Personal externo'
-    }
-    this.props.deleteData(obj , (res)=>{
-      console.log(res)
-    })
-  }
+      id_branchoffices: data.id_branchoffices,
+      id_medical_center: data.id_medical_center
+    };
+    this.setState({ openModal: true, ids: obj });
+  };
+  closeModal = () => {
+    this.setState({ openModal: false });
+  };
+
+  delete = id => {
+    const obj = {
+      title: "Eliminar Personal Externo",
+      info: "Esta seguro que desea Eliminar Personal externo"
+    };
+    this.props.deleteData(obj, res => {
+      console.log(res);
+    });
+  };
 
   render() {
     const data = [
@@ -44,9 +48,15 @@ class BodyExternal extends React.Component {
     ];
 
     return (
-
       <div>
-        <PreRegistro open={this.state.openModal} close={this.closeModal} />
+        {this.state.openModal && (
+          <PreRegistro
+            open={this.state.openModal}
+            ids={this.state.ids}
+            close={this.closeModal}
+            disabled={true}
+          />
+        )}
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
@@ -70,7 +80,7 @@ class BodyExternal extends React.Component {
                           <IconButton
                             className="iconButtons"
                             onClick={() => {
-                              this.ViewModal();
+                              this.ViewModal(item);
                             }}
                           >
                             <Visibility className="iconTable" />
@@ -78,12 +88,11 @@ class BodyExternal extends React.Component {
                           <IconButton
                             className="iconButtons"
                             onClick={() => {
-                               this.delete(i);
+                              this.delete(i);
                             }}
                           >
-                                <Delete className="iconTable" />
-                              </IconButton>
-
+                            <Delete className="iconTable" />
+                          </IconButton>
                         </div>
                       </td>
                     </tr>

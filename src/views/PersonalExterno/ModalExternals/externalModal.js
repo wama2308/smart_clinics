@@ -139,7 +139,7 @@ class ExternalModal extends React.Component {
               <Button color="secondary" onClick={close}>
                 Cancel
               </Button>
-              <Button color="primary" onClick={()=> this.handleSubmit()}>
+              <Button color="primary" disabled={!this.state.seleted} onClick={()=> this.handleSubmit()}>
                 Enviar peticion
               </Button>
             </ModalFooter>

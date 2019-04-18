@@ -74,7 +74,6 @@ class EnternalContainer extends React.Component {
   render() {
     const value = this.props.externalStaff;
     const result = this.filterData(value);
-    console.log(result);
     return (
       <Container>
         {this.state.openModal && (
@@ -86,6 +85,7 @@ class EnternalContainer extends React.Component {
             <Button
               color="success"
               style={{ marginBottom: 10 }}
+              disabled={!this.state.loading}
               onClick={() => this.setState({ openModal: true })}
             >
               Solicitar Afiliacion
