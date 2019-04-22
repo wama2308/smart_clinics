@@ -207,7 +207,7 @@ const routes = [
   { path: '/configuration/personalExterno', name: 'Personal Externo', component: ExternalContainer },
   { path: '/configuration/Users', name: 'Usuarios', component: UserContainer },
   { path: '/configuration/Proveedor', name: 'Proveedor', component: DistributorContainers },
-  //{ path: '/configuration/Personal', name: 'Personal', component: PersonalInternoContainers },
+  { path: '/configuration/Personal', name: 'Personal', component: PersonalInternoContainers },
   { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
   { path: '/administrative/sales', name: 'Ventas', component: Ventas },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
