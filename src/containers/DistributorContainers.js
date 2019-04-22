@@ -20,6 +20,7 @@ class DistributorContainers extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+
   }
 
   componentDidMount = () => {
@@ -27,7 +28,7 @@ class DistributorContainers extends Component {
   };  
 
   render() {   
-    //console.log("props ", this.props.distributor.toJS()); 
+    //console.log("props ", this.props.distributor.toJS());     
     return (
       <div className="animated fadeIn">
         <Row>
@@ -42,7 +43,7 @@ class DistributorContainers extends Component {
                       confirm={this.props.confirm}
                       listDistributor={this.props.distributor.get("data")}
                       LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
-                      DeleteDistributorAction={this.props.DeleteDistributorAction}
+                      DeleteDistributorAction={this.props.DeleteDistributorAction}                      
                     />                
                   </div>
                 :

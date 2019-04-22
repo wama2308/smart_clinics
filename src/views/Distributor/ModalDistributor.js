@@ -230,9 +230,7 @@ class ModalDistributor extends React.Component {
                 if(indice === 0){
                     valueDistrict = elemento;
                 }            
-            });
-            console.log("estado ", this.state.arrayPaisSelect)
-            console.log("variabel ", valuePais)
+            });            
             if(this.props.option === 1)
             {
                 this.setState({loading:'show'})                                    
@@ -368,7 +366,7 @@ class ModalDistributor extends React.Component {
             if((props.distributor.contacs.length === 0) && (props.distributor.tableContac === 0)){
                 this.setState({
                     loading:'hide',
-                    arrayTypeIdentitySelect: this.props.distributor.typeIdentity[0]["value"],
+                    arrayTypeIdentitySelect: this.props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],
                     dni:'',
                     name: '',
                     tagsEmails: [],
@@ -461,7 +459,7 @@ class ModalDistributor extends React.Component {
         })
     }            
 
-	render() {           
+	render() {         
         return (
             <span>                            
         		<Modal isOpen={this.state.modal} className="ModalDistributor">
@@ -478,8 +476,8 @@ class ModalDistributor extends React.Component {
                                             <InputGroupAddon addonType="prepend">
                                                 <Input disabled={this.props.disabled} value={this.state.arrayTypeIdentitySelect} type="select" name="typeIdentity" id="typeIdentity" multiple={false} onChange={event =>this.typeIdentityOnchange(event)} >                                                            
                                                 {
-                                                    this.props.distributor.typeIdentity != null && 
-                                                    this.props.distributor.typeIdentity.map((typeIdentity, i) => {       
+                                                    this.props.aplication.dataGeneral.dataCountries.type_identity != null && 
+                                                    this.props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
                                                         return(
                                                             <option key={i} value={typeIdentity.label} >{typeIdentity.label}</option>                                                            
                                                         )                                                        
@@ -528,7 +526,7 @@ class ModalDistributor extends React.Component {
                                     <FormGroup className="top form-group col-sm-6">                                                                 
                                         <Label for="pais">Pais</Label>
                                         <div className={this.state.divPaisSelect}>
-                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="pais" value={this.state.arrayPaisSelect} onChange={this.handleChangeSelectPais} options={this.props.distributor.paises} />
+                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="pais" value={this.state.arrayPaisSelect} onChange={this.handleChangeSelectPais} options={this.props.aplication.dataGeneral.countries} />
                                         </div>
                                         <div className="errorSelect">{this.state.paisSelectError}</div>                                                                
                                     </FormGroup>

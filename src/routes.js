@@ -8,6 +8,7 @@ import UserContainer from './containers/UsersContainer'
 import DistributorContainers from './containers/DistributorContainers'
 import servicesContainer from  './containers/servicesContainer'
 import ExternalContainer from './containers/externalContainer'
+import PersonalInternoContainers from './containers/PersonalInternoContainers'
 
 function Loading() {
   return <div>Loading...</div>;
@@ -133,11 +134,6 @@ const Usuarios = Loadable({
   loading: Loading,
 });
 
-const Personal = Loadable({
-  loader: () => import('./views/Personal'),
-  loading: Loading,
-});
-
 const Servicios = Loadable({
   loader: () => import('./views/Servicios'),
   loading: Loading,
@@ -211,7 +207,7 @@ const routes = [
   { path: '/configuration/personalExterno', name: 'Personal Externo', component: ExternalContainer },
   { path: '/configuration/Users', name: 'Usuarios', component: UserContainer },
   { path: '/configuration/Proveedor', name: 'Proveedor', component: DistributorContainers },
-  { path: '/configuration/Personal', name: 'Personal', component: Personal },
+  { path: '/configuration/Personal', name: 'Personal', component: PersonalInternoContainers },
   { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
   { path: '/administrative/sales', name: 'Ventas', component: Ventas },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
