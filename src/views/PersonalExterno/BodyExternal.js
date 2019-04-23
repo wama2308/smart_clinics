@@ -13,12 +13,15 @@ class BodyExternal extends React.Component {
     };
   }
   ViewModal = data => {
+    console.log("aca", data);
     const obj = {
       id_branchoffices: data.id_branchoffices,
-      id_medical_center: data.id_medical_center
+      id_medical_center: data.id_medical_center,
+      status: data.status
     };
     this.setState({ openModal: true, ids: obj });
   };
+
   closeModal = () => {
     this.setState({ openModal: false });
   };
@@ -46,7 +49,7 @@ class BodyExternal extends React.Component {
       { label: "Provincia" },
       { label: "Acciones" }
     ];
-
+    console.log("body", this.props.data);
     return (
       <div>
         {this.state.openModal && (

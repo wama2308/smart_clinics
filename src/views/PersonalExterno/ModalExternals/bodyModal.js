@@ -35,7 +35,6 @@ export default class Body extends React.Component {
       { label: "Tipo" }
 
     ];
-    console.log("data",this.props.dataSelected)
     return (
       <Container>
         <Details className="item-container1 border2">
@@ -106,7 +105,7 @@ export default class Body extends React.Component {
                 <ListItemIcon>
                   <LocalHospital />
                 </ListItemIcon>
-                <ListItemText inset primary={name} />
+                item                <ListItemText inset primary={name} />
               </ListItem>
             </List>
           </div>

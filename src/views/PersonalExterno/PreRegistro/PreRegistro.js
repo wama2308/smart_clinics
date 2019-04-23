@@ -20,12 +20,17 @@ import { connect } from "react-redux";
 import { ExternalInitialValues } from "./constants";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
-import { viewDataExternal } from "../../../actions/externalAction";
+import {
+  viewDataExternal,
+  saveOrCancelledExternal
+} from "../../../actions/externalAction";
+import { openConfirmDialog } from "../../../actions/aplicantionActions";
 import Visitor from "./Visitor";
 import Map from "../../Configurations/map";
 import Geocode from "react-geocode";
 
 import { Formik } from "formik";
+import { truncate } from "fs";
 
 class ModalComponent extends React.Component {
   constructor(props) {
@@ -123,6 +128,49 @@ class ModalComponent extends React.Component {
     });
   };
 
+  handleSubmit = (type, values) => {
+    const message = this.getMessage(values, type);
+    if (values.visitor.result && values.visitor.visit) {
+      alert("save");
+    } else {
+      this.props.openConfirmDialog(message, res => {
+        this.setState({ loading: "show" });
+        if (res) {
+          const obj = {
+            external_id: this.props.ids.id_medical_center,
+            branchoffices_id: this.props.ids.id_branchoffices,
+            status: type
+          };
+
+          this.props.saveOrCancelledExternal(obj, () => {
+            this.setState({ loading: "hide" });
+          });
+        }
+      });
+    }
+  };
+
+  getMessage = (values, type) => {
+    const obj = {};
+    if (values.visitor.visit === false && type === 1) {
+      obj.title = "Aceptar Solitud";
+      obj.info =
+        "El visitador no ha realizado la visita, ¿esta seguro que desea Aprobar esta solicitud?";
+    } else if (
+      values.visitor.visit === truncate &&
+      type === 1 &&
+      values.visitor.result === false
+    ) {
+      obj.title = "Aceptar Solitud";
+      obj.info =
+        "El visitador no ha aprobado esta solicitud, ¿esta seguro que desea Aprobarla?";
+    } else if (type === 0) {
+      obj.title = "Rechazar solicitud";
+      obj.info = "Esta seguro que desea rechazar esta visita";
+    }
+    return obj;
+  };
+
   render() {
     const { open, close, disabled, viewData } = this.props;
     // const countrys = validator.filterCountry(medicalCenter.country);
@@ -130,6 +178,8 @@ class ModalComponent extends React.Component {
     // const sector = !medicalCenter.typeConfig
     //   ? []
     //   : medicalCenter.typeConfig.sector;
+
+    console.log("dios mio", viewData);
 
     const InititalValues = {
       ...viewData
@@ -139,6 +189,7 @@ class ModalComponent extends React.Component {
         isOpen={open}
         aria-labelledby="contained-modal-title-lg"
         className="Modal"
+        toggle={close}
         style={{ minWidth: "65%" }}
       >
         {this.state.loading === "show" && (
@@ -174,7 +225,9 @@ class ModalComponent extends React.Component {
                 // );
                 return (
                   <div>
-                    <ModalHeader>Datos de Afiliacion</ModalHeader>
+                    <ModalHeader toggle={close}>
+                      Datos de Afiliacion
+                    </ModalHeader>
                     <ModalBody className="Scroll">
                       <div className="row">
                         <FormGroup className="top form-group col-sm-6">
@@ -520,7 +573,7 @@ class ModalComponent extends React.Component {
                             Visitador
                           </Button>
                           <Collapse isOpen={this.state.visitador}>
-                            <Visitor />
+                            <Visitor disabled={disabled} dataVisitor={viewData.visitor}/>
                           </Collapse>
                         </div>
 
@@ -529,17 +582,23 @@ class ModalComponent extends React.Component {
                     </ModalBody>
 
                     <ModalFooter>
-                      {this.props.disabled && (
+                      {this.props.ids.status !== "PENDING" && (
                         <Button color="secondary" onClick={close}>
                           volver
                         </Button>
                       )}
-                      {!this.props.disabled && (
+                      {this.props.ids.status === "PENDING" && (
                         <div>
-                          <Button color="danger" onClick={close}>
-                            Cancel
+                          <Button
+                            color="danger"
+                            onClick={() => this.handleSubmit(0, values)}
+                          >
+                            Rechazar
                           </Button>{" "}
-                          <Button onClick={handleSubmit} color="primary">
+                          <Button
+                            onClick={() => this.handleSubmit(1, values)}
+                            color="primary"
+                          >
                             Guardar
                           </Button>
                         </div>
@@ -567,5 +626,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { viewDataExternal }
+  { viewDataExternal, saveOrCancelledExternal, openConfirmDialog }
 )(ModalComponent);

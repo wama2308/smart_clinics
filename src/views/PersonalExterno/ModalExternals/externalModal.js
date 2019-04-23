@@ -75,6 +75,7 @@ class ExternalModal extends React.Component {
 
   handleSubmit= async()=>{
     this.setState({loading:'show'})
+
     const obj = {
       medical_id: this.props.selectedMarker.medical_center_id,
       branch_id: this.props.selectedMarker._id,

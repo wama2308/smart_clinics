@@ -6,7 +6,8 @@ const queryAllBranchOfficesExternalStaff = `${url}/api/queryAllBranchOfficesExte
 const allExternalStaffUrl = `${url}/api/querySubscribeExternalStaff`;
 const allBranchsInformationUrl = `${url}/api/queryOneBranchOfficesExternalStaff`;
 const subscribeExternalStaff = `${url}/api/subscribeExternalStaff`;
-const getOnlySternalData =`${url}/api/queryOneBranchOfficesPetitionExternalStaff`
+const getOnlySternalData = `${url}/api/queryOneBranchOfficesPetitionExternalStaff`;
+const saveOrCancelledUrl = `${url}/api/statusExternalStaff`;
 
 export const AllMedicalOffices = obj => dispatch => {
   const normalice = {
@@ -72,7 +73,6 @@ export const allBranchsInformation = (obj, callback) => dispatch => {
 };
 
 export const subcriptionRequest = (obj, callback) => dispatch => {
-
   getDataToken().then(data => {
     axios({
       method: "POST",
@@ -84,7 +84,7 @@ export const subcriptionRequest = (obj, callback) => dispatch => {
       ...data
     })
       .then(res => {
-        callback()
+        callback();
         dispatch(openSnackbars("success", "Operacion Exitosa"));
       })
       .catch(error => {
@@ -93,26 +93,46 @@ export const subcriptionRequest = (obj, callback) => dispatch => {
   });
 };
 
-
-
-export const viewDataExternal=(obj)=> dispatch=>{
-  getDataToken().then(data=>{
+export const viewDataExternal = obj => dispatch => {
+  getDataToken().then(data => {
     axios({
-      method:'POST',
-      url:getOnlySternalData,
-      data:{
-        id_medical:obj.id_medical_center,
-        branchoffices_id:obj.id_branchoffices
+      method: "POST",
+      url: getOnlySternalData,
+      data: {
+        id_medical: obj.id_medical_center,
+        branchoffices_id: obj.id_branchoffices
       },
       ...data
-    }).then(resp =>{
+    }).then(resp => {
       dispatch({
-        type:'VIEW_EXTERNAL_DATA_SELECTED',
-        payload:{
-          loading:'hide',
+        type: "VIEW_EXTERNAL_DATA_SELECTED",
+        payload: {
+          loading: "hide",
           ...resp.data
         }
-      })
+      });
+    });
+  });
+};
+
+export const saveOrCancelledExternal = (obj, callback) => dispatch => {
+  console.log("action", obj);
+  getDataToken().then(data => {
+    axios({
+      method: "POST",
+      url: saveOrCancelledUrl,
+      data: {
+        ...obj
+      },
+      ...data
     })
-  })
-}
+      .then(() => {
+        callback();
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+      })
+      .catch(() => {
+        dispatch(openSnackbars("error", "Error"));
+        callback();
+      });
+  });
+};

@@ -32,10 +32,9 @@ export default class Visitor extends React.Component {
         <Container>
           <div className="info-container">
             <List
-              component="nav"
-              style={{borderRight:"1px solid #c8ced3"}}
+              style={{ borderRight: "1px solid #c8ced3" }}
               subheader={
-                <ListSubheader component="div">
+                <ListSubheader style={{ position: "inherit" }}>
                   Detalles del visitador
                 </ListSubheader>
               }
@@ -44,27 +43,30 @@ export default class Visitor extends React.Component {
                 <ListItemIcon>
                   <PermIdentity />
                 </ListItemIcon>
-                <ListItemText inset primary="Kevin Velasco" />
+                <ListItemText inset primary={this.props.dataVisitor.name} />
               </ListItem>
               <ListItem button>
                 <ListItemIcon>
                   <Drafts />
                 </ListItemIcon>
-                <ListItemText inset primary="kevinvelasco190@gmail.com" />
+                <ListItemText inset primary={this.props.dataVisitor.email[0]} />
               </ListItem>
               <ListItem button onClick={this.handleClick}>
                 <ListItemIcon>
                   <Phone />
                 </ListItemIcon>
-                <ListItemText inset primary={"+58412485672"} />
+                <ListItemText inset primary={this.props.dataVisitor.phone[0]} />
               </ListItem>
             </List>
 
             <List
-              component="nav"
-              subheader={<ListSubheader component="div">Visita</ListSubheader>}
+              subheader={
+                <ListSubheader style={{ position: "inherit" }} component="div">
+                  Visita
+                </ListSubheader>
+              }
             >
-              {this.state.visita && (
+              {this.props.dataVisitor.visit && (
                 <div>
                   <ListItem button>
                     <ListItemIcon>
@@ -72,7 +74,7 @@ export default class Visitor extends React.Component {
                     </ListItemIcon>
                     <ListItemText inset primary="18-08-2019" />
                   </ListItem>
-                  {this.state.status && (
+                  {this.props.dataVisitor.result && (
                     <ListItem button>
                       <ListItemIcon>
                         <Check />
@@ -81,7 +83,7 @@ export default class Visitor extends React.Component {
                     </ListItem>
                   )}
 
-                  {!this.state.status && (
+                  {!this.props.dataVisitor.result && (
                     <ListItem button>
                       <ListItemIcon>
                         <Close />
@@ -108,9 +110,9 @@ export default class Visitor extends React.Component {
           <div className="result-container">
             <Editor
               apiKey="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=oq05o4hhb17qaasizya3qaal9dnl5pbc189e4mxw09npjjmj"
-              // initialValue={values.formato}
+              initialValue={this.props.dataVisitor.comment}
               init={{
-                height:400,
+                height: 400,
                 theme: "modern",
                 plugins:
                   "print preview fullpage paste searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help",
@@ -123,7 +125,7 @@ export default class Visitor extends React.Component {
               // }}
               // name="formato"
               // onBlur={handleBlur}
-              // disabled={disabled}
+              disabled={this.props.disabled}
             />
           </div>
         </Container>
@@ -147,9 +149,9 @@ const Container = styled(CardBody)`
     }
   }
 
-  .result{
-    &-container{
-      width:99.7%
+  .result {
+    &-container {
+      width: 99.7%;
     }
   }
 `;
