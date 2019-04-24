@@ -14,7 +14,7 @@ import {
 import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal";
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
-import { dataView } from "../views/PersonalExterno/mockData";
+import {deleteRequest} from '../actions/externalAction'
 import { openConfirmDialog } from "../actions/aplicantionActions";
 import { allExternalStaff } from "../actions/externalAction";
 
@@ -135,6 +135,7 @@ class EnternalContainer extends React.Component {
                   <BodyExternal
                     deleteData={this.props.deleteData}
                     data={result.approved}
+                    delete={this.props.delete}
                     type={"Aprobado"}
                   />
                 </TabPane>
@@ -142,6 +143,7 @@ class EnternalContainer extends React.Component {
                   <BodyExternal
                     type={"Rechazado"}
                     data={result.cancelled}
+                    delete={this.props.delete}
                     deleteData={this.props.deleteData}
                   />
                 </TabPane>
@@ -149,6 +151,7 @@ class EnternalContainer extends React.Component {
                   <BodyExternal
                     deleteData={this.props.deleteData}
                     data={result.pending}
+                    delete={this.props.delete}
                     type={"Pendiente"}
                   />
                 </TabPane>
@@ -176,7 +179,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   deleteData: (message, callback) =>
     dispatch(openConfirmDialog(message, callback)),
-  allExternalStaff: () => dispatch(allExternalStaff())
+  allExternalStaff: () => dispatch(allExternalStaff()),
+  delete: (obj)=>dispatch(deleteRequest(obj))
 });
 
 export default connect(

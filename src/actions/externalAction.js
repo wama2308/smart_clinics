@@ -8,6 +8,7 @@ const allBranchsInformationUrl = `${url}/api/queryOneBranchOfficesExternalStaff`
 const subscribeExternalStaff = `${url}/api/subscribeExternalStaff`;
 const getOnlySternalData = `${url}/api/queryOneBranchOfficesPetitionExternalStaff`;
 const saveOrCancelledUrl = `${url}/api/statusExternalStaff`;
+const deleteExternalURL = `${url}/api/disableExternalStaff`;
 
 export const AllMedicalOffices = obj => dispatch => {
   const normalice = {
@@ -133,6 +134,25 @@ export const saveOrCancelledExternal = (obj, callback) => dispatch => {
       .catch(() => {
         dispatch(openSnackbars("error", "Error"));
         callback();
+      });
+  });
+};
+
+export const deleteRequest = obj => dispatch => {
+  getDataToken().then(data => {
+    axios({
+      method: "POST",
+      url: deleteExternalURL,
+      data: {
+        ...obj
+      },
+      ...data
+    })
+      .then(() => {
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+      })
+      .catch(err => {
+        dispatch(openSnackbars("error", "Error"));
       });
   });
 };

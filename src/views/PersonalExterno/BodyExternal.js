@@ -3,6 +3,7 @@ import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import PreRegistro from "./PreRegistro/PreRegistro";
+
 class BodyExternal extends React.Component {
   constructor(props) {
     super(props);
@@ -24,13 +25,18 @@ class BodyExternal extends React.Component {
     this.setState({ openModal: false });
   };
 
-  delete = id => {
+  delete = data => {
     const obj = {
       title: "Eliminar Personal Externo",
       info: "Esta seguro que desea Eliminar Personal externo"
     };
     this.props.deleteData(obj, res => {
-      console.log(res);
+      if (res) {
+        this.props.delete({
+          external_id: data.id_medical_center,
+          branchoffices_id: data.id_branchoffices
+        });
+      }
     });
   };
 
@@ -58,7 +64,7 @@ class BodyExternal extends React.Component {
             disabled={true}
           />
         )}
-        <Table hover responsive  borderless>
+        <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
               {data.map((data, key) => {
@@ -89,7 +95,7 @@ class BodyExternal extends React.Component {
                           <IconButton
                             className="iconButtons"
                             onClick={() => {
-                              this.delete(i);
+                              this.delete(item);
                             }}
                           >
                             <Delete className="iconTable" />
