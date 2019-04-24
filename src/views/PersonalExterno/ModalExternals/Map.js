@@ -13,13 +13,16 @@ const MapWithAMarker = compose(
   withScriptjs,
   withGoogleMap
 )(props => {
+  console.log("marker", props.markers)
   return (
     <GoogleMap
       defaultZoom={13}
       defaultCenter={{ lat: props.location.lat, lng: props.location.lng }}
     >
-      {props.markers.map((marker, i) => {
+
+      { props.markers.map((marker, i) => {
         const onClick = props.onClick.bind(this, marker);
+
         return (
           <Marker
             key={i}

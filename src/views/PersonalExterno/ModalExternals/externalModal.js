@@ -13,7 +13,7 @@ import {
   subcriptionRequest
 } from "../../../actions/externalAction";
 import Geocode from "react-geocode";
-import { filterDirectionExact , getIdMedicalCenter } from "../../../core/utils";
+import { filterDirectionExact, getIdMedicalCenter } from "../../../core/utils";
 
 class ExternalModal extends React.Component {
   constructor(props) {
@@ -37,10 +37,9 @@ class ExternalModal extends React.Component {
         this.setState({ initialPosition: obj });
         Geocode.fromLatLng(obj.lat, obj.lng).then(res => {
           const array = res.results;
-         filterDirectionExact(array, (res)=>{
+          filterDirectionExact(array, res => {
             this.props.AllMedicalOffices(res);
           });
-
         });
       },
       error => {
@@ -54,14 +53,14 @@ class ExternalModal extends React.Component {
   };
 
   handleClick = value => {
-    this.setState({loading:'show'})
+    this.setState({ loading: "show" });
     const obj = {
       id_medical: value.medical_center_id,
       branchoffices_id: value._id
     };
-    this.props.allBranchsInformation(obj, ()=>{
-      this.setState({loading:'hide', seleted:true})
-    })
+    this.props.allBranchsInformation(obj, () => {
+      this.setState({ loading: "hide", seleted: true });
+    });
   };
 
   mouseOver = value => {
@@ -72,22 +71,41 @@ class ExternalModal extends React.Component {
     this.setState({ selectedMarker: false });
   };
 
-
-  handleSubmit= async()=>{
-    this.setState({loading:'show'})
+  handleSubmit = async () => {
+    this.setState({ loading: "show" });
 
     const obj = {
       medical_id: this.props.selectedMarker.medical_center_id,
-      branch_id: this.props.selectedMarker._id,
-    }
-    this.props.subcriptionRequest(obj, ()=>{
-      this.props.close()
-    })
-  }
+      branch_id: this.props.selectedMarker._id
+    };
+    this.props.subcriptionRequest(obj, () => {
+      this.props.close();
+    });
+  };
 
+  getBranchs = branchs => {
+    if (!branchs) {
+      return [];
+    }
+    return branchs.data;
+  };
 
   render() {
     const { open, close } = this.props;
+    const branchs = this.getBranchs(this.props.branchs);
+
+    const result = this.props.searchData
+      ? branchs.filter(branch => {
+          return (
+            branch.medical_center
+              .toLowerCase()
+              .includes(this.props.searchData) ||
+            branch.name.toLowerCase().includes(this.props.searchData) ||
+            branch.type.toLowerCase().includes(this.props.searchData)
+          );
+        })
+      : branchs;
+
     return (
       <Modal isOpen={open} toggle={close} style={{ minWidth: "65%" }}>
         {this.state.loading === "show" && (
@@ -121,7 +139,7 @@ class ExternalModal extends React.Component {
               {!this.state.seleted && (
                 <Map
                   selectedMarker={this.state.selectedMarker}
-                  markers={this.props.branchs.data}
+                  markers={result}
                   location={this.state.initialPosition}
                   over={this.mouseOver}
                   onClick={this.handleClick}
@@ -132,15 +150,19 @@ class ExternalModal extends React.Component {
                   mapElement={<div style={{ height: `100%` }} />}
                 />
               )}
-              {(this.state.seleted && this.props.selectedMarker ) && (
-                <BodyModal dataSelected={this.props.selectedMarker}  />
+              {this.state.seleted && this.props.selectedMarker && (
+                <BodyModal dataSelected={this.props.selectedMarker} search={this.props.searchData} />
               )}
             </ModalBody>
             <ModalFooter>
               <Button color="secondary" onClick={close}>
                 Cancel
               </Button>
-              <Button color="primary" disabled={!this.state.seleted} onClick={()=> this.handleSubmit()}>
+              <Button
+                color="primary"
+                disabled={!this.state.seleted}
+                onClick={() => this.handleSubmit()}
+              >
                 Enviar peticion
               </Button>
             </ModalFooter>
@@ -154,21 +176,13 @@ class ExternalModal extends React.Component {
 const mapStateToProps = state => ({
   searchData: state.global.search,
   branchs: state.external.get("allBranchs"),
-  selectedMarker: state.external.get('selectedBranchs')
+  selectedMarker: state.external.get("selectedBranchs")
 });
 
 export default connect(
   mapStateToProps,
   { AllMedicalOffices, allBranchsInformation, subcriptionRequest }
 )(ExternalModal);
-
-const HeaderCard = styled(CardHeader)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 400;
-`;
 
 const HeaderModal = styled.div`
   display: flex;

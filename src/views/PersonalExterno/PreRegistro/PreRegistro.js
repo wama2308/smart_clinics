@@ -171,15 +171,25 @@ class ModalComponent extends React.Component {
     return obj;
   };
 
-  render() {
-    const { open, close, disabled, viewData } = this.props;
-    // const countrys = validator.filterCountry(medicalCenter.country);
-    // const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
-    // const sector = !medicalCenter.typeConfig
-    //   ? []
-    //   : medicalCenter.typeConfig.sector;
+  getSectorAndtype = data => {
+    if (!data) {
+      return {
+        sector: [],
+        type: []
+      };
+    }
 
+    return {
+      sector: data.sector_medical_center,
+      type: data.type_medical_center
+    };
+  };
+
+  render() {
+    const { open, close, disabled, viewData, types } = this.props;
+    const resultTypes = this.getSectorAndtype(types);
     console.log("dios mio", viewData);
+    console.log("types", types);
 
     const InititalValues = {
       ...viewData
@@ -293,7 +303,7 @@ class ModalComponent extends React.Component {
                                 style={{ display: "block" }}
                                 tooltip
                               >
-                                {errors.code}
+                                {errors.code}viewData
                               </FormFeedback>
                             )}
                           </FormGroup>
@@ -314,14 +324,13 @@ class ModalComponent extends React.Component {
                               )
                             }
                           >
-                            <option value="0">Select</option>
-                            {/* {type.map((type, key) => {
+                            {resultTypes.type.map(type => {
                               return (
-                                <option key={key} value={key}>
-                                  {type}
+                                <option key={type.label} value={type.label}>
+                                  {type.label}
                                 </option>
                               );
-                            })} */}
+                            })}
                           </Input>
                           <FormFeedback tooltip>
                             {this.state.tipoError}
@@ -342,14 +351,16 @@ class ModalComponent extends React.Component {
                               )
                             }
                           >
-                            <option value="0">Select</option>
-                            {/* {sector.map((sector, key) => {
+                            {resultTypes.sector.map((sector, key) => {
                               return (
-                                <option key={key} value={key}>disabled
-                                  {sector}
+                                <option
+                                  key={sector.label}
+                                  value={sector.label}
+                                >
+                                  {sector.label}
                                 </option>
                               );
-                            })} */}
+                            })}
                           </Input>
                           <FormFeedback tooltip>
                             {this.state.sectorError}
@@ -573,7 +584,10 @@ class ModalComponent extends React.Component {
                             Visitador
                           </Button>
                           <Collapse isOpen={this.state.visitador}>
-                            <Visitor disabled={disabled} dataVisitor={viewData.visitor}/>
+                            <Visitor
+                              disabled={disabled}
+                              dataVisitor={viewData.visitor}
+                            />
                           </Collapse>
                         </div>
 
@@ -617,7 +631,8 @@ class ModalComponent extends React.Component {
 
 const mapStateToProps = state => ({
   countrysData: state.config,
-  viewData: state.external.get("viewExternalSelected")
+  viewData: state.external.get("viewExternalSelected"),
+  types: state.global.dataGeneral.dataGeneral
 });
 
 // const mapDispatchToProps = dispatch => ({

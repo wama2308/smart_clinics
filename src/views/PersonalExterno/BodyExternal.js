@@ -3,7 +3,6 @@ import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import PreRegistro from "./PreRegistro/PreRegistro";
-
 class BodyExternal extends React.Component {
   constructor(props) {
     super(props);
@@ -13,7 +12,6 @@ class BodyExternal extends React.Component {
     };
   }
   ViewModal = data => {
-    console.log("aca", data);
     const obj = {
       id_branchoffices: data.id_branchoffices,
       id_medical_center: data.id_medical_center,
@@ -49,7 +47,7 @@ class BodyExternal extends React.Component {
       { label: "Provincia" },
       { label: "Acciones" }
     ];
-    console.log("body", this.props.data);
+
     return (
       <div>
         {this.state.openModal && (
@@ -60,7 +58,7 @@ class BodyExternal extends React.Component {
             disabled={true}
           />
         )}
-        <Table hover responsive borderless>
+        <Table hover responsive  borderless>
           <thead className="thead-light">
             <tr>
               {data.map((data, key) => {
@@ -69,7 +67,7 @@ class BodyExternal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.data
+            {this.props.data && this.props.data.length > 0
               ? this.props.data.map((item, i) => {
                   return (
                     <tr key={i}>
@@ -104,6 +102,20 @@ class BodyExternal extends React.Component {
               : null}
           </tbody>
         </Table>
+        {this.props.data.length === 0 && (
+          <div
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              height: "100px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            No tienes solitudes {this.props.type}s
+          </div>
+        )}
       </div>
     );
   }

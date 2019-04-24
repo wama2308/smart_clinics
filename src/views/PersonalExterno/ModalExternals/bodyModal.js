@@ -12,9 +12,7 @@ import {
 } from "@material-ui/core";
 import { Table } from "reactstrap";
 import {
-  Send,
   Drafts,
-  Inbox,
   Place,
   LocalHospital,
   Phone
@@ -29,12 +27,16 @@ export default class Body extends React.Component {
       contact
     } = this.props.dataSelected;
 
-    const data = [
-      { label: "Numero" },
-      { label: "Nombre" },
-      { label: "Tipo" }
+    const result = this.props.search
+      ? services.filter(service => {
+          return (
+            service.name.toLowerCase().includes(this.props.search) ||
+            service.type.toLowerCase().includes(this.props.search)
+          );
+        })
+      : services;
 
-    ];
+    const data = [{ label: "Numero" }, { label: "Nombre" }, { label: "Tipo" }];
     return (
       <Container>
         <Details className="item-container1 border2">
@@ -105,7 +107,7 @@ export default class Body extends React.Component {
                 <ListItemIcon>
                   <LocalHospital />
                 </ListItemIcon>
-                item                <ListItemText inset primary={name} />
+                <ListItemText inset primary={name} />
               </ListItem>
             </List>
           </div>
@@ -152,13 +154,12 @@ export default class Body extends React.Component {
             </thead>
             <tbody>
               {services
-                ? services.map((item, i) => {
+                ? result.map((item, i) => {
                     return (
                       <tr key={i}>
                         <td>{i}</td>
                         <td>{item.name}</td>
                         <td>{item.type}</td>
-
                       </tr>
                     );
                   })
