@@ -13,7 +13,6 @@ const MapWithAMarker = compose(
   withScriptjs,
   withGoogleMap
 )(props => {
-  console.log("marker", props.markers)
   return (
     <GoogleMap
       defaultZoom={13}

@@ -188,9 +188,6 @@ class ModalComponent extends React.Component {
   render() {
     const { open, close, disabled, viewData, types } = this.props;
     const resultTypes = this.getSectorAndtype(types);
-    console.log("dios mio", viewData);
-    console.log("types", types);
-
     const InititalValues = {
       ...viewData
     };
