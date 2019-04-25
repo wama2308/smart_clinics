@@ -8,16 +8,24 @@ import {
   CardBody,
   CardHeader,
   TabContent,
-  TabPane
+  TabPane,
+  Button
 } from "reactstrap";
+import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal";
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
+import {deleteRequest} from '../actions/externalAction'
+import { openConfirmDialog } from "../actions/aplicantionActions";
+import { allExternalStaff } from "../actions/externalAction";
+
+import { connect } from "react-redux";
 class EnternalContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      activeTab: 1
+      loading: false,
+      activeTab: 1,
+      openModal: false
     };
   }
 
@@ -29,42 +37,59 @@ class EnternalContainer extends React.Component {
     }
   }
 
+  componentDidMount = () => {
+    this.props.allExternalStaff();
+  };
+
+  close = () => {
+    this.setState({ openModal: false });
+  };
+
+  componentWillReceiveProps = props => {
+    console.log(props.externalStaff);
+    props.externalStaff
+      ? this.setState({ loading: props.externalStaff.loading })
+      : null;
+  };
+
+  filterData = value => {
+    try {
+      const payload = {
+        pending: value.data.filter(data => data.status === "PENDING"),
+        approved: value.data.filter(data => data.status === "APPROVED"),
+        cancelled: value.data.filter(data => data.status === "CANCELLED")
+      };
+
+      return payload;
+    } catch (error) {
+      const payload = {
+        pending: [],
+        aprovved: [],
+        cancelled: []
+      };
+      return payload;
+    }
+  };
+
   render() {
-    const data = [
-      {
-        nombre: "kevin",
-        status: "Aprobado",
-        ncm: "asdasd",
-        direccion: "asdasd",
-        provincia: "asdasd"
-      }
-    ];
-
-    const dat2 = [
-      {
-        nombre: "velasco",
-        status: "Rechazado",
-        ncm: "asdasd",
-        direccion: "asdasd",
-        provincia: "asdasd"
-      }
-    ];
-
-    const dat3 = [
-      {
-        nombre: "ortega",
-        status: "Pendiente",
-        ncm: "asdasd",
-        direccion: "asdasd",
-        provincia: "asdasd"
-      }
-    ];
-
+    const value = this.props.externalStaff;
+    const result = this.filterData(value);
     return (
       <Container>
+        {this.state.openModal && (
+          <ExternalModal open={this.state.openModal} close={this.close} />
+        )}
         <Card>
           <CardHeader>Centros Medicos Afiliados</CardHeader>
           <CardBody>
+            <Button
+              color="success"
+              style={{ marginBottom: 10 }}
+              disabled={!this.state.loading}
+              onClick={() => this.setState({ openModal: true })}
+            >
+              Solicitar Afiliacion
+            </Button>
             <Nav tabs>
               <NavItem>
                 <NavLink
@@ -107,26 +132,35 @@ class EnternalContainer extends React.Component {
             {this.state.loading && (
               <TabContent activeTab={this.state.activeTab}>
                 <TabPane tabId={1}>
-                  <BodyExternal type={data} />
+                  <BodyExternal
+                    deleteData={this.props.deleteData}
+                    data={result.approved}
+                    delete={this.props.delete}
+                    type={"Aprobado"}
+                  />
                 </TabPane>
                 <TabPane tabId={2}>
-                  <BodyExternal type={dat2} />
+                  <BodyExternal
+                    type={"Rechazado"}
+                    data={result.cancelled}
+                    delete={this.props.delete}
+                    deleteData={this.props.deleteData}
+                  />
                 </TabPane>
                 <TabPane tabId={3}>
-                  <BodyExternal type={dat3} />
+                  <BodyExternal
+                    deleteData={this.props.deleteData}
+                    data={result.pending}
+                    delete={this.props.delete}
+                    type={"Pendiente"}
+                  />
                 </TabPane>
               </TabContent>
             )}
             {!this.state.loading && (
-              <TabContent
-                activeTab={this.state.activeTab}
-                style={{ height: "90%" }}
-              >
+              <TabContent activeTab={this.state.activeTab}>
                 <br />
-                <div
-                  align="center"
-                  style={{ paddingTop: "10%", paddingBottom: "10%" }}
-                >
+                <div align="center">
                   <img src="assets/loader.gif" width="20%" height="5%" />
                 </div>
               </TabContent>
@@ -138,7 +172,21 @@ class EnternalContainer extends React.Component {
   }
 }
 
-export default EnternalContainer;
+const mapStateToProps = state => ({
+  externalStaff: state.external.get("allExternalStaff")
+});
+
+const mapDispatchToProps = dispatch => ({
+  deleteData: (message, callback) =>
+    dispatch(openConfirmDialog(message, callback)),
+  allExternalStaff: () => dispatch(allExternalStaff()),
+  delete: (obj)=>dispatch(deleteRequest(obj))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EnternalContainer);
 
 const Container = styled.div`
   display: grid;

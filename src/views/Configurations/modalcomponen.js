@@ -64,6 +64,7 @@ class ModalComponent extends React.Component {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
+      console.log(obj);
       this.setState({
         ...obj,
         initialLocation: {
@@ -205,6 +206,11 @@ class ModalComponent extends React.Component {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
       isMarkerShown: true
+    });
+
+    console.log({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng()
     });
   };
 
@@ -883,54 +889,58 @@ class ModalComponent extends React.Component {
                           </Button>
                           <Collapse isOpen={this.state.localizacion}>
                             <Card>
-                              <CardBody>
-                                <div>
-                                  {!this.props.disabled && (
-                                    <Geosuggest
-                                      placeholder="Buscar en el mapa"
-                                      onSuggestSelect={this.onSuggestSelect}
-                                      location={
-                                        new google.maps.LatLng(
-                                          this.state.lat
-                                            ? this.state.lat
-                                            : this.props.dataEdit.lat,
-                                          this.state.lng
-                                            ? this.state.lng
-                                            : this.props.dataEdit.log
-                                        )
-                                      }
-                                      radius="20"
-                                    />
-                                  )}
-                                </div>
+                              {this.state.lat && (
+                                <CardBody>
+                                  <div>
+                                    {
+                                      !this.props.disabled &&(
+                                        <Geosuggest
+                                          placeholder="Buscar en el mapa"
+                                          onSuggestSelect={this.onSuggestSelect}
+                                          location={
+                                            new google.maps.LatLng(
+                                              this.state.lat
+                                                ? this.state.lat
+                                                : this.props.dataEdit.lat,
+                                              this.state.lng
+                                                ? this.state.lng
+                                                : this.props.dataEdit.log
+                                            )
+                                          }
+                                          radius="20"
+                                        />
+                                      )
+                                    }
+                                  </div>
 
-                                <MapComponent
-                                  lat={
-                                    this.state.lat
-                                      ? this.state.lat
-                                      : this.props.dataEdit.lat
-                                  }
-                                  lng={
-                                    this.state.lng
-                                      ? this.state.lng
-                                      : this.props.dataEdit.log
-                                  }
-                                  onMarkerClick={this.handleMarkerClick}
-                                  isMarkerShown={this.state.isMarkerShown}
-                                  initialLocation={this.state.initialLocation}
-                                  currentLocation={this.state.currentLatLng}
-                                  handleClickmap={this.handleClickmap}
-                                  ref={cd => (this.map = cd)}
-                                  zoom={this.state.zoom}
-                                />
-                                <br />
-                                <Button
-                                  color="success"
-                                  onClick={this.refrescarMapa}
-                                >
-                                  Refrescar
-                                </Button>
-                              </CardBody>
+                                  <MapComponent
+                                    lat={
+                                      this.state.lat
+                                        ? this.state.lat
+                                        : this.props.dataEdit.lat
+                                    }
+                                    lng={
+                                      this.state.lng
+                                        ? this.state.lng
+                                        : this.props.dataEdit.log
+                                    }
+                                    onMarkerClick={this.handleMarkerClick}
+                                    isMarkerShown={this.state.isMarkerShown}
+                                    initialLocation={this.state.initialLocation}
+                                    currentLocation={this.state.currentLatLng}
+                                    handleClickmap={this.handleClickmap}
+                                    ref={cd => (this.map = cd)}
+                                    zoom={this.state.zoom}
+                                  />
+                                  <br />
+                                  <Button
+                                    color="success"
+                                    onClick={this.refrescarMapa}
+                                  >
+                                    Refrescar
+                                  </Button>
+                                </CardBody>
+                              )}
                             </Card>
                           </Collapse>
                         </div>
