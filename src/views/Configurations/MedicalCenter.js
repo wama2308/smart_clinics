@@ -41,20 +41,14 @@ export default class MedicalCenter extends React.Component {
     };
   }
 
-  componentWillReceiveProps(props) {
-    props.data.countryid
-      ? this.setState({
-          selectedCountry: props.data.countryid,
-          provinceid: props.data.provinceid,
-          name: props.data.name
-        })
-      : 0;
-  }
-
   componentDidMount = () => {
     this.setState({ loading: "show" });
     if (this.props.data.name) {
-      this.setState({ name: this.props.data.name });
+      this.setState({
+        selectedCountry: this.props.data.countryid,
+        provinceid: this.props.data.provinceid,
+        name: this.props.data.name
+      });
     }
   };
 
@@ -65,7 +59,12 @@ export default class MedicalCenter extends React.Component {
       modalType: "loading"
     });
     const valid = await this.validate();
-    console.log(valid);
+    const data={
+      name: this.state.name,
+      idCountry: this.state.selectedCountry,
+      provinceid: this.state.provinceid,
+      timeZ: jstz.determine().name()
+    }
     valid
       ? this.props.editAction(
           {
@@ -106,28 +105,16 @@ export default class MedicalCenter extends React.Component {
     return true;
   };
 
-  filterProvinces = countries => {
-    const array = countries.filter(countries => {
-      return countries.id.includes(this.state.selectedCountry);
-    });
-    const provinces = array.length !== 0 ? array[0].provinces : [];
-
-    return provinces;
+  filterProvinces = () => {
+    const result = this.props.info.countries.find(country =>
+      country.value.includes(this.state.selectedCountry)
+    );
+    return result.provinces;
   };
 
   render() {
     const data = !this.props.data ? this.state : this.props.data;
-    const countrys = data.country ? validator.filterCountry(data.country) : [];
-    const provinces = validator.filterProvinces(
-      countrys,
-      this.state.selectedCountry
-    );
-
-    console.log(
-       this.props.data.countryid,
-       this.props.data.provinceid,
-    )
-
+    const provinces = this.filterProvinces();
 
     return (
       <div>
@@ -179,15 +166,15 @@ export default class MedicalCenter extends React.Component {
                     name="pais"
                     id="pais"
                     value={this.state.selectedCountry}
-                    disabled={countrys.length < 1}
+                    disabled={this.props.info.countries.length < 1}
                     onChange={event => {
                       this.setState({ selectedCountry: event.target.value });
                     }}
                   >
-                    {countrys.map((country, key) => {
+                    {this.props.info.countries.map((country, key) => {
                       return (
-                        <option key={country.id} value={country.id}>
-                          {country.name}
+                        <option key={country.value} value={country.value}>
+                          {country.label}
                         </option>
                       );
                     })}
@@ -209,8 +196,8 @@ export default class MedicalCenter extends React.Component {
                   >
                     {provinces.map((province, key) => {
                       return (
-                        <option key={key} value={key}>
-                          {province.name}
+                        <option key={provinces.value} value={province.value}>
+                          {province.label}
                         </option>
                       );
                     })}

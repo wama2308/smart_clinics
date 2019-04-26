@@ -220,16 +220,6 @@ class ModalComponent extends React.Component {
                 resetForm
               }) => {
                 const ButtonDisabled = true;
-                // values.contactoN.length < 1 ||
-                // values.telefono.length < 1 ||
-                // values.email.length < 1 ||
-                // errors.email ||
-                // disabled;
-
-                // const provinces = validator.filterProvinces(
-                //   countrys,
-                //   values.idCountry
-                // );
                 return (
                   <div>
                     <ModalHeader toggle={close}>

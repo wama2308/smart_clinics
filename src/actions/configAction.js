@@ -10,22 +10,18 @@ const saveSucursal = `${url}/api/saveBranchOffices`;
 const deleteSucursalApi = `${url}/api/deleteBranchOffices`;
 const editBranchUrl = `${url}/api/editBranchOffices`;
 
-
 export const loadMedicalcenterAction = () => dispatch => {
   getDataToken().then(datos => {
     axios
       .get(loadMedicalCenter, datos)
       .then(res => {
-        loadCountry(datos, country => {
-          dispatch({
-            type: "LOAD_MEDICAL_CENTER",
-            payload: {
-              loading: "hide",
-              country,
-              ...res.data.medical_center,
-              licenses: res.data.licenses_array
-            }
-          });
+        dispatch({
+          type: "LOAD_MEDICAL_CENTER",
+          payload: {
+            loading: "hide",
+            ...res.data.medical_center,
+            licenses: res.data.licenses_array
+          }
         });
       })
       .catch(error => {
@@ -35,20 +31,6 @@ export const loadMedicalcenterAction = () => dispatch => {
         );
       });
   });
-};
-
-const loadCountry = (datos, cb) => {
-  axios
-    .get(LoadContries, datos)
-    .then(res => {
-      cb(res.data);
-    })
-    .catch(error => {
-      console.log(
-        "Error consultando la api de paises para Paises",
-        error.toString()
-      );
-    });
 };
 
 export const loadTypes = () => dispatch => {
@@ -89,7 +71,6 @@ export const editMedicalCenter = (data, callback) => dispatch => {
 };
 
 export const setDataSucursal = (data, close) => dispatch => {
-  console.log("malditasea el guevo de juedas y el de ezequiel juntos", data);
   getDataToken().then(datos => {
     axios({
       method: "post",

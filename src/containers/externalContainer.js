@@ -46,7 +46,7 @@ class EnternalContainer extends React.Component {
   };
 
   componentWillReceiveProps = props => {
-    console.log(props.externalStaff);
+
     props.externalStaff
       ? this.setState({ loading: props.externalStaff.loading })
       : null;

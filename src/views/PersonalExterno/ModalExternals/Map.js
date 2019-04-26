@@ -7,7 +7,6 @@ import {
   Marker,
   InfoWindow
 } from "react-google-maps";
-import styled from "styled-components";
 
 const MapWithAMarker = compose(
   withScriptjs,

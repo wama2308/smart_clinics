@@ -134,11 +134,6 @@ const Usuarios = Loadable({
   loading: Loading,
 });
 
-const Servicios = Loadable({
-  loader: () => import('./views/Servicios'),
-  loading: Loading,
-});
-
 const Ventas = Loadable({
   loader: () => import('./views/Ventas'),
   loading: Loading,
