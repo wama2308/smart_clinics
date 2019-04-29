@@ -42,6 +42,7 @@ class Sucursales extends React.Component {
       disabled: true
     });
   };
+
   delete = key => {
     const message = {
       title: "Eliminar Sucursal",

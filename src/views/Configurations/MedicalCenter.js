@@ -12,6 +12,7 @@ import "./modal.css";
 import jstz from "jstz";
 import { Loading } from "../../components/Modals";
 import Validator from "./utils";
+import {filterProvinces} from '../../core/utils'
 
 const validator = new Validator();
 
@@ -59,12 +60,12 @@ export default class MedicalCenter extends React.Component {
       modalType: "loading"
     });
     const valid = await this.validate();
-    const data={
+    const data = {
       name: this.state.name,
       idCountry: this.state.selectedCountry,
       provinceid: this.state.provinceid,
       timeZ: jstz.determine().name()
-    }
+    };
     valid
       ? this.props.editAction(
           {
@@ -105,16 +106,13 @@ export default class MedicalCenter extends React.Component {
     return true;
   };
 
-  filterProvinces = () => {
-    const result = this.props.info.countries.find(country =>
-      country.value.includes(this.state.selectedCountry)
-    );
-    return result.provinces;
-  };
 
   render() {
     const data = !this.props.data ? this.state : this.props.data;
-    const provinces = this.filterProvinces();
+    const provinces = filterProvinces(
+      this.props.info.countries,
+      this.state.selectedCountry
+    );
 
     return (
       <div>

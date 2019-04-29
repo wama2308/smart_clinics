@@ -33,24 +33,6 @@ export const loadMedicalcenterAction = () => dispatch => {
   });
 };
 
-export const loadTypes = () => dispatch => {
-  getDataToken().then(datos => {
-    axios
-      .get(loadGeneralConfiguration, datos)
-      .then(res => {
-        dispatch({
-          type: "SET_TYPE_CONFIGURATION",
-          payload: {
-            sector: res.data.sectormedicalcenter,
-            type: res.data.typemedicalcenter
-          }
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  });
-};
 
 export const editMedicalCenter = (data, callback) => dispatch => {
   getDataToken().then(datos => {

@@ -25,26 +25,25 @@ import {
 } from "react-icons/fa";
 import "./modal.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
-import Autocomplete from "react-google-autocomplete";
-import Geosuggest from "react-geosuggest";
 import "./geo.css";
 import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
 import { openSnackbars } from "../../actions/aplicantionActions";
 import { setDataSucursal, branchEdit } from "../../actions/configAction";
+import Autocomplete from "react-google-autocomplete";
+import Geosuggest from "react-geosuggest";
 import MapComponent from "./map.js";
 import { MedicalInitialValues, MedicalValidacion } from "../constants";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
 import jstz from "jstz";
 import { Formik } from "formik";
-
-const validator = new Validator();
+import { filterProvinces } from "../../core/utils";
 
 class ModalComponent extends React.Component {
   state = {
-    loading: "show",
+    loading: "hide",
     contactos: false,
     multimedia: false,
     sociales: false,
@@ -58,13 +57,11 @@ class ModalComponent extends React.Component {
   };
 
   componentDidMount = () => {
-    this.props.getDataTypes();
     navigator.geolocation.getCurrentPosition(position => {
       const obj = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      console.log(obj);
       this.setState({
         ...obj,
         initialLocation: {
@@ -75,12 +72,6 @@ class ModalComponent extends React.Component {
   };
 
   componentWillReceiveProps(props) {
-    props.medicalCenter.typeConfig
-      ? this.setState({
-          loading: "hide"
-        })
-      : null;
-
     props.dataEdit
       ? this.setState({
           dataContactos: props.dataEdit.contacto,
@@ -97,44 +88,39 @@ class ModalComponent extends React.Component {
     });
   };
 
-  handleSubmit = (values, formik) => {
+  handleSubmit = values => {
     if (this.state.dataContactos.length === 0) {
       this.props.openSnackbars("error", "¡Debe Agregar almenos un contacto!");
       return;
-    }
-
-    this.setState({ loading: "show" });
-    if (this.state.isMarkerShown) {
-      delete values.provinceId;
-      const obj = {
-        ...values,
-        contactoN: "",
-        telefono: "",
-        email: "",
-        sucursal: values.name,
-        contactos: this.state.dataContactos,
-        posicion: !this.props.dataEdit
-          ? this.state.initialLocation
-          : this.props.dataEdit.key,
-        lat: this.state.lat,
-        log: this.state.lng,
-        timeZ: jstz.determine().name()
-      };
-
-      if (!this.props.dataEdit) {
-        this.props.setDataSucursal(obj, () => {
-          this.props.close();
-        });
-      } else {
-        this.props.branchEdit(obj, () => {
-          this.props.close();
-        });
-      }
-    } else {
+    } else if (this.state.isMarkerShown === false) {
       this.props.openSnackbars(
         "error",
         "Debe seleccionar la ubicacion del su centro medico"
       );
+      return;
+    }
+
+    this.setState({ loading: "show" });
+    const obj = {
+      ...values,
+      sucursal: values.name,
+      contactos: this.state.dataContactos,
+      posicion: !this.props.dataEdit
+        ? this.state.initialLocation
+        : this.props.dataEdit.key,
+      lat: this.state.lat,
+      log: this.state.lng,
+      timeZ: jstz.determine().name()
+    };
+
+    if (!this.props.dataEdit) {
+      this.props.setDataSucursal(obj, () => {
+        this.props.close();
+      });
+    } else {
+      this.props.branchEdit(obj, () => {
+        this.props.close();
+      });
     }
   };
 
@@ -207,22 +193,24 @@ class ModalComponent extends React.Component {
       lng: event.latLng.lng(),
       isMarkerShown: true
     });
-
-    console.log({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng()
-    });
   };
 
   render() {
-    const { dataEdit, disabled } = this.props;
-    const { open, close, medicalCenter } = this.props;
-    const countrys = validator.filterCountry(medicalCenter.country);
-    const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
-    const sector = !medicalCenter.typeConfig
-      ? []
-      : medicalCenter.typeConfig.sector;
+    const {
+      open,
+      close,
+      medicalCenter,
+      dataEdit,
+      disabled,
+      aplication
+    } = this.props;
+    // const countrys = validator.filterCountry(medicalCenter.country);
+    // const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
+    // const sector = !medicalCenter.typeConfig
+    //   ? []
+    //   : medicalCenter.typeConfig.sector;
 
+    console.log("desde aqui", this.props);
     const values = this.props.dataEdit
       ? this.props.dataEdit
       : MedicalInitialValues;
@@ -232,9 +220,9 @@ class ModalComponent extends React.Component {
       contactoN: "",
       telefono: "",
       email: "",
-      idCountry: dataEdit ? dataEdit.countryId : countrys[0].id.toString(),
+      // idCountry: dataEdit ? dataEdit.countryId : countrys[0].id.toString(),
       type: dataEdit ? dataEdit.type : "0",
-      provincesid: dataEdit ? dataEdit.provinceId : "0",
+      // provincesid: dataEdit ? dataEdit.provinceId : "0",
       sector: dataEdit ? dataEdit.sector : "0"
     };
 
@@ -271,10 +259,11 @@ class ModalComponent extends React.Component {
                   errors.email ||
                   disabled;
 
-                const provinces = validator.filterProvinces(
-                  countrys,
+                const provinces = filterProvinces(
+                  aplication.countries,
                   values.idCountry
                 );
+
                 return (
                   <div>
                     <ModalHeader>Configuracion Centro Medicos</ModalHeader>
@@ -301,7 +290,6 @@ class ModalComponent extends React.Component {
                             </FormFeedback>
                           )}
                         </FormGroup>
-
                         <FormGroup className="top form-group col-sm-6">
                           <Label for="codigo" className="mr-sm-2">
                             Codigo
@@ -338,13 +326,15 @@ class ModalComponent extends React.Component {
                               )
                             }
                           >
-                            {type.map((type, key) => {
-                              return (
-                                <option key={key} value={key}>
-                                  {type}
-                                </option>
-                              );
-                            })}
+                            {aplication.dataGeneral.type_medical_center.map(
+                              (type, key) => {
+                                return (
+                                  <option key={key} value={type.value}>
+                                    {type.label}
+                                  </option>
+                                );
+                              }
+                            )}
                           </Input>
                           <FormFeedback tooltip>
                             {this.state.tipoError}
@@ -365,10 +355,13 @@ class ModalComponent extends React.Component {
                               )
                             }
                           >
-                            {countrys.map(country => {
+                            {aplication.countries.map(country => {
                               return (
-                                <option key={country.id} value={country.id}>
-                                  {country.name}
+                                <option
+                                  key={country.value}
+                                  value={country.value}
+                                >
+                                  {country.label}
                                 </option>
                               );
                             })}
@@ -394,8 +387,8 @@ class ModalComponent extends React.Component {
                           >
                             {provinces.map((province, key) => {
                               return (
-                                <option key={key} value={key}>
-                                  {province.name}
+                                <option key={key} value={province.value}>
+                                  {province.label}
                                 </option>
                               );
                             })}
@@ -419,13 +412,15 @@ class ModalComponent extends React.Component {
                               )
                             }
                           >
-                            {sector.map((sector, key) => {
-                              return (
-                                <option key={key} value={key}>
-                                  {sector}
-                                </option>
-                              );
-                            })}
+                            {aplication.dataGeneral.sector_medical_center.map(
+                              (sector, key) => {
+                                return (
+                                  <option key={key} value={sector.value}>
+                                    {sector.label}
+                                  </option>
+                                );
+                              }
+                            )}
                           </Input>
                           <FormFeedback tooltip>
                             {this.state.sectorError}
@@ -887,7 +882,7 @@ class ModalComponent extends React.Component {
                           >
                             Localizacion
                           </Button>
-                          <Collapse isOpen={this.state.localizacion}>
+                          {/* <Collapse isOpen={this.state.localizacion}>
                             <Card>
                               {this.state.lat && (
                                 <CardBody>
@@ -942,7 +937,7 @@ class ModalComponent extends React.Component {
                                 </CardBody>
                               )}
                             </Card>
-                          </Collapse>
+                          </Collapse> */}
                         </div>
                         <hr />
                         <div>
@@ -1011,11 +1006,11 @@ class ModalComponent extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  medicalCenter: state.config.toJS()
+  medicalCenter: state.config.toJS(),
+  aplication: state.global.dataGeneral
 });
 
 const mapDispatchToProps = dispatch => ({
-  getDataTypes: () => dispatch(loadTypes()),
   openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
   setDataSucursal: (data, cb) => dispatch(setDataSucursal(data, cb)),
   branchEdit: (data, callback) => dispatch(branchEdit(data, callback))

@@ -1,0 +1,23 @@
+export const data = {
+  _id: "5c487ef104122dfa062aaaf8",
+  type_identity: "v",
+  dni: "12385678",
+  names: "Rosa",
+  surnames: "Meltroso",
+  province: "Guarico",
+  district: "San Juan de los Morros",
+  address: "Mi casa",
+  phone: ["0426-", "0123456"],
+  email: ["rosameltroso@correo.com", "trabajo"],
+  sex: "Famenino",
+  civil_state: "Casado",
+  photo: "",
+  birth_date: "06/06/66",
+  branchoffices_register: "5c34f4f27464200aee61bd27",
+  active: true,
+  created_at: "2018-05-28T09:43:18.924-04:00",
+  created_by: "5add3e9b68fdbc104c0049a1",
+  updated_at: "2018-05-28T09:43:18.924-04:00",
+  updated_by: "5add3e9b68fdbc104c0049a1",
+  medical_center: "5c34f3437464200aee61bd27"
+};
