@@ -101,7 +101,7 @@ class ListDistributor extends React.Component {
                   <th className="text-left">Proveedor</th>
                   <th className="text-left">Email</th>
                   <th className="text-left">Telefono</th>                                    
-                  <th className="text-left">Acciones</th>                  
+                  <th className="text-left" style={{'minWidth':"205px"}}>Acciones</th>                  
                 </tr>
               </thead>
               <tbody>
@@ -113,8 +113,8 @@ class ListDistributor extends React.Component {
                     <td>{ distributor.name }</td>
                     <td>{ distributor.email[0] }</td>
                     <td>{ distributor.phone[0] }</td>
-                    <td>
-                      <div  className="float-left" >
+                    <td style={{'minWidth':"205px"}}>
+                      <div className="float-left" >
                         <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, distributor.id); }}><Visibility className="iconTable" /></IconButton>
                         <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>                        
                         <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>                        

@@ -39,15 +39,12 @@ import {Alert} from './components/Modals'
 
 class App extends Component {
   componentWillReceiveProps=(props)=>{
-    console.log(props.aplication)
     if((props.logged) && (props.aplication === null))
     {
       this.props.ConfigGeneralFunction(); 
     }    
   }
   render() {
-    console.log("render ",this.props.logged)
-    
     if (this.props.logged && this.props.location.pathname === "/login") {      
       return <Redirect to="/dasboard" />;
     } else if (!this.props.logged && this.props.location.pathname === "/") {

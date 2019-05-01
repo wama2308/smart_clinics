@@ -5,6 +5,7 @@ import {combineReducers} from 'redux';
 import serviceReducer from './serviceReducer'
 import userReducer from './UsersReducers'
 import DistributorReducers from './DistributorReducers'
+import PersonalInternoReducers from './PersonalInternoReducers'
 
 export default combineReducers({
     auth : authReducer,
@@ -13,4 +14,5 @@ export default combineReducers({
     service: serviceReducer,
     usersRoles: userReducer,
     distributor: DistributorReducers,
-  });
+    personaInterno: PersonalInternoReducers,
+ });

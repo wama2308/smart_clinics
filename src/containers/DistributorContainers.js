@@ -27,8 +27,7 @@ class DistributorContainers extends Component {
   };  
 
   render() {   
-    //console.log("props ", this.props.distributor.toJS()); 
-    console.log("props ", this.props.aplication.dataGeneral); 
+    //console.log("props ", this.props.distributor.toJS());     
     return (
       <div className="animated fadeIn">
         <Row>
