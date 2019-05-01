@@ -14,7 +14,8 @@ const InitalState = {
   openModalExists: false,
   search: "",
   outside: true,
-  dataGeneral: null
+  dataGeneral: null,
+  searchloading:true
 };
 
 const AplicationReducers = (state = InitalState, action) => {
@@ -51,6 +52,9 @@ const AplicationReducers = (state = InitalState, action) => {
     case "CONFIG_GENERAl": {
       return { ...state, dataGeneral: action.payload };
     }
+
+    case "SEARCH_LOADED":
+      return {...state , searchloading:action.payload}
     default:
       return state;
   }

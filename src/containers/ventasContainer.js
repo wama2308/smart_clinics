@@ -11,7 +11,11 @@ class VentasContainer extends React.Component {
     return (
       <Container>
         <div className="insight-container-one">
-          <Client searchAction={this.props.searchPatient} />
+          <Client
+            searchAction={this.props.searchPatient}
+            loaded={this.props.loaded}
+            patient={this.props.patient}
+          />
           <Products className="products" />
         </div>
         <div className="insight-container-two">
@@ -22,7 +26,10 @@ class VentasContainer extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  loaded: state.global.searchloading,
+  patient: state.ventas.get("patient")
+});
 
 export default connect(
   mapStateToProps,
