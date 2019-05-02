@@ -7,6 +7,7 @@ import externalReducer from './externalReducer'
 import userReducer from './UsersReducers'
 import DistributorReducers from './DistributorReducers'
 import PersonalInternoReducers from './PersonalInternoReducers'
+import VentasReducer from './ventasReducer'
 
 export default combineReducers({
     auth : authReducer,
@@ -17,7 +18,5 @@ export default combineReducers({
     external: externalReducer,
     distributor: DistributorReducers,
     personaInterno: PersonalInternoReducers,
- });
-
-  
-
+    ventas: VentasReducer
+  });

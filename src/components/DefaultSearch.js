@@ -2,14 +2,16 @@ import React from "react";
 import { Input, ListGroup, ListGroupItem } from "reactstrap";
 import styled from "styled-components";
 import { search, outsideClick } from "../actions/aplicantionActions";
+import { openSnackbars } from "../actions/aplicantionActions";
 import { connect } from "react-redux";
 
-class SelectComponent extends React.Component {
+class DefaultSearch extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       over: 2,
-      clicked: false
+      clicked: false,
+      type: "V"
     };
   }
 
@@ -23,16 +25,41 @@ class SelectComponent extends React.Component {
 
   keyPress = e => {
     if (e.key === "Enter" && this.props.pressKey) {
-      this.props.searchAction(this.props.value);
+      this.props.value.length === 0
+        ? this.props.openSnackbars("error", "Ingrese el dni del cliente")
+        : this.props.searchAction(this.props.value, this.state.type);
     }
   };
 
   render() {
-
+    console.log(this.props.type);
     return (
-      <div style={{ minWidth: "40%" }}>
+      <div style={{ minWidth: "40%", display: "flex" }}>
+        <Input
+          type="select"
+          name="pais"
+          value={this.state.type}
+          style={{
+            maxWidth: 40,
+            height: 40,
+            padding: 0,
+            border: "1px solid #e4e7ea",
+            borderRight: "none"
+          }}
+          onChange={event => this.setState({ type: event.target.value })}
+        >
+          {this.props.type.dataCountries.type_identity.map(type => {
+            return (
+              <option key={type.value} value={type.value}>
+                {type.value}
+              </option>
+            );
+          })}
+        </Input>
         <Search
-          placeholder="search..."
+          placeholder={
+            this.props.placeholder ? this.props.placeholder : "search..."
+          }
           theme={!this.props.outside ? "yes" : "no"}
           onMouseOver={this.onOver}
           onClick={this.handleClick}
@@ -67,17 +94,16 @@ class SelectComponent extends React.Component {
 
 const mapStateToProps = state => ({
   outside: state.global.outside,
-  value: state.global.search
+  value: state.global.search,
+  type: state.global.dataGeneral
 });
 
 export default connect(
   mapStateToProps,
-  { search, outsideClick }
-)(SelectComponent);
+  { search, outsideClick, openSnackbars }
+)(DefaultSearch);
 
 const Search = styled(Input)`
-  border-radius: ${props =>
-    props.theme === "yes" ? "20px 20px 0px 0px" : "20px 20px"};
   height: 40px;
   &:hover {
     box-shadow: 0px 1.5px 7px 0px rgba(134, 117, 117, 0.75);

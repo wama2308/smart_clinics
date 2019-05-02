@@ -26,3 +26,15 @@ export const getIdMedicalCenter = () => {
   console.log("id decode", decode.id);
   return decode.id;
 };
+
+
+
+ export const filterProvinces = (countrys, selected) => {
+  if(!countrys){
+    return
+  }
+  const result = countrys.find(country =>
+    country.value.includes(selected)
+  );
+  return result.provinces;
+};

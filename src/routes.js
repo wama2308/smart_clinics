@@ -9,6 +9,7 @@ import DistributorContainers from './containers/DistributorContainers'
 import servicesContainer from  './containers/servicesContainer'
 import ExternalContainer from './containers/externalContainer'
 import PersonalInternoContainers from './containers/PersonalInternoContainers'
+import ventasContainer from './containers/ventasContainer'
 
 function Loading() {
   return <div>Loading...</div>;
@@ -134,16 +135,6 @@ const Usuarios = Loadable({
   loading: Loading,
 });
 
-const Servicios = Loadable({
-  loader: () => import('./views/Servicios'),
-  loading: Loading,
-});
-
-const Ventas = Loadable({
-  loader: () => import('./views/Ventas'),
-  loading: Loading,
-});
-
 const CoreUIIcons = Loadable({
   loader: () => import('./views/Icons/CoreUIIcons'),
   loading: Loading,
@@ -209,7 +200,7 @@ const routes = [
   { path: '/configuration/Proveedor', name: 'Proveedor', component: DistributorContainers },
   { path: '/configuration/Personal', name: 'Personal', component: PersonalInternoContainers },
   { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
-  { path: '/administrative/sales', name: 'Ventas', component: Ventas },
+  { path: '/administrative/sales', name: 'Ventas', component: ventasContainer },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },
