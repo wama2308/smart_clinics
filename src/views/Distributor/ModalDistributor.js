@@ -24,7 +24,6 @@ class ModalDistributor extends React.Component {
             collapse: false,
             arrayTypeIdentity: [],
             arrayTypeIdentitySelect: [],
-            selectedTypeIdentity: 0,
             dni: '',
             dniInvalid: false,
             dniError: '', 
@@ -424,8 +423,7 @@ class ModalDistributor extends React.Component {
 
     typeIdentityOnchange = event =>{    
         this.setState({
-            arrayTypeIdentitySelect:event.target.value,    
-            selectedTypeIdentity: 1,        
+            arrayTypeIdentitySelect:event.target.value,                    
         })
     } 
 
@@ -500,7 +498,7 @@ class ModalDistributor extends React.Component {
                                             <TagsInput 
                                                 className='react-tagsinputMy'  
                                                 inputProps={{placeholder:"Telefono", className:'react-tagsinput-inputMy'}} 
-                                                focusClassName='react-tagsinput-focusedMy' 
+                                                focusedClassName='react-tagsinput-focusedMy' 
                                                 tagProps={{className:"react-tagsinput-tagMy", classNameRemove:'react-tagsinput-removeMy'}} 
                                                 value={this.state.tagsTelefonos} 
                                                 disabled={this.props.disabled} 
@@ -515,7 +513,7 @@ class ModalDistributor extends React.Component {
                                             <TagsInput 
                                                 className='react-tagsinputMy'  
                                                 inputProps={{placeholder:"Email", className:'react-tagsinput-inputMy'}} 
-                                                focusClassName='react-tagsinput-focusedMy' 
+                                                focusedClassName='react-tagsinput-focusedMy' 
                                                 tagProps={{className:"react-tagsinput-tagMy", classNameRemove:'react-tagsinput-removeMy'}} 
                                                 value={this.state.tagsEmails} 
                                                 disabled={this.props.disabled} 

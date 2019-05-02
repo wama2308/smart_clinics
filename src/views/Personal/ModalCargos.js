@@ -113,7 +113,6 @@ class ModalCargos extends React.Component {
     }
 
     componentWillReceiveProps=(props)=>{        
-        console.log("modal cargos", props)
         this.setState({
             modal: props.modal,       
             loading:'show'     
@@ -123,8 +122,7 @@ class ModalCargos extends React.Component {
             cargo: props.cargo,
             descripcion: props.descripcion,             
             loading:'hide',
-        })
-                 
+        })                 
     }
 
 	render() {   

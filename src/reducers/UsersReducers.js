@@ -33,7 +33,7 @@ const setStoreDeleteSucursal = (state, payload) => {
 const setStoreDeleteUserIdView = (state, payload) => {
 	let estado = state.toJS();
 	estado.userIdView.email = payload.email;
-	estado.userIdView.sucursal = payload.sucursal;
+	estado.userIdView.sucursal = payload.sucursal;	
 	return Map(estado);
 }
 
@@ -47,6 +47,20 @@ const setStoreEditUserView = (state, payload) => {
 const setStoreAddEmail = (state, payload) => {
 	let estado = state.toJS();
 	estado.userIdView.email = payload;
+	return Map(estado);
+}
+
+const setStoreUserId = (state, payload) => {
+	let estado = state.toJS();
+	estado.userId = payload.userId;
+	estado.userEmail = payload.userEmail;
+	return Map(estado);
+}
+
+const setStoreDeleteInfoUserId = (state, payload) => {
+	let estado = state.toJS();
+	estado.userId = payload;
+	estado.userEmail = payload;
 	return Map(estado);
 }
 
@@ -93,6 +107,14 @@ const userReducer = (state = Map(), action) => {
 
 	  case 'ADD_EMAIL_STORE': {
 	  	return setStoreAddEmail(state, action.payload)
+	  }
+
+	  case 'LOAD_USUARIO_REGISTRADO_PERSONAL': {
+	  	return setStoreUserId(state, action.payload)
+	  }
+
+	  case 'DELETE_DATA_INFO_USER_ID': {
+	  	return setStoreDeleteInfoUserId(state, action.payload)
 	  }
 
 	  default:

@@ -18,6 +18,7 @@ const saveUserNoMaster = `${url}/api/saveUserNoMaster`;
 const LoadIdUsersNoMaster = `${url}/api/LoadIdUsersNoMaster`;
 const editUserNoMaster = `${url}/api/editUserNoMaster`;
 const DeleteUserNoMaster = `${url}/api/DeleteUserNoMaster`;
+const queryUserRegisterLatest = `${url}/api/queryUserRegisterLatest`;
 
 const rolNew = {
   _id: {
@@ -85,7 +86,9 @@ export const LoadAllUsersNoMasterFunction = () => dispatch => {
                         loading: "hide",
                         email: "",
                         sucursal: []
-                      }
+                      },
+                      userId:'',
+                      userEmail:'',
                     }
                   });
                 });
@@ -291,6 +294,19 @@ export const deleteInfoUser = (clean, exist) => dispatch => {
     });
 };
 
+export const deleteInfoUserId = () => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "DELETE_DATA_INFO_USER_ID",
+        payload: ""
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 export const saveUserNoMasterAction = (data, callback) => dispatch => {
   getPosts()
     .then(datos => {
@@ -443,6 +459,84 @@ export const addEmailStoreAction = email => dispatch => {
         type: "ADD_EMAIL_STORE",
         payload: email
       });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+const UserRegisterLatestFunction = (email, execute) => {
+  getPosts()
+    .then(datos => {
+      axios({
+            method: "post",
+            url: queryUserRegisterLatest,
+            data: {
+                email:email,
+            },
+            headers: datos.headers
+      })
+      .then(res => {
+        execute(res.data);
+      })
+      .catch(error => {
+        console.log("Error consultando la api de para consultar el ultimo usuario registrado por email", error.toString());
+      });
+    })
+  .catch(() => {
+    console.log("Problemas con el token");
+  });
+};
+
+const DeleteUserRegisterFunction = (userId) => {
+  getPosts()
+    .then(datos => {
+      axios({
+            method: "post",
+            url: DeleteUserNoMaster,
+            data: {
+              userId: userId
+            },
+            headers: datos.headers
+      })
+      .then(res => {
+        console.log("Usuario eliminado con exito");
+      })
+      .catch(error => {
+        console.log("Error eliminando el usuario", error.toString());
+      });
+    })
+  .catch(() => {
+    console.log("Problemas con el token");
+  });
+};
+
+export const saveUserNoMasterPersonalAction = (data, email, userId, callback) => dispatch => {
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: saveUserNoMaster,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          UserRegisterLatestFunction(email, usuario => {                      
+            dispatch({
+              type: "LOAD_USUARIO_REGISTRADO_PERSONAL",
+              payload: usuario
+            });          
+          });
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+          if(userId !== ""){
+            //DeleteUserRegisterFunction(userId);
+          }
+          
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error guardando el usuario"));
+        });
     })
     .catch(() => {
       console.log("Problemas con el token");
