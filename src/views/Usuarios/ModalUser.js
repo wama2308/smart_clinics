@@ -10,7 +10,7 @@ import axios from 'axios';
 import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
-import { ValidateEmailUserNoMasterFunction, deleteInfoUser, deleteUserIdView, addEmailStoreAction} from "../../actions/UserAction";
+import { ValidateEmailUserNoMasterFunction, deleteInfoUser, deleteUserIdView, addEmailStoreAction, saveUserNoMasterPersonalAction} from "../../actions/UserAction";
 import ModalInfoUserEmail from './ModalInfoUserEmail.js';
 import RolesPermisos from './RolesPermisos.js';
 import SucursalesList from './SucursalesList.js';
@@ -65,12 +65,27 @@ class ModalUser extends React.Component {
                     value: list._id,                    
                 }
             )         
-        })        
+        })            
+        if (this.props.option === 4){  
+            this.setState({
+                modalUser: this.props.modal,
+                loading:'hide',
+                email: this.props.emailUserSelect,
+                listSucursales: this.props.usersRoles.userIdView.sucursal,                
+            })   
+        }
+        /*else if(this.props.option === 5){
+            
+            this.setState({
+                modalUser: this.props.modal,
+                loading:'hide',
+                email: this.props.usersRoles.userIdView.email,
+                listSucursales: this.props.usersRoles.userIdView.sucursal,                           
+            })              
+        }*/
     }
 
-    testWama = () => {
-        
-    }
+    testWama = () => {}
 
     handleChange = (e) => {
         const { name, value } = e.target;
@@ -130,10 +145,6 @@ class ModalUser extends React.Component {
         }
         
     }     
-
-    handleSaveUser = event => {
-        event.preventDefault();
-    }
 
     valorCloseModalInfoUser = (valor) => {
         if(valor === 0){
@@ -394,16 +405,23 @@ class ModalUser extends React.Component {
             this.setState({email:''})
         }  
 
-        if(props.option !== 1){   
+        if((props.option === 2) || (props.option === 3) || (props.option === 5) || (props.option === 6)){   
             this.setState({
                 loading:'hide',
                 email: props.usersRoles.userIdView.email,
                 listSucursales: props.usersRoles.userIdView.sucursal,                           
             })              
-        }else{  
+        }else if (props.option === 1){  
             this.setState({
                 loading:'hide',
                 email: props.usersRoles.userIdView.email,
+                listSucursales: props.usersRoles.userIdView.sucursal,                
+            })   
+        }else if (props.option === 4){  
+            this.setState({
+                modalUser: props.modal,
+                loading:'hide',
+                email: props.emailUserSelect,
                 listSucursales: props.usersRoles.userIdView.sucursal,                
             })   
         }                   
@@ -474,7 +492,7 @@ class ModalUser extends React.Component {
                     }
                 )
             }
-            else if(this.props.option === 3){
+            else if(this.props.option === 3 || this.props.option === 6){
                 var array = this.state.listSucursales,
                     groups = Object.create(null),
                     grouped = [];
@@ -501,10 +519,38 @@ class ModalUser extends React.Component {
                     }
                 )
             }
+            else if(this.props.option === 4){
+                var array = this.state.listSucursales,
+                    groups = Object.create(null),
+                    grouped = [];
+
+                array.forEach(function (o) {
+                    if (!groups[o.label]) {
+                        groups[o.label] = [];
+                        grouped.push({ label: o.label, value: o.value });
+                    }
+                    groups[o.label].push(o.value);
+                });
+                this.setState({loading:'show'})    
+                    this.props.saveUserNoMasterPersonalAction(
+                    {                        
+                        email:this.state.email,
+                        listSuc: this.state.listSucursales,                        
+                        onlyModules: this.props.modules,                                                
+                        groupSucursales: grouped,                        
+                        timeZ: jstz.determine().name()
+                    },
+                    this.state.email,
+                    this.props.userIdEdit,
+                    () => {
+                        this.closeUser();                    
+                    }
+                )
+            }
         }
     }
 
-	render() {                    
+	render() {                               
         return (
             <span>                            
         		<Modal isOpen={this.state.modalUser}  className="ModalUsersRoles">
@@ -520,7 +566,7 @@ class ModalUser extends React.Component {
                                     <FormFeedback tooltip>{this.state.emailError}</FormFeedback>                                                            
                                 </FormGroup>
                                 {
-                                    this.props.option !== 2 &&
+                                    (this.props.option === 1 || this.props.option === 3 || this.props.option === 4 || this.props.option === 6)  &&
                                     <span>
                                         <FormGroup tag="fieldset">
                                             <h5>Sucursales-Roles-Permisos</h5>                                                            
@@ -604,7 +650,7 @@ const mapDispatchToProps = dispatch => ({
   addEmailStoreAction: (email) => dispatch(addEmailStoreAction(email)),  
   alert: (type, message) => dispatch(openSnackbars(type, message)), 
   confirmDeleteBranchOffices: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
-  confirmDeleteBranchOffices: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
+  saveUserNoMasterPersonalAction: (data, email, userId, callback) =>dispatch(saveUserNoMasterPersonalAction(data, email, userId, callback)),  
   deleteUserIdView: () =>dispatch(deleteUserIdView()),
 });
 

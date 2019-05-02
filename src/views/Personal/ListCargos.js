@@ -105,8 +105,8 @@ class ListCargos extends React.Component {
                     <td>{ cargo.label }</td>
                     <td>
                       <div className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, cargo.value, cargo.label, cargo.description); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, cargo.value, cargo.label, cargo.description); }}><Edit className="iconTable" /></IconButton>                        
+                        <IconButton aria-label="Delete" title="Ver Cargo" className="iconButtons" onClick={() => { this.openModal(2, i, cargo.value, cargo.label, cargo.description); }}><Visibility className="iconTable" /></IconButton>
+                        <IconButton aria-label="Delete" title="Editar Cargo" className="iconButtons" onClick={() => { this.openModal(3, i, cargo.value, cargo.label, cargo.description); }}><Edit className="iconTable" /></IconButton>                        
                       </div>
                     </td>                    
                   </tr>
@@ -123,5 +123,5 @@ class ListCargos extends React.Component {
     );
   }
 }
-
 export default ListCargos;
+

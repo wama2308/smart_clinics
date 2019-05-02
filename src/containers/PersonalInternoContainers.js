@@ -8,8 +8,9 @@ import {} from "../actions/PersonalInternoActions";
 import UsersList from "../views/Usuarios/UsersList";
 import RolesList from "../views/Usuarios/RolesList";
 import { openSnackbars, openConfirmDialog } from "../actions/aplicantionActions";
-import { LoadPersonalCargosFunction} from "../actions/PersonalInternoActions";
+import { LoadPersonalCargosFunction, DeletePersonalInternoAction, LoadPersonalIdFunction } from "../actions/PersonalInternoActions";
 import ListCargos from "../views/Personal/ListCargos";
+import ListPersonal from "../views/Personal/ListPersonal";
 
 class PersonalInterno extends Component {
   constructor(props) {
@@ -32,7 +33,6 @@ class PersonalInterno extends Component {
   }
 
   render() {
-    console.log("props padre", this.props.personaInterno.toJS());
     // console.log(this.props.usersRoles.get("permits"));
     // console.log(this.props.usersRoles.get("users"));
     // const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
@@ -43,7 +43,7 @@ class PersonalInterno extends Component {
         <Row>
           <Col>
             <Card>
-              <CardHeader>Configuracion de Usuarios</CardHeader>
+              <CardHeader>Configuracion de Personal - Cargos</CardHeader>
               <CardBody>
                 {
                   this.props.personaInterno.get('loading') === 'hide' ?
@@ -62,11 +62,16 @@ class PersonalInterno extends Component {
                       </Nav>
                       <TabContent activeTab={this.state.activeTab}>
                           <TabPane tabId="1">
-                            <span>TAB 1</span>
+                            <ListPersonal
+                            	personal={this.props.personaInterno.get('personal')}
+                            	DeletePersonalInternoAction={this.props.DeletePersonalInternoAction}
+                            	confirm={this.props.confirm}
+                              LoadPersonalIdFunction={this.props.LoadPersonalIdFunction}
+                            />
                           </TabPane>
                           <TabPane tabId="2">
                             <ListCargos 
-                            	cargos={this.props.personaInterno.get('cargos')}
+                            	cargos={this.props.personaInterno.get('cargos')}                            	
                             />
                           </TabPane>
                       </TabContent>
@@ -84,17 +89,17 @@ class PersonalInterno extends Component {
   }
 
 }
-
 const mapStateToProps = state => ({
   personaInterno: state.personaInterno,
   authData: state.auth,
   aplication: state.global
 });
-
 const mapDispatchToProps = dispatch => ({
   LoadPersonalCargosFunction: () => dispatch(LoadPersonalCargosFunction()),  
+  DeletePersonalInternoAction: (id) => dispatch(DeletePersonalInternoAction(id)),  
+  confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
+  LoadPersonalIdFunction: (id) =>dispatch(LoadPersonalIdFunction(id)),
 });
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
