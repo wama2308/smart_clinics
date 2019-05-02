@@ -57,7 +57,9 @@ class DefaultSearch extends React.Component {
           })}
         </Input>
         <Search
-          placeholder="search..."
+          placeholder={
+            this.props.placeholder ? this.props.placeholder : "search..."
+          }
           theme={!this.props.outside ? "yes" : "no"}
           onMouseOver={this.onOver}
           onClick={this.handleClick}

@@ -28,6 +28,10 @@ export const searchPatient = (search, type) => dispatch => {
         const result = converToJson(err);
         dispatch(searchLoaded(true));
         dispatch(openSnackbars("error", result.message));
+        dispatch({
+          type: "SEARCH_PATIENT",
+          payload: null
+        });
       });
   });
 };

@@ -4,20 +4,26 @@ import { Typography } from "@material-ui/core";
 import Search from "../../components/DefaultSearch";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import UserRegister from "./userRegister";
 
 class Client extends React.Component {
   state = {
-    paciente: true
+    paciente: true,
+    openModal: false
   };
   render() {
     const { patient } = this.props;
-    console.log(this.props.patient);
     return (
       <Card style={{ marginBottom: 10, flex: 1 }}>
+        {this.state.openModal && <UserRegister open={this.state.open} />}
         <Header>
           <div>Paciente</div>
           <div style={{ width: "40%" }}>
-            <Search pressKey={true} searchAction={this.props.searchAction} />
+            <Search
+              pressKey={true}
+              searchAction={this.props.searchAction}
+              placeholder="Ingrese DNI"
+            />
           </div>
         </Header>
         <Body>
@@ -57,12 +63,7 @@ class Client extends React.Component {
                         {patient.birth_date}
                       </Typography>
                     </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Edad:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {35}
-                      </Typography>
-                    </div>
+
                     <div className="list-body">
                       <Typography variant="subtitle1">Estado civil:</Typography>
                       <Typography variant="body1" className="textSpace">
@@ -100,7 +101,7 @@ class Client extends React.Component {
                   </div>
 
                   <div className="list">
-                  <div className="list-body">
+                    <div className="list-body">
                       <Typography variant="subtitle1">Correo:</Typography>
                       <Typography variant="body1" className="textSpace">
                         {patient.email[0]}
@@ -113,14 +114,6 @@ class Client extends React.Component {
                       </Typography>
                     </div>
                   </div>
-
-                  <div className="list">
-                    <Typography variant="subtitle1">Nombre:</Typography>
-                    <Typography variant="body1" className="textSpace">
-                      {" "}
-                      kevin Velasco
-                    </Typography>
-                  </div>
                 </div>
               )}
               {!patient && (
@@ -131,7 +124,12 @@ class Client extends React.Component {
                     Por favor selecciona un paciente para continuar
                   </div>
                   <div className="saveButton">
-                    <Button color="success">Agregar</Button>
+                    <Button
+                      color="success"
+                      onClick={()=>this.setState({ openModal: true })}
+                    >
+                      Agregar
+                    </Button>
                   </div>
                 </div>
               )}
@@ -174,11 +172,11 @@ const Body = styled(CardBody)`
     display: flex;
     align-items: center;
     border-top: 1px solid #c8ced3;
-    height: 50px;
+    height: 60px;
     border-bottom: 1px solid #c8ced3;
     &-body {
       display: flex;
-      flex: 1;
+      padding-right: 10%;
       align-items: baseline;
     }
   }
