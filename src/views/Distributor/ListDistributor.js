@@ -85,7 +85,8 @@ class ListDistributor extends React.Component {
           modalFooter = {this.state.modalFooter}
           disabled = {this.state.disabled}
           showHide = {this.state.showHide}   
-          userId = {this.state.userId}                     
+          userId = {this.state.userId}        
+                       
           valorCloseModal = {this.valorCloseModal}          
         />
         <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>

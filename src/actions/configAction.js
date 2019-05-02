@@ -56,7 +56,6 @@ export const loadTypes = () => dispatch => {
     axios
       .get(loadGeneralConfiguration, datos)
       .then(res => {
-        console.log("consultando el api2", res);
         dispatch({
           type: "SET_TYPE_CONFIGURATION",
           payload: {
@@ -72,7 +71,6 @@ export const loadTypes = () => dispatch => {
 };
 
 export const editMedicalCenter = (data, callback) => dispatch => {
-  console.log("se ejecuto");
   getDataToken().then(datos => {
     axios({
       method: "post",

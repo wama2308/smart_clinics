@@ -122,8 +122,7 @@ class ModalCargos extends React.Component {
             cargo: props.cargo,
             descripcion: props.descripcion,             
             loading:'hide',
-        })
-                 
+        })                 
     }
 
 	render() {   

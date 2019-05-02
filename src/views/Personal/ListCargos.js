@@ -123,5 +123,5 @@ class ListCargos extends React.Component {
     );
   }
 }
-
 export default ListCargos;
+

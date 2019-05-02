@@ -29,6 +29,7 @@ const PersonalInternoReducer = (state = Map(), action) => {
 	  case 'LOAD_PERSONAL_CARGOS': {
 	  	return Map(action.payload)
 	  }	  
+
 	  case 'LOAD_PERSONAL_ID': {
 	  	return setStorePersonalId(state, action.payload)
 	  }
@@ -38,7 +39,6 @@ const PersonalInternoReducer = (state = Map(), action) => {
 	  case 'DELETE_INFO_ACTION': {
 	  	return setStoreInfoAction(state, action.payload)
 	  }
-
 	  default:
 	  	return state;
   }

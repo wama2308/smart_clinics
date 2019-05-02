@@ -41,11 +41,12 @@ class App extends Component {
   componentWillReceiveProps=(props)=>{
     if((props.logged) && (props.aplication === null))
     {
-      this.props.ConfigGeneralFunction(); 
-    }    
+      this.props.ConfigGeneralFunction();
+    }
   }
   render() {
-    if (this.props.logged && this.props.location.pathname === "/login") {      
+
+    if (this.props.logged && this.props.location.pathname === "/login") {          
       return <Redirect to="/dasboard" />;
     } else if (!this.props.logged && this.props.location.pathname === "/") {
       return <Redirect to="/login" />;

@@ -33,7 +33,6 @@ class PersonalInterno extends Component {
   }
 
   render() {
-    //console.log("props padre", this.props.personaInterno.toJS());
     // console.log(this.props.usersRoles.get("permits"));
     // console.log(this.props.usersRoles.get("users"));
     // const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
@@ -88,6 +87,7 @@ class PersonalInterno extends Component {
       </div>
     );
   }
+
 }
 const mapStateToProps = state => ({
   personaInterno: state.personaInterno,
