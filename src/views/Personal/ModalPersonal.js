@@ -642,6 +642,10 @@ class ModalCargos extends React.Component {
         /*console.log("modal personal personaInterno", props.personaInterno);              
         console.log("modal personal usersRoles", props.usersRoles.toJS());*/                      
         //console.log("modal personal application ", props.aplication);                      
+        this.setState({
+            modal: props.modal,       
+            loading:'show'     
+        });   
         if(props.aplication){
             let arrayProvinces = [];
             props.aplication.dataGeneral.countries != null && 
@@ -662,11 +666,6 @@ class ModalCargos extends React.Component {
                 }                
             }) 
         }        
-        this.setState({
-            modal: props.modal,       
-            loading:'show'     
-        });     
-
         if(props.usersRoles.get('userId') !== "" || this.props.personaInterno.userId !== ""){
             this.setState({
                 varDisabledRegisterUser:true
@@ -738,7 +737,7 @@ class ModalCargos extends React.Component {
                 loading:'hide',
                 arrayTypeIdentitySelect: props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],                           
             })                
-        }else if(props.option === 0){         
+        }else if(props.option === 0){                     
             this.setState({
                 arrayTypeIdentitySelect: props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],                
                 ...InitalState
@@ -793,7 +792,6 @@ class ModalCargos extends React.Component {
     }
 
     handleChangeSwitch = name => event => {this.setState({ [name]: event.target.checked });};
-
 	render() {   
         return (
             <span>
