@@ -11,11 +11,17 @@ class Client extends React.Component {
     paciente: true,
     openModal: false
   };
+
+
+  close=()=>{
+    this.setState({openModal:false})
+  }
   render() {
     const { patient } = this.props;
+    console.log(this.state.openModal)
     return (
       <Card style={{ marginBottom: 10, flex: 1 }}>
-        {this.state.openModal && <UserRegister open={this.state.open} />}
+        {this.state.openModal && <UserRegister open={this.state.openModal} close={this.close} />}
         <Header>
           <div>Paciente</div>
           <div style={{ width: "40%" }}>
