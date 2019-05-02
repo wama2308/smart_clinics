@@ -9,24 +9,24 @@ const MapComponent = compose(
     containerElement: <div style={{ height: `400px` }} />,
     mapElement: <div style={{ height: `100%` }} />,
   }),
- 
+
   withScriptjs,
   withGoogleMap,
 )((props) =>
   <GoogleMap
     onClick={props.handleClickmap}
- 
+
     ref={(map) =>
-      map && 
+      map &&
       map.panTo({lat: props.lat, lng:  props.lng})}
       defaultCenter={{ lat:  props.lat, lng:  props.lng }}
    defaultZoom={props.zoom}
    zoom={props.zoom}
 
   >
-{props.isMarkerShown && <Marker 
+{props.isMarkerShown && <Marker
 
-  position={{ lat:props.lat , lng: props.lng}} 
+  position={{ lat:props.lat , lng: props.lng}}
   // onClick={props.onMarkerClick}
    />}
   </GoogleMap>

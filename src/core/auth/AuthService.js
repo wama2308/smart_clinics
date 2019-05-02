@@ -36,10 +36,9 @@ export default class AuthService {
   async verify(callback) {
     const token = await this.getToken();
     if (token) {
-      const result = await decode(token);
+      const result = await this.isTokenExpired(token);
       return callback({
-        logged: true,
-        result
+        ...result
       });
     }
     return callback({ logged: false });
@@ -54,13 +53,16 @@ export default class AuthService {
   isTokenExpired(token) {
     try {
       const decoded = decode(token);
-      if (decoded.exp < Date.now() / 1000) {
+      if (decoded) {
         // Checking if token is expired. N
-        return true;
+        return {
+          result: decode,
+          logged: true
+        };
       }
-      return false;
+      return { logged: false, result: null };
     } catch (err) {
-      return false;
+      return { logged: false, result: null };
     }
   }
   setEmail(idemail) {

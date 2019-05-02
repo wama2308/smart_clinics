@@ -54,7 +54,7 @@ class configContainer extends Component {
   //  Verification of the license to be able to add another branch
 
   componentWillReceiveProps = props => {
-    props.medicalCenter.get("loading")
+  (  props.medicalCenter.get("loading") && props.aplication)
       ? this.setState({ loading: "hide" })
       : null;
   };
@@ -85,47 +85,49 @@ class configContainer extends Component {
 
   // Array of data to send to the branches component
 
-  getCurrencyName = data => {
-    if (!data.countryid) {
-      return;
-    }
-    const result = data.country.find(item => {
-      return item.id === data.countryid;
-    });
+  // getCurrencyName = data => {
+  //   if (!data.countryid) {
+  //     return;
+  //   }
+  //   const result = data.country.find(item => {
+  //     return item.id === data.countryid;
+  //   });
 
-    return result.currencySymbol;
-  };
+  //   return result.currencySymbol;
+  // };
 
-  filterDataForSucursal(data) {
-    const array = [];
-    data = data.toJS();
+  // filterDataForSucursal(data) {
+  //   const array = [];
+  //   data = data.toJS();
 
-    data.branchoffices
-      ? data.branchoffices.map(branchOfficesData => {
-          let dataCountryAndPRovince = data.country.filter(country => {
-            return country.id.includes(branchOfficesData.countryId);
-          });
-          dataCountryAndPRovince = dataCountryAndPRovince[0];
+  //   data.branchoffices
+  //     ? data.branchoffices.map(branchOfficesData => {
+  //         let dataCountryAndPRovince = data.country.filter(country => {
+  //           return country.id.includes(branchOfficesData.countryId);
+  //         });
+  //         dataCountryAndPRovince = dataCountryAndPRovince[0];
 
-          const id =
-            dataCountryAndPRovince.name === "Argentina"
-              ? 0
-              : branchOfficesData.provinceId;
-          array.push({
-            country: dataCountryAndPRovince.name,
-            province: dataCountryAndPRovince.provinces[id].name,
-            ...branchOfficesData
-          });
-        })
-      : [];
+  //         const id =
+  //           dataCountryAndPRovince.name === "Argentina"
+  //             ? 0
+  //             : branchOfficesData.provinceId;
+  //         array.push({
+  //           country: dataCountryAndPRovince.name,
+  //           province: dataCountryAndPRovince.provinces[id].name,
+  //           ...branchOfficesData
+  //         });
+  //       })
+  //     : [];
 
-    return array;
-  }
+  //   return array;
+  // }
 
   render() {
-    const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
+    // const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
     const permits = this.numberSucursales(this.props.medicalCenter.toJS());
-    const symbol = this.getCurrencyName(this.props.medicalCenter.toJS());
+    const symbol = "$";
+
+    //this.getCurrencyName(this.props.medicalCenter.toJS());
 
     return (
       <div className="animated fadeIn">
@@ -180,13 +182,14 @@ class configContainer extends Component {
                       <MedicalCenter
                         editAction={this.props.medicalCenterAction}
                         data={this.props.medicalCenter.toJS()}
+                        info={this.props.aplication}
                       />
                     </TabPane>
                     <TabPane tabId={2}>
                       <Sucursales
                         openSnackbars={this.props.openSnackbars}
                         permits={permits}
-                        sucursales={DataSucursal}
+                        sucursales={[]}
                         deleteSucursal={this.props.deleteSucursal}
                         confirm={this.props.confirm}
                       />
@@ -222,7 +225,7 @@ class configContainer extends Component {
 const mapStateToProps = state => ({
   medicalCenter: state.config,
   authData: state.auth,
-  aplication: state.global
+  aplication: state.global.dataGeneral
 });
 
 const mapDispatchToProps = dispatch => ({

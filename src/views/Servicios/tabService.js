@@ -39,7 +39,6 @@ export default class tabService extends React.Component {
   };
 
   render() {
-    console.log("other", this.props.pantilla);
     return (
       <div className="container">
         {this.state.modal && (

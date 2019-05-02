@@ -92,7 +92,6 @@ class ModalPlatinlla extends React.Component {
               handleBlur,
               resetForm
             }) => {
-              console.log(touched, errors);
               return (
                 <div>
                   <ModalHeader toggle={this.props.close}>

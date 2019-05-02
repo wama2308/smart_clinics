@@ -17,7 +17,10 @@ import "./scss/style.css";
 import { connect } from "react-redux";
 import { DefaultLayout } from "./containers";
 import { withRouter } from "react-router";
-import {closeDialog, ConfigGeneralFunction} from './actions/aplicantionActions'
+import {
+  closeDialog,
+  ConfigGeneralFunction
+} from "./actions/aplicantionActions";
 
 // Pages
 import {
@@ -35,27 +38,40 @@ import {
   EnterResetPassword
 } from "./views/Pages";
 import Snackbars from "./components/Snackbars";
-import {Alert} from './components/Modals'
+import { Alert } from "./components/Modals";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class App extends Component {
-  componentWillReceiveProps=(props)=>{
-    if((props.logged) && (props.aplication === null))
-    {
-      this.props.ConfigGeneralFunction(); 
-    }    
-  }
+  componentWillReceiveProps = props => {
+    if (props.logged && props.aplication === null) {
+      this.props.ConfigGeneralFunction();
+    }
+  };
   render() {
-    if (this.props.logged && this.props.location.pathname === "/login") {      
+    if (this.props.logged && this.props.location.pathname === "/login") {
       return <Redirect to="/dasboard" />;
-    } else if (!this.props.logged && this.props.location.pathname === "/") {
+    } else if (
+      this.props.logged === false &&
+      this.props.location.pathname !== "/login"
+    ) {
       return <Redirect to="/login" />;
     }
     return (
       <div>
         <Snackbars />
-        <Alert {...this.props.alert}  close={this.props.closeDialog}/>
+        <Alert {...this.props.alert} close={this.props.closeDialog} />
+        {this.props.aplication === null && this.props.logged && (
+          <CircularProgress
+            style={{
+              position: " absolute",
+              height: 40,
+              top: "45%",
+              right: "50%",
+              zIndex: 2
+            }}
+          />
+        )}
         <Switch>
-          <Route exact path="/testuser" name="TestUser" component={TestUser} />
           <Route
             exact
             path="/login"
@@ -113,7 +129,9 @@ class App extends Component {
           />
           <Route exact path="/404" name="Page 404" component={Page404} />
           <Route exact path="/500" name="Page 500" component={Page500} />
-          <Route path="/" name="Home" component={DefaultLayout} />
+          {this.props.aplication && (
+            <Route path="/" name="Home" component={DefaultLayout} />
+          )}
         </Switch>
       </div>
     );
@@ -126,10 +144,15 @@ const mapStateToProps = state => ({
   aplication: state.global.dataGeneral
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  closeDialog: ()=>dispatch(closeDialog()),
-  ConfigGeneralFunction: ()=>dispatch(ConfigGeneralFunction())
-})
+const mapDispatchToProps = dispatch => ({
+  closeDialog: () => dispatch(closeDialog()),
+  ConfigGeneralFunction: () => dispatch(ConfigGeneralFunction())
+});
 
 // <Route path="/" name="Home" component={DefaultLayout} />
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);
