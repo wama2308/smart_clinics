@@ -2394,8 +2394,7 @@ class Usuarios extends Component {
                                                                         </NavItem>                
                                                                     </Nav>
                                                                     <TabContent activeTab={this.state.activeTab}>
-                                                                        <TabPane tabId="1">
-                                                                            
+                                                                        <TabPane tabId="1">                                                                            
                                                                             <FormGroup className="top form-group col-sm-12">
                                                                                 <Label for="rol">Rol</Label>
                                                                                 <div className={this.state.divSelectRol}>                                                                        

@@ -1,7 +1,8 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalRoles from './ModalRoles.js';
-import {FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
+import IconButton from "@material-ui/core/IconButton";
+import { Delete, Edit, Visibility } from "@material-ui/icons";
 
 class RolesList extends React.Component {
   constructor(props) {
@@ -63,20 +64,21 @@ class RolesList extends React.Component {
   render() {
      return (
       <div className="container">
-        <ModalRoles 
-            option = {this.state.option}
-            modal = {this.state.modal}
-            modalHeader = {this.state.modalHeader}
-            modalFooter = {this.state.modalFooter}
-            disabled = {this.state.disabled}
-            showHide = {this.state.showHide}
-            modules = {this.props.modules}         
-            permits = {this.props.permits}  
-            saveRolAction = {this.props.saveRolAction}
-            editRolAction = {this.props.editRolAction}
-            position = {this.state.position}
-            valorCloseModalRoles={this.valorCloseModalRoles}  
+       <ModalRoles 
+          option = {this.state.option}
+          modal = {this.state.modal}
+          modalHeader = {this.state.modalHeader}
+          modalFooter = {this.state.modalFooter}
+          disabled = {this.state.disabled}
+          showHide = {this.state.showHide}
+          modules = {this.props.modules}         
+          permits = {this.props.permits}  
+          saveRolAction = {this.props.saveRolAction}
+          editRolAction = {this.props.editRolAction}
+          position = {this.state.position}
+          valorCloseModalRoles={this.valorCloseModalRoles}  
         />
+        
         <Button color="success" onClick={() => { this.openRoles(1); }}>Agregar</Button>
         <br />
         <br />
@@ -97,10 +99,9 @@ class RolesList extends React.Component {
                     <td>{ i + 1 }</td>
                     <td>{ rol.rol }</td>
                     <td>
-                      <div  className="float-left" >
-                        <a title="Ver Rol" className=""  onClick={() => { this.openRoles(2, i, rol._id); }}><FaSearch /> </a>
-                        &nbsp;&nbsp;                        
-                        <a title="Editar Rol" className=""  onClick={() => { this.openRoles(3, i, rol._id); }}><FaUserEdit /> </a>
+                      <div className="float-left" >
+                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openRoles(2, i, rol._id); }}><Visibility className="iconTable" /></IconButton>
+                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openRoles(3, i, rol._id); }}><Edit className="iconTable" /></IconButton>                        
                       </div>
                     </td>                    
                   </tr>

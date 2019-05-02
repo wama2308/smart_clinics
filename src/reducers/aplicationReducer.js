@@ -1,4 +1,3 @@
-
 const InitalState = {
     snackBars:{
         type:'success',
@@ -10,7 +9,8 @@ const InitalState = {
       message:'',
       callback: undefined
     },
-    openModalExists: false
+    openModalExists: false,
+    dataGeneral: null
 }
 
 const AplicationReducers = (state = InitalState , action) => {
@@ -24,9 +24,11 @@ const AplicationReducers = (state = InitalState , action) => {
   case 'OPEN_CONFIRM':{
     return {...state , confirm:{open:true , ...action.payload.message , callback:  action.payload.callback }}
   }
-
   case 'CLOSE_CONFIRM':{
     return {...state , confirm:{...state.confirm , open:false  }}
+  }
+  case 'CONFIG_GENERAl':{
+    return {...state , dataGeneral:action.payload }
   }
 
 

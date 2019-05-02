@@ -156,7 +156,8 @@ class ModalRoles extends React.Component {
 
     componentWillReceiveProps=(props)=>{        
         this.setState({
-            modalRoles: props.modal,            
+            modalRoles: props.modal,       
+            loading:'show'     
         });
 
         if(props.option !== 1){
@@ -181,7 +182,7 @@ class ModalRoles extends React.Component {
 	render() {   
         return (
             <span>                            
-        		<Modal isOpen={this.state.modalRoles} className="Modal">
+        		<Modal isOpen={this.state.modalRoles} className="ModalUsersRoles">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -204,8 +205,7 @@ class ModalRoles extends React.Component {
                             </ModalBody>
                             <ModalFooter>
                                 <Button className={this.props.showHide} color="primary" onClick={this.handleSaveRoles}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeRoles}>Cancelar</Button>                                                                                                                                              
-                                <Button className="" color="danger" onClick={this.testOnclick}>Prueba</Button>                                                                                                                                              
+                                <Button className="" color="danger" onClick={this.closeRoles}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                           
                             </ModalFooter>
                             </div>
                         :
