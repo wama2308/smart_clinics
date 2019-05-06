@@ -15,7 +15,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import Select from 'react-select';
-import { ValidateEmailUsersFunction, savePersonalInternoAction, editPersonalAction } from "../../actions/PersonalInternoActions";
+import { ValidateEmailUsersFunction, savePersonalInternoAction, editPersonalAction, deleteInfoAction } from "../../actions/PersonalInternoActions";
 import { deleteInfoUserId, LoadAllUsersNoMasterFunction, saveRolAction, LoadRolIdFunction, saveUserNoMasterAction, editUserNoMasterAction, addSucursalFunction, deleteSucursalFunction, LoadIdUsersNoMasterFunction } from "../../actions/UserAction";
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
 import ModalUser from '../Usuarios/ModalUser.js';
@@ -45,6 +45,7 @@ class ModalCargos extends React.Component {
         })        
     	this.props.valorCloseModal(false); 
         this.props.deleteInfoUserId();        
+        this.props.deleteInfoAction();        
     }   
 
     validate = () => {
@@ -639,8 +640,8 @@ class ModalCargos extends React.Component {
     } 
 
     componentWillReceiveProps=(props)=>{            
-        /*console.log("modal personal personaInterno", props.personaInterno);              
-        console.log("modal personal usersRoles", props.usersRoles.toJS());*/                      
+        console.log("modal personal personaInterno", props.personaInterno);              
+        console.log("modal personal usersRoles", props.usersRoles.toJS());                      
         //console.log("modal personal application ", props.aplication);                      
         this.setState({
             modal: props.modal,       
@@ -1060,6 +1061,7 @@ const mapDispatchToProps = dispatch => ({
     deleteSucursalFunction: (key, callback) => dispatch(deleteSucursalFunction(key, callback)),  
     LoadIdUsersNoMasterFunction: id => dispatch(LoadIdUsersNoMasterFunction(id)),
     deleteInfoUserId: () => dispatch(deleteInfoUserId()),    
+    deleteInfoAction: () => dispatch(deleteInfoAction()),    
 });
 export default connect(
   mapStateToProps,
