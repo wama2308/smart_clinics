@@ -4,7 +4,7 @@ import Products from "../views/Ventas/Products";
 import Client from "../views/Ventas/Client";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { searchPatient } from "../actions/ventasAction";
+import { searchPatient, clean, searchProduct } from "../actions/ventasAction";
 
 class VentasContainer extends React.Component {
   render() {
@@ -15,12 +15,17 @@ class VentasContainer extends React.Component {
             searchAction={this.props.searchPatient}
             loaded={this.props.loaded}
             patient={this.props.patient}
+            clean={this.props.clean}
           />
-          <Products className="products" />
+          <div className="insight-container-two">
+            <Ventas />
+          </div>
         </div>
-        <div className="insight-container-two">
-          <Ventas />
-        </div>
+        <Products
+          className="products"
+          patient={this.props.patient}
+          searchAction={this.props.searchProduct}
+        />
       </Container>
     );
   }
@@ -33,18 +38,19 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { searchPatient }
+  { searchPatient, clean, searchProduct }
 )(VentasContainer);
 
 const Container = styled.div`
   display: grid;
   height: 100%;
   grid-gap: 10px;
-  grid-template-columns: 62% 38%;
+  grid-template-columns: 100%;
+  grid-template-rows: 37% 55%;
   .insight-container-one {
-    flex: 1;
-    flex-direction: column;
-    display: flex;
+    display: grid;
+    grid-template-columns: 60% 38.7%;
+    grid-gap: 15px;
   }
   .insight-container-two {
     flex: 1;

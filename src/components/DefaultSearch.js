@@ -32,30 +32,32 @@ class DefaultSearch extends React.Component {
   };
 
   render() {
-    console.log(this.props.type);
+    const action = this.props.onChange? this.props.onChange: this.props.search
     return (
       <div style={{ minWidth: "40%", display: "flex" }}>
-        <Input
-          type="select"
-          name="pais"
-          value={this.state.type}
-          style={{
-            maxWidth: 40,
-            height: 40,
-            padding: 0,
-            border: "1px solid #e4e7ea",
-            borderRight: "none"
-          }}
-          onChange={event => this.setState({ type: event.target.value })}
-        >
-          {this.props.type.dataCountries.type_identity.map(type => {
-            return (
-              <option key={type.value} value={type.value}>
-                {type.value}
-              </option>
-            );
-          })}
-        </Input>
+        {this.props.typeOfNationality &&
+          <Input
+            type="select"
+            name="pais"
+            value={this.state.type}
+            style={{
+              maxWidth: 40,
+              height: 40,
+              padding: 0,
+              border: "1px solid #e4e7ea",
+              borderRight: "none"
+            }}
+            onChange={event => this.setState({ type: event.target.value })}
+          >
+            {this.props.type.dataCountries.type_identity.map(type => {
+              return (
+                <option key={type.value} value={type.value}>
+                  {type.value}
+                </option>
+              );
+            })}
+          </Input>
+        }
         <Search
           placeholder={
             this.props.placeholder ? this.props.placeholder : "search..."
@@ -64,7 +66,7 @@ class DefaultSearch extends React.Component {
           onMouseOver={this.onOver}
           onClick={this.handleClick}
           value={this.props.value}
-          onChange={event => this.props.search(event.target.value)}
+          onChange={event => action(event.target.value)}
           onKeyDown={this.keyPress}
           onMouseOut={this.mouseOut}
         />
@@ -80,7 +82,7 @@ class DefaultSearch extends React.Component {
                       this.props.outsideClick();
                     }}
                   >
-                    {option.name}
+                    {option.name.toLowerCase()}
                   </ListGroupItem>
                 </List>
               );
@@ -95,7 +97,8 @@ class DefaultSearch extends React.Component {
 const mapStateToProps = state => ({
   outside: state.global.outside,
   value: state.global.search,
-  type: state.global.dataGeneral
+  type: state.global.dataGeneral,
+  options: state.ventas.get('products')
 });
 
 export default connect(
@@ -113,7 +116,7 @@ const Search = styled(Input)`
 const BodySearch = styled.div`
   position: absolute;
   min-height: 215px;
-  width: 38.5%;
+  width: 37.5%;
   border-radius: 0px 0px 20px 20px;
   z-index: 2;
   background: white;

@@ -6,6 +6,13 @@ const VentasReducer = (state = Map(), action) => {
     case "SEARCH_PATIENT":
       return setData(state, "patient", action.payload);
 
+    case "SEARCH_PRODUCT":
+      return setData(state, "products", action.payload);
+
+
+    case "CLEAN":{
+      return setData(state, "patient", action.payload )
+    }
     default:
       return state;
   }

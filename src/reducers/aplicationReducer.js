@@ -52,7 +52,9 @@ const AplicationReducers = (state = InitalState, action) => {
     case "CONFIG_GENERAl": {
       return { ...state, dataGeneral: action.payload };
     }
-
+    case "CLEAN":{
+      return {...state , search:""}
+    }
     case "SEARCH_LOADED":
       return {...state , searchloading:action.payload}
     default:

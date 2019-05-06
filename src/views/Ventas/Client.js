@@ -5,6 +5,7 @@ import Search from "../../components/DefaultSearch";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import UserRegister from "./userRegister";
+import * as moment from "moment";
 
 class Client extends React.Component {
   state = {
@@ -12,24 +13,29 @@ class Client extends React.Component {
     openModal: false
   };
 
+  close = () => {
+    this.setState({ openModal: false });
+  };
 
-  close=()=>{
-    this.setState({openModal:false})
-  }
   render() {
     const { patient } = this.props;
-    console.log(this.state.openModal)
+    console.log(patient);
     return (
       <Card style={{ marginBottom: 10, flex: 1 }}>
-        {this.state.openModal && <UserRegister open={this.state.openModal} close={this.close} />}
+        {this.state.openModal && (
+          <UserRegister open={this.state.openModal} close={this.close} />
+        )}
         <Header>
           <div>Paciente</div>
           <div style={{ width: "40%" }}>
-            <Search
-              pressKey={true}
-              searchAction={this.props.searchAction}
-              placeholder="Ingrese DNI"
-            />
+            {!patient && (
+              <Search
+                pressKey={true}
+                searchAction={this.props.searchAction}
+                placeholder="Ingrese DNI"
+                typeOfNationality={true}
+              />
+            )}
           </div>
         </Header>
         <Body>
@@ -58,56 +64,6 @@ class Client extends React.Component {
                   </div>
                   <div className="list">
                     <div className="list-body">
-                      <Typography variant="subtitle1">Sexo:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.sex}
-                      </Typography>
-                    </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">F/N:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.birth_date}
-                      </Typography>
-                    </div>
-
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Estado civil:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.civil_state}
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="list">
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Pais:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {"Venezulea"}
-                      </Typography>
-                    </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Princia:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.province}
-                      </Typography>
-                    </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">ciudad:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.district}
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="list">
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Direccion:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {"Esquina carrera 13 Barrio el liceo"}
-                      </Typography>
-                    </div>
-                  </div>
-
-                  <div className="list">
-                    <div className="list-body">
                       <Typography variant="subtitle1">Correo:</Typography>
                       <Typography variant="body1" className="textSpace">
                         {patient.email[0]}
@@ -119,6 +75,27 @@ class Client extends React.Component {
                         {patient.phone[0]}
                       </Typography>
                     </div>
+                  </div>
+
+                  <div className="list">
+                    <div className="list-body">
+                      <Typography variant="subtitle1">Direccion:</Typography>
+                      <Typography variant="body1" className="textSpace">
+                        {patient.address}
+                      </Typography>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      paddingTop: 26
+                    }}
+                  >
+                    <Button color="success" onClick={this.props.clean}>
+                      Limpiar
+                    </Button>
                   </div>
                 </div>
               )}
@@ -132,7 +109,7 @@ class Client extends React.Component {
                   <div className="saveButton">
                     <Button
                       color="success"
-                      onClick={()=>this.setState({ openModal: true })}
+                      onClick={() => this.setState({ openModal: true })}
                     >
                       Agregar
                     </Button>
@@ -153,11 +130,13 @@ const Header = styled(CardHeader)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 64px;
 `;
 
 const Body = styled(CardBody)`
   display: flex;
   flex-direction: column;
+  padding-top: 5px;
   .message {
     flex: 1;
     display: flex;
@@ -177,8 +156,8 @@ const Body = styled(CardBody)`
   .list {
     display: flex;
     align-items: center;
-    border-top: 1px solid #c8ced3;
-    height: 60px;
+    border-top: 0px solid #c8ced3;
+    height: 55px;
     border-bottom: 1px solid #c8ced3;
     &-body {
       display: flex;
