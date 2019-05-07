@@ -48,12 +48,13 @@ class App extends Component {
     }
   };
   render() {
-
-    if (this.props.logged && this.props.location.pathname === "/login") {          
+    if (this.props.logged && this.props.location.pathname === "/login") {
       return <Redirect to="/dasboard" />;
     } else if (
       this.props.logged === false &&
-      this.props.location.pathname !== "/login"
+      (this.props.location.pathname !== "/login" &&
+        this.props.location.pathname !== "/register-email" &&
+        this.props.location.pathname !== "/reset-password")
     ) {
       return <Redirect to="/login" />;
     }
