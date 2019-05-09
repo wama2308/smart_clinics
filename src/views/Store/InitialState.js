@@ -15,7 +15,7 @@ export const InitalState = {
     estanteDescripcion: '',
     estanteDescripcionError: '',
     estanteDescripcionInvalid: false,
-
+    action:0,
     collapse: false,
     loading:'show',   
 

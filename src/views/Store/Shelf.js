@@ -101,7 +101,7 @@ class Shelf extends React.Component {
             });                           
             return false;
         }        
-        let shelfs = { estante: this.state.estante, descripcion: this.state.estanteDescripcion}                       
+        let shelfs = { name: this.state.estante, description: this.state.estanteDescripcion}                       
         this.props.addShelfsFunction(shelfs);        
         this.cleanState();                   
         return true; 
@@ -169,11 +169,11 @@ class Shelf extends React.Component {
                                                 return (
                                                     <tr key={i}>
                                                         <td>{i+1}</td>
-                                                        <td>{list.estante}</td>                                                                                                                                                    
-                                                        <td>{list.descripcion}</td>                                                                                                                                                                                                             
+                                                        <td>{list.name}</td>                                                                                                                                                    
+                                                        <td>{list.description}</td>                                                                                                                                                                                                             
                                                         <td>
                                                             <div  className="float-left" >
-                                                                <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.deleteShelfs(i); }}><Delete className="iconTable" /></IconButton>                                                    
+                                                                <IconButton aria-label="Delete" disabled={this.props.option === 2 ? true : false} title="Ver Rol" className="iconButtons" onClick={() => { this.deleteShelfs(i); }}><Delete className="iconTable" /></IconButton>                                                    
                                                             </div>
                                                         </td>
                                                     </tr>

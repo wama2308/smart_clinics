@@ -28,7 +28,7 @@ class StoreContainer extends Component {
   };  
 
   render() {   
-    console.log("props store", this.props.store);     
+    //console.log("props store", this.props.aplication);     
     return (
       <div className="animated fadeIn">
         <Row>
@@ -42,8 +42,9 @@ class StoreContainer extends Component {
                     <ListStore 
                       confirm={this.props.confirm}
                       branchOfficces={this.props.store.branchOfficces}
-                      /*LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
-                      DeleteDistributorAction={this.props.DeleteDistributorAction}*/
+                      data={this.props.store.data}
+                      DeleteStoreAction={this.props.DeleteStoreAction}
+                      LoadStoreIdFunction={this.props.LoadStoreIdFunction}
                     />      
                   </div>
                 :
@@ -66,8 +67,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   LoadStoreFunction: () => dispatch(LoadStoreFunction()),  
-  /*LoadDistributorIdFunction: (distrbutorId) => dispatch(LoadDistributorIdFunction(distrbutorId)),  
-  DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),  */
+  /*LoadDistributorIdFunction: (distrbutorId) => dispatch(LoadDistributorIdFunction(distrbutorId)),*/  
+  DeleteStoreAction: (storeId, sucursalId) => dispatch(DeleteStoreAction(storeId, sucursalId)),  
+  LoadStoreIdFunction: (storeId, sucursalId) => dispatch(LoadStoreIdFunction(storeId, sucursalId)),  
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
 });
 

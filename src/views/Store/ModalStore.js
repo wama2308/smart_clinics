@@ -12,7 +12,7 @@ import jstz from 'jstz';
 import { connect } from "react-redux";
 import Shelf from './Shelf.js';
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
-import { cleanContacs, saveDistributorAction, editDistributorAction } from "../../actions/DistributorActions";
+import { saveStoreAction, editStoreAction, cleanShelfs } from "../../actions/StoreActions";
 import { InitalState } from './InitialState.js';
 
 class ModalStore extends React.Component {
@@ -23,9 +23,7 @@ class ModalStore extends React.Component {
         };
 	}
 
-	componentDidMount(){
-        
-    }
+	componentDidMount(){}
 
     handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,9 +31,6 @@ class ModalStore extends React.Component {
             [name]: value
         });                
     }   	
-
-    testOnclick = () => {//this.props.LoadRolNew();
-    }
 
     toggle = () => {
         this.setState({ 
@@ -48,7 +43,7 @@ class ModalStore extends React.Component {
             ...InitalState,
             loading: 'show'
         });   
-        //this.props.cleanContacs();
+        this.props.cleanShelfs();
         this.props.valorCloseModal(false);       
     }       
 
@@ -89,8 +84,7 @@ class ModalStore extends React.Component {
 
     handleSaveAlmacen = event => {
         event.preventDefault();
-        const isValid = this.validate();   
-        console.log("isValid ", isValid)     
+        const isValid = this.validate();           
         if (isValid) {             
             let valueSucursales = "";
             let arraySucursales = Object.values(this.state.arraySucursalesSelect);
@@ -109,54 +103,81 @@ class ModalStore extends React.Component {
                     };
                     this.props.confirm(message, res => {
                         if (res) {                
-                            alert("Guardar")
+                            this.setState({loading:'show'})                                    
+                            this.props.saveStoreAction(
+                            {
+                                sucursal_id:valueSucursales,
+                                name:this.state.almacen,
+                                description:this.state.descripcion,
+                                shelf:this.props.store.shelfs,                        
+                                timeZ: jstz.determine().name()
+                            },
+                              () => {
+                                this.closeModal();                    
+                              }
+                            )
                         }
                     });  
                 }else{
-                    alert("Guardar")
-                }
-                /*this.setState({loading:'show'})                                    
-                this.props.saveDistributorAction(
-                  {
-                    name:this.state.name,
-                    type_identity:this.state.arrayTypeIdentitySelect,
-                    tin:this.state.dni,
-                    email:this.state.tagsEmails,
-                    phone:this.state.tagsTelefonos,
-                    country:valuePais,
-                    province:valueProvince,
-                    district:valueDistrict,
-                    address:this.state.direccion,
-                    contact:this.props.distributor.contacs,                    
-                    timeZ: jstz.determine().name()
-                  },
-                  () => {
-                    this.closeModal();                    
-                  }
-                )*/
+                    this.setState({loading:'show'})                                    
+                    this.props.saveStoreAction(
+                    {
+                        sucursal_id:valueSucursales,
+                        name:this.state.almacen,
+                        description:this.state.descripcion,
+                        shelf:this.props.store.shelfs,                        
+                        timeZ: jstz.determine().name()
+                    },
+                      () => {
+                        this.closeModal();                    
+                      }
+                    )
+                }                
             } 
-            /*else if(this.props.option === 3){
-                this.setState({loading:'show'})   
-                this.props.editDistributorAction(
-                  {
-                    id: this.props.userId,
-                    name:this.state.name,
-                    type_identity:this.state.arrayTypeIdentitySelect,
-                    tin:this.state.dni,
-                    email:this.state.tagsEmails,
-                    phone:this.state.tagsTelefonos,
-                    country:valuePais,
-                    province:valueProvince,
-                    district:valueDistrict,
-                    address:this.state.direccion,
-                    contact:this.props.distributor.contacs,                    
-                    timeZ: jstz.determine().name()
-                  },
-                  () => {
-                    this.closeModal();                    
-                  }
-                )
-            }   */        
+            else if(this.props.option === 3)
+            {
+                if(this.props.store.shelfs.length === 0){
+                    const message = {
+                      title: "¡Registrar sin estantes!",
+                      info: "¿Esta seguro que desea guardar el almacen sin estantes?"
+                    };
+                    this.props.confirm(message, res => {
+                        if (res) {  
+                            this.setState({loading:'show'})   
+                            this.props.editStoreAction(
+                              {
+                                store_id:this.props.id,
+                                sucursal_id_now: this.props.sucursal_id_now,
+                                sucursal_id:valueSucursales,
+                                name:this.state.almacen,
+                                description:this.state.descripcion,
+                                shelf:this.props.store.shelfs,                        
+                                timeZ: jstz.determine().name()
+                              },
+                              () => {
+                                this.closeModal();                    
+                              }
+                            )
+                        }
+                    });
+                }else{
+                    this.setState({loading:'show'})   
+                    this.props.editStoreAction(
+                      {
+                        store_id:this.props.id,
+                        sucursal_id_now: this.props.sucursal_id_now,
+                        sucursal_id:valueSucursales,
+                        name:this.state.almacen,
+                        description:this.state.descripcion,
+                        shelf:this.props.store.shelfs,                        
+                        timeZ: jstz.determine().name()
+                      },
+                      () => {
+                        this.closeModal();                    
+                      }
+                    )
+                }                    
+            }        
         }
     }
 
@@ -182,8 +203,7 @@ class ModalStore extends React.Component {
         })
     }    
 
-    componentWillReceiveProps=(props)=>{        
-        
+    componentWillReceiveProps=(props)=>{       
         if(props.option === 1){
             this.setState({
                 loading: 'hide',
@@ -194,8 +214,26 @@ class ModalStore extends React.Component {
                 ...InitalState
             })   
         }
-        
-                
+        if(props.option === 2 || props.option === 3){                  
+            if(props.store.storeId && this.state.action === 0){
+                this.setState({
+                    almacen: props.store.storeId.storeId.name,
+                    arraySucursalesSelect: props.store.storeId.storeId.sucursal,
+                    descripcion: props.store.storeId.storeId.description,
+                    loading: props.store.storeId.loading,
+                    action:1
+                })  
+                if(props.store.shelfs.length > 0){
+                    this.setState({
+                        collapse: true
+                    })
+                }else{
+                    this.setState({
+                        collapse: false
+                    })
+                } 
+            }            
+        }       
     }   
 
 	render() {         
@@ -232,6 +270,7 @@ class ModalStore extends React.Component {
                                 <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Estantes</Button>                                                                                            
                                 <Shelf 
                                     collapse={this.state.collapse}
+                                    option={this.props.option}
                                 />
                             </form>                                                                    
                             </ModalBody>
@@ -256,7 +295,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({  
     confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
-    
+    saveStoreAction: (data, callback) =>dispatch(saveStoreAction(data, callback)),
+    editStoreAction: (data, callback) =>dispatch(editStoreAction(data, callback)),    
+    cleanShelfs: () =>dispatch(cleanShelfs()),    
 });
 
 export default connect(

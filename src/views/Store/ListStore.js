@@ -3,7 +3,6 @@ import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import ModalStore from './ModalStore.js';
-import {listStore} from './datosStore.js';
 
 class ListStore extends React.Component {
   constructor(props) {
@@ -17,13 +16,14 @@ class ListStore extends React.Component {
       showHide: '',
       option:0,
       position: 0,  
-      userId: '',      
+      id: '',   
+      sucursal_id_now: '',   
     };    
   }
 
   componentDidMount(){}
 
-  openModal = (option, pos, id) => {  
+  openModal = (option, pos, id, sucursalId) => {  
     if(option === 1){
       this.setState({
         modal:true,
@@ -34,7 +34,7 @@ class ListStore extends React.Component {
         showHide: 'show',         
       })
     }else if(option === 2){
-      this.props.LoadDistributorIdFunction(id);
+      this.props.LoadStoreIdFunction(id, sucursalId);
       this.setState({
         modal:true,
         option:option,
@@ -44,7 +44,7 @@ class ListStore extends React.Component {
         showHide: 'hide',                
       })
     }else if(option === 3){
-      this.props.LoadDistributorIdFunction(id);
+      this.props.LoadStoreIdFunction(id, sucursalId);
       this.setState({
         modal:true,
         option:option,
@@ -53,19 +53,20 @@ class ListStore extends React.Component {
         disabled: false,
         showHide: 'show',
         position: pos,        
-        userId:id       
+        id:id,
+        sucursal_id_now: sucursalId        
       })
     }  
   }  
 
-  deleteProveedor = (proveedorId) => {  
+  deleteStore = (id, sucursalId) => {      
     const message = {
-      title: "Eliminar Proveedor",
-      info: "¿Esta seguro que desea eliminar este Proveedor?"
+      title: "Eliminar Almacen",
+      info: "¿Esta seguro que desea eliminar este almacen?"
     };
     this.props.confirm(message, res => {
       if (res) {
-        this.props.DeleteDistributorAction(proveedorId);
+        this.props.DeleteStoreAction(id, sucursalId);
       }
     });    
   } 
@@ -87,6 +88,8 @@ class ListStore extends React.Component {
           modalFooter = {this.state.modalFooter}
           disabled = {this.state.disabled}
           showHide = {this.state.showHide}             
+          id = {this.state.id}             
+          sucursal_id_now = {this.state.sucursal_id_now}             
           branchOfficces={this.props.branchOfficces}                       
           valorCloseModal = {this.valorCloseModal}          
         />
@@ -100,22 +103,24 @@ class ListStore extends React.Component {
                 <tr>
                   <th className="text-left">Nro</th>
                   <th className="text-left">Almacen</th>
+                  <th className="text-left">Sucursal</th>
                   <th className="text-left">Descripcion</th>                  
                   <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>                  
                 </tr>
               </thead>
               <tbody>
-               {listStore? listStore.map((store, i) => {
+               {this.props.data? this.props.data.map((data, i) => {
                 return (
                   <tr key={i} className="text-left">
                     <td>{ i + 1 }</td>
-                    <td>{ store.name }</td>
-                    <td>{ store.description }</td>
+                    <td>{ data.name }</td>
+                    <td>{ data.sucursal.label }</td>
+                    <td>{ data.description }</td>
                     <td style={{'minWidth':"205px"}}>
                       <div className="float-left" >
-                        {/*<IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, distributor.id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>                        
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>*/}
+                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, data._id, data.sucursal.value); }}><Visibility className="iconTable" /></IconButton>
+                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, data._id, data.sucursal.value); }}><Edit className="iconTable" /></IconButton>                        
+                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteStore(data._id, data.sucursal.value); }}><Delete className="iconTable" /></IconButton>
                       </div>
                     </td>                    
                   </tr>

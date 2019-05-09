@@ -28,7 +28,7 @@ class ShopContainers extends Component {
   };  
 
   render() {   
-    console.log("props store", this.props.store);     
+    //console.log("props store", this.props.store);     
     return (
       <div className="animated fadeIn">
         <Row>
@@ -40,8 +40,8 @@ class ShopContainers extends Component {
                 this.props.store.loading === 'hide' ?
                   <div>
                     <ListShop 
-                      confirm={this.props.confirm}
-                      branchOfficces={this.props.store.branchOfficces}
+                      /*confirm={this.props.confirm}
+                      branchOfficces={this.props.store.branchOfficces}*/
                       /*LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
                       DeleteDistributorAction={this.props.DeleteDistributorAction}*/
                     />      

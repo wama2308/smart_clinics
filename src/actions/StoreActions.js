@@ -2,12 +2,16 @@ import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
 const LoadSelectBranchOffices = `${url}/api/LoadSelectBranchOffices`;
-const listCountryProvider = `${url}/api/listCountryProvider`;
+const createStoreBranchOffices = `${url}/api/createStoreBranchOffices`;
+const editStoreBranchOffices = `${url}/api/editStoreBranchOffices`;
+const queryStoreBranchOffices = `${url}/api/queryStoreBranchOffices`;
+const queryOneStoreBranchOffices = `${url}/api/queryOneStoreBranchOffices`;
+const disableStoreBranchOffices = `${url}/api/disableStoreBranchOffices`;
 
 export const LoadStoreFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
-    	axios.get(listCountryProvider, datos)
+    	axios.get(queryStoreBranchOffices, datos)
     	.then(res => {		 
         LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {   
           dispatch({
@@ -83,6 +87,107 @@ export const cleanShelfs = () => dispatch => {
           shelfs: []
         }
       });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const LoadStoreIdFunction = (storeId, sucursalId) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: queryOneStoreBranchOffices,
+        data: {
+          store_id: storeId,
+          sucursal_id: sucursalId
+        },
+        headers: datos.headers
+      })
+        .then(res => {
+          dispatch({
+            type: "LOAD_STORE_ID",
+            payload: {
+              storeId: res.data,
+              loading: "hide"
+            }
+          });
+        })
+        .catch(error => {
+          console.log(
+            "Error consultando la api para consultar los detalles del proveedor por id",
+            error.toString()
+          );
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const saveStoreAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: createStoreBranchOffices,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {          
+          dispatch(openSnackbars("error", "Error guardando el almacen"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const editStoreAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: editStoreBranchOffices,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error editando el almacen"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const DeleteStoreAction = (storeId, sucursalId) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: disableStoreBranchOffices,
+        data: {
+          sucursal_id: sucursalId,
+          store_id: storeId
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Almacen eliminado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error eliminando el almacen"));
+        });
     })
     .catch(() => {
       console.log("Problemas con el token");
