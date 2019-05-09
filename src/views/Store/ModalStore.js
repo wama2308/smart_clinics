@@ -222,17 +222,17 @@ class ModalStore extends React.Component {
                     descripcion: props.store.storeId.storeId.description,
                     loading: props.store.storeId.loading,
                     action:1
-                })  
-                if(props.store.shelfs.length > 0){
-                    this.setState({
-                        collapse: true
-                    })
-                }else{
-                    this.setState({
-                        collapse: false
-                    })
-                } 
-            }            
+                })                  
+            }       
+            if(props.store.shelfs.length > 0){
+                this.setState({
+                    collapse: true
+                })
+            }else{
+                this.setState({
+                    collapse: false
+                })
+            }      
         }       
     }   
 

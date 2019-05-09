@@ -28,7 +28,6 @@ class StoreContainer extends Component {
   };  
 
   render() {   
-    //console.log("props store", this.props.aplication);     
     return (
       <div className="animated fadeIn">
         <Row>
@@ -66,8 +65,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  LoadStoreFunction: () => dispatch(LoadStoreFunction()),  
-  /*LoadDistributorIdFunction: (distrbutorId) => dispatch(LoadDistributorIdFunction(distrbutorId)),*/  
+  LoadStoreFunction: () => dispatch(LoadStoreFunction()),    
   DeleteStoreAction: (storeId, sucursalId) => dispatch(DeleteStoreAction(storeId, sucursalId)),  
   LoadStoreIdFunction: (storeId, sucursalId) => dispatch(LoadStoreIdFunction(storeId, sucursalId)),  
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),

@@ -19,10 +19,7 @@ class Shelf extends React.Component {
 		};
 	}
 
-	componentDidMount(){
-        //this.setState({collapse:this.props.collapse,listContacs: this.props.distributor.contacs,})        
-        this.setState({collapse:this.props.collapse})        
-    }
+	componentDidMount(){}
 
     handleChange = (e) => {
         const { name, value } = e.target;
