@@ -44,6 +44,12 @@ export default {
           url: "/configuration/Proveedor",
           icon: "fa fa-user-circle-o"
         }
+        ,
+        {
+          name: "Almacen",
+          url: "/configuration/store",
+          icon: "fa fa-home"
+        }
       ]
     },
     ,
