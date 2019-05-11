@@ -75,7 +75,7 @@ class UserRegister extends React.Component {
   };
 
   render() {
-    const { open, close, aplication } = this.props;
+    const { open, close, aplication, patient, disabled } = this.props;
     const InitialValue = {
       type_identity: aplication.dataCountries.type_identity[0].value,
       dni: "",
@@ -92,10 +92,12 @@ class UserRegister extends React.Component {
       photo: "",
       birth_date: new Date()
     };
+
+     const values= patient? patient: InitialValue
     return (
       <Formik
         onSubmit={this.save}
-        initialValues={InitialValue}
+        initialValues={values}
         validationSchema={validationSquema}
         render={({
           values,
@@ -142,6 +144,7 @@ class UserRegister extends React.Component {
                           name="names"
                           className="inputStyle"
                           value={values.names}
+                          disabled={disabled}
                           onBlur={handleBlur}
                           onChange={event =>
                             setFieldValue("names", event.target.value)
@@ -163,6 +166,7 @@ class UserRegister extends React.Component {
                           type="text"
                           name="surnames"
                           className="inputStyle"
+                          disabled={disabled}
                           value={values.surnames}
                           onBlur={handleBlur}
                           onChange={event =>
@@ -188,6 +192,7 @@ class UserRegister extends React.Component {
                           <Input
                             type="select"
                             name="pais"
+                            disabled={disabled}
                             className="inputStyle"
                             value={values.type_identity}
                             style={{
@@ -215,6 +220,7 @@ class UserRegister extends React.Component {
                           <Input
                             type="number"
                             name="dni"
+                            disabled={disabled}
                             value={values.dni}
                             id="codigo"
                             className="inputStyle"
@@ -235,6 +241,7 @@ class UserRegister extends React.Component {
                         <Input
                           type="select"
                           name="pais"
+                          disabled={disabled}
                           className="inputStyle"
                           value={values.idCountry}
                           onChange={event =>
@@ -256,6 +263,7 @@ class UserRegister extends React.Component {
                         <Input
                           type="select"
                           name="pais"
+                          disabled={disabled}
                           className="inputStyle"
                           value={values.country_id}
                           onChange={event =>
@@ -281,6 +289,7 @@ class UserRegister extends React.Component {
                           type="select"
                           name="provincia"
                           id="provincia"
+                          disabled={disabled}
                           className="inputStyle"
                           value={values.province_id}
                           onChange={event =>
@@ -307,6 +316,7 @@ class UserRegister extends React.Component {
                           type="select"
                           name="provincia"
                           id="provincia"
+                          disabled={disabled}
                           className="inputStyle"
                           value={values.provincesid}
                           onChange={event =>
@@ -333,6 +343,7 @@ class UserRegister extends React.Component {
                           className="inputStyle"
                           value={values.address}
                           name="address"
+                          disabled={disabled}
                           onChange={event =>
                             setFieldValue("address", event.target.value)
                           }
@@ -352,7 +363,8 @@ class UserRegister extends React.Component {
                             inputProps={{
                               placeholder: "Telefono",
                               className: "react-tagsinput-inputMy",
-                              type: "number"
+                              type: "number",
+                              disabled:disabled
                             }}
                             focusedClassName="react-tagsinput-focusedMy"
                             tagProps={{
@@ -374,7 +386,8 @@ class UserRegister extends React.Component {
                             inputProps={{
                               placeholder: "Email",
                               className: "react-tagsinput-inputMy",
-                              type: "email"
+                              type: "email",
+                              disabled:disabled
                             }}
                             focusedClassName="react-tagsinput-focusedMy"
                             tagProps={{
@@ -394,6 +407,7 @@ class UserRegister extends React.Component {
                             selected={values.birth_date}
                             dateFormat="dd-MM-yyyy"
                             showYearDropdown
+                            disabled={disabled}
                             style={{ height: 44 }}
                             dateFormatCalendar="MMMM"
                             className="form-control inputStyle"
@@ -409,7 +423,7 @@ class UserRegister extends React.Component {
                   </ModalBody>
                   <ModalFooter>
                     <Button onClick={close}>Atras</Button>
-                    <Button color="success" onClick={handleSubmit}>
+                    <Button color="success" disabled={disabled} onClick={handleSubmit}>
                       Save
                     </Button>
                   </ModalFooter>

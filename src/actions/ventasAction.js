@@ -2,20 +2,73 @@ import { getDataToken, url } from "../core/connection";
 import { openSnackbars } from "./aplicantionActions";
 import axios from "axios";
 
-const searchPatientUrl = `${url}/api/queryOnePatients`;
+const searchPatientUrl = `${url}/api/queryPatients`;
 const createPatientsUrl = `${url}/api/createPatients`;
 const searchProductUrl = `${url}/api/querySupplies`;
+const searchOnePatientUrl = `${url}/api/queryOnePatients`;
+const searchOneSuppplieUrl = `${url}/api/queryOneSupplie`;
 
-export const searchPatient = (search, type) => dispatch => {
-  dispatch(searchLoaded(false));
+export const searchPatient = search => dispatch => {
+  if (search.length < 1) {
+    dispatch(searchLoaded(true));
+  } else {
+    dispatch(searchLoaded(false));
+  }
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: search
+  });
   getDataToken().then(token => {
     axios({
       method: "POST",
       url: searchPatientUrl,
       data: {
-        type_identity: type,
-        dni: search
+        value: search
       },
+      ...token
+    })
+      .then(res => {
+        dispatch({
+          type: "PATIENT_OPTIONS",
+          payload: Object.values(res.data)
+        });
+      })
+      .catch(err => {
+        const result = converToJson(err);
+        dispatch(openSnackbars("error", result.message));
+      });
+  });
+};
+
+const searchLoaded = data => {
+  return {
+    type: "SEARCH_LOADED",
+    payload: data
+  };
+};
+
+const converToJson = data => {
+  const stringify = JSON.stringify(data);
+  const parse = JSON.parse(stringify);
+  return parse.response.data;
+};
+
+const orderData = data => {
+  const result = data.split(" ");
+  const typeIdentify = result[0].substr(0, 1);
+  const dni = result[0].substr(2);
+
+  return { type_identity: typeIdentify, dni: dni };
+};
+
+export const searchOnePatient = search => dispatch => {
+  const result = orderData(search.label);
+
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: searchOnePatientUrl,
+      data: result,
       ...token
     })
       .then(res => {
@@ -39,19 +92,6 @@ export const searchPatient = (search, type) => dispatch => {
         });
       });
   });
-};
-
-const searchLoaded = data => {
-  return {
-    type: "SEARCH_LOADED",
-    payload: data
-  };
-};
-
-const converToJson = data => {
-  const stringify = JSON.stringify(data);
-  const parse = JSON.parse(stringify);
-  return parse.response.data;
 };
 
 export const createPatients = (values, loaded) => dispatch => {
@@ -100,9 +140,41 @@ export const searchProduct = data => dispatch => {
       ...token
     }).then(res => {
       dispatch({
-        type:"SEARCH_PRODUCT",
+        type: "SEARCH_PRODUCT",
         payload: Object.values(res.data)
       });
     });
   });
+};
+
+export const searchOneSuppplie = data => dispatch => {
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: ""
+  });
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: searchOneSuppplieUrl,
+      data: {
+        supplie_id: data.value
+      },
+      ...token
+    }).then(res => {
+      dispatch({
+        type: "SEARCH_ONE_PRODUCTS",
+        payload: {
+          ...res.data,
+          cantidad: 1
+        }
+      });
+    });
+  });
+};
+
+export const deleteItem = item => {
+  return {
+    type: "DELETE_ITEM",
+    payload: item
+  };
 };

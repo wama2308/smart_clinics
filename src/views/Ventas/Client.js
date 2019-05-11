@@ -1,40 +1,61 @@
 import React from "react";
 import { Card, CardHeader, CardBody, Button } from "reactstrap";
-import { Typography } from "@material-ui/core";
+import { Typography, IconButton } from "@material-ui/core";
 import Search from "../../components/DefaultSearch";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import UserRegister from "./userRegister";
+import { Delete } from "@material-ui/icons";
 import * as moment from "moment";
 
 class Client extends React.Component {
   state = {
     paciente: true,
-    openModal: false
+    openModal: false,
+    disabled: false
   };
 
   close = () => {
-    this.setState({ openModal: false });
+    this.setState({ openModal: false, disabled:false });
+  };
+
+  view = () => {
+    this.setState({ openModal: true, disabled: true });
   };
 
   render() {
     const { patient } = this.props;
-    console.log(patient);
     return (
       <Card style={{ marginBottom: 10, flex: 1 }}>
         {this.state.openModal && (
-          <UserRegister open={this.state.openModal} close={this.close} />
+          <UserRegister
+            open={this.state.openModal}
+            disabled={this.state.disabled}
+            close={this.close}
+            patient={patient}
+          />
         )}
         <Header>
           <div>Paciente</div>
-          <div style={{ width: "40%" }}>
+          <div
+            style={{
+              width: "40%",
+              display: "flex",
+              justifyContent: "flex-end"
+            }}
+          >
             {!patient && (
               <Search
-                pressKey={true}
                 searchAction={this.props.searchAction}
-                placeholder="Ingrese DNI"
-                typeOfNationality={true}
+                getOptions={this.props.getOptions}
+                placeholder="Buscar paciente"
+                options={this.props.options}
               />
+            )}
+            {patient && (
+              <IconButton onClick={this.props.clean}>
+                <Delete />
+              </IconButton>
             )}
           </div>
         </Header>
@@ -93,8 +114,11 @@ class Client extends React.Component {
                       paddingTop: 26
                     }}
                   >
-                    <Button color="success" onClick={this.props.clean}>
-                      Limpiar
+                    <Button
+                      color="success"
+                      onClick={() => this.view()}
+                    >
+                      Ver detalles
                     </Button>
                   </div>
                 </div>
@@ -103,9 +127,16 @@ class Client extends React.Component {
                 <div
                   style={{ flex: 1, display: "flex", flexDirection: "column" }}
                 >
-                  <div className="message">
-                    Por favor selecciona un paciente para continuar
-                  </div>
+                  {patient === undefined && (
+                    <div className="message">
+                      Por favor selecciona un paciente para continuar
+                    </div>
+                  )}
+                  {patient === null && (
+                    <div className="message">
+                      Paciente no encontrado, Registre el Paciente
+                    </div>
+                  )}
                   <div className="saveButton">
                     <Button
                       color="success"

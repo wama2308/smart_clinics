@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardHeader, Input } from "reactstrap";
 import styled from "styled-components";
 import Search from "../../components/DefaultSearch";
-import {Delete} from '@material-ui/icons'
+import { Delete } from "@material-ui/icons";
 import {
   Table,
   TableCell,
@@ -12,15 +12,16 @@ import {
   IconButton
 } from "@material-ui/core";
 
-import OutsideClick from "../../components/OutsideClick";
 class Products extends React.Component {
+  state = {
+    edit: false
+  };
   search = () => {
     alert("buscar");
   };
 
   render() {
-    const { patient } = this.props;
-    const rows = [];
+    const { patient, products } = this.props;
     const dataHead = [
       { label: "CODIGO" },
       { label: "NOMBRE" },
@@ -38,14 +39,13 @@ class Products extends React.Component {
           <div>Productos</div>
           <div style={{ width: "40%" }}>
             {patient && (
-              <OutsideClick>
-                <Search
-                  pressKey={true}
-                  searchAction={this.props.searchAction}
-                  placeholder="Buscar producto..."
-                  onChange={this.props.searchAction}
-                />
-              </OutsideClick>
+              <Search
+                pressKey={true}
+                getOptions={this.props.searchAction}
+                placeholder="Buscar producto..."
+                options={this.props.options}
+                searchAction={this.props.getProducts}
+              />
             )}
           </div>
         </Header>
@@ -53,9 +53,12 @@ class Products extends React.Component {
           <Table>
             <TableHead>
               <TableRow style={{ height: 35 }}>
-                {dataHead.map(head => {
+                {dataHead.map((head, key) => {
                   return (
-                    <TableCell style={{ border: "1px solid #c8ced3" }}>
+                    <TableCell
+                      key={key}
+                      style={{ border: "1px solid #c8ced3" }}
+                    >
                       {head.label}
                     </TableCell>
                   );
@@ -63,32 +66,42 @@ class Products extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <Cell className="cellStyle">{1234}</Cell>
-                <Cell>{"gasas"}</Cell>
-                <Cell>{"gasas"}</Cell>
-                <Cell>200 und</Cell>
-                <td>
-                  <Input
-                    type="number"
-                    style={{
-                      height: 48,
-                      borderRadius: 0
-                    }}
-                  />
-                </td>
-                <Cell>3</Cell>
-                <Cell>700</Cell>
-                <Cell>
-                  <IconButton
-                    onClick={() => {
-                      // this.delete(item);
-                    }}
-                  >
-                    <Delete className="iconTable" />
-                  </IconButton>
-                </Cell>
-              </TableRow>
+              {products &&
+                products.reverse().map((product, key) => {
+                  return (
+                    <TableRow key={key}>
+                      <Cell className="cellStyle">{product.code}</Cell>
+                      <Cell>{product.name}</Cell>
+                      <Cell>{product.type}</Cell>
+                      <Cell>{product.quantity}</Cell>
+                      {this.state.edit ? (
+                        <td>
+                          <Input
+                            type="number"
+                            value={product.cantidad}
+                            style={{
+                              height: 48,
+                              borderRadius: 0
+                            }}
+                          />
+                        </td>
+                      ) : (
+                        <Cell>{product.cantidad}</Cell>
+                      )}
+                      <Cell>{product.price}</Cell>
+                      <Cell>{product.cantidad * product.price}</Cell>
+                      <Cell>
+                        <IconButton
+                          onClick={() => {
+                            // this.delete(item);
+                          }}
+                        >
+                          <Delete className="iconTable" />
+                        </IconButton>
+                      </Cell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </div>
