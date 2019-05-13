@@ -10,7 +10,8 @@ import {
   searchProduct,
   searchOnePatient,
   searchOneSuppplie,
-  deleteItem
+  deleteItem,
+  changeQuantytoSell
 } from "../actions/ventasAction";
 
 class VentasContainer extends React.Component {
@@ -70,7 +71,7 @@ class VentasContainer extends React.Component {
       this.props.options_Product,
       this.props.products
     );
-    console.log("data", optionsProducts);
+
     return (
       <Container>
         <div className="insight-container-one">
@@ -93,6 +94,8 @@ class VentasContainer extends React.Component {
           options={optionsProducts}
           getProducts={this.props.searchOneSuppplie}
           products={this.props.products}
+          deleteAtion={this.props.deleteItem}
+          changeQuantytoSell={this.props.changeQuantytoSell}
         />
       </Container>
     );
@@ -115,7 +118,8 @@ export default connect(
     searchProduct,
     searchOnePatient,
     searchOneSuppplie,
-    deleteItem
+    deleteItem,
+    changeQuantytoSell
   }
 )(VentasContainer);
 

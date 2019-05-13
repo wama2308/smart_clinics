@@ -13,11 +13,47 @@ import {
 } from "@material-ui/core";
 
 class Products extends React.Component {
-  state = {
-    edit: false
-  };
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+    this.state = {
+      edit: false,
+      quantyToSell: 0
+    };
+  }
+
   search = () => {
     alert("buscar");
+  };
+
+  delete = item => {
+    this.props.deleteAtion(item._id);
+  };
+
+  handleChange = (event, product) => {
+    this.props.changeQuantytoSell({
+      value: event.target.value,
+      id: product._id,
+      quanty: product.quantity
+    });
+  };
+
+  editInput = key => {
+    this.setState({ edit: key });
+  };
+
+  componentDidUpdate = () => {
+    console.log("se ejecuto");
+    if (this.state.edit) {
+      const result = document.getElementsByClassName(`${this.state.edit}`);
+      result[0].focus();
+    }
+  };
+
+  keyPress = e => {
+    if (e.key === "Enter") {
+      this.setState({ edit: false });
+    }
   };
 
   render() {
@@ -29,7 +65,6 @@ class Products extends React.Component {
       { label: "DISPONIBLE" },
       { label: "CANTIDAD" },
       { label: "PRECIO/U" },
-      ,
       { label: "PRECIO/T" },
       { label: "ACTION" }
     ];
@@ -45,6 +80,7 @@ class Products extends React.Component {
                 placeholder="Buscar producto..."
                 options={this.props.options}
                 searchAction={this.props.getProducts}
+                disabled={this.state.edit ? true : false}
               />
             )}
           </div>
@@ -67,18 +103,23 @@ class Products extends React.Component {
             </TableHead>
             <TableBody>
               {products &&
-                products.reverse().map((product, key) => {
+                products.map((product, key) => {
                   return (
                     <TableRow key={key}>
                       <Cell className="cellStyle">{product.code}</Cell>
                       <Cell>{product.name}</Cell>
                       <Cell>{product.type}</Cell>
                       <Cell>{product.quantity}</Cell>
-                      {this.state.edit ? (
+                      {this.state.edit === product._id ? (
                         <td>
                           <Input
                             type="number"
-                            value={product.cantidad}
+                            className={product._id}
+                            value={product.quantyToSell}
+                            onKeyDown={this.keyPress}
+                            onChange={event =>
+                              this.handleChange(event, product)
+                            }
                             style={{
                               height: 48,
                               borderRadius: 0
@@ -86,14 +127,16 @@ class Products extends React.Component {
                           />
                         </td>
                       ) : (
-                        <Cell>{product.cantidad}</Cell>
+                        <Cell onClick={() => this.editInput(product._id)}>
+                          {product.quantyToSell}
+                        </Cell>
                       )}
                       <Cell>{product.price}</Cell>
-                      <Cell>{product.cantidad * product.price}</Cell>
+                      <Cell>{product.quantyToSell * product.price}</Cell>
                       <Cell>
                         <IconButton
                           onClick={() => {
-                            // this.delete(item);
+                            this.delete(product);
                           }}
                         >
                           <Delete className="iconTable" />

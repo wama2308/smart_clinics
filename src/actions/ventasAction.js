@@ -165,7 +165,7 @@ export const searchOneSuppplie = data => dispatch => {
         type: "SEARCH_ONE_PRODUCTS",
         payload: {
           ...res.data,
-          cantidad: 1
+          quantyToSell: 1
         }
       });
     });
@@ -177,4 +177,21 @@ export const deleteItem = item => {
     type: "DELETE_ITEM",
     payload: item
   };
+};
+
+export const changeQuantytoSell = obj => dispatch => {
+  console.log("data", obj);
+  if (obj.quanty < obj.value) {
+    dispatch(
+      openSnackbars(
+        "error",
+        "No tiene el stop necesario para agregar esta cantidad"
+      )
+    );
+  } else {
+    dispatch({
+      type: "CHANGE_QUANTY_TO_SELL",
+      payload: obj
+    });
+  }
 };

@@ -119,9 +119,16 @@ const styles = theme => ({
 });
 
 class DefaultSearch extends React.Component {
-  state = {
-    suggestions: [],
-    auxValue: undefined
+  constructor() {
+    super();
+    this.state = {
+      suggestions: [],
+      auxValue: undefined
+    };
+  }
+
+  componentDidMount = () => {
+    document.getElementById("search").focus();
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
@@ -147,6 +154,11 @@ class DefaultSearch extends React.Component {
     if (validateSearch) {
       this.setState({ auxValue: validateSearch });
     }
+
+    if (!props.disabled) {
+      const result = document.getElementById("search");
+      result.focus();
+    }
   };
 
   keyPress = e => {
@@ -154,7 +166,7 @@ class DefaultSearch extends React.Component {
       if (this.props.value.length === 0) {
         this.props.openSnackbars("error", "Ingrese DNI o Nombre ");
       } else if (this.state.auxValue) {
-        console.log("aca")
+        console.log("aca");
         this.props.searchAction(this.state.auxValue);
       } else {
         this.props.openSnackbars("error", "Paciente no registrado ");
@@ -172,6 +184,7 @@ class DefaultSearch extends React.Component {
       getSuggestionValue,
       renderSuggestion
     };
+
     return (
       <div>
         <Autosuggest
@@ -182,7 +195,10 @@ class DefaultSearch extends React.Component {
             placeholder: this.props.placeholder,
             value: this.props.value,
             onChange: this.handleChange("single"),
-            onKeyDown: this.keyPress
+            onKeyDown: this.keyPress,
+            ref: this.emailInput,
+            disabled: this.props.disabled,
+            id: "search"
           }}
           theme={{
             container: classes.container,
