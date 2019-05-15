@@ -1,13 +1,12 @@
-import React from 'react'
-import { Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button } from 'reactstrap';
+import React from "react";
+import {
+  Card
+} from "reactstrap";
 
 class Ventas extends React.Component {
-  render(){
-    return <Card  style={{flex:1 , marginBottom:10}}>Ventas</Card>
-
+  render() {
+    return <Card style={{ flex: 1, margin: "0px 0px 10px 10px" }}>Ventas</Card>;
   }
 }
 
-
-export default Ventas
+export default Ventas;

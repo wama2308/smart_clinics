@@ -16,7 +16,7 @@ class Client extends React.Component {
   };
 
   close = () => {
-    this.setState({ openModal: false, disabled:false });
+    this.setState({ openModal: false, disabled: false });
   };
 
   view = () => {
@@ -26,7 +26,7 @@ class Client extends React.Component {
   render() {
     const { patient } = this.props;
     return (
-      <Card style={{ marginBottom: 10, flex: 1 }}>
+      <Card style={{ margin: "0px 10px 10px 0px", flex: 1 }}>
         {this.state.openModal && (
           <UserRegister
             open={this.state.openModal}
@@ -114,10 +114,7 @@ class Client extends React.Component {
                       paddingTop: 26
                     }}
                   >
-                    <Button
-                      color="success"
-                      onClick={() => this.view()}
-                    >
+                    <Button color="success" onClick={() => this.view()}>
                       Ver detalles
                     </Button>
                   </div>
@@ -168,6 +165,7 @@ const Body = styled(CardBody)`
   display: flex;
   flex-direction: column;
   padding-top: 5px;
+  overflow: auto;
   .message {
     flex: 1;
     display: flex;
@@ -191,6 +189,7 @@ const Body = styled(CardBody)`
     height: 55px;
     border-bottom: 1px solid #c8ced3;
     &-body {
+      flex: 1;
       display: flex;
       padding-right: 10%;
       align-items: baseline;

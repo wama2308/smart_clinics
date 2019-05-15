@@ -50,6 +50,26 @@ class Products extends React.Component {
     }
   };
 
+  getTotal = (array, aplication) => {
+    const obj = {
+      subTotal: 0,
+      total: 0
+    };
+    if (!array) {
+      return { obj };
+    }
+
+    array.map(data => {
+      const result = data.quantyToSell * data.price;
+      obj.subTotal = obj.subTotal + result;
+    });
+    const iva = (obj.subTotal * aplication.tax_rate) / 100;
+    obj.total = obj.subTotal + iva;
+    obj.iva = iva;
+
+    return obj;
+  };
+
   keyPress = e => {
     if (e.key === "Enter") {
       this.setState({ edit: false });
@@ -57,7 +77,11 @@ class Products extends React.Component {
   };
 
   render() {
-    const { patient, products } = this.props;
+    const { patient, products, aplication } = this.props;
+
+    const totalData = this.getTotal(products, aplication);
+
+    console.log("data", totalData);
     const dataHead = [
       { label: "CODIGO" },
       { label: "NOMBRE" },
@@ -69,7 +93,15 @@ class Products extends React.Component {
       { label: "ACTION" }
     ];
     return (
-      <Card style={{ flex: 1 }}>
+      <Card
+        style={{
+          flex: 1,
+          margin: "10px 0px",
+          overflow: "auto",
+          minHeight: 480,
+          maxHeight: 480
+        }}
+      >
         <Header>
           <div>Productos</div>
           <div style={{ width: "40%" }}>
@@ -80,12 +112,12 @@ class Products extends React.Component {
                 placeholder="Buscar producto..."
                 options={this.props.options}
                 searchAction={this.props.getProducts}
-                disabled={this.state.edit ? true : false}
+                disabled={this.state.edit.subTotal ? true : false}
               />
             )}
           </div>
         </Header>
-        <div>
+        <div style={{ overflow: "auto", height: "70%" }}>
           <Table>
             <TableHead>
               <TableRow style={{ height: 35 }}>
@@ -144,10 +176,29 @@ class Products extends React.Component {
                       </Cell>
                     </TableRow>
                   );
+                  products;
                 })}
             </TableBody>
           </Table>
         </div>
+        <Footer style={{ flex: 1, display: "flex" }}>
+          <div className="totalStyle">
+            <strom className="titleBol"> SubTotal</strom>{" "}
+            {`${totalData.subTotal} ${aplication.current_simbol}`}
+          </div>
+
+          <div className="totalStyle">
+            <strom className="titleBol">{` Impuesto(${
+              aplication.tax_rate
+            }%) `}</strom>{" "}
+            {totalData.iva}
+          </div>
+
+          <div className="totalStyle">
+            <strom className="titleBol"> Total</strom>{" "}
+            {`${totalData.total} ${aplication.current_simbol}`}
+          </div>
+        </Footer>
       </Card>
     );
   }
@@ -164,4 +215,26 @@ const Header = styled(CardHeader)`
 
 const Cell = styled(TableCell)`
   border: 1px solid #c8ced3;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  border-top: 1px solid #c8ced3;
+  border-bottom: 1px solid #c8ced3;
+  .totalStyle {
+    padding-right: 20px;
+    border-left: 1px solid #c8ced3;
+    border-right: 1px solid #c8ced3;
+    display: flex;
+    height: 100%;
+    min-width: 15%;
+    align-items: center;
+  }
+  .titleBol {
+    font-weight: bold;
+    padding: 10px;
+  }
 `;

@@ -13,6 +13,7 @@ import {
   deleteItem,
   changeQuantytoSell
 } from "../actions/ventasAction";
+import Footer from "../views/Ventas/Footer";
 
 class VentasContainer extends React.Component {
   optionsPatient = options => {
@@ -74,29 +75,35 @@ class VentasContainer extends React.Component {
 
     return (
       <Container>
-        <div className="insight-container-one">
-          <Client
-            searchAction={this.props.searchOnePatient}
-            getOptions={this.props.searchPatient}
-            loaded={this.props.loaded}
-            patient={this.props.patient}
-            clean={this.props.clean}
-            options={optionsPatient}
-          />
-          <div className="insight-container-two">
+        <div style={{ height: "38%" }}>
+          <div className="insight-container-one">
+            <Client
+              searchAction={this.props.searchOnePatient}
+              getOptions={this.props.searchPatient}
+              loaded={this.props.loaded}
+              patient={this.props.patient}
+              clean={this.props.clean}
+              options={optionsPatient}
+            />
             <Ventas />
           </div>
         </div>
-        <Products
-          className="products"
-          patient={this.props.patient}
-          searchAction={this.props.searchProduct}
-          options={optionsProducts}
-          getProducts={this.props.searchOneSuppplie}
-          products={this.props.products}
-          deleteAtion={this.props.deleteItem}
-          changeQuantytoSell={this.props.changeQuantytoSell}
-        />
+        <div style={{ height: "62%" }}>
+          <div className="insight-container-two">
+            <Products
+              className="products"
+              patient={this.props.patient}
+              searchAction={this.props.searchProduct}
+              options={optionsProducts}
+              getProducts={this.props.searchOneSuppplie}
+              products={this.props.products}
+              deleteAtion={this.props.deleteItem}
+              changeQuantytoSell={this.props.changeQuantytoSell}
+              aplication={this.props.aplication}
+            />
+            <Footer />
+          </div>
+        </div>
       </Container>
     );
   }
@@ -107,7 +114,8 @@ const mapStateToProps = state => ({
   patient: state.ventas.get("patient"),
   options_patient: state.ventas.get("options_patient"),
   options_Product: state.ventas.get("products"),
-  products: state.ventas.get("array_products")
+  products: state.ventas.get("array_products"),
+  aplication: state.global.dataGeneral.dataCountries
 });
 
 export default connect(
@@ -124,19 +132,16 @@ export default connect(
 )(VentasContainer);
 
 const Container = styled.div`
-  display: grid;
   height: 100%;
-  grid-gap: 10px;
-  grid-template-columns: 100%;
-  grid-template-rows: 37% 55%;
   .insight-container-one {
-    display: grid;
-    grid-template-columns: 60% 38.7%;
-    grid-gap: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
   }
   .insight-container-two {
-    flex: 1;
-    flex-direction: column;
     display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 `;

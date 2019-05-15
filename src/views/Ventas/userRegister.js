@@ -359,7 +359,7 @@ class UserRegister extends React.Component {
                         <div>
                           <TagsInput
                             name="phone"
-                            disabled
+                            disabled={disabled}
                             className="react-tagsinputMy"
                             inputProps={{
                               placeholder: "Telefono",
@@ -383,7 +383,7 @@ class UserRegister extends React.Component {
                         <div>
                           <TagsInput
                             name="email"
-                            disabled
+                            disabled={disabled}
                             className="react-tagsinputMy"
                             inputProps={{
                               placeholder: "Email",
