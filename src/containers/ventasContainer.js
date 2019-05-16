@@ -11,8 +11,10 @@ import {
   searchOnePatient,
   searchOneSuppplie,
   deleteItem,
-  changeQuantytoSell
+  changeQuantytoSell,
+  cancelToSell
 } from "../actions/ventasAction";
+import { openConfirmDialog } from "../actions/aplicantionActions";
 import Footer from "../views/Ventas/Footer";
 
 class VentasContainer extends React.Component {
@@ -101,7 +103,11 @@ class VentasContainer extends React.Component {
               changeQuantytoSell={this.props.changeQuantytoSell}
               aplication={this.props.aplication}
             />
-            <Footer />
+            <Footer
+              cancel={this.props.cancelToSell}
+              confirm={this.props.openConfirmDialog}
+              products={this.props.products}
+            />
           </div>
         </div>
       </Container>
@@ -127,7 +133,9 @@ export default connect(
     searchOnePatient,
     searchOneSuppplie,
     deleteItem,
-    changeQuantytoSell
+    changeQuantytoSell,
+    cancelToSell,
+    openConfirmDialog
   }
 )(VentasContainer);
 

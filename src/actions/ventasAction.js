@@ -195,3 +195,12 @@ export const changeQuantytoSell = obj => dispatch => {
     });
   }
 };
+
+
+
+export const cancelToSell=()=>dispatch=>{
+  dispatch(clean())
+  dispatch({
+    type:"CLEAN_TABLE"
+  })
+}

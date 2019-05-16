@@ -36,6 +36,11 @@ const VentasReducer = (state = Map(), action) => {
     case "CLEAN": {
       return setData(state, "patient", action.payload);
     }
+
+    case "CLEAN_TABLE": {
+      return setData(state, "array_products", undefined);
+    }
+
     case "SEARCH_ONE_PRODUCTS": {
       return setList(state, "array_products", action.payload);
     }

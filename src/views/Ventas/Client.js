@@ -158,7 +158,8 @@ const Header = styled(CardHeader)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 64px;
+  min-height: 73px;
+  max-height: 73px;
 `;
 
 const Body = styled(CardBody)`

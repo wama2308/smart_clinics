@@ -43,7 +43,6 @@ class Products extends React.Component {
   };
 
   componentDidUpdate = () => {
-    console.log("se ejecuto");
     if (this.state.edit) {
       const result = document.getElementsByClassName(`${this.state.edit}`);
       result[0].focus();
@@ -53,19 +52,23 @@ class Products extends React.Component {
   getTotal = (array, aplication) => {
     const obj = {
       subTotal: 0,
+      iva: 0,
       total: 0
     };
     if (!array) {
-      return { obj };
+      return obj;
     }
 
+    let subtotal = 0;
     array.map(data => {
       const result = data.quantyToSell * data.price;
-      obj.subTotal = obj.subTotal + result;
+      subtotal = parseFloat(obj.subTotal) + parseFloat(result);
+      obj.subTotal = subtotal.toFixed(2);
     });
-    const iva = (obj.subTotal * aplication.tax_rate) / 100;
-    obj.total = obj.subTotal + iva;
-    obj.iva = iva;
+    const iva =
+      (parseFloat(obj.subTotal) * parseFloat(aplication.tax_rate)) / 100;
+    obj.total = parseFloat(obj.subTotal + iva).toFixed(2);
+    obj.iva = iva.toFixed(2);
 
     return obj;
   };
@@ -105,14 +108,13 @@ class Products extends React.Component {
         <Header>
           <div>Productos</div>
           <div style={{ width: "40%" }}>
-            {patient && (
+            {patient && !this.state.edit && (
               <Search
                 pressKey={true}
                 getOptions={this.props.searchAction}
                 placeholder="Buscar producto..."
                 options={this.props.options}
                 searchAction={this.props.getProducts}
-                disabled={this.state.edit.subTotal ? true : false}
               />
             )}
           </div>
@@ -137,7 +139,7 @@ class Products extends React.Component {
               {products &&
                 products.map((product, key) => {
                   return (
-                    <TableRow key={key}>
+                    <RowTable key={key}>
                       <Cell className="cellStyle">{product.code}</Cell>
                       <Cell>{product.name}</Cell>
                       <Cell>{product.type}</Cell>
@@ -174,29 +176,31 @@ class Products extends React.Component {
                           <Delete className="iconTable" />
                         </IconButton>
                       </Cell>
-                    </TableRow>
+                    </RowTable>
                   );
-                  products;
                 })}
             </TableBody>
           </Table>
         </div>
+
         <Footer style={{ flex: 1, display: "flex" }}>
           <div className="totalStyle">
             <strom className="titleBol"> SubTotal</strom>{" "}
-            {`${totalData.subTotal} ${aplication.current_simbol}`}
+            {`${totalData.subTotal}`}
+            <span className="titleBol">{aplication.current_simbol}</span>
           </div>
 
           <div className="totalStyle">
-            <strom className="titleBol">{` Impuesto(${
+            <strom className="titleBol">{` Impuesto (${
               aplication.tax_rate
-            }%) `}</strom>{" "}
+            }%) `}</strom>
             {totalData.iva}
+            {<span className="titleBol">{aplication.current_simbol}</span>}
           </div>
 
           <div className="totalStyle">
-            <strom className="titleBol"> Total</strom>{" "}
-            {`${totalData.total} ${aplication.current_simbol}`}
+            <strom className="titleBol"> Total</strom> {`${totalData.total} `}{" "}
+            <span className="titleBol">{aplication.current_simbol}</span>
           </div>
         </Footer>
       </Card>
@@ -210,11 +214,19 @@ const Header = styled(CardHeader)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 64px;
+  min-height: 88px;
 `;
 
 const Cell = styled(TableCell)`
   border: 1px solid #c8ced3;
+`;
+
+const RowTable = styled(TableRow)`
+  && {
+    &:hover {
+      background: #eeeeee;
+    }
+  }
 `;
 
 const Footer = styled.div`
@@ -230,7 +242,7 @@ const Footer = styled.div`
     border-right: 1px solid #c8ced3;
     display: flex;
     height: 100%;
-    min-width: 15%;
+    min-width: 20%;
     align-items: center;
   }
   .titleBol {

@@ -154,11 +154,6 @@ class DefaultSearch extends React.Component {
     if (validateSearch) {
       this.setState({ auxValue: validateSearch });
     }
-
-    if (!props.disabled) {
-      const result = document.getElementById("search");
-      result.focus();
-    }
   };
 
   keyPress = e => {
@@ -197,7 +192,6 @@ class DefaultSearch extends React.Component {
             onChange: this.handleChange("single"),
             onKeyDown: this.keyPress,
             ref: this.emailInput,
-            disabled: this.props.disabled,
             id: "search"
           }}
           theme={{
