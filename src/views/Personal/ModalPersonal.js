@@ -28,7 +28,9 @@ class ModalCargos extends React.Component {
 			...InitalState                              
 		};
 	}
-	componentDidMount(){this.props.loadUsersRoles();}    
+	componentDidMount(){
+        //this.props.loadUsersRoles();
+    }    
 
     testWamix = () => {}
 
@@ -301,7 +303,7 @@ class ModalCargos extends React.Component {
                 this.setState({loading:'show'})    
                 this.props.savePersonalInternoAction(
                   {
-                    user_id: this.props.usersRoles.get('userId'),
+                    user_id: this.props.userId,
                     type_identity:this.state.arrayTypeIdentitySelect,
                     dni:this.state.dni,
                     names:this.state.names,
@@ -331,8 +333,8 @@ class ModalCargos extends React.Component {
             else if(this.props.option === 3){
                 this.setState({loading:'show'})  
                 var userId = '';
-                if(this.props.usersRoles.get('userId') !== ''){
-                    userId = this.props.usersRoles.get('userId');
+                if(this.props.userId !== ''){
+                    userId = this.props.userId;
                 }else{
                     userId = this.props.personaInterno.userId;
                 }
@@ -666,16 +668,7 @@ class ModalCargos extends React.Component {
                     }
                 }                
             }) 
-        }        
-        if(props.usersRoles.get('userId') !== "" || this.props.personaInterno.userId !== ""){
-            this.setState({
-                varDisabledRegisterUser:true
-            })
-        }else{
-            this.setState({
-                varDisabledRegisterUser:false,                
-            })
-        }
+        }                
 
         if(props.option === 2 || props.option === 3){
             props.option === 2 ? this.setState({disabledSelectUser:true}) : false
@@ -695,9 +688,9 @@ class ModalCargos extends React.Component {
                 arrayUser = null
             }
 
-            if(props.usersRoles.get('userId') !== ""){
+            if(props.userId !== ""){
                 registarComoUsuario = { value: "SI", label: "SI" };
-                arrayUser = { value: props.usersRoles.get('userEmail'), label: props.usersRoles.get('userEmail') };
+                arrayUser = { value: props.userEmail, label: props.userEmail };
                 this.setState({disabledSelectUser:true});
             }
             var emailsTags = [];            
@@ -733,7 +726,7 @@ class ModalCargos extends React.Component {
                 loading: props.personaInterno.personalId.loading,
             })   
         }else if(props.option === 1){          
-            props.usersRoles.get('userId') !== "" ? this.setState({disabledSelectUser: true,}): false            
+            props.userId !== "" ? this.setState({disabledSelectUser: true,}): false            
             this.setState({                
                 loading:'hide',
                 arrayTypeIdentitySelect: props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],                           
@@ -749,8 +742,8 @@ class ModalCargos extends React.Component {
 
     viewUserId = () =>{
         if(this.props.option === 1){
-            if(this.props.usersRoles.get('userId') !== ''){
-                this.props.LoadIdUsersNoMasterFunction(this.props.usersRoles.get('userId'));
+            if(this.props.userId !== ''){
+                this.props.LoadIdUsersNoMasterFunction(this.props.userId);
                 this.setState({
                     modal:true,
                     option: 5,
@@ -778,7 +771,7 @@ class ModalCargos extends React.Component {
             }
         }else if(this.props.option === 3){
             if(this.props.personaInterno.userId !== ''){
-                this.props.LoadIdUsersNoMasterFunction(this.props.usersRoles.get('userId')?this.props.usersRoles.get('userId'):this.props.personaInterno.userId);
+                this.props.LoadIdUsersNoMasterFunction(this.props.userId?this.props.userId:this.props.personaInterno.userId);
                 this.setState({
                     modal:true,
                     option: 6,
@@ -809,11 +802,11 @@ class ModalCargos extends React.Component {
                                   disabled = {this.state.disabled}
                                   disabledEmail = {this.state.disabledEmail}
                                   showHide = {this.state.showHide}
-                                  modules = {this.props.usersRoles.get('modules')}         
-                                  permits = {this.props.usersRoles.get('permits')}  
-                                  totalBranchOffices = {this.props.usersRoles.get('totalBranchOffices')}
-                                  arrayBranchOffices = {this.props.usersRoles.get('arrayBranchOffices')}
-                                  roles = {this.props.usersRoles.get('roles')}     
+                                  modules = {this.props.modules}         
+                                  permits = {this.props.permits}  
+                                  totalBranchOffices = {this.props.totalBranchOffices}
+                                  arrayBranchOffices = {this.props.arrayBranchOffices}
+                                  roles = {this.props.roles}     
                                   valorCloseModalRoles={this.valorCloseModalRoles}     
                                   saveRolAction = {this.props.saveRolAction}  
                                   LoadRolIdFunction = {this.props.LoadRolIdFunction}
@@ -912,7 +905,7 @@ class ModalCargos extends React.Component {
                                         <FormGroup className="top form-group col-sm-6">                                                                 
                                             <Label for="especialization">Sucursales</Label>
                                             <div className={this.state.divSucursalesSelect}>
-                                                <Select isMulti={true} isSearchable="true" isDisabled={this.props.disabled} name="sucursales" value={this.state.arraySucursalesSelect} onChange={this.handleChangeSucursalesSelect} options={this.props.usersRoles.get('arrayBranchOffices')} />
+                                                <Select isMulti={true} isSearchable="true" isDisabled={this.props.disabled} name="sucursales" value={this.state.arraySucursalesSelect} onChange={this.handleChangeSucursalesSelect} options={this.props.arrayBranchOffices} />
                                             </div>
                                             <div className="errorSelect">{this.state.divSucursalesSelectError}</div>                                                                
                                         </FormGroup>                                          
@@ -1052,7 +1045,7 @@ const mapDispatchToProps = dispatch => ({
     editPersonalAction: (data, callback) => dispatch(editPersonalAction(data, callback)),  
     alert: (type, message) => dispatch(openSnackbars(type, message)), 
     ValidateEmailUsersFunction: (arrayEmails, callback) => dispatch(ValidateEmailUsersFunction(arrayEmails, callback)), 
-    loadUsersRoles: () => dispatch(LoadAllUsersNoMasterFunction()),
+    //loadUsersRoles: () => dispatch(LoadAllUsersNoMasterFunction()),
     saveRolAction: (data, callback) => dispatch(saveRolAction(data, callback)),
     LoadRolIdFunction: pos => dispatch(LoadRolIdFunction(pos)),
     saveUserNoMasterAction: (data, callback) => dispatch(saveUserNoMasterAction(data, callback)),  

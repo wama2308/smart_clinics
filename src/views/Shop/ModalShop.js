@@ -21,14 +21,14 @@ import { Delete } from "@material-ui/icons";
 import { number_format } from "../../core/utils";
 
 class ModalShop extends React.Component {
-	constructor(props) {
-		super(props);		        
-		this.state = {
+    constructor(props) {
+        super(props);               
+        this.state = {
             ...InitalState                              
         };
-	}
+    }
 
-	componentDidMount(){
+    componentDidMount(){
         
     }
 
@@ -37,7 +37,7 @@ class ModalShop extends React.Component {
         this.setState({
             [name]: value
         });                
-    }   	
+    }       
 
     testOnclick = () => {
         console.log(this.props.shop.products)
@@ -266,10 +266,10 @@ class ModalShop extends React.Component {
                 
     }       
 
-	render() {         
+    render() {         
         return (
             <span>                            
-        		<Modal isOpen={this.props.modal} className="ModalShop">
+                <Modal isOpen={this.props.modal} className="ModalShop">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -437,8 +437,8 @@ class ModalShop extends React.Component {
                     }
                 </Modal>                
             </span> 
-		);
-	}
+        );
+    }
   }
 const mapStateToProps = state => ({
   shop: state.shop.toJS(),

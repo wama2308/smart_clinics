@@ -10,4 +10,3 @@ export const listShop =
 	    "total": 1180.00
 	}
 ];
-

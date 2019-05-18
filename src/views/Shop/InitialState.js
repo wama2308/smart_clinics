@@ -6,7 +6,7 @@ const selectExento =
 ];  
 
 export const InitalState = {
-	
+    
     divTipoCompra: '',
     arrayTipoCompraSelect: null,
     divTipoCompraError: '',
