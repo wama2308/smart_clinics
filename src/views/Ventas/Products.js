@@ -18,73 +18,74 @@ class Products extends React.Component {
     this.myRef = React.createRef();
     this.state = {
       edit: false,
+      delete: false,
       quantyToSell: 0
     };
   }
 
-  search = () => {
-    alert("buscar");
-  };
-
   delete = item => {
+    this.setState({ delete: true });
     this.props.deleteAtion(item._id);
   };
 
   handleChange = (event, product) => {
     this.props.changeQuantytoSell({
-      value: event.target.value,
+      value: parseInt(event.target.value),
       id: product._id,
-      quanty: product.quantity
+      quanty: product.quantity_stock
     });
   };
 
-  editInput = key => {
-    this.setState({ edit: key });
-  };
+  componentDidUpdate = prevProps => {
+    let lastData = undefined;
+    let lastPrevData = undefined;
+    this.props.products
+      ? (lastData = this.props.products[this.props.products.length - 1])
+      : null;
 
-  componentDidUpdate = () => {
+    prevProps.products
+      ? (lastPrevData = prevProps.products[prevProps.products.length - 1])
+      : null;
+
+    if (lastData && lastData !== lastPrevData) {
+      this.setState({ edit: lastData._id });
+      // if (this.state.delete) {
+      //   this.setState({ delete: false });
+      // } else {
+      //   this.setState({ edit: lastData._id });
+      // }
+    }
+
     if (this.state.edit) {
       const result = document.getElementsByClassName(`${this.state.edit}`);
       result[0].focus();
     }
   };
 
-  getTotal = (array, aplication) => {
-    const obj = {
-      subTotal: 0,
-      iva: 0,
-      total: 0
-    };
-    if (!array) {
-      return obj;
-    }
-
-    let subtotal = 0;
-    array.map(data => {
-      const result = data.quantyToSell * data.price;
-      subtotal = parseFloat(obj.subTotal) + parseFloat(result);
-      obj.subTotal = subtotal.toFixed(2);
-    });
-    const iva =
-      (parseFloat(obj.subTotal) * parseFloat(aplication.tax_rate)) / 100;
-    obj.total = parseFloat(obj.subTotal + iva).toFixed(2);
-    obj.iva = iva.toFixed(2);
-
-    return obj;
+  editInput = key => {
+    this.setState({ edit: key });
   };
 
-  keyPress = e => {
+  keyPress = (e, product) => {
     if (e.key === "Enter") {
       this.setState({ edit: false });
+      console.log(isNaN(product.quanty));
+
+      if (isNaN(product.quanty)) {
+        this.props.changeQuantytoSell({
+          value: 1,
+          id: product._id,
+          quanty: product.quantity
+        });
+      }
     }
   };
 
   render() {
     const { patient, products, aplication } = this.props;
 
-    const totalData = this.getTotal(products, aplication);
+    const totalData = this.props.getTotal(products, aplication);
 
-    console.log("data", totalData);
     const dataHead = [
       { label: "CODIGO" },
       { label: "NOMBRE" },
@@ -143,14 +144,14 @@ class Products extends React.Component {
                       <Cell className="cellStyle">{product.code}</Cell>
                       <Cell>{product.name}</Cell>
                       <Cell>{product.type}</Cell>
-                      <Cell>{product.quantity}</Cell>
+                      <Cell>{product.quantity_stock}</Cell>
                       {this.state.edit === product._id ? (
                         <td>
                           <Input
                             type="number"
                             className={product._id}
-                            value={product.quantyToSell}
-                            onKeyDown={this.keyPress}
+                            value={product.quanty}
+                            onKeyDown={e => this.keyPress(e, product)}
                             onChange={event =>
                               this.handleChange(event, product)
                             }
@@ -162,11 +163,15 @@ class Products extends React.Component {
                         </td>
                       ) : (
                         <Cell onClick={() => this.editInput(product._id)}>
-                          {product.quantyToSell}
+                          {product.quanty}
                         </Cell>
                       )}
                       <Cell>{product.price}</Cell>
-                      <Cell>{product.quantyToSell * product.price}</Cell>
+                      <Cell>
+                        {product.quantity
+                          ? product.quanty * product.price
+                          : product.price}
+                      </Cell>
                       <Cell>
                         <IconButton
                           onClick={() => {

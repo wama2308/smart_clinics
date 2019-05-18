@@ -23,7 +23,7 @@ const setIn = (state, node, payload) => {
     return data._id === payload.id;
   });
 
-  return state.setIn(["array_products", result, "quantyToSell"], payload.value);
+  return state.setIn(["array_products", result, "quanty"], payload.value);
 };
 
 const VentasReducer = (state = Map(), action) => {

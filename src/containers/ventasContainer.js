@@ -12,7 +12,8 @@ import {
   searchOneSuppplie,
   deleteItem,
   changeQuantytoSell,
-  cancelToSell
+  cancelToSell,
+  saveInvoice
 } from "../actions/ventasAction";
 import { openConfirmDialog } from "../actions/aplicantionActions";
 import Footer from "../views/Ventas/Footer";
@@ -68,6 +69,41 @@ class VentasContainer extends React.Component {
     }
   };
 
+  getTotal = (array, aplication) => {
+    const obj = {
+      subTotal: 0,
+      iva: 0,
+      total: 0
+    };
+    if (!array) {
+      return obj;
+    }
+
+    let subtotal = 0;
+    array.map(data => {
+      const result = isNaN(data.quanty) ? data.price : data.quanty * data.price;
+      subtotal = parseFloat(obj.subTotal) + parseFloat(result);
+      obj.subTotal = subtotal.toFixed(2);
+    });
+    const iva =
+      (parseFloat(obj.subTotal) * parseFloat(aplication.tax_rate)) / 100;
+    obj.total = parseFloat(obj.subTotal + iva).toFixed(2);
+    obj.iva = iva.toFixed(2);
+
+    return obj;
+  };
+
+  saveSales = () => {
+    console.log();
+    console.log();
+    const obj = {
+      supplie_array: [this.props.products]
+      //   sub_total: 900,
+      //   igv: 10,
+      //   total: 1000
+    };
+  };
+
   render() {
     const optionsPatient = this.optionsPatient(this.props.options_patient);
     const optionsProducts = this.optionsProducts(
@@ -102,11 +138,13 @@ class VentasContainer extends React.Component {
               deleteAtion={this.props.deleteItem}
               changeQuantytoSell={this.props.changeQuantytoSell}
               aplication={this.props.aplication}
+              getTotal={this.getTotal}
             />
             <Footer
               cancel={this.props.cancelToSell}
               confirm={this.props.openConfirmDialog}
               products={this.props.products}
+              saveInvoice={this.saveSales}
             />
           </div>
         </div>
@@ -135,7 +173,8 @@ export default connect(
     deleteItem,
     changeQuantytoSell,
     cancelToSell,
-    openConfirmDialog
+    openConfirmDialog,
+    saveInvoice
   }
 )(VentasContainer);
 

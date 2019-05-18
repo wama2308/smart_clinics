@@ -7,6 +7,7 @@ const createPatientsUrl = `${url}/api/createPatients`;
 const searchProductUrl = `${url}/api/querySupplies`;
 const searchOnePatientUrl = `${url}/api/queryOnePatients`;
 const searchOneSuppplieUrl = `${url}/api/queryOneSupplie`;
+const saveSale = `${url}/api/saveSale`;
 
 export const searchPatient = search => dispatch => {
   if (search.length < 1) {
@@ -165,7 +166,7 @@ export const searchOneSuppplie = data => dispatch => {
         type: "SEARCH_ONE_PRODUCTS",
         payload: {
           ...res.data,
-          quantyToSell: 1
+          quanty: 1
         }
       });
     });
@@ -185,7 +186,7 @@ export const changeQuantytoSell = obj => dispatch => {
     dispatch(
       openSnackbars(
         "error",
-        "No tiene el stop necesario para agregar esta cantidad"
+        "No tiene el stock necesario para agregar esta cantidad"
       )
     );
   } else {
@@ -196,11 +197,22 @@ export const changeQuantytoSell = obj => dispatch => {
   }
 };
 
-
-
-export const cancelToSell=()=>dispatch=>{
-  dispatch(clean())
+export const cancelToSell = () => dispatch => {
+  dispatch(clean());
   dispatch({
-    type:"CLEAN_TABLE"
-  })
-}
+    type: "CLEAN_TABLE"
+  });
+};
+
+export const saveInvoice = obj => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: saveSale,
+      data: obj,
+      ...token
+    }).then(res => {
+      console.log("data", res);
+    });
+  });
+};

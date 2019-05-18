@@ -34,11 +34,13 @@ export default class Footer extends React.Component {
   };
 
   render() {
+    const disabled = this.props.products ? false : true;
     return (
       <Container style={{ marginBottom: 0, marginTop: 10 }}>
         <DiscountRequest open={this.state.openModal} close={this.close} />
         <div style={{ display: "flex", alignItems: "center" }}>
           <Button
+            disabled={disabled}
             className="sellButtons"
             color="primary"
             onClick={this.openModal}
@@ -51,16 +53,22 @@ export default class Footer extends React.Component {
           {this.props.products && (
             <Button
               color="danger"
+              disabled={disabled}
               className="sellButtons"
               onClick={this.confirm}
             >
               Cancelar
             </Button>
           )}
-          <Button className="sellButtons" color="primary">
+          <Button
+            disabled={disabled}
+            className="sellButtons"
+            color="primary"
+            onClick={this.props.saveInvoice}
+          >
             Guardar Factura
           </Button>
-          <Button color="primary" className="sellButtons">
+          <Button color="primary" className="sellButtons" disabled={disabled}>
             Realizar Venta
           </Button>
         </div>
