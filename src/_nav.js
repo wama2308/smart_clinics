@@ -62,6 +62,11 @@ export default {
           name: "Ventas",
           url: "/administrative/sales",
           icon: "fa fa-usd"
+        },
+        {
+          name: "Compras",
+          url: "/administrative/shops",
+          icon: "fa fa-shopping-cart"
         }
       ]
     }

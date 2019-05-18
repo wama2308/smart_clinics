@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import ListShop from "../views/Shop/ListShop";
-import { LoadStoreFunction, LoadStoreIdFunction, DeleteStoreAction } from "../actions/ShopActions";
+import { LoadShopFunction } from "../actions/ShopActions";
 import { openSnackbars, openConfirmDialog } from "../actions/aplicantionActions";
 
 class ShopContainers extends Component {
@@ -24,27 +24,25 @@ class ShopContainers extends Component {
   }
 
   componentDidMount = () => {
-    this.props.LoadStoreFunction();
+    this.props.LoadShopFunction();
   };  
 
   render() {   
-    console.log("props store", this.props.store);     
+    console.log("props shop", this.props.shop);
     return (
       <div className="animated fadeIn">
         <Row>
           <Col>
             <Card>
-              <CardHeader>Compras</CardHeader>
-              <CardBody>                              
+              <CardHeader>Compras - Productos</CardHeader>
+              <CardBody>                  
               {
-                this.props.store.loading === 'hide' ?
+                this.props.shop.loading === 'hide' ?
                   <div>
                     <ListShop 
                       confirm={this.props.confirm}
-                      branchOfficces={this.props.store.branchOfficces}
-                      /*LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
-                      DeleteDistributorAction={this.props.DeleteDistributorAction}*/
-                    />      
+                      
+                    />
                   </div>
                 :
                 <div align="center" className="" style={{padding:"1%"}}><img src="assets/loader.gif" width="25%"  /></div>
@@ -59,15 +57,14 @@ class ShopContainers extends Component {
 }
 
 const mapStateToProps = state => ({
-  store: state.store.toJS(),
+  shop: state.shop.toJS(),
   authData: state.auth,
   aplication: state.global
 });
 
-const mapDispatchToProps = dispatch => ({
-  LoadStoreFunction: () => dispatch(LoadStoreFunction()),  
-  /*LoadDistributorIdFunction: (distrbutorId) => dispatch(LoadDistributorIdFunction(distrbutorId)),  
-  DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),  */
+const mapDispatchToProps = dispatch => ({  
+  LoadShopFunction: () => dispatch(LoadShopFunction()),  
+  /*DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),  */
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
 });
 

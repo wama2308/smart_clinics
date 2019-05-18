@@ -2,12 +2,16 @@ import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
 const LoadSelectBranchOffices = `${url}/api/LoadSelectBranchOffices`;
-const listCountryProvider = `${url}/api/listCountryProvider`;
+const createStoreBranchOffices = `${url}/api/createStoreBranchOffices`;
+const editStoreBranchOffices = `${url}/api/editStoreBranchOffices`;
+const queryStoreBranchOffices = `${url}/api/queryStoreBranchOffices`;
+const queryOneStoreBranchOffices = `${url}/api/queryOneStoreBranchOffices`;
+const disableStoreBranchOffices = `${url}/api/disableStoreBranchOffices`;
 
 export const LoadStoreFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
-    	axios.get(listCountryProvider, datos)
+    	axios.get(queryStoreBranchOffices, datos)
     	.then(res => {		 
         LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {   
           dispatch({
@@ -89,22 +93,23 @@ export const cleanShelfs = () => dispatch => {
     });
 };
 
-/*export const LoadStoreIdFunction = distributorId => dispatch => {
+export const LoadStoreIdFunction = (storeId, sucursalId) => dispatch => {
   getDataToken()
     .then(datos => {
       axios({
         method: "post",
-        url: detailsProvider,
+        url: queryOneStoreBranchOffices,
         data: {
-          id: distributorId
+          store_id: storeId,
+          sucursal_id: sucursalId
         },
         headers: datos.headers
       })
         .then(res => {
           dispatch({
-            type: "LOAD_DISTRIBUTOR_ID",
+            type: "LOAD_STORE_ID",
             payload: {
-              distributorId: res.data,
+              storeId: res.data,
               loading: "hide"
             }
           });
@@ -121,55 +126,12 @@ export const cleanShelfs = () => dispatch => {
     });
 };
 
-export const addShelfFunction = (objContacto) => dispatch => {
-  getDataToken()
-    .then(datos => {
-      dispatch({
-        type: "ADD_CONTACTO",
-        payload: {
-          objContacto: objContacto
-        }
-      });
-    })
-    .catch(() => {
-      console.log("Problemas con el token");
-    });
-};
-
-export const deleteShelfFunction = key => dispatch => {
-  getDataToken()
-    .then(datos => {
-      dispatch({
-        type: "DELETE_CONTACTO",
-        payload: key
-      });
-    })
-    .catch(() => {
-      console.log("Problemas con el token");
-    });
-};
-
-export const cleanShelf = () => dispatch => {
-  getDataToken()
-    .then(datos => {
-      dispatch({
-        type: "CLEAN_CONTACS",
-        payload: {          
-          contacs: []
-        }
-      });
-    })
-    .catch(() => {
-      console.log("Problemas con el token");
-    });
-};
-
 export const saveStoreAction = (data, callback) => dispatch => {
   getDataToken()
     .then(datos => {
       axios({
         method: "post",
-        url: createProvider,
+        url: createStoreBranchOffices,
         data: data,
         headers: datos.headers
       })
@@ -177,8 +139,8 @@ export const saveStoreAction = (data, callback) => dispatch => {
           callback();
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
-        .catch(error => {
-          dispatch(openSnackbars("error", "Error guardando el proveedor"));
+        .catch(error => {          
+          dispatch(openSnackbars("error", "Error guardando el almacen"));
         });
     })
     .catch(() => {
@@ -191,7 +153,7 @@ export const editStoreAction = (data, callback) => dispatch => {
     .then(datos => {
       axios({
         method: "post",
-        url: editProvider,
+        url: editStoreBranchOffices,
         data: data,
         headers: datos.headers
       })
@@ -200,7 +162,7 @@ export const editStoreAction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error editando el proveedor"));
+          dispatch(openSnackbars("error", "Error editando el almacen"));
         });
     })
     .catch(() => {
@@ -208,25 +170,26 @@ export const editStoreAction = (data, callback) => dispatch => {
     });
 };
 
-export const DeleteStoreAction = proveedorId => dispatch => {
+export const DeleteStoreAction = (storeId, sucursalId) => dispatch => {
   getDataToken()
     .then(datos => {
       axios({
         method: "post",
-        url: disableProvider,
+        url: disableStoreBranchOffices,
         data: {
-          id: proveedorId
+          sucursal_id: sucursalId,
+          store_id: storeId
         },
         headers: datos.headers
       })
         .then(() => {
-          dispatch(openSnackbars("success", "Proveedor eliminado con exito"));
+          dispatch(openSnackbars("success", "Almacen eliminado con exito"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error eliminando el proveedor"));
+          dispatch(openSnackbars("error", "Error eliminando el almacen"));
         });
     })
     .catch(() => {
       console.log("Problemas con el token");
     });
-};*/
+};

@@ -640,8 +640,8 @@ class ModalCargos extends React.Component {
     } 
 
     componentWillReceiveProps=(props)=>{            
-        console.log("modal personal personaInterno", props.personaInterno);              
-        console.log("modal personal usersRoles", props.usersRoles.toJS());                      
+        /*console.log("modal personal personaInterno", props.personaInterno);              
+        console.log("modal personal usersRoles", props.usersRoles.toJS()); */                     
         //console.log("modal personal application ", props.aplication);                      
         this.setState({
             modal: props.modal,       

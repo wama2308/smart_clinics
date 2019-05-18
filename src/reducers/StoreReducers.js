@@ -1,11 +1,10 @@
 import {Map , List} from 'immutable'
 const setData = (state, node , payload)=> state.set(node, payload)
 
-const setDataDistributorId = (state, node, payload) => {
+const setDataStoreId = (state, node, payload) => {
 	let estado = state.toJS();
-	estado.contacs = payload.distributorId.contacts;	
-	estado.distributorId = payload;	
-	estado.tableContac = 1;	
+	estado.shelfs = payload.storeId.shelf;	
+	estado.storeId = payload;		
 	return Map(estado);
 }
 
@@ -36,8 +35,8 @@ const StoreReducer = (state = Map(), action) => {
 	  	return Map(action.payload)
 	  }
 
-	  case 'LOAD_DISTRIBUTOR_ID': {
-	  	return setDataDistributorId(state, 'distributorId', action.payload)
+	  case 'LOAD_STORE_ID': {
+	  	return setDataStoreId(state, 'storeId', action.payload)
 	  }
 
 	  case 'ADD_SHELFS': {
