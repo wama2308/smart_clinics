@@ -157,15 +157,9 @@ class DefaultSearch extends React.Component {
   };
 
   keyPress = e => {
+    const value = !this.state.auxValue ? this.props.value : this.state.auxValue;
     if (e.key === "Enter") {
-      if (this.props.value.length === 0) {
-        this.props.openSnackbars("error", "Ingrese DNI o Nombre ");
-      } else if (this.state.auxValue) {
-        console.log("aca");
-        this.props.searchAction(this.state.auxValue);
-      } else {
-        this.props.openSnackbars("error", "Paciente no registrado ");
-      }
+      this.props.searchAction(value);
     }
   };
 
