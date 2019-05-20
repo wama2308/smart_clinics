@@ -55,16 +55,24 @@ const converToJson = data => {
 };
 
 const orderData = data => {
-  const result = data.split(" ");
-  const typeIdentify = result[0].substr(0, 1);
-  const dni = result[0].substr(2);
+  try {
+    const result = data.split(" ");
+    const typeIdentify = result[0].substr(0, 1);
+    const dni = result[0].substr(2);
 
-  return { type_identity: typeIdentify, dni: dni };
+    return { type_identity: typeIdentify, dni: dni };
+  } catch (err) {
+    return data;
+  }
 };
 
 export const searchOnePatient = search => dispatch => {
-  const result = orderData(search.label);
+  if (search.length === 0) {
+    dispatch(openSnackbars("warning", "Ingrese nombre o dni del paciente!"));
+    return;
+  }
 
+  const result = orderData(search.label);
   getDataToken().then(token => {
     axios({
       method: "POST",
@@ -86,7 +94,7 @@ export const searchOnePatient = search => dispatch => {
       .catch(err => {
         const result = converToJson(err);
         dispatch(searchLoaded(true));
-        dispatch(openSnackbars("error", result.message));
+        dispatch(openSnackbars("error", "Paciente no registrado!"));
         dispatch({
           type: "SEARCH_PATIENT",
           payload: null
@@ -149,6 +157,12 @@ export const searchProduct = data => dispatch => {
 };
 
 export const searchOneSuppplie = data => dispatch => {
+  if (data.length === 0) {
+    dispatch(
+      openSnackbars("warning", "Debe ingresar nombre o codigo del producto!")
+    );
+    return;
+  }
   dispatch({
     type: "SEARCH_DATA",
     payload: ""
@@ -161,15 +175,20 @@ export const searchOneSuppplie = data => dispatch => {
         supplie_id: data.value
       },
       ...token
-    }).then(res => {
-      dispatch({
-        type: "SEARCH_ONE_PRODUCTS",
-        payload: {
-          ...res.data,
-          quanty: 1
-        }
+    })
+      .then(res => {
+        dispatch({
+          type: "SEARCH_ONE_PRODUCTS",
+          payload: {
+            ...res.data,
+            quanty: 1
+          }
+        });
+      })
+      .catch(err => {
+        const result = converToJson(err);
+        dispatch(openSnackbars("error", "producto no encontrado"));
       });
-    });
   });
 };
 
