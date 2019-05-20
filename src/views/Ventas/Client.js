@@ -1,29 +1,62 @@
 import React from "react";
 import { Card, CardHeader, CardBody, Button } from "reactstrap";
-import { Typography } from "@material-ui/core";
+import { Typography, IconButton } from "@material-ui/core";
 import Search from "../../components/DefaultSearch";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import UserRegister from "./userRegister";
+import { Delete } from "@material-ui/icons";
+import * as moment from "moment";
 
 class Client extends React.Component {
   state = {
     paciente: true,
-    openModal: false
+    openModal: false,
+    disabled: false
   };
+
+  close = () => {
+    this.setState({ openModal: false, disabled: false });
+  };
+
+  view = () => {
+    this.setState({ openModal: true, disabled: true });
+  };
+
   render() {
     const { patient } = this.props;
     return (
-      <Card style={{ marginBottom: 10, flex: 1 }}>
-        {this.state.openModal && <UserRegister open={this.state.open} />}
+      <Card style={{ margin: "0px 10px 10px 0px", flex: 1 }}>
+        {this.state.openModal && (
+          <UserRegister
+            open={this.state.openModal}
+            disabled={this.state.disabled}
+            close={this.close}
+            patient={patient}
+          />
+        )}
         <Header>
           <div>Paciente</div>
-          <div style={{ width: "40%" }}>
-            <Search
-              pressKey={true}
-              searchAction={this.props.searchAction}
-              placeholder="Ingrese DNI"
-            />
+          <div
+            style={{
+              width: "40%",
+              display: "flex",
+              justifyContent: "flex-end"
+            }}
+          >
+            {!patient && (
+              <Search
+                searchAction={this.props.searchAction}
+                getOptions={this.props.getOptions}
+                placeholder="Buscar paciente"
+                options={this.props.options}
+              />
+            )}
+            {patient && (
+              <IconButton onClick={this.props.clean}>
+                <Delete />
+              </IconButton>
+            )}
           </div>
         </Header>
         <Body>
@@ -52,56 +85,6 @@ class Client extends React.Component {
                   </div>
                   <div className="list">
                     <div className="list-body">
-                      <Typography variant="subtitle1">Sexo:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.sex}
-                      </Typography>
-                    </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">F/N:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.birth_date}
-                      </Typography>
-                    </div>
-
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Estado civil:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.civil_state}
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="list">
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Pais:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {"Venezulea"}
-                      </Typography>
-                    </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Princia:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.province}
-                      </Typography>
-                    </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">ciudad:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.district}
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="list">
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Direccion:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {"Esquina carrera 13 Barrio el liceo"}
-                      </Typography>
-                    </div>
-                  </div>
-
-                  <div className="list">
-                    <div className="list-body">
                       <Typography variant="subtitle1">Correo:</Typography>
                       <Typography variant="body1" className="textSpace">
                         {patient.email[0]}
@@ -114,19 +97,47 @@ class Client extends React.Component {
                       </Typography>
                     </div>
                   </div>
+
+                  <div className="list">
+                    <div className="list-body">
+                      <Typography variant="subtitle1">Direccion:</Typography>
+                      <Typography variant="body1" className="textSpace">
+                        {patient.address}
+                      </Typography>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      paddingTop: 26
+                    }}
+                  >
+                    <Button color="success" onClick={() => this.view()}>
+                      Ver detalles
+                    </Button>
+                  </div>
                 </div>
               )}
               {!patient && (
                 <div
                   style={{ flex: 1, display: "flex", flexDirection: "column" }}
                 >
-                  <div className="message">
-                    Por favor selecciona un paciente para continuar
-                  </div>
+                  {patient === undefined && (
+                    <div className="message">
+                      Por favor selecciona un paciente para continuar
+                    </div>
+                  )}
+                  {patient === null && (
+                    <div className="message">
+                      Paciente no encontrado, Registre el Paciente
+                    </div>
+                  )}
                   <div className="saveButton">
                     <Button
                       color="success"
-                      onClick={()=>this.setState({ openModal: true })}
+                      onClick={() => this.setState({ openModal: true })}
                     >
                       Agregar
                     </Button>
@@ -147,11 +158,15 @@ const Header = styled(CardHeader)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 73px;
+  max-height: 73px;
 `;
 
 const Body = styled(CardBody)`
   display: flex;
   flex-direction: column;
+  padding-top: 5px;
+  overflow: auto;
   .message {
     flex: 1;
     display: flex;
@@ -171,10 +186,11 @@ const Body = styled(CardBody)`
   .list {
     display: flex;
     align-items: center;
-    border-top: 1px solid #c8ced3;
-    height: 60px;
+    border-top: 0px solid #c8ced3;
+    height: 55px;
     border-bottom: 1px solid #c8ced3;
     &-body {
+      flex: 1;
       display: flex;
       padding-right: 10%;
       align-items: baseline;

@@ -30,6 +30,9 @@ export default class AuthService {
       })
       .catch(error => {
         notify(error.toString());
+        callback({
+          logged: false
+        });
       });
   }
 
