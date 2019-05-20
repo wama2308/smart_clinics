@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
 import { FaSearch } from 'react-icons/fa';
-import { addProductsFunction,  } from "../../actions/ShopActions";
+import { addProductsFunction, verificationSuppliesAction } from "../../actions/ShopActions";
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
 import { enterDecimal } from "../../core/utils";
 import { InitalState } from './InitialState.js';
@@ -388,6 +388,46 @@ class Products extends React.Component {
         }        
     }
 
+    productoOnBlur = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value,            
+        });                         
+        if(value !== ""){
+            this.props.verificationSuppliesAction(
+                {
+                    name: value,
+                    code: ''
+                }, 
+                () => {
+                    this.setState({
+                        producto:''                        
+                    })
+                }
+            );            
+        }        
+    }    
+
+    codigoOnBlur = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value,            
+        });                         
+        if(value !== ""){
+            this.props.verificationSuppliesAction(
+                {
+                    name: '',
+                    code: value
+                }, 
+                () => {
+                    this.setState({
+                        codigo:''                        
+                    })
+                }
+            );            
+        }        
+    }
+
 	render() {           
         return (
             <div>  
@@ -412,7 +452,7 @@ class Products extends React.Component {
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="producto">Producto:</Label> 
                                 <div className={this.state.divProducto}>                               
-                                    <Input disabled={this.props.disabled} name="producto" id="producto" onKeyUp={this.handlekeyProducto} onChange={this.handleChange} value={this.state.producto} type="text" placeholder="Producto" />
+                                    <Input disabled={this.props.disabled} name="producto" id="producto" onKeyUp={this.handlekeyProducto} onChange={this.handleChange} value={this.state.producto} onBlur={this.productoOnBlur} type="text" placeholder="Producto" />
                                 </div>
                                 <div className="errorSelect">{this.state.divProductoError}</div>
                             </FormGroup> 
@@ -426,7 +466,7 @@ class Products extends React.Component {
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="codigo">Codigo:</Label> 
                                 <div className={this.state.divCodigo}>                               
-                                    <Input disabled={this.props.disabled} name="codigo" id="codigo" onKeyUp={this.handlekeyCodigo} onChange={this.handleChange} value={this.state.codigo} type="text" placeholder="Codigo" />
+                                    <Input disabled={this.props.disabled} name="codigo" id="codigo" onKeyUp={this.handlekeyCodigo} onChange={this.handleChange} value={this.state.codigo} onBlur={this.codigoOnBlur} type="text" placeholder="Codigo" />
                                 </div>
                                 <div className="errorSelect">{this.state.divCodigoError}</div>                                                                                                                                                                                         
                             </FormGroup> 
@@ -517,6 +557,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({  
     addProductsFunction: (arrayProducts, subtotal, impuesto, total) =>dispatch(addProductsFunction(arrayProducts, subtotal, impuesto, total)),        
     confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
+    verificationSuppliesAction: (data, callback) =>dispatch(verificationSuppliesAction(data, callback)),
 });
 
 export default connect(

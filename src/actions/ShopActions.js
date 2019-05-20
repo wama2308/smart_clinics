@@ -8,6 +8,8 @@ const queryStoreBranchOffices = `${url}/api/queryStoreBranchOffices`;
 const queryOneStoreBranchOffices = `${url}/api/queryOneStoreBranchOffices`;
 const disableStoreBranchOffices = `${url}/api/disableStoreBranchOffices`;
 
+const verificationSupplies = `${url}/api/verificationSupplies`;
+
 export const LoadShopFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
@@ -197,6 +199,31 @@ export const DeleteShopAction = (storeId, sucursalId) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error eliminando el almacen"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const verificationSuppliesAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: verificationSupplies,
+        data: data,
+        headers: datos.headers
+      })
+        .then((res) => {          
+          if(res.data === 1){
+            dispatch(openSnackbars("warning", "¡Este producto ya se encuentra registrado!"));
+            callback();      
+          }
+              
+        })
+        .catch(error => {          
+          dispatch(openSnackbars("error", "Error consultando el producto"));
         });
     })
     .catch(() => {
