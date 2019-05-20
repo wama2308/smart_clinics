@@ -380,7 +380,7 @@ class ModalShop extends React.Component {
                                                         <td>{list.exempt.label}</td>                                                                                                                                                                                                                                                                    
                                                         <td>
                                                             <div  className="float-left" >
-                                                                <IconButton aria-label="Delete" disabled={this.props.option === 2 ? true : false} title="Ver Rol" className="iconButtons" onClick={() => { this.deleteProduct(i, list.quantity, list.price, list.exempt.label, list.discount); }}><Delete className="iconTable" /></IconButton>                                                    
+                                                                <IconButton aria-label="Delete" disabled={this.props.option === 2 ? true : false} title="Ver Rol" className="iconButtons" onClick={() => { this.deleteProduct(i, list.quantity, list.price, list.exempt.label, list.discount); }}><Delete className="iconTable" /></IconButton>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -419,7 +419,7 @@ class ModalShop extends React.Component {
                                                     <InputGroupAddon addonType="prepend" style={{width:"79px"}}>Total</InputGroupAddon>
                                                         <Input type="text" disabled={true} name="Total" id="Total" placeholder="Total" value={number_format(this.props.shop.total, 2)}/>
                                                     <InputGroupAddon addonType="append">{this.props.aplication.dataGeneral.dataCountries.current_simbol}</InputGroupAddon>
-                                                  </InputGroup>
+                                                </InputGroup>
                                             </div>                                            
                                         </FormGroup>
                                     </div>

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
+import { FaSearch } from 'react-icons/fa';
 import { addProductsFunction,  } from "../../actions/ShopActions";
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
 import { enterDecimal } from "../../core/utils";
@@ -176,6 +177,10 @@ class Products extends React.Component {
         let divDescuentoError = '';
         let divLimiteStock = '';     
         let divLimiteStockError = '';
+        let cantidad_ingresar = parseFloat(this.state.cantidad);
+        let limite_stock = parseFloat(this.state.limiteStock);
+        let precio_compra = parseFloat(this.state.precio.replace(",", ""));
+        let precio_venta = parseFloat(this.state.precioVenta.replace(",", ""));
         
         if (this.state.arrayTipoSelect) {                   	    
             let arrayTipo = Object.values(this.state.arrayTipoSelect);
@@ -224,13 +229,25 @@ class Products extends React.Component {
         if (!this.state.arrayExentoSelect) {                    
             divExentoError = "¡Seleccione si es exento!";
             divExento  = "borderColor";
-        }
+        }        
         if(this.props.shop.products.length > 0){
             const resultado = this.props.shop.products.find(products => products.product === this.state.producto);
             if(resultado){
                 divProductoError = "¡Este producto ya se encuentra agregado!";
                 divProducto = "borderColor";
             }
+        }
+        if(cantidad_ingresar < limite_stock){
+            divCantidadError = "¡La cantidad no puede ser menor al limite de stock!";
+            divCantidad = "borderColor";
+            divLimiteStockError = "¡el limite de stock no puede ser mayor a la cantidad!";
+            divLimiteStock = "borderColor";
+        }
+        if(precio_venta < precio_compra){
+            divPrecioError = "¡El precio de compra no puede ser mayor al precio de venta!";
+            divPrecio = "borderColor";
+            divPrecioVentaError = "¡El precio de venta no puede ser menor al precio de compra!";
+            divPrecioVenta = "borderColor";
         }
         if (divProductoError || divTipoError || divCodigoError || divCantidadError || divPrecioError || divExentoError || divPrecioVentaError || divLimiteStockError) {            
             this.setState({ 
@@ -377,13 +394,27 @@ class Products extends React.Component {
                 <Collapse isOpen={this.props.collapse}>
                   <Card>
                     <CardBody>                        
+                        <div className="row">
+                            <FormGroup className="top form-group col-sm-6">                                                                 
+                                <Label for="buscarProducto">Buscar Producto:</Label> 
+                                <div className={this.state.divBuscarProducto}>     
+                                    <InputGroup>
+                                        <Select className="selectBuscarProductos" isSearchable="true" isDisabled={this.props.disabled} name="buscarProducto" id="buscarProducto" value={this.state.arrayBuscarProductoSelect} onChange={this.handleChangeBuscarProducto} options={this.props.aplication.dataGeneral.dataGeneral.type_supplies} />                                    
+                                        <InputGroupAddon addonType="append">
+                                            <Button title="Ver Rol" className={this.state.ocultarBotones} disabled={this.state.varDisabled} onClick={() => { this.openRoles(2, this.state.rolIdView); }}><FaSearch size="1em"/></Button>&nbsp;
+                                        </InputGroupAddon>                                    
+                                    </InputGroup>
+                                </div>
+                                <div className="errorSelect">{this.state.divBuscarProductoError}</div>
+                            </FormGroup> 
+                        </div>
                         <div className="row">       
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="producto">Producto:</Label> 
                                 <div className={this.state.divProducto}>                               
                                     <Input disabled={this.props.disabled} name="producto" id="producto" onKeyUp={this.handlekeyProducto} onChange={this.handleChange} value={this.state.producto} type="text" placeholder="Producto" />
                                 </div>
-                                <div className="errorSelect">{this.state.divProductoError}</div>                                                                                                                                                                                         
+                                <div className="errorSelect">{this.state.divProductoError}</div>
                             </FormGroup> 
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="tipo">Tipo:</Label>

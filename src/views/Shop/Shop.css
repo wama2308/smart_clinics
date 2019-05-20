@@ -178,6 +178,11 @@ padding: 1em;
   align-items: flex-end;
 }
 
+.selectBuscarProductos {
+    width: 90%;
+    
+}
+
 /*PARA LOS TAGS INPUT*/
 
 .react-tagsinputMy {
