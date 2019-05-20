@@ -91,6 +91,13 @@ class ListPersonal extends React.Component {
           showHide = {this.state.showHide}       
           isClearable = {this.state.isClearable}                                 
           id = {this.state.id}                                 
+          userId = {this.props.userId}                                 
+          userEmail = {this.props.userEmail}                                 
+          modules = {this.props.modules}                                 
+          permits = {this.props.permits}                                 
+          totalBranchOffices = {this.props.totalBranchOffices}                                 
+          arrayBranchOffices = {this.props.arrayBranchOffices}                                 
+          roles = {this.props.roles}                                 
           valorCloseModal={this.valorCloseModal}  
         />
         <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
@@ -107,7 +114,7 @@ class ListPersonal extends React.Component {
                   <th className="text-left">Cargo</th>
                   <th className="text-left">Email</th>
                   <th className="text-left">Telefonos</th>                                                      
-                  <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>                  
+                  <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                  
                 </tr>
               </thead>
               <tbody>
@@ -120,7 +127,7 @@ class ListPersonal extends React.Component {
                     <td>{personal.positions}</td>
                     <td>{personal.email[0]}</td>
                     <td>{personal.phone[0]}</td>
-                    <td style={{'minWidth':"105px"}}>
+                    <td style={{'minWidth':"155px"}}>
                       <div className="float-left" >
                         <IconButton aria-label="Delete" title="Ver Personal" className="iconButtons" onClick={() => { this.openModal(2, i, personal._id); }}><Visibility className="iconTable" /></IconButton>
                         <IconButton aria-label="Delete" title="Editar Personal" className="iconButtons" onClick={() => { this.openModal(3, i, personal._id); }}><Edit className="iconTable" /></IconButton>                        

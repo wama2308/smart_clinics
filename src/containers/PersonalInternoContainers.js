@@ -9,6 +9,7 @@ import UsersList from "../views/Usuarios/UsersList";
 import RolesList from "../views/Usuarios/RolesList";
 import { openSnackbars, openConfirmDialog } from "../actions/aplicantionActions";
 import { LoadPersonalCargosFunction, DeletePersonalInternoAction, LoadPersonalIdFunction } from "../actions/PersonalInternoActions";
+import { LoadAllUsersNoMasterFunction } from "../actions/UserAction";
 import ListCargos from "../views/Personal/ListCargos";
 import ListPersonal from "../views/Personal/ListPersonal";
 
@@ -22,6 +23,7 @@ class PersonalInterno extends Component {
 
   componentDidMount = () => {
     this.props.LoadPersonalCargosFunction();
+    this.props.loadUsersRoles();
   };
 
   toggleTab(tab) {
@@ -46,7 +48,7 @@ class PersonalInterno extends Component {
               <CardHeader>Configuracion de Personal - Cargos</CardHeader>
               <CardBody>
                 {
-                  this.props.personaInterno.get('loading') === 'hide' ?
+                  (this.props.personaInterno.get('loading') === 'hide' && this.props.usersRoles.get('loading') === 'hide')?
                     <div>
                       <Nav tabs>
                         <NavItem>
@@ -67,6 +69,13 @@ class PersonalInterno extends Component {
                             	DeletePersonalInternoAction={this.props.DeletePersonalInternoAction}
                             	confirm={this.props.confirm}
                               LoadPersonalIdFunction={this.props.LoadPersonalIdFunction}
+                              userId={this.props.usersRoles.get('userId')}
+                              userEmail={this.props.usersRoles.get('userEmail')}
+                              modules={this.props.usersRoles.get('modules')}
+                              permits={this.props.usersRoles.get('permits')}
+                              totalBranchOffices={this.props.usersRoles.get('totalBranchOffices')}
+                              arrayBranchOffices={this.props.usersRoles.get('arrayBranchOffices')}
+                              roles={this.props.usersRoles.get('roles')}
                             />
                           </TabPane>
                           <TabPane tabId="2">
@@ -92,13 +101,15 @@ class PersonalInterno extends Component {
 const mapStateToProps = state => ({
   personaInterno: state.personaInterno,
   authData: state.auth,
-  aplication: state.global
+  aplication: state.global,
+  usersRoles: state.usersRoles,
 });
 const mapDispatchToProps = dispatch => ({
   LoadPersonalCargosFunction: () => dispatch(LoadPersonalCargosFunction()),  
   DeletePersonalInternoAction: (id) => dispatch(DeletePersonalInternoAction(id)),  
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
   LoadPersonalIdFunction: (id) =>dispatch(LoadPersonalIdFunction(id)),
+  loadUsersRoles: () => dispatch(LoadAllUsersNoMasterFunction()),
 });
 export default connect(
   mapStateToProps,

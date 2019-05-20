@@ -44,6 +44,12 @@ export default {
           url: "/configuration/Proveedor",
           icon: "fa fa-user-circle-o"
         }
+        ,
+        {
+          name: "Almacen",
+          url: "/configuration/store",
+          icon: "fa fa-home"
+        }
       ]
     },
     ,
@@ -56,6 +62,11 @@ export default {
           name: "Ventas",
           url: "/administrative/sales",
           icon: "fa fa-usd"
+        },
+        {
+          name: "Compras",
+          url: "/administrative/shops",
+          icon: "fa fa-shopping-cart"
         }
       ]
     }

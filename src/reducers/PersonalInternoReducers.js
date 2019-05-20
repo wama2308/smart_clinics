@@ -21,6 +21,7 @@ const setStorePersonalId = (state, payload) => {
 const setStoreInfoAction = (state, payload) => {
 	let estado = state.toJS();
 	estado.action = 0;	
+	estado.emailUsers = [];	
 	return Map(estado);
 }
 

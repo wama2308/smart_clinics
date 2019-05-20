@@ -139,6 +139,7 @@ class Products extends React.Component {
             <TableBody>
               {products &&
                 products.map((product, key) => {
+                  const disabled = this.state.edit === product._id ? true : false
                   return (
                     <RowTable key={key}>
                       <Cell className="cellStyle">{product.code}</Cell>
@@ -174,6 +175,7 @@ class Products extends React.Component {
                       </Cell>
                       <Cell>
                         <IconButton
+                          disabled={disabled}
                           onClick={() => {
                             this.delete(product);
                           }}
