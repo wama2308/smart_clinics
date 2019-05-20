@@ -65,7 +65,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  LoadStoreFunction: () => dispatch(LoadStoreFunction()),    
+  LoadStoreFunction: () => dispatch(LoadStoreFunction()),  
   DeleteStoreAction: (storeId, sucursalId) => dispatch(DeleteStoreAction(storeId, sucursalId)),  
   LoadStoreIdFunction: (storeId, sucursalId) => dispatch(LoadStoreIdFunction(storeId, sucursalId)),  
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),

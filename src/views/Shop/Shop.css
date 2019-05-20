@@ -1,5 +1,5 @@
 .ModalShop{
-    max-width: 940px;
+    max-width: 1000px;
     width:100%;        
     background: white;    
     border-radius: 20px;
@@ -165,6 +165,17 @@ padding: 1em;
   border-bottom: 1px solid #f86c6b;
   border-left: 1px solid #f86c6b;
   width: 45%;
+}
+
+.divFlexRight{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.labelFlexRight{
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 /*PARA LOS TAGS INPUT*/

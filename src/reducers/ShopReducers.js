@@ -1,56 +1,64 @@
 import {Map , List} from 'immutable'
 const setData = (state, node , payload)=> state.set(node, payload)
 
-const setDataDistributorId = (state, node, payload) => {
+const setDataShopId = (state, node, payload) => {
 	let estado = state.toJS();
-	estado.contacs = payload.distributorId.contacts;	
-	estado.distributorId = payload;	
-	estado.tableContac = 1;	
+	estado.shelfs = payload.storeId.shelf;	
+	estado.storeId = payload;		
 	return Map(estado);
 }
 
-const setStoreAddShelfs = (state, payload) => {
-	let estado = state.toJS();
-	estado.shelfs.push(payload.objShelfs);		
+const setStoreAddProducts = (state, payload) => {
+	let estado = state.toJS();	
+	estado.products.push(payload.objProducts);		
+	estado.subTotal = estado.subTotal + payload.subTotal;		
+	estado.impuesto = estado.impuesto + payload.impuesto;		
+	estado.total = estado.total + payload.total;		
 	return Map(estado);
 }
 
-const setStoreDeleteShelfs = (state, payload) => {
+const setStoreDeleteProducts = (state, payload) => {
 	let estado = state.toJS();
-	var listShelfs = estado.shelfs;
-	listShelfs.splice(payload, 1);        
-	estado.shelfs = listShelfs;		
+	var listProducts = estado.products;
+	estado.subTotal = estado.subTotal - payload.subTotal;		
+	estado.impuesto = estado.impuesto - payload.impuesto;		
+	estado.total = estado.total - payload.total;		
+	listProducts.splice(payload.key, 1);        
+	estado.products = listProducts;		
 	return Map(estado);
 }
 
-const setStoreCleanShelfs = (state, payload) => {
+const setStoreCleanProducts = (state, payload) => {
 	let estado = state.toJS();
-	estado.shelfs = payload.shelfs;		
+	estado.products = payload.products;		
+	estado.subTotal = 0;		
+	estado.impuesto = 0;		
+	estado.total = 0;		
 	return Map(estado);
 }
 
 const ShopReducer = (state = Map(), action) => {
   switch (action.type) {
 
-	  case 'LOAD_STORE': {
+	  case 'LOAD_COMPRAS': {
 	  	return Map(action.payload)
 	  }
 
-	  case 'LOAD_DISTRIBUTOR_ID': {
-	  	return setDataDistributorId(state, 'distributorId', action.payload)
+	  case 'LOAD_SHOP_ID': {
+	  	return setDataShopId(state, 'storeId', action.payload)
 	  }
 
-	  case 'ADD_SHELFS': {
-	  	return setStoreAddShelfs(state, action.payload)
+	  case 'ADD_PRODUCTS': {
+	  	return setStoreAddProducts(state, action.payload)
 	  }
 
-	  case 'DELETE_SHELFS': {
-	  	return setStoreDeleteShelfs(state, action.payload)
+	  case 'DELETE_PRODUCTS': {
+	  	return setStoreDeleteProducts(state, action.payload)
 	  }
 
-	  case 'CLEAN_SHELFS': {
-	  	return setStoreCleanShelfs(state, action.payload)
-	  }
+	  case 'CLEAN_PRODUCTS': {
+	  	return setStoreCleanProducts(state, action.payload)
+	  } 
 
 	  default:
 	  	return state;

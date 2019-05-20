@@ -11,6 +11,7 @@ import ExternalContainer from './containers/externalContainer'
 import PersonalInternoContainers from './containers/PersonalInternoContainers'
 import ventasContainer from './containers/ventasContainer'
 import StoreContainer from './containers/StoreContainer'
+import ShopContainers from './containers/ShopContainers'
 
 function Loading() {
   return <div>Loading...</div>;
@@ -203,6 +204,7 @@ const routes = [
   { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
   { path: '/configuration/store', name: 'Almacen', component: StoreContainer },
   { path: '/administrative/sales', name: 'Ventas', component: ventasContainer },  
+  { path: '/administrative/shops', name: 'Compras', component: ShopContainers },  
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },

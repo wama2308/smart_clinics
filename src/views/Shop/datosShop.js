@@ -1,17 +1,12 @@
-export const listStore = 
+export const listShop = 
 [
 	{
 	    "_id" : "5cae4a6a9dc6d6125c5fd977",
-	    "name" : "Almacen 1",
-	    "description" : "Descripcion",
-	    "sucursal_id" :"5c76dafd7464200da21592d3",
-	    "shelf" : [ 
-	        {
-	        	"_id" : "5cae4a6a9dc6d6125c5fd970",
-	            "name" : "Almacen 1",
-	    		"description" : "Descripcion",
-	        }
-	    ]	    
+	    "type": "FACTURA",
+	    "nro_control" : "111222-a",
+	    "nro_compra" : "00001",
+	    "subtotal": 1000.00,
+	    "igv": 180.00,
+	    "total": 1180.00
 	}
 ];
-

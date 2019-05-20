@@ -38,7 +38,7 @@ class ListStore extends React.Component {
       this.setState({
         modal:true,
         option:option,
-        modalHeader:'Ver Proveedor',
+        modalHeader:'Ver Almacen',
         modalFooter:'Guardar',
         disabled: true,
         showHide: 'hide',                
@@ -48,7 +48,7 @@ class ListStore extends React.Component {
       this.setState({
         modal:true,
         option:option,
-        modalHeader:'Editar Proveedor',
+        modalHeader:'Editar Almacen',
         modalFooter:'Editar',
         disabled: false,
         showHide: 'show',

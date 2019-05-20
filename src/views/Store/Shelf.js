@@ -58,15 +58,7 @@ class Shelf extends React.Component {
         })
     }        
 
-    componentWillReceiveProps=(props)=>{
-        this.setState({collapse: props.collapse})    
-    }    
-
-    toggle = () => {
-        this.setState({ 
-            collapse: !this.state.collapse 
-        });
-    }
+    componentWillReceiveProps=(props)=>{}    
 
     validate = () => {
         let estanteInvalid = false;
