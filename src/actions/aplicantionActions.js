@@ -36,6 +36,7 @@ export const ConfigGeneralFunction = () => dispatch => {
 };
 
 const queryNationalPaymentsFunction = (datos, execute) => {
+  console.log(datos)
   axios
     .get(queryNationalPayments, datos)
     .then(res => {

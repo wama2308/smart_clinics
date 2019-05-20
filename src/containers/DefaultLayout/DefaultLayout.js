@@ -33,13 +33,17 @@ class DefaultLayout extends Component {
           <AppSidebar fixed display="lg">
             <AppSidebarHeader />
             <AppSidebarForm />
-            <AppSidebarNav navConfig={navigation} location={this.props.location} isOpen={true} />
+            <AppSidebarNav
+              navConfig={navigation}
+              location={this.props.location}
+              isOpen={true}
+            />
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
-            <AppBreadcrumb appRoutes={routes} />
-            <Container fluid style={{height:'100%'}}>
+            {/* <AppBreadcrumb appRoutes={routes} /> */}
+            <Container fluid style={{ height: "100%", padding: 20 }}>
               <Switch>
                 {routes.map((route, idx) => {
                   return route.component ? (
