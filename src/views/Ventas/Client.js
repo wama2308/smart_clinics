@@ -6,7 +6,6 @@ import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import UserRegister from "./userRegister";
 import { Delete } from "@material-ui/icons";
-import * as moment from "moment";
 
 class Client extends React.Component {
   state = {
@@ -25,6 +24,7 @@ class Client extends React.Component {
 
   render() {
     const { patient } = this.props;
+    const disabled = this.props.isSaved ? this.props.isSaved : false;
     return (
       <Card style={{ margin: "0px 10px 10px 0px", flex: 1 }}>
         {this.state.openModal && (
@@ -53,7 +53,7 @@ class Client extends React.Component {
               />
             )}
             {patient && (
-              <IconButton onClick={this.props.clean}>
+              <IconButton disabled={disabled} onClick={this.props.clean}>
                 <Delete />
               </IconButton>
             )}

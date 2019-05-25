@@ -181,6 +181,7 @@ class DefaultSearch extends React.Component {
           {...autosuggestProps}
           inputProps={{
             classes,
+            disabled: this.props.disabled,
             placeholder: this.props.placeholder,
             value: this.props.value,
             onChange: this.handleChange("single"),

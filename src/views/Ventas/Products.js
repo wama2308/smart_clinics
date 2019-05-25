@@ -49,16 +49,13 @@ class Products extends React.Component {
 
     if (lastData && lastData !== lastPrevData) {
       this.setState({ edit: lastData._id });
-      // if (this.state.delete) {
-      //   this.setState({ delete: false });
-      // } else {
-      //   this.setState({ edit: lastData._id });
-      // }
     }
 
     if (this.state.edit) {
       const result = document.getElementsByClassName(`${this.state.edit}`);
-      result[0].focus();
+      if (result[0]) {
+        result[0].focus();
+      }
     }
   };
 
@@ -69,9 +66,7 @@ class Products extends React.Component {
   keyPress = (e, product) => {
     if (e.key === "Enter") {
       this.setState({ edit: false });
-      console.log(isNaN(product.quanty));
-
-      if (isNaN(product.quanty)) {
+      if (isNaN(product.quantity)) {
         this.props.changeQuantytoSell({
           value: 1,
           id: product._id,
@@ -83,7 +78,7 @@ class Products extends React.Component {
 
   render() {
     const { patient, products, aplication } = this.props;
-
+    const disableAllProductos = this.props.discount ? true : false;
     const totalData = this.props.getTotal(products, aplication);
 
     const dataHead = [
@@ -109,8 +104,9 @@ class Products extends React.Component {
         <Header>
           <div>Productos</div>
           <div style={{ width: "40%" }}>
-            {patient && !this.state.edit && (
+            {patient && (!this.state.edit || disableAllProductos) && (
               <Search
+                disabled={disableAllProductos}
                 pressKey={true}
                 getOptions={this.props.searchAction}
                 placeholder="Buscar producto..."
@@ -139,19 +135,23 @@ class Products extends React.Component {
             <TableBody>
               {products &&
                 products.map((product, key) => {
-                  const disabled = this.state.edit === product._id ? true : false
+                  const disabled =
+                    this.state.edit === product._id || disableAllProductos
+                      ? true
+                      : false;
                   return (
                     <RowTable key={key}>
                       <Cell className="cellStyle">{product.code}</Cell>
                       <Cell>{product.name}</Cell>
                       <Cell>{product.type}</Cell>
                       <Cell>{product.quantity_stock}</Cell>
-                      {this.state.edit === product._id ? (
+                      {this.state.edit === product._id &&
+                      !disableAllProductos ? (
                         <td>
                           <Input
                             type="number"
                             className={product._id}
-                            value={product.quanty}
+                            value={product.quantity}
                             onKeyDown={e => this.keyPress(e, product)}
                             onChange={event =>
                               this.handleChange(event, product)
@@ -164,13 +164,13 @@ class Products extends React.Component {
                         </td>
                       ) : (
                         <Cell onClick={() => this.editInput(product._id)}>
-                          {product.quanty}
+                          {product.quantity}
                         </Cell>
                       )}
                       <Cell>{product.price}</Cell>
                       <Cell>
                         {product.quantity
-                          ? product.quanty * product.price
+                          ? product.quantity * product.price
                           : product.price}
                       </Cell>
                       <Cell>
@@ -192,21 +192,21 @@ class Products extends React.Component {
 
         <Footer style={{ flex: 1, display: "flex" }}>
           <div className="totalStyle">
-            <strom className="titleBol"> SubTotal</strom>{" "}
+            <span className="titleBol"> SubTotal</span>{" "}
             {`${totalData.subTotal}`}
             <span className="titleBol">{aplication.current_simbol}</span>
           </div>
 
           <div className="totalStyle">
-            <strom className="titleBol">{` Impuesto (${
+            <span className="titleBol">{` Impuesto (${
               aplication.tax_rate
-            }%) `}</strom>
+            }%) `}</span>
             {totalData.iva}
             {<span className="titleBol">{aplication.current_simbol}</span>}
           </div>
 
           <div className="totalStyle">
-            <strom className="titleBol"> Total</strom> {`${totalData.total} `}{" "}
+            <span className="titleBol"> Total</span> {`${totalData.total} `}{" "}
             <span className="titleBol">{aplication.current_simbol}</span>
           </div>
         </Footer>
