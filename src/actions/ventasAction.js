@@ -357,11 +357,11 @@ export const editDiscount = (obj, callback) => dispatch => {
       ...token
     }).then(res => {
       callback();
-      dispatch(openSnackbars("success", "Operacion exitosa!"));
-      dispatch({
-        type: "EDIT_ALL_BILL",
-        payload: { ...res.data, saveBill: true }
-      });
+      // dispatch(openSnackbars("success", "Operacion exitosa!"));
+      // dispatch({
+      //   type: "EDIT_ALL_BILL",
+      //   payload: { ...res.data, saveBill: true }
+      // });
     });
   });
 };
