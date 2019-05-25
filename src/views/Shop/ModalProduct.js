@@ -76,9 +76,6 @@ class ModalShop extends React.Component {
         let divDireccionLlegada='';        
         let divDireccionLlegadaError='';
         let divTableProductos='';
-        let divSucursalesSelect='';
-        let divSucursalesSelectError='';
-
         
         if (!this.state.arrayTipoCompraSelect) {            
             divTipoCompraError = "¡Seleccione el tipo de compra!";
@@ -87,10 +84,6 @@ class ModalShop extends React.Component {
         if (!this.state.arrayProveedorSelect) {            
             divProveedorError = "¡Seleccione el proveedor!";
             divProveedor = "borderColor";
-        }
-        if (!this.state.arraySucursalesSelect) {            
-            divSucursalesSelectError = "¡Seleccione la sucursal!";
-            divSucursalesSelect = "borderColor";
         }
         if (this.state.nroCompra === "") {            
             divNroCompraError = "¡Ingrese el numero de la compra!";
@@ -116,7 +109,7 @@ class ModalShop extends React.Component {
             divTableProductos = "¡Debe ingresar el o los productos de la compra!";            
         }
         if (divTipoCompraError || divProveedorError || divNroCompraError || divNroControlError || divDireccionPartidaError 
-            || divDireccionLlegadaError || divCompraDateError || divSucursalesSelectError) {            
+            || divDireccionLlegadaError || divCompraDateError) {            
             this.setState({ 
                 divTipoCompraError,
                 divTipoCompra,
@@ -132,9 +125,7 @@ class ModalShop extends React.Component {
                 divDireccionLlegada,  
                 divCompraDate,                        
                 divCompraDateError,   
-                divTableProductos,
-                divSucursalesSelect,
-                divSucursalesSelectError                     
+                divTableProductos                     
             });  
             return false;
         }
@@ -145,6 +136,7 @@ class ModalShop extends React.Component {
         event.preventDefault();
         const isValid = this.validate();   
         if (isValid) {             
+            alert(11)
             let compraDate = new Date(this.state.compraDate).toISOString().slice(0,10);
             let valueTipoCompra = "";
             let arrayTipoCompra = Object.values(this.state.arrayTipoCompraSelect);
@@ -160,18 +152,10 @@ class ModalShop extends React.Component {
                     valueProveedor = elemento;
                 }            
             });            
-            let valueSucursal = "";
-            let arraySucursal = Object.values(this.state.arraySucursalesSelect);
-            arraySucursal.forEach(function (elemento, indice) {
-                if(indice === 1){
-                    valueSucursal = elemento;
-                }            
-            });            
             
             if(this.props.option === 1)
             {
                 console.log(valueTipoCompra)
-                console.log(valueSucursal)
                 console.log(this.state.nroCompra)
                 console.log(this.state.nroControl)
                 console.log(valueProveedor)
@@ -190,7 +174,6 @@ class ModalShop extends React.Component {
                     number_invoice: this.state.nroCompra,
                     numero_control: this.state.nroControl,
                     provider_id: valueProveedor,
-                    sucursal_id: valueSucursal,
                     starting_address: this.state.direccionPartida,
                     arrival_address: this.state.direccionLlegada,
                     date_purchase: compraDate,
@@ -290,14 +273,6 @@ class ModalShop extends React.Component {
         })
     }    
 
-    handleChangeSucursalesSelect = (arraySucursalesSelect) => {
-        this.setState({ 
-            arraySucursalesSelect,
-            divSucursalesSelect: '',
-            divSucursalesSelectError: ''                                
-        });  
-    }
-
     deleteProduct = (key, cantidad, precio, exento, descuento) => {
         let impuesto = 0;
         if(exento === 'NO'){
@@ -361,13 +336,6 @@ class ModalShop extends React.Component {
                                         <div className="errorSelect">{this.state.divTipoCompraError}</div>
                                     </FormGroup>
                                     <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="sucursales">Sucursales</Label>
-                                        <div className={this.state.divSucursalesSelect}>
-                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="sucursales" value={this.state.arraySucursalesSelect} onChange={this.handleChangeSucursalesSelect} options={this.props.shop.branchOfficces} />
-                                        </div>
-                                        <div className="errorSelect">{this.state.divSucursalesSelectError}</div>
-                                    </FormGroup>
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
                                         <Label for="nroCompra">Nro Compra</Label>
                                         <div className={this.state.divNroCompra}>
                                             <Input disabled={this.props.disabled} name="nroCompra" id="nroCompra" onKeyUp={this.handlekeyNroCompra} onChange={this.handleChange} value={this.state.nroCompra} type="text" placeholder="Nro Compra" />
@@ -384,7 +352,7 @@ class ModalShop extends React.Component {
                                     <FormGroup className="top form-group col-sm-6">                                                                 
                                         <Label for="proveedor">Proveedor:</Label>
                                         <div className={this.state.divProveedor}>
-                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="proveedor" value={this.state.arrayProveedorSelect} onChange={this.handleChangeProvider} options={this.props.aplication.dataGeneral.dataCountries.provider} />
+                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="proveedor" value={this.state.arrayProveedorSelect} onChange={this.handleChangeProvider} options={this.props.aplication.dataGeneral.dataCountries.providers} />
                                         </div>                                            
                                         <div className="errorSelect">{this.state.divProveedorError}</div>
                                     </FormGroup>    
