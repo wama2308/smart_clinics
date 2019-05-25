@@ -5,9 +5,9 @@ import {
   TableCell,
   TableBody,
   TableRow,
-  TableHead,
-  IconButton
+  TableHead
 } from "@material-ui/core";
+import moment from "moment";
 import styled from "styled-components";
 import classnames from "classnames";
 
@@ -28,13 +28,43 @@ class Ventas extends React.Component {
     }
   }
 
+  confirm = id => {
+    const obj = {
+      title: "ventas",
+      info: `Si tiene datos Guardados, estos seran reemplazados. ¿Esta Seguro que Desea Seleccionar esta Factura?`
+    };
+    this.props.confirm(obj, res => {
+      if (res) {
+        this.props.queryBill(id);
+      }
+    });
+  };
+
+  getDataTab = list => {
+    if (!list) {
+      return;
+    }
+
+    switch (this.state.activeTab) {
+      case 1:
+        return list.sales_discount;
+      case 2:
+        return list.sales_save;
+      case 3:
+        return list.sales_billed;
+    }
+  };
+
   render() {
     const dataHead = [
       { label: "CODIGO" },
+      { label: "IDENTIFICACION" },
       { label: "CLIENTE" },
       { label: "MONTO" },
       { label: "TIEMPO" }
     ];
+
+    const list = this.getDataTab(this.props.listSales);
     return (
       <Card style={{ flex: 1, margin: "0px 0px 10px 10px" }}>
         <Header>
@@ -89,7 +119,11 @@ class Ventas extends React.Component {
                   return (
                     <TableCell
                       key={key}
-                      style={{ border: "1px solid #c8ced3" }}
+                      style={{
+                        border: "1px solid #c8ced3",
+                        padding: 0,
+                        textAlign: "center"
+                      }}
                     >
                       {head.label}
                     </TableCell>
@@ -98,22 +132,22 @@ class Ventas extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              <RowTable style={{ height: 30 }}>
-                <Cell className="cellStyle">mock</Cell>
-                <Cell>mock</Cell>
-                <Cell>mock</Cell>
-
-                <Cell>
-                  mock
-                  {/* <IconButton
-                    onClick={() => {
-                      // this.delete();
-                    }}
-                  >
-                    <Delete className="iconTable" />
-                  </IconButton> */}
-                </Cell>
-              </RowTable>
+              {list &&
+                list.map((list, key) => {
+                  return (
+                    <RowTable
+                      key={key}
+                      style={{ height: 30 }}
+                      onClick={() => this.confirm(list.bill)}
+                    >
+                      <Cell>{list.code}</Cell>
+                      <Cell>{list.patient}</Cell>
+                      <Cell>{list.patient_dni}</Cell>
+                      <Cell>{list.total}</Cell>
+                      <Cell>{moment(list.time).fromNow()}</Cell>
+                    </RowTable>
+                  );
+                })}
             </TableBody>
           </Table>
         </Body>
@@ -133,13 +167,16 @@ const Header = styled(CardHeader)`
 const Body = styled(CardBody)`
   padding: 0px;
   flex: 1;
+  overflow: auto;
 `;
 
 const Cell = styled(TableCell)`
   && {
     border: none;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    font-size: 13px;
+    padding: 0px;
+    text-align: center;
+    cursor: pointer;
   }
 `;
 

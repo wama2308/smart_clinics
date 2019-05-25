@@ -8,6 +8,12 @@ const searchProductUrl = `${url}/api/querySupplies`;
 const searchOnePatientUrl = `${url}/api/queryOnePatients`;
 const searchOneSuppplieUrl = `${url}/api/queryOneSupplie`;
 const saveSale = `${url}/api/saveSale`;
+const queryAdminsUrl = `${url}/api/queryAdmins`;
+const discountRequestUrl = `${url}/api/discountRequest`;
+const querySalesUrl = `${url}/api/querySales`;
+const queryBillurl = `${url}/api/queryBill`;
+const cancelInvoice = `${url}/api/cancelInvoice`;
+const editCashierDiscount = `${url}/api/editCashierDiscount`;
 
 export const searchPatient = search => dispatch => {
   if (search.length < 1) {
@@ -44,6 +50,13 @@ export const searchPatient = search => dispatch => {
 const searchLoaded = data => {
   return {
     type: "SEARCH_LOADED",
+    payload: data
+  };
+};
+
+const loadingAllSell = data => {
+  return {
+    type: "ALL_SELL_LOADING",
     payload: data
   };
 };
@@ -181,7 +194,7 @@ export const searchOneSuppplie = data => dispatch => {
           type: "SEARCH_ONE_PRODUCTS",
           payload: {
             ...res.data,
-            quanty: 1
+            quantity: 1
           }
         });
       })
@@ -200,7 +213,6 @@ export const deleteItem = item => {
 };
 
 export const changeQuantytoSell = obj => dispatch => {
-  console.log("data", obj);
   if (obj.quanty < obj.value) {
     dispatch(
       openSnackbars(
@@ -231,7 +243,125 @@ export const saveInvoice = obj => dispatch => {
       data: obj,
       ...token
     }).then(res => {
-      console.log("data", res);
+      dispatch(cancelToSell());
+      dispatch(openSnackbars("success", "Operacion Exitosa!"));
+    });
+  });
+};
+
+export const discountRequestAction = (obj, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: discountRequestUrl,
+      data: obj,
+      ...token
+    }).then(res => {
+      callback();
+      dispatch({
+        type: "SET_DATA_DISCOUNT",
+        payload: {
+          ...res.data,
+          saveBill: true
+        }
+      });
+      dispatch(openSnackbars("success", "Operacion exitosa!"));
+    });
+  });
+};
+
+export const queryAdmins = () => dispatch => {
+  getDataToken().then(token => {
+    axios.get(queryAdminsUrl, token).then(res => {
+      dispatch({
+        type: "APPROVERS_DISCOUNT",
+        payload: res.data
+      });
+    });
+  });
+};
+
+export const querySales = () => dispatch => {
+  getDataToken().then(token => {
+    axios.get(querySalesUrl, token).then(res => {
+      dispatch({
+        type: "SALES_LIST",
+        payload: res.data
+      });
+    });
+  });
+};
+
+export const queryBill = id => dispatch => {
+  dispatch(loadingAllSell(false));
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: queryBillurl,
+      data: {
+        bill_id: id
+      },
+      ...token
+    }).then(res => {
+      dispatch(loadingAllSell(true));
+      dispatch({
+        type: "EDIT_ALL_BILL",
+        payload: { ...res.data, saveBill: true }
+      });
+    });
+  });
+};
+
+export const cancelledBill = id => dispatch => {
+  dispatch(loadingAllSell(false));
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: cancelInvoice,
+      data: {
+        bill_id: id
+      },
+      ...token
+    }).then(res => {
+      dispatch(openSnackbars("success", "Operacion exitosa!"));
+      dispatch(cancelToSell());
+      dispatch(loadingAllSell(true));
+    });
+  });
+};
+
+export const cancelDiscount = obj => dispatch => {
+  dispatch(loadingAllSell(false));
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: editCashierDiscount,
+      data: obj,
+      ...token
+    }).then(res => {
+      dispatch(loadingAllSell(true));
+      dispatch({
+        type: "DISCOUNT_CANCELLED",
+        payload: "CANCELLED"
+      });
+    });
+  });
+};
+
+export const editDiscount = (obj, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: editCashierDiscount,
+      data: obj,
+      ...token
+    }).then(res => {
+      callback();
+      dispatch(openSnackbars("success", "Operacion exitosa!"));
+      dispatch({
+        type: "EDIT_ALL_BILL",
+        payload: { ...res.data, saveBill: true }
+      });
     });
   });
 };

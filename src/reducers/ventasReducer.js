@@ -23,10 +23,47 @@ const setIn = (state, node, payload) => {
     return data._id === payload.id;
   });
 
-  return state.setIn(["array_products", result, "quanty"], payload.value);
+  return state.setIn(["array_products", result, "quantity"], payload.value);
 };
 
-const VentasReducer = (state = Map(), action) => {
+const setField = (state, node, field, payload) => {
+  return state.setIn([node, field], payload);
+};
+
+const saveOrDiscountBill = (state, payload) => {
+  const json = state.toJS();
+  const obj = {
+    ...json,
+    ...payload
+  };
+
+  return Map(obj);
+};
+
+const editBill = (state, payload) => {
+  const json = state.toJS();
+  json.patient = payload.patient;
+  json.array_products = payload.supplies;
+  delete payload.patient;
+  delete payload.supplies;
+  const obj = {
+    ...json,
+    ...payload
+  };
+
+  return Map(obj);
+};
+
+const cleanAllData = (state, initalState) => {
+  const result = state.get("salesList");
+  return initalState.set("salesList", result);
+};
+
+const initialState = Map({
+  loadingSell: true
+});
+
+const VentasReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SEARCH_PATIENT": {
       return setData(state, "patient", action.payload);
@@ -38,7 +75,7 @@ const VentasReducer = (state = Map(), action) => {
     }
 
     case "CLEAN_TABLE": {
-      return setData(state, "array_products", undefined);
+      return cleanAllData(state, initialState);
     }
 
     case "SEARCH_ONE_PRODUCTS": {
@@ -54,6 +91,26 @@ const VentasReducer = (state = Map(), action) => {
     case "CHANGE_QUANTY_TO_SELL": {
       return setIn(state, "array_products", action.payload);
     }
+
+    case "APPROVERS_DISCOUNT": {
+      return setData(state, "approversList", action.payload);
+    }
+
+    case "SALES_LIST": {
+      return setData(state, "salesList", action.payload);
+    }
+
+    case "EDIT_ALL_BILL":
+      return editBill(state, action.payload);
+
+    case "ALL_SELL_LOADING":
+      return setData(state, "loadingSell", action.payload);
+
+    case "SET_DATA_DISCOUNT":
+      return saveOrDiscountBill(state, action.payload);
+
+    case "DISCOUNT_CANCELLED":
+      return setField(state, "discount", "status", action.payload);
     default:
       return state;
   }

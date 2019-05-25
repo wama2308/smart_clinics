@@ -13,12 +13,29 @@ import {
   deleteItem,
   changeQuantytoSell,
   cancelToSell,
-  saveInvoice
+  saveInvoice,
+  queryAdmins,
+  discountRequestAction,
+  querySales,
+  queryBill,
+  cancelledBill,
+  cancelDiscount,
+  editDiscount
 } from "../actions/ventasAction";
 import { openConfirmDialog } from "../actions/aplicantionActions";
 import Footer from "../views/Ventas/Footer";
+import DiscountRequest from "../views/Ventas/discountRequest";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class VentasContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: false,
+      modalLoading: false,
+      edit: false
+    };
+  }
   optionsPatient = options => {
     if (!options) {
       return [];
@@ -30,6 +47,14 @@ class VentasContainer extends React.Component {
       });
     });
     return data;
+  };
+
+  componentWillReceiveProps = props => {
+    props.approvers ? this.setState({ modalLoading: true }) : null;
+  };
+
+  componentDidMount = () => {
+    this.props.querySales();
   };
 
   optionsProducts = (options, products) => {
@@ -81,27 +106,91 @@ class VentasContainer extends React.Component {
 
     let subtotal = 0;
     array.map(data => {
-      const result = isNaN(data.quanty) ? data.price : data.quanty * data.price;
+      const result = isNaN(data.quantity)
+        ? data.price
+        : data.quantity * data.price;
       subtotal = parseFloat(obj.subTotal) + parseFloat(result);
       obj.subTotal = subtotal.toFixed(2);
     });
     const iva =
       (parseFloat(obj.subTotal) * parseFloat(aplication.tax_rate)) / 100;
-    obj.total = parseFloat(obj.subTotal + iva).toFixed(2);
+    obj.total = parseFloat(obj.subTotal) + parseFloat(iva);
+    obj.total.toFixed(2);
     obj.iva = iva.toFixed(2);
 
     return obj;
   };
 
-  saveSales = () => {
-    console.log();
-    console.log();
+  armingObject = async () => {
+    const totals = this.getTotal(this.props.products, this.props.aplication);
     const obj = {
-      supplie_array: [this.props.products]
-      //   sub_total: 900,
-      //   igv: 10,
-      //   total: 1000
+      patient_id: this.props.patient._id,
+      supplie_array: this.props.products,
+      sub_total: Number(totals.subTotal),
+      igv: Number(totals.iva),
+      total: Number(totals.total)
     };
+
+    return obj;
+  };
+
+  saveSales = async () => {
+    const result = await this.armingObject();
+    this.props.saveInvoice(result);
+  };
+
+  discountRequest = async values => {
+    this.setState({ modalLoading: false });
+    const result = await this.armingObject();
+    const obj = {
+      ...result,
+      discount: {
+        ...values
+      }
+    };
+    this.props.discountRequestAction(obj, () => {
+      this.setState({ modalLoading: true });
+      this.close();
+    });
+  };
+
+  discountEditOrSave = (type, values) => {
+    switch (type) {
+      case 1:
+        this.discountRequest(values);
+        break;
+      case 2:
+        this.editDiscount(values);
+        break;
+    }
+  };
+
+  editDiscount = values => {
+    this.props.editDiscount(
+      {
+        bill_id: this.props.bill_id,
+        discount: {
+          discount: values.discount,
+          percentage: values.percentage
+        },
+        accept: 1
+      },
+      () => {
+        this.setState({ modalLoading: true });
+        this.close();
+      }
+    );
+  };
+
+  openModal = edit => {
+    this.setState({
+      openModal: true,
+      edit: edit
+    });
+  };
+
+  close = () => {
+    this.setState({ openModal: false });
   };
 
   render() {
@@ -113,6 +202,18 @@ class VentasContainer extends React.Component {
 
     return (
       <Container>
+        {!this.props.saleLoading && <Spinner />}
+        {this.state.openModal && (
+          <DiscountRequest
+            open={this.state.openModal}
+            close={this.close}
+            queryAdmins={this.props.queryAdmins}
+            discountRequest={this.discountEditOrSave}
+            approvers={this.props.approvers}
+            loading={this.state.modalLoading}
+            edit={this.state.edit}
+          />
+        )}
         <div style={{ height: "38%" }}>
           <div className="insight-container-one">
             <Client
@@ -122,8 +223,13 @@ class VentasContainer extends React.Component {
               patient={this.props.patient}
               clean={this.props.clean}
               options={optionsPatient}
+              isSaved={this.props.isSaved}
             />
-            <Ventas />
+            <Ventas
+              listSales={this.props.listSales}
+              queryBill={this.props.queryBill}
+              confirm={this.props.openConfirmDialog}
+            />
           </div>
         </div>
         <div style={{ height: "62%" }}>
@@ -139,12 +245,22 @@ class VentasContainer extends React.Component {
               changeQuantytoSell={this.props.changeQuantytoSell}
               aplication={this.props.aplication}
               getTotal={this.getTotal}
+              discount={this.props.discount}
+              loaded={this.props.loaded}
             />
+
             <Footer
+              openModal={this.openModal}
+              editAndCancelDiscount
               cancel={this.props.cancelToSell}
               confirm={this.props.openConfirmDialog}
               products={this.props.products}
               saveInvoice={this.saveSales}
+              isSaved={this.props.isSaved}
+              cancelled={this.props.cancelledBill}
+              bill_id={this.props.bill_id}
+              discount={this.props.discount}
+              editAndCancel={this.props.cancelDiscount}
             />
           </div>
         </div>
@@ -159,7 +275,14 @@ const mapStateToProps = state => ({
   options_patient: state.ventas.get("options_patient"),
   options_Product: state.ventas.get("products"),
   products: state.ventas.get("array_products"),
-  aplication: state.global.dataGeneral.dataCountries
+  aplication: state.global.dataGeneral.dataCountries,
+  approvers: state.ventas.get("approversList"),
+  listSales: state.ventas.get("salesList"),
+  saleLoading: state.ventas.get("loadingSell"),
+  isSaved: state.ventas.get("saveBill"),
+  bill_id: state.ventas.get("bill_id"),
+  discount: state.ventas.get("discount"),
+  state: state.ventas.toJS()
 });
 
 export default connect(
@@ -174,7 +297,14 @@ export default connect(
     changeQuantytoSell,
     cancelToSell,
     openConfirmDialog,
-    saveInvoice
+    saveInvoice,
+    queryAdmins,
+    discountRequestAction,
+    querySales,
+    queryBill,
+    cancelledBill,
+    cancelDiscount,
+    editDiscount
   }
 )(VentasContainer);
 
@@ -191,4 +321,11 @@ const Container = styled.div`
     flex-direction: column;
     height: 100%;
   }
+`;
+
+const Spinner = styled(CircularProgress)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
 `;
