@@ -1002,7 +1002,7 @@ class ModalCargos extends React.Component {
                                                 <InputGroup>
                                                     <Select style={{display:'flex'}} className="selectUsers" isSearchable="true" isDisabled={this.state.disabledSelectUser} name="usersSelect" value={this.state.arrayUsersSelect} onChange={this.handleChangeUsersSelect} options={this.props.personaInterno.emailUsers} />
                                                     <InputGroupAddon addonType="prepend">
-                                                        <Button className={this.state.buttonView} title="Usuario" onClick={() => this.viewUserId()}><FaUserCircle size="1em"/></Button>                                                    
+                                                        <Button className={this.state.buttonView} title="Usuario" onClick={() => this.viewUserId()}><FaUserCircle size="1em"/></Button>
                                                     </InputGroupAddon>
                                                 </InputGroup> 
                                             </div>

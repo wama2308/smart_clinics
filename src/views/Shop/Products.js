@@ -1,18 +1,21 @@
 import React from 'react';
-import { Collapse, Button, CardBody, Card, Form, FormGroup, Label, Input, FormFeedback, Table, InputGroup, InputGroupAddon, InputGroupText} from 'reactstrap';
+import { Collapse, Button, CardBody, Card, Form, FormGroup, Label, Input, FormFeedback, Table, InputGroup, InputGroupAddon, InputGroupText, Popover, PopoverHeader, PopoverBody} from 'reactstrap';
+import { FaMinusCircle, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaUserCircle } from 'react-icons/fa';
 import classnames from 'classnames';
 import '../../components/style.css';
 import './Shop.css';
 import axios from 'axios';
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
-import { Delete } from "@material-ui/icons";
+import { Delete, Visibility } from "@material-ui/icons";
 import { FaSearch } from 'react-icons/fa';
-import { addProductsFunction, verificationSuppliesAction } from "../../actions/ShopActions";
+import { addProductsFunction, verificationSuppliesAction, searchProduct, searchOneSuppplie, cleanInfoProductId, LoadProductPriceFunction } from "../../actions/ShopActions";
+import DefaultSearch from "../../components/DefaultSearch.js";
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
 import { enterDecimal } from "../../core/utils";
 import { InitalState } from './InitialState.js';
 import Select from 'react-select';
+import { number_format } from "../../core/utils";
 
 class Products extends React.Component {
 	constructor(props) {
@@ -32,17 +35,14 @@ class Products extends React.Component {
     } 
 
     test = () => {
-        let descuento = 10;
-        let precio_replace = this.state.precio.replace(",", "");
-        let precio = parseFloat(precio_replace);
-        let desc_porc = precio - (precio * (descuento/100));
-        console.log(desc_porc)
+        console.log(this.props.shop.products)
     }
 
     cleanState = () => {
         this.setState({ 
             ...InitalState
         })
+        this.props.cleanInfoProductId();
     }    
 
     handlekeyProducto = event =>{
@@ -150,7 +150,31 @@ class Products extends React.Component {
        }              
     }
 
-    componentWillReceiveProps=(props)=>{console.log("props shop", this.props.shop);   }    
+    componentWillReceiveProps=(props)=>{
+        console.log("props shop products", props.shop);           
+        if(props.shop.searchProduct === 1){
+            let photo = '';
+            let stock_disponible = number_format(props.shop.dataProductId.quantity_stock, 2)
+            let exento = { label: props.shop.dataProductId.exempt, value:props.shop.dataProductId.exempt }
+            if(props.shop.dataProductId.photo === ""){
+                photo = null
+            }else{
+                photo = props.shop.dataProductId.photo;
+            }
+
+            this.setState({
+                productoId: props.shop.dataProductId._id,
+                producto: props.shop.dataProductId.name,
+                arrayTipoSelect: props.shop.dataProductId.type_select,
+                codigo: props.shop.dataProductId.code,
+                cantidadAvailable: stock_disponible,                
+                arrayExentoSelect: exento,
+                foto: photo,
+                descripcion: props.shop.dataProductId.description,                
+            })
+        }
+        
+    }    
 
     validate = () => {
     	let divProducto = '';
@@ -169,7 +193,7 @@ class Products extends React.Component {
         let divExentoError = '';
 	    let fotoInvalid = false;
 	    let fotoError = '';
-        let labelTipo = "";
+        let valueTipo = "";
         let labelExento = "";
         let divPrecioVenta = '';
         let divPrecioVentaError = '';
@@ -185,8 +209,8 @@ class Products extends React.Component {
         if (this.state.arrayTipoSelect) {                   	    
             let arrayTipo = Object.values(this.state.arrayTipoSelect);
             arrayTipo.forEach(function (elemento, indice, array) {
-                if(indice === 0){
-                    labelTipo = elemento;
+                if(indice === 1){
+                    valueTipo = elemento;
                 }            
             });                 	    
         }
@@ -294,7 +318,22 @@ class Products extends React.Component {
         let precio_imp = (precio_cant * (impuesto/100));        
         let total = precio_cant + precio_imp;        
 
-        let productos = { id: "0", product: this.state.producto, code: this.state.codigo, type: this.state.arrayTipoSelect, quantity: this.state.cantidad, price: this.state.precio, discount: this.state.descuento, priceDiscount: precio_desc, priceSale: this.state.precioVenta, limitStock: this.state.limiteStock, exempt: this.state.arrayExentoSelect, description:this.state.descripcion, photo: this.state.foto }                       
+        let productos = { 
+                            id: this.state.productoId, 
+                            name: this.state.producto, 
+                            code: this.state.codigo, 
+                            type_id: valueTipo, 
+                            type: this.state.arrayTipoSelect, 
+                            quantity: this.state.cantidad, 
+                            price: this.state.precio, 
+                            discount: this.state.descuento, 
+                            price_discount: precio_desc, 
+                            price_sale: this.state.precioVenta, 
+                            limit_stock: this.state.limiteStock, 
+                            exempt: labelExento, 
+                            description:this.state.descripcion, 
+                            photo: this.state.foto 
+                        }                       
         this.props.addProductsFunction(productos, precio_cant, precio_imp, total);              
         this.cleanState();  
         return true; 
@@ -428,94 +467,127 @@ class Products extends React.Component {
         }        
     }
 
-	render() {           
+    optionsProducts = (options) => {
+        if (!options) {
+          return [];
+        }    
+        const data = [];      
+        options.map(option => {
+            data.push({
+              label: `${option.name}`,
+              value: option._id
+            });
+        });
+        return data;    
+    };
+
+    togglePopover = () => {
+        if(this.props.shop.searchProduct === 1){            
+            this.setState({popoverOpen: !this.state.popoverOpen})
+            this.props.LoadProductPriceFunction(this.props.shop.dataProductId._id)
+        }else{
+            this.props.alert("warning", "¡No ha seleccionado ningun producto!");
+        }
+    }
+
+	render() {     
+        const optionsProducts = this.optionsProducts(this.props.dataProducts);      
         return (
             <div>  
                 <Collapse isOpen={this.props.collapse}>
                   <Card>
                     <CardBody>                        
-                        <div className="row">
-                            <FormGroup className="top form-group col-sm-6">                                                                 
-                                <Label for="buscarProducto">Buscar Producto:</Label> 
-                                <div className={this.state.divBuscarProducto}>     
-                                    <InputGroup>
-                                        <Select className="selectBuscarProductos" isSearchable="true" isDisabled={this.props.disabled} name="buscarProducto" id="buscarProducto" value={this.state.arrayBuscarProductoSelect} onChange={this.handleChangeBuscarProducto} options={this.props.aplication.dataGeneral.dataGeneral.type_supplies} />                                    
-                                        <InputGroupAddon addonType="append">
-                                            <Button title="Ver Rol" className={this.state.ocultarBotones} disabled={this.state.varDisabled} onClick={() => { this.openRoles(2, this.state.rolIdView); }}><FaSearch size="1em"/></Button>&nbsp;
-                                        </InputGroupAddon>                                    
-                                    </InputGroup>
-                                </div>
-                                <div className="errorSelect">{this.state.divBuscarProductoError}</div>
+                        <div className="" align="center">
+                            <FormGroup className="top form-group col-sm-8">                                                                 
+                                <DefaultSearch 
+                                    pressKey={true}
+                                    placeholder="Buscar Producto..."
+                                    getOptions={this.props.searchProduct}
+                                    options={optionsProducts}
+                                    searchAction={this.props.searchOneSuppplie}
+                                />                                    
                             </FormGroup> 
                         </div>
                         <div className="row">       
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="producto">Producto:</Label> 
                                 <div className={this.state.divProducto}>                               
-                                    <Input disabled={this.props.disabled} name="producto" id="producto" onKeyUp={this.handlekeyProducto} onChange={this.handleChange} value={this.state.producto} onBlur={this.productoOnBlur} type="text" placeholder="Producto" />
+                                    <Input disabled={this.props.shop.searchProduct === 1 ? true : false} name="producto" id="producto" onKeyUp={this.handlekeyProducto} onChange={this.handleChange} value={this.state.producto} onBlur={this.productoOnBlur} type="text" placeholder="Producto" />
                                 </div>
                                 <div className="errorSelect">{this.state.divProductoError}</div>
                             </FormGroup> 
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="tipo">Tipo:</Label>
                                 <div className={this.state.divTipo}>
-                                    <Select isSearchable="true" isDisabled={this.props.disabled} name="tipo" value={this.state.arrayTipoSelect} onChange={this.handleChangeTipo} options={this.props.aplication.dataGeneral.dataGeneral.type_supplies} />
+                                    <Select isSearchable="true" isDisabled={this.props.shop.searchProduct === 1 ? true : false} name="tipo" value={this.state.arrayTipoSelect} onChange={this.handleChangeTipo} options={this.props.aplication.dataGeneral.dataGeneral.type_supplies} />
                                 </div>                                            
                                 <div className="errorSelect">{this.state.divTipoError}</div>
                             </FormGroup>
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="codigo">Codigo:</Label> 
                                 <div className={this.state.divCodigo}>                               
-                                    <Input disabled={this.props.disabled} name="codigo" id="codigo" onKeyUp={this.handlekeyCodigo} onChange={this.handleChange} value={this.state.codigo} onBlur={this.codigoOnBlur} type="text" placeholder="Codigo" />
+                                    <Input disabled={this.props.shop.searchProduct === 1 ? true : false} name="codigo" id="codigo" onKeyUp={this.handlekeyCodigo} onChange={this.handleChange} value={this.state.codigo} onBlur={this.codigoOnBlur} type="text" placeholder="Codigo" />
                                 </div>
                                 <div className="errorSelect">{this.state.divCodigoError}</div>                                                                                                                                                                                         
                             </FormGroup> 
                             <FormGroup className="top form-group col-sm-6">                                                                 
+                                <Label for="cantidadAvailable">Stock Disponible:</Label> 
+                                <div className={this.state.divCantidadAvailable}>                               
+                                    <Input disabled={true} name="cantidadAvailable" id="cantidadAvailable" onKeyUp={this.handlekeyCantidadDisponible} onChange={this.handleChange} value={this.state.cantidadAvailable} type="text" placeholder="Stock Disponible" />
+                                </div>
+                                <div className="errorSelect">{this.state.divCantidadAvailableError}</div>                                                                                                                                                                                         
+                            </FormGroup> 
+                            <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="cantidad">Cantidad:</Label> 
                                 <div className={this.state.divCantidad}>                               
-                                    <Input disabled={this.props.disabled} name="cantidad" id="cantidad" onKeyUp={this.handlekeyCantidad} onChange={this.handleChange} value={this.state.cantidad} type="number" placeholder="Cantidad" onPaste = "false" onBlur ={this.eventoBlurCantidad} onFocus = {this.eventoFocusCantidad}/>
+                                    <Input disabled={this.state.disabled} name="cantidad" id="cantidad" onKeyUp={this.handlekeyCantidad} onChange={this.handleChange} value={this.state.cantidad} type="number" placeholder="Cantidad" onPaste = "false" onBlur ={this.eventoBlurCantidad} onFocus = {this.eventoFocusCantidad}/>
                                 </div>
                                 <div className="errorSelect">{this.state.divCantidadError}</div>                                                                                                                                                                                         
                             </FormGroup> 
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="precio">Precio de Compra:</Label> 
                                 <div className={this.state.divPrecio}>                               
-                                    <Input disabled={this.props.disabled} name="precio" id="precio" onKeyUp={this.handlekeyPrecio} onChange={this.handleChange} value={this.state.precio} type="text" placeholder="Precio" onKeyPress={ enterDecimal } onPaste = "false"  onBlur ={this.eventoBlur} onFocus = {this.eventoFocus} />                                    
+                                    <Input disabled={this.state.disabled} name="precio" id="precio" onKeyUp={this.handlekeyPrecio} onChange={this.handleChange} value={this.state.precio} type="text" placeholder="Precio de Compra" onKeyPress={ enterDecimal } onPaste = "false"  onBlur ={this.eventoBlur} onFocus = {this.eventoFocus} />                                    
                                 </div>
                                 <div className="errorSelect">{this.state.divPrecioError}</div>                                                                                                                                                                                         
                             </FormGroup> 
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="descuento">Descuento %:</Label> 
                                 <div className={this.state.divDescuento}>                               
-                                    <Input disabled={this.props.disabled} name="descuento" id="descuento" onKeyUp={this.handlekeyDescuento} onChange={this.handleChange} value={this.state.descuento} type="number" placeholder="Descuento" onBlur ={this.eventoBlurDescuento} onFocus = {this.eventoFocusDescuento}/>                                    
+                                    <Input disabled={this.state.disabled} name="descuento" id="descuento" onKeyUp={this.handlekeyDescuento} onChange={this.handleChange} value={this.state.descuento} type="number" placeholder="Descuento" onBlur ={this.eventoBlurDescuento} onFocus = {this.eventoFocusDescuento} />                                    
                                 </div>
-                                <div className="errorSelect">{this.state.divDescuentoError}</div>                                                                                                                                                                                         
-                            </FormGroup> 
+                                <div className="errorSelect">{this.state.divDescuentoError}</div>
+                            </FormGroup>
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="precioVenta">Precio de Venta:</Label> 
-                                <div className={this.state.divPrecioVenta}>                               
-                                    <Input disabled={this.props.disabled} name="precioVenta" id="precioVenta" onKeyUp={this.handlekeyPrecioVenta} onChange={this.handleChange} value={this.state.precioVenta} type="text" placeholder="Precio de Venta" onKeyPress={ enterDecimal } onPaste = "false"  onBlur ={this.eventoBlurPrecioVenta} onFocus = {this.eventoFocusPrecioVenta} />                                    
+                                <div className={this.state.divPrecioVenta}>
+                                    <InputGroup>                               
+                                        <Input disabled={this.state.disabled} name="precioVenta" id="precioVenta" onKeyUp={this.handlekeyPrecioVenta} onChange={this.handleChange} value={this.state.precioVenta} type="text" placeholder="Precio de Venta" onKeyPress={enterDecimal} onPaste="false" onBlur={this.eventoBlurPrecioVenta} onFocus={this.eventoFocusPrecioVenta}/>
+                                        <InputGroupAddon addonType="append">
+                                            <Button id="popoverPrecios" className={this.state.buttonView} title="Ver Precios" onClick={this.togglePopover}><Visibility className="iconTable" /></Button>
+                                        </InputGroupAddon>
+                                    </InputGroup>
                                 </div>
-                                <div className="errorSelect">{this.state.divPrecioVentaError}</div>                                                                                                                                                                                         
-                            </FormGroup> 
+                                <div className="errorSelect">{this.state.divPrecioVentaError}</div>
+                            </FormGroup>
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="limiteStock">Limite Stock:</Label> 
                                 <div className={this.state.divLimiteStock}>                               
-                                    <Input disabled={this.props.disabled} name="limiteStock" id="limiteStock" onKeyUp={this.handlekeyLimiteStock} onChange={this.handleChange} value={this.state.limiteStock} type="number" placeholder="Limite Stock" onBlur ={this.eventoBlurLimiteStock} onFocus = {this.eventoFocusLimiteStock}/>                                    
+                                    <Input disabled={this.state.disabled} name="limiteStock" id="limiteStock" onKeyUp={this.handlekeyLimiteStock} onChange={this.handleChange} value={this.state.limiteStock} type="number" placeholder="Limite Stock" onBlur ={this.eventoBlurLimiteStock} onFocus = {this.eventoFocusLimiteStock}/>                                    
                                 </div>
                                 <div className="errorSelect">{this.state.divLimiteStockError}</div>                                                                                                                                                                                         
                             </FormGroup> 
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="exento">Exento:</Label>
                                 <div className={this.state.divExento}>
-                                    <Select isSearchable="true" isDisabled={this.props.disabled} name="exento" value={this.state.arrayExentoSelect} onChange={this.handleChangeExento} options={this.state.arrayExento} />
+                                    <Select isSearchable="true" isDisabled={this.props.shop.searchProduct === 1 ? true : false} name="exento" value={this.state.arrayExentoSelect} onChange={this.handleChangeExento} options={this.state.arrayExento} />
                                 </div>                                            
                                 <div className="errorSelect">{this.state.divExentoError}</div>
                             </FormGroup>
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="descripcion">Descripcion:</Label>
                                 <div className={this.state.divDescripcion}>
-                                    <Input disabled={this.props.disabled} name="descripcion" id="descripcion" onKeyUp={this.handlekeyDescripcion} onChange={this.handleChange} value={this.state.descripcion} type="textarea" placeholder="Descripcion" />
+                                    <Input disabled={this.props.shop.searchProduct === 1 ? true : false} name="descripcion" id="descripcion" onKeyUp={this.handlekeyDescripcion} onChange={this.handleChange} value={this.state.descripcion} type="textarea" placeholder="Descripcion" />
                                 </div>
                                 <div tooltip>{this.state.divDescripcionError}</div>                                                                                                                                                            
                             </FormGroup>
@@ -523,7 +595,7 @@ class Products extends React.Component {
 								<Label for="foto">Foto:</Label>
 								<br />
 								<InputGroup>
-								<Input className="top" type="file" accept="image/*" invalid={this.state.fotoInvalid} onChange={this.fileHandlerFoto} />
+								<Input disabled={this.props.shop.searchProduct === 1 ? true : false} className="top" type="file" accept="image/*" invalid={this.state.fotoInvalid} onChange={this.fileHandlerFoto} />
 								<FormFeedback tooltip>{this.state.fotoError}</FormFeedback>  
 								<InputGroupAddon addonType="append">
 								    <div>
@@ -536,10 +608,46 @@ class Products extends React.Component {
 							</FormGroup>
 							<FormGroup className="top form-group col-sm-12">      
                                 <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="primary" onClick={this.handleSubmitProductsNew}>Agregar</Button>
-                                &nbsp; 
-                                &nbsp;                                 
-                                <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>                                
+                                &nbsp;&nbsp;                                 
+                                <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>
                             </FormGroup>
+                            <Popover placement="bottom" isOpen={this.state.popoverOpen} target="popoverPrecios" toggle={this.togglePopover}>
+                                <PopoverHeader>Precios por Lote</PopoverHeader>
+                                <PopoverBody>                                    
+                                    <div className="form-group col-sm-12">
+                                    {
+                                        this.props.shop.dataProductPrice.length > 0 ?
+                                        <Table hover responsive borderless>
+                                            <thead className="thead-light">
+                                                <tr>
+                                                    <th className="text-left">Nro</th>
+                                                    <th className="text-left">Lote</th>                  
+                                                    <th className="text-left">Precio</th>                  
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {
+                                                this.props.shop.dataProductPrice? this.props.shop.dataProductPrice.map((data, i) => {
+                                                    return (
+                                                      <tr key={i} className="text-left">
+                                                        <td>{ i + 1 }</td>
+                                                        <td>{ data.lote }</td>                                                        
+                                                        <td>{ number_format(data.price, 2) }</td>                                                        
+                                                      </tr>
+                                                    );
+                                                })  
+                                                :
+                                                null                                              
+                                            }
+                                            </tbody>
+                                        </Table>
+                                        :
+                                        <div align="center" className="" style={{padding:"1%"}}><img src="assets/loader.gif" width="40%"  /></div>
+                                    }
+                                       
+                                    </div>                                    
+                                </PopoverBody>
+                            </Popover>
                         </div>                        
                     </CardBody>
                   </Card>
@@ -550,6 +658,7 @@ class Products extends React.Component {
   }
 const mapStateToProps = state => ({
   shop: state.shop.toJS(),
+  dataProducts: state.shop.get('dataProducts'),
   authData: state.auth,
   aplication: state.global
 });
@@ -558,9 +667,14 @@ const mapDispatchToProps = dispatch => ({
     addProductsFunction: (arrayProducts, subtotal, impuesto, total) =>dispatch(addProductsFunction(arrayProducts, subtotal, impuesto, total)),        
     confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
     verificationSuppliesAction: (data, callback) =>dispatch(verificationSuppliesAction(data, callback)),
+    searchProduct: (data) =>dispatch(searchProduct(data)),
+    searchOneSuppplie: (data) =>dispatch(searchOneSuppplie(data)),
+    LoadProductPriceFunction: (productoId) =>dispatch(LoadProductPriceFunction(productoId)),
+    cleanInfoProductId: () =>dispatch(cleanInfoProductId()),
+    alert: (type, message) => dispatch(openSnackbars(type, message)), 
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,  
 )(Products);
