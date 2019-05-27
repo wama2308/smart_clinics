@@ -104,7 +104,10 @@ class VentasContainer extends React.Component {
       return obj;
     }
 
+    const discount = this.props.discount;
+
     let subtotal = 0;
+    let totaldiscount = 0;
     array.map(data => {
       const result = isNaN(data.quantity)
         ? data.price
@@ -112,10 +115,19 @@ class VentasContainer extends React.Component {
       subtotal = parseFloat(obj.subTotal) + parseFloat(result);
       obj.subTotal = subtotal.toFixed(2);
     });
+
+    if (discount) {
+      if (discount.percentage === 1) {
+        totaldiscount = (obj.subTotal * discount.discount) / 100;
+        obj.subTotal = parseFloat(obj.subTotal) - totaldiscount;
+      } else {
+        obj.subTotal = parseFloat(obj.subTotal) - parseFloat(discount.discount);
+      }
+    }
     const iva =
       (parseFloat(obj.subTotal) * parseFloat(aplication.tax_rate)) / 100;
     obj.total = parseFloat(obj.subTotal) + parseFloat(iva);
-    obj.total.toFixed(2);
+    obj.total = obj.total.toFixed(2);
     obj.iva = iva.toFixed(2);
 
     return obj;
@@ -200,6 +212,8 @@ class VentasContainer extends React.Component {
       this.props.products
     );
 
+    const totalData = this.getTotal(this.props.products, this.props.aplication);
+
     return (
       <Container>
         {!this.props.saleLoading && <Spinner />}
@@ -250,8 +264,9 @@ class VentasContainer extends React.Component {
             />
 
             <Footer
+              totalData={totalData}
               openModal={this.openModal}
-              editAndCancelDiscount
+              patient={this.props.patient}
               cancel={this.props.cancelToSell}
               confirm={this.props.openConfirmDialog}
               products={this.props.products}

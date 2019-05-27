@@ -47,7 +47,7 @@ class Products extends React.Component {
       ? (lastPrevData = prevProps.products[prevProps.products.length - 1])
       : null;
 
-    if (lastData && lastData !== lastPrevData) {
+    if (lastData && lastData.searched &&  (lastData !==  lastPrevData)) {
       this.setState({ edit: lastData._id });
     }
 

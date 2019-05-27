@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button, Input } from "reactstrap";
 import styled from "styled-components";
-import DiscountRequest from "./discountRequest";
+import MakeSale from "./MakeSale";
 
 const message = {
   clean: "Esta Seguro que desea limpiar los datos de esta Venta",
@@ -47,15 +47,26 @@ export default class Footer extends React.Component {
     });
   };
 
+  close = () => {
+    this.setState({ openModal: false });
+  };
+
   render() {
-    console.log("the footer", this.props);
     const disabled = this.props.products ? false : true;
-    console.log("discount", this.props.discount);
     const discountDisabled =
       this.props.discount && this.props.discount.status === "WAITING";
     const ventaDisabled = disabled || discountDisabled ? true : false;
     return (
       <Container style={{ marginBottom: 0, marginTop: 10 }}>
+        {this.state.openModal && (
+          <MakeSale
+            open={this.state.openModal}
+            close={this.close}
+            patient={this.props.patient}
+            products={this.props.products}
+            total={this.props.totalData}
+          />
+        )}
         <div style={{ display: "flex", alignItems: "center" }}>
           {!this.props.discount && (
             <Button
@@ -144,6 +155,7 @@ export default class Footer extends React.Component {
             color="primary"
             className="sellButtons"
             disabled={ventaDisabled}
+            onClick={() => this.setState({ openModal: true })}
           >
             Realizar Venta
           </Button>

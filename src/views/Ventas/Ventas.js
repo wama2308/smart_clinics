@@ -63,7 +63,6 @@ class Ventas extends React.Component {
       { label: "MONTO" },
       { label: "TIEMPO" }
     ];
-
     const list = this.getDataTab(this.props.listSales);
     return (
       <Card style={{ flex: 1, margin: "0px 0px 10px 10px" }}>

@@ -13,8 +13,13 @@ const setList = (state, node, payload) => {
 };
 
 const remove = (state, node, payload) => {
-  let result = state.get(node).filter(item => item._id !== payload);
-  result = result.length === 0 ? undefined : result;
+  const products = state.get("array_products");
+  let result = products.filter(item => item._id !== payload);
+  if (result.length === 0) {
+    result = undefined;
+  } else {
+    result[result.length - 1].searched = undefined;
+  }
   return state.set(node, result);
 };
 

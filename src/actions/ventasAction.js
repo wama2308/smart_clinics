@@ -105,7 +105,6 @@ export const searchOnePatient = search => dispatch => {
         });
       })
       .catch(err => {
-        const result = converToJson(err);
         dispatch(searchLoaded(true));
         dispatch(openSnackbars("error", "Paciente no registrado!"));
         dispatch({
@@ -194,12 +193,12 @@ export const searchOneSuppplie = data => dispatch => {
           type: "SEARCH_ONE_PRODUCTS",
           payload: {
             ...res.data,
-            quantity: 1
+            quantity: 1,
+            searched: true
           }
         });
       })
       .catch(err => {
-        const result = converToJson(err);
         dispatch(openSnackbars("error", "producto no encontrado"));
       });
   });
