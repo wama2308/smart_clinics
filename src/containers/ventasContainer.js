@@ -129,6 +129,8 @@ class VentasContainer extends React.Component {
     obj.total = parseFloat(obj.subTotal) + parseFloat(iva);
     obj.total = obj.total.toFixed(2);
     obj.iva = iva.toFixed(2);
+    obj.percentageIva = aplication.tax_rate;
+    obj.currency = aplication.current_simbol;
 
     return obj;
   };
@@ -271,6 +273,7 @@ class VentasContainer extends React.Component {
               confirm={this.props.openConfirmDialog}
               products={this.props.products}
               saveInvoice={this.saveSales}
+              aplication={this.props.aplication}
               isSaved={this.props.isSaved}
               cancelled={this.props.cancelledBill}
               bill_id={this.props.bill_id}

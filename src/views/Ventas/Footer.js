@@ -62,8 +62,10 @@ export default class Footer extends React.Component {
           <MakeSale
             open={this.state.openModal}
             close={this.close}
+            aplication={this.props.aplication}
             patient={this.props.patient}
             products={this.props.products}
+            discount={this.props.discount}
             total={this.props.totalData}
           />
         )}

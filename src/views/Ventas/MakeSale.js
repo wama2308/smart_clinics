@@ -1,149 +1,204 @@
 import React from "react";
-import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import {
-  Typography,
-  Table,
-  TableCell,
-  TableBody,
-  TableRow,
-  TableHead
-} from "@material-ui/core";
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Input,
+  Button,
+  Label
+} from "reactstrap";
+import { formatNumber } from "../../core/utils";
+import { Formik } from "formik";
+import ElectronicBill from "./ElectronicBill";
 import styled from "styled-components";
 
 export default class MakeSale extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      electronic: false
+    };
+  }
+
+  getInitial = way_to_pay => {
+    const obj = {};
+
+    way_to_pay.map((pay, key) => {
+      if (key === 0) {
+        obj[pay.label] = this.props.total.subTotal;
+      } else {
+        obj[pay.label] = "";
+      }
+    });
+
+    return obj;
+  };
+
+  pressKey = (e, set, key, value) => {
+    console.log(e.key);
+    console.log();
+    if (!e.shiftKey && e.key === "Tab") {
+      set(this.props.aplication.way_to_pay[key].label, "");
+      set(this.props.aplication.way_to_pay[key + 1].label, value);
+    } else if (e.shiftKey && e.key === "Tab") {
+      set(this.props.aplication.way_to_pay[key].label, "");
+      set(this.props.aplication.way_to_pay[key + -1].label, value);
+    }
+  };
+
   render() {
-    const { patient, products, open, close, total } = this.props;
+    const { open, close, aplication, total } = this.props;
 
-    const dataHead = [
-      { label: "CODE" },
-      { label: "NOMBRE" },
-      { label: "CANTIDAD" },
-      { label: "PRECIO/U" },
-      { label: "PRECIO/T" }
-    ];
+    const InitialValues = this.getInitial(aplication.way_to_pay);
+
+    console.log(InitialValues);
     return (
-      <Modal
-        isOpen={open}
-        toggle={close}
-        style={{ minWidth: "60%", height: "90%" }}
-        contentClassName="makeSale"
-      >
-        <ModalHeader toggle={close}>Realizar venta</ModalHeader>
-        <Body>
-          <div className="makePaciente">
-            <div className="list" style={{ borderTop: "none" }}>
-              <div className="list-body">
-                <Typography variant="subtitle1" className="subtitle">
-                  Nombre:
-                </Typography>
-                <Typography variant="body1" className="textSpace">
-                  {patient.names} {patient.surnames}
-                </Typography>
-              </div>
-            </div>
-
-            <div className="list" style={{ borderTop: "none" }}>
-              <div className="list-body">
-                <Typography variant="subtitle1" className="subtitle">
-                  DNI:
-                </Typography>
-                <Typography variant="body1" className="textSpace">
-                  {patient.type_identity}-{patient.dni}
-                </Typography>
-              </div>
-            </div>
-            <div className="list">
-              <div className="list-body">
-                <Typography variant="subtitle1" className="subtitle">
-                  Correo:
-                </Typography>
-                <Typography variant="body1" className="textSpace">
-                  {patient.email[0]}
-                </Typography>
-              </div>
-              <div className="list-body">
-                <Typography variant="subtitle1" className="subtitle">
-                  Telefono:
-                </Typography>
-                <Typography variant="body1" className="textSpace">
-                  {patient.phone[0]}
-                </Typography>
-              </div>
-            </div>
-
-            <div className="list">
-              <div className="list-body">
-                <Typography variant="subtitle1" className="subtitle">
-                  Direccion:
-                </Typography>
-                <Typography variant="body1" className="textSpace">
-                  {patient.address}
-                </Typography>
-              </div>
-            </div>
-          </div>
-          <div className="makeTable">
-            <div style={{ overflow: "auto" }}>
-              <Table>
-                <TableHead>
-                  <TableRow style={{ height: 35 }}>
-                    {dataHead.map((head, key) => {
+      <Formik
+        initialValues={InitialValues}
+        render={({
+          values,
+          handleSubmit,
+          setFieldValue,
+          errors,
+          touched,
+          handleBlur
+        }) => {
+          console.log("data", values);
+          return (
+            <Modal isOpen={open} toggle={close} contentClassName="makeSale">
+              <ModalHeader toggle={close}>Realizar venta</ModalHeader>
+              <Body
+                style={{
+                  paddingBottom: 0,
+                  paddingRight: 0,
+                  paddingLeft: 0
+                }}
+              >
+                <div className="tipePayment">
+                  {aplication.way_to_pay &&
+                    aplication.way_to_pay.map((pay, key) => {
                       return (
-                        <TableCell
-                          key={key}
-                          style={{ border: "1px solid #c8ced3" }}
-                        >
-                          {head.label}
-                        </TableCell>
+                        <div key={key} className="inputPayment">
+                          <Label
+                            style={{ marginTop: 10 }}
+                            for="Sucursal"
+                            className="mr-sm-2"
+                          >
+                            {pay.label}
+                          </Label>
+                          <Input
+                            type="number"
+                            name="Sucursal"
+                            id="Sucursal"
+                            value={values[pay.label]}
+                            // onKeyDownCapture={event =>
+                            //   this.pressKey(
+                            //     event,
+                            //     setFieldValue,
+                            //     key,
+                            //     values[pay.label]
+                            //   )
+                            // }
+                            onKeyDown={event => {
+                              this.pressKey(
+                                event,
+                                setFieldValue,
+                                key,
+                                values[pay.label]
+                              );
+                            }}
+                            className="inputStyle"
+                            maxLength="40"
+                            onChange={event => {
+                              this.setState({ name: event.target.value });
+                            }}
+                          />
+                        </div>
                       );
                     })}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {products &&
-                    products.map((product, key) => {
-                      return (
-                        <TableRow key={key} style={{ border: "none" }}>
-                          <Cell className="cellStyle">{product.code}</Cell>
-                          <Cell>{product.name}</Cell>
-                          <Cell>{product.quantity}</Cell>
-                          <Cell>{product.price}</Cell>
-                          <Cell>
-                            {product.quantity
-                              ? product.quantity * product.price
-                              : product.price}
-                          </Cell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-          <div className="makeTotal">
-            <div className="qrStyle">qr</div>
-            <div className="totalStyle">totals</div>
-          </div>
-        </Body>
-      </Modal>
+
+                  <div className="buttonStyle">
+                    <Button color="success">Finalizar Venta</Button>
+                  </div>
+                  <div className="totalModal">
+                    <div className="total">
+                      {" "}
+                      <span style={{ fontWeight: "bold" }}>Restante:</span>{" "}
+                      &nbsp;
+                      {formatNumber(total.subTotal)}
+                      &nbsp;{" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        {total.currency}
+                      </span>
+                    </div>
+                    <div className="total">
+                      {" "}
+                      <span style={{ fontWeight: "bold" }}>Total:</span> &nbsp;
+                      {formatNumber(total.subTotal)}
+                      &nbsp;{" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        {total.currency}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {this.state.electronic && (
+                  <div style={{ flex: 1, display: "flex" }}>
+                    <ElectronicBill {...this.props} />
+                  </div>
+                )}
+              </Body>
+            </Modal>
+          );
+        }}
+      />
     );
   }
 }
-const Cell = styled(TableCell)`
-  && {
-    border: none;
-    padding: 0px;
-    text-align: center;
-  }
-`;
 
 const Body = styled(ModalBody)`
   display: flex;
   flex-direction: column;
 
+  .tipePayment {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttonStyle {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    height: 65px;
+    padding: 20px;
+    padding-bottom: 0px;
+  }
+
+  .totalModal {
+    border-top: 1px solid #c8ced3;
+    justify-content: flex-end;
+    display: flex;
+    width: 100%;
+    min-height: 60px;
+    margin-top: 20px;
+    .total {
+      display: flex;
+      align-items: center;
+      width: 35%;
+      justify-content: center;
+      border: 1px solid #c8ced3;
+    }
+  }
+  .inputPayment {
+    width: 70%;
+  }
+
   .list {
     display: flex;
     align-items: center;
+    justify-content: center;
 
     height: 35px;
     &-body {
@@ -166,7 +221,7 @@ const Body = styled(ModalBody)`
 
   .makePaciente {
     flex: 0.8;
-    border: 1px solid #c8ced3;
+
     width: 60%;
     display: flex;
     flex-direction: column;
@@ -187,6 +242,8 @@ const Body = styled(ModalBody)`
     .qrStyle {
       flex: 1;
       display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .totalStyle {
@@ -194,6 +251,7 @@ const Body = styled(ModalBody)`
       display: flex;
       justify-content: center;
       border: 1px solid #c8ced3;
+      flex-direction: column;
     }
   }
 `;
