@@ -16,7 +16,8 @@ export default class MakeSale extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      electronic: false
+      electronic: false,
+      step: 1
     };
   }
 
@@ -50,6 +51,12 @@ export default class MakeSale extends React.Component {
     const remaining = allTotal === Number(total) ? total : total - allTotal;
 
     return parseFloat(remaining).toFixed(2);
+  };
+
+  getDataTypes = allvalues => {
+    const pay = this.props.aplication.way_to_pay;
+
+    return pay.filter(pay => allvalues[pay.label].value > 0);
   };
 
   pressKey = (e, set, key, allvalues, values) => {
@@ -108,6 +115,8 @@ export default class MakeSale extends React.Component {
           handleBlur
         }) => {
           const remaining = this.getRemaining(values);
+          const typePay = this.getDataTypes(values);
+
           return (
             <Modal isOpen={open} toggle={close} contentClassName="makeSale">
               <ModalHeader toggle={close}>Realizar venta</ModalHeader>
@@ -118,71 +127,154 @@ export default class MakeSale extends React.Component {
                   paddingLeft: 0
                 }}
               >
-                <div className="tipePayment">
-                  {aplication.way_to_pay.map((pay, key) => {
-                    return (
-                      <div key={key} className="inputPayment">
-                        <Label
-                          style={{ marginTop: 10 }}
-                          for="Sucursal"
-                          className="mr-sm-2"
-                        >
-                          {pay.label}
-                        </Label>
-                        <Input
-                          type="number"
-                          name="Sucursal"
-                          id="Sucursal"
-                          value={values[pay.label].value}
-                          onChange={event => {
-                            setFieldValue(pay.label, {
-                              value: event.target.value,
-                              write: true
-                            });
-                          }}
-                          onKeyDown={event => {
-                            this.pressKey(
-                              event,
-                              setFieldValue,
-                              key,
-                              values,
-                              values[pay.label]
-                            );
-                          }}
-                          className="inputStyle"
-                          maxLength="40"
-                        />
-                      </div>
-                    );
-                  })}
+                {this.state.step === 1 && (
+                  <div className="tipePayment">
+                    {aplication.way_to_pay.map((pay, key) => {
+                      return (
+                        <div key={key} className="inputPayment">
+                          <Label
+                            style={{ marginTop: 10 }}
+                            for="Sucursal"
+                            className="mr-sm-2"
+                          >
+                            {pay.label}
+                          </Label>
 
-                  <div className="buttonStyle">
-                    <Button color="success">Finalizar Venta</Button>
-                  </div>
-                  <div className="totalModal">
-                    <div className="total">
-                      {" "}
-                      <span style={{ fontWeight: "bold" }}>Restante:</span>{" "}
-                      &nbsp;
-                      {remaining === total.total
-                        ? 0.0
-                        : formatNumber(remaining)}
-                      &nbsp;{" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        {total.currency}
-                      </span>
+                          <Input
+                            value={values[pay.label].value}
+                            onChange={event => {
+                              setFieldValue(pay.label, {
+                                value: event.target.value,
+                                write: true
+                              });
+                            }}
+                            onKeyDown={event => {
+                              this.pressKey(
+                                event,
+                                setFieldValue,
+                                key,
+                                values,
+                                values[pay.label]
+                              );
+                            }}
+                            className="inputStyle"
+                            maxLength="40"
+                          />
+                        </div>
+                      );
+                    })}
+
+                    <div className="buttonStyle">
+                      <Button
+                        color="success"
+                        onClick={() => this.setState({ step: 2 })}
+                      >
+                        Finalizar Venta
+                      </Button>
                     </div>
-                    <div className="total">
-                      {" "}
-                      <span style={{ fontWeight: "bold" }}>Total:</span> &nbsp;
-                      {formatNumber(total.total)}
-                      &nbsp;{" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        {total.currency}
-                      </span>
+                    <div className="totalModal">
+                      <div className="total">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          Restante:
+                        </span>{" "}
+                        &nbsp;
+                        {remaining === total.total
+                          ? 0.0
+                          : formatNumber(remaining)}
+                        &nbsp;{" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          {total.currency}
+                        </span>
+                      </div>
+                      <div className="total">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>Total:</span>{" "}
+                        &nbsp;
+                        {formatNumber(total.total)}
+                        &nbsp;{" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          {total.currency}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+                {this.state.step === 2 && (
+                  <div style={{ padding: 20 }}>
+                    {typePay.map((pay, key) => {
+                      return (
+                        <div key={key}>
+                          <Label
+                            style={{ marginTop: 10 }}
+                            for="Sucursal"
+                            className="mr-sm-2"
+                          >
+                            {pay.label}
+                          </Label>
+                          <div className="inputIfoBank">
+                            <div className="inputGroups">
+                              <Label for="codigo" className="mr-sm-2">
+                                Banco emisor
+                              </Label>
+                              <Input
+                                type="select"
+                                onChange={event => {
+                                  setFieldValue(pay.label, {
+                                    value: event.target.value,
+                                    write: true
+                                  });
+                                }}
+                                className="inputStyle"
+                                maxLength="40"
+                              >
+                                <option>Select</option>
+                              </Input>
+                            </div>
+
+                            <div className="inputGroups">
+                              <Label for="codigo" className="mr-sm-2">
+                                Banco Receptor
+                              </Label>
+                              <Input
+                                type="select"
+                                value={values[pay.label].value}
+                                onChange={event => {
+                                  setFieldValue(pay.label, {
+                                    value: event.target.value,
+                                    write: true
+                                  });
+                                }}
+                                className="inputStyle"
+                                maxLength="40"
+                              >
+                                <option>Select</option>
+                              </Input>
+                            </div>
+                          </div>
+                          <div className="inputIfoBank">
+                            <div>
+                              <Label for="codigo" className="mr-sm-2">
+                                Numero de operacion
+                              </Label>
+                              <Input
+                                value={values[pay.label].value}
+                                onChange={event => {
+                                  setFieldValue(pay.label, {
+                                    value: event.target.value,
+                                    write: true
+                                  });
+                                }}
+                                className="inputStyle"
+                                maxLength="40"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
                 {this.state.electronic && (
                   <div style={{ flex: 1, display: "flex" }}>
                     <ElectronicBill {...this.props} />
@@ -206,6 +298,17 @@ const Body = styled(ModalBody)`
     justify-content: center;
     flex-direction: column;
     align-items: center;
+  }
+
+  .inputGroups {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .inputIfoBank {
+    display: flex;
+    padding-bottom: 20px;
   }
 
   .buttonStyle {
