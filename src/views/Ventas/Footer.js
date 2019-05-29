@@ -67,6 +67,7 @@ export default class Footer extends React.Component {
             products={this.props.products}
             discount={this.props.discount}
             total={this.props.totalData}
+            openSnackbars={this.props.openSnackbars}
           />
         )}
         <div style={{ display: "flex", alignItems: "center" }}>

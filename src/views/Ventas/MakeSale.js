@@ -25,33 +25,77 @@ export default class MakeSale extends React.Component {
 
     way_to_pay.map((pay, key) => {
       if (key === 0) {
-        obj[pay.label] = this.props.total.subTotal;
+        obj[pay.label] = {
+          value: Number(this.props.total.total),
+          write: false
+        };
       } else {
-        obj[pay.label] = "";
+        obj[pay.label] = {
+          value: 0,
+          write: false
+        };
       }
     });
 
     return obj;
   };
 
-  pressKey = (e, set, key, value) => {
-    console.log(e.key);
-    console.log();
-    if (!e.shiftKey && e.key === "Tab") {
-      set(this.props.aplication.way_to_pay[key].label, "");
-      set(this.props.aplication.way_to_pay[key + 1].label, value);
-    } else if (e.shiftKey && e.key === "Tab") {
-      set(this.props.aplication.way_to_pay[key].label, "");
-      set(this.props.aplication.way_to_pay[key + -1].label, value);
+  getRemaining = allvalues => {
+    const pay = this.props.aplication.way_to_pay;
+    const total = this.props.total.total;
+    let allTotal = 0;
+    pay.map(pay => {
+      allTotal = Number(allTotal) + Number(allvalues[pay.label].value);
+    });
+    const remaining = allTotal === Number(total) ? total : total - allTotal;
+
+    return parseFloat(remaining).toFixed(2);
+  };
+
+  pressKey = (e, set, key, allvalues, values) => {
+    const pay = this.props.aplication.way_to_pay;
+    const remaining = this.getRemaining(allvalues);
+
+    if (remaining < 0) {
+      this.props.openSnackbars("warning", "Ha sobrepasado el total a pagar");
+      return set(pay[key].label, { value: 0, write: false });
     }
+
+    try {
+      if (!e.shiftKey && e.key === "Tab") {
+        if (
+          values.write &&
+          (!allvalues[pay[key + 1].label].write &&
+            allvalues[pay[key + 1].label].value <= 0)
+        ) {
+          console.log("entro en 1");
+          set(pay[key + 1].label, { value: remaining, write: false });
+        } else if (
+          !allvalues[pay[key + 1].label].write &&
+          allvalues[pay[key + 1].label].value <= 0
+        ) {
+          console.log("entro en 2");
+          set(pay[key].label, { value: 0, write: false });
+          set(pay[key + 1].label, values);
+        }
+      } else if (e.shiftKey && e.key === "Tab") {
+        if (!allvalues[pay[key - 1].label].write) {
+          console.log("entro aca", pay[key - 1].label);
+          set(pay[key - 1].label, values);
+          set(pay[key].label, { value: 0, write: false });
+        }
+      }
+    } catch (err) {}
+  };
+
+  handleChange = () => {
+    alert("hello");
   };
 
   render() {
     const { open, close, aplication, total } = this.props;
 
     const InitialValues = this.getInitial(aplication.way_to_pay);
-
-    console.log(InitialValues);
     return (
       <Formik
         initialValues={InitialValues}
@@ -63,7 +107,7 @@ export default class MakeSale extends React.Component {
           touched,
           handleBlur
         }) => {
-          console.log("data", values);
+          const remaining = this.getRemaining(values);
           return (
             <Modal isOpen={open} toggle={close} contentClassName="makeSale">
               <ModalHeader toggle={close}>Realizar venta</ModalHeader>
@@ -75,47 +119,42 @@ export default class MakeSale extends React.Component {
                 }}
               >
                 <div className="tipePayment">
-                  {aplication.way_to_pay &&
-                    aplication.way_to_pay.map((pay, key) => {
-                      return (
-                        <div key={key} className="inputPayment">
-                          <Label
-                            style={{ marginTop: 10 }}
-                            for="Sucursal"
-                            className="mr-sm-2"
-                          >
-                            {pay.label}
-                          </Label>
-                          <Input
-                            type="number"
-                            name="Sucursal"
-                            id="Sucursal"
-                            value={values[pay.label]}
-                            // onKeyDownCapture={event =>
-                            //   this.pressKey(
-                            //     event,
-                            //     setFieldValue,
-                            //     key,
-                            //     values[pay.label]
-                            //   )
-                            // }
-                            onKeyDown={event => {
-                              this.pressKey(
-                                event,
-                                setFieldValue,
-                                key,
-                                values[pay.label]
-                              );
-                            }}
-                            className="inputStyle"
-                            maxLength="40"
-                            onChange={event => {
-                              this.setState({ name: event.target.value });
-                            }}
-                          />
-                        </div>
-                      );
-                    })}
+                  {aplication.way_to_pay.map((pay, key) => {
+                    return (
+                      <div key={key} className="inputPayment">
+                        <Label
+                          style={{ marginTop: 10 }}
+                          for="Sucursal"
+                          className="mr-sm-2"
+                        >
+                          {pay.label}
+                        </Label>
+                        <Input
+                          type="number"
+                          name="Sucursal"
+                          id="Sucursal"
+                          value={values[pay.label].value}
+                          onChange={event => {
+                            setFieldValue(pay.label, {
+                              value: event.target.value,
+                              write: true
+                            });
+                          }}
+                          onKeyDown={event => {
+                            this.pressKey(
+                              event,
+                              setFieldValue,
+                              key,
+                              values,
+                              values[pay.label]
+                            );
+                          }}
+                          className="inputStyle"
+                          maxLength="40"
+                        />
+                      </div>
+                    );
+                  })}
 
                   <div className="buttonStyle">
                     <Button color="success">Finalizar Venta</Button>
@@ -125,7 +164,9 @@ export default class MakeSale extends React.Component {
                       {" "}
                       <span style={{ fontWeight: "bold" }}>Restante:</span>{" "}
                       &nbsp;
-                      {formatNumber(total.subTotal)}
+                      {remaining === total.total
+                        ? 0.0
+                        : formatNumber(remaining)}
                       &nbsp;{" "}
                       <span style={{ fontWeight: "bold" }}>
                         {total.currency}
@@ -134,7 +175,7 @@ export default class MakeSale extends React.Component {
                     <div className="total">
                       {" "}
                       <span style={{ fontWeight: "bold" }}>Total:</span> &nbsp;
-                      {formatNumber(total.subTotal)}
+                      {formatNumber(total.total)}
                       &nbsp;{" "}
                       <span style={{ fontWeight: "bold" }}>
                         {total.currency}

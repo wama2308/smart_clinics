@@ -22,7 +22,7 @@ import {
   cancelDiscount,
   editDiscount
 } from "../actions/ventasAction";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog , openSnackbars } from "../actions/aplicantionActions";
 import Footer from "../views/Ventas/Footer";
 import DiscountRequest from "../views/Ventas/discountRequest";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -279,6 +279,7 @@ class VentasContainer extends React.Component {
               bill_id={this.props.bill_id}
               discount={this.props.discount}
               editAndCancel={this.props.cancelDiscount}
+              openSnackbars={this.props.openSnackbars}
             />
           </div>
         </div>
@@ -322,7 +323,8 @@ export default connect(
     queryBill,
     cancelledBill,
     cancelDiscount,
-    editDiscount
+    editDiscount,
+    openSnackbars
   }
 )(VentasContainer);
 
