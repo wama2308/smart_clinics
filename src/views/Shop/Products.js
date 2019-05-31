@@ -146,7 +146,6 @@ class Products extends React.Component {
     }
 
     componentWillReceiveProps=(props)=>{
-        console.log("props shop products", props.shop);           
         if(props.shop.searchProduct === 1){
             let photo = '';
             let stock_disponible = number_format(props.shop.dataProductId.quantity_stock, 2)

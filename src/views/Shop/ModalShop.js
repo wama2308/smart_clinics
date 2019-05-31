@@ -162,19 +162,6 @@ class ModalShop extends React.Component {
             
             if(this.props.option === 1)
             {
-                console.log(valueTipoCompra)
-                console.log(valueSucursal)
-                console.log(this.state.nroCompra)
-                console.log(this.state.nroControl)
-                console.log(valueProveedor)
-                console.log(this.state.direccionPartida)
-                console.log(this.state.direccionLlegada)
-                console.log(compraDate)
-                console.log(this.state.observacion)
-                console.log(this.props.shop.subTotal)
-                console.log(this.props.shop.impuesto)
-                console.log(this.props.shop.total)
-                console.log(this.props.shop.products)
                 this.setState({loading:'show'})                                    
                 this.props.saveShopAction(
                   {
@@ -199,19 +186,6 @@ class ModalShop extends React.Component {
                 )
             } 
             else if(this.props.option === 3){
-                console.log(valueTipoCompra)
-                console.log(valueSucursal)
-                console.log(this.state.nroCompra)
-                console.log(this.state.nroControl)
-                console.log(valueProveedor)
-                console.log(this.state.direccionPartida)
-                console.log(this.state.direccionLlegada)
-                console.log(compraDate)
-                console.log(this.state.observacion)
-                console.log(this.props.shop.subTotal)
-                console.log(this.props.shop.impuesto)
-                console.log(this.props.shop.total)
-                console.log(this.props.shop.products)
                 this.setState({loading:'show'})   
                 this.props.editShopAction(
                   {

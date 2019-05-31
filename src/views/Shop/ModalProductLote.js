@@ -32,9 +32,6 @@ class ModalProductLote extends React.Component {
     }    
 
     componentWillReceiveProps=(props)=>{
-    	console.log("modal edit prod ", props)
-    	console.log("", props)
-    	console.log(" ", props)
     	if(props.productoId){
     		this.setState({
     			productoId: props.productoId,
