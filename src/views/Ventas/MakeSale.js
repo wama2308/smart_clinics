@@ -7,9 +7,10 @@ import {
   Button,
   Label
 } from "reactstrap";
+import { Radio } from "@material-ui/core";
 import { formatNumber } from "../../core/utils";
 import { Formik } from "formik";
-import ElectronicBill from "./ElectronicBill";
+// import ElectronicBill from "./ElectronicBill";
 import styled from "styled-components";
 
 export default class MakeSale extends React.Component {
@@ -17,24 +18,26 @@ export default class MakeSale extends React.Component {
     super(props);
     this.state = {
       electronic: false,
-      step: 1
+      step: 1,
+      typeBill: 1
     };
   }
 
   getInitial = way_to_pay => {
+    const banking = this.props.aplication.banking;
     const obj = {};
-
     way_to_pay.map((pay, key) => {
+      obj[pay.label] = {
+        value: Number(this.props.total.total),
+        write: false,
+        operation_number: "",
+        issuingbank: banking[0].value,
+        receivingbank: banking[0].value
+      };
       if (key === 0) {
-        obj[pay.label] = {
-          value: Number(this.props.total.total),
-          write: false
-        };
+        obj[pay.label].value = Number(this.props.total.total);
       } else {
-        obj[pay.label] = {
-          value: 0,
-          write: false
-        };
+        obj[pay.label].value = 0;
       }
     });
 
@@ -48,7 +51,7 @@ export default class MakeSale extends React.Component {
     pay.map(pay => {
       allTotal = Number(allTotal) + Number(allvalues[pay.label].value);
     });
-    const remaining = allTotal === Number(total) ? total : total - allTotal;
+    const remaining = allTotal === Number(total) ? 0 : total - allTotal;
 
     return parseFloat(remaining).toFixed(2);
   };
@@ -62,7 +65,6 @@ export default class MakeSale extends React.Component {
   pressKey = (e, set, key, allvalues, values) => {
     const pay = this.props.aplication.way_to_pay;
     const remaining = this.getRemaining(allvalues);
-
     if (remaining < 0) {
       this.props.openSnackbars("warning", "Ha sobrepasado el total a pagar");
       return set(pay[key].label, { value: 0, write: false });
@@ -75,50 +77,76 @@ export default class MakeSale extends React.Component {
           (!allvalues[pay[key + 1].label].write &&
             allvalues[pay[key + 1].label].value <= 0)
         ) {
-          console.log("entro en 1");
-          set(pay[key + 1].label, { value: remaining, write: false });
+          set(pay[key + 1].label, {
+            ...values,
+            value: remaining,
+            write: false
+          });
         } else if (
           !allvalues[pay[key + 1].label].write &&
           allvalues[pay[key + 1].label].value <= 0
         ) {
-          console.log("entro en 2");
-          set(pay[key].label, { value: 0, write: false });
+          set(pay[key].label, { ...values, value: 0, write: false });
           set(pay[key + 1].label, values);
         }
       } else if (e.shiftKey && e.key === "Tab") {
         if (!allvalues[pay[key - 1].label].write) {
           console.log("entro aca", pay[key - 1].label);
           set(pay[key - 1].label, values);
-          set(pay[key].label, { value: 0, write: false });
+          set(pay[key].label, { ...values, value: 0, write: false });
         }
       }
     } catch (err) {}
   };
 
-  handleChange = () => {
-    alert("hello");
+  getSubmitedValues = async allValues => {
+    const pay = this.props.aplication.way_to_pay;
+    const way_to_pay = [];
+    pay.map(pay => {
+      if (allValues[pay.label].value > 0) {
+        way_to_pay.push(allValues[pay.label]);
+      }
+    });
+
+    return way_to_pay;
+  };
+
+  handleSubmit = async values => {
+    const way_to_pay = await this.getSubmitedValues(values);
+    const obj = {
+      bill_id: this.props.bill_id,
+      patient_id: this.props.patient._id,
+      supplie_array: this.props.products,
+      way_to_pay: way_to_pay,
+      sub_total: this.props.total.subTotal,
+      igv: this.props.total.iva,
+      total: this.props.total.total
+    };
+
+    this.props.createSale(obj);
   };
 
   render() {
     const { open, close, aplication, total } = this.props;
-
     const InitialValues = this.getInitial(aplication.way_to_pay);
+    const typeBill = this.state.typeBill;
+
+    console.log("data", typeBill);
     return (
       <Formik
+        onSubmit={this.handleSubmit}
         initialValues={InitialValues}
-        render={({
-          values,
-          handleSubmit,
-          setFieldValue,
-          errors,
-          touched,
-          handleBlur
-        }) => {
+        render={({ values, setFieldValue, handleSubmit }) => {
           const remaining = this.getRemaining(values);
           const typePay = this.getDataTypes(values);
-
+          const whidth = this.state.step === 1 ? "35%" : "60%";
           return (
-            <Modal isOpen={open} toggle={close} contentClassName="makeSale">
+            <Modal
+              isOpen={open}
+              toggle={close}
+              contentClassName="makeSale"
+              style={{ minWidth: whidth }}
+            >
               <ModalHeader toggle={close}>Realizar venta</ModalHeader>
               <Body
                 style={{
@@ -144,6 +172,7 @@ export default class MakeSale extends React.Component {
                             value={values[pay.label].value}
                             onChange={event => {
                               setFieldValue(pay.label, {
+                                ...values[pay.label],
                                 value: event.target.value,
                                 write: true
                               });
@@ -169,26 +198,22 @@ export default class MakeSale extends React.Component {
                         color="success"
                         onClick={() => this.setState({ step: 2 })}
                       >
-                        Finalizar Venta
+                        Siguiente
                       </Button>
                     </div>
                     <div className="totalModal">
                       <div className="total">
-                        {" "}
-                        <span style={{ fontWeight: "bold" }}>
-                          Restante:
-                        </span>{" "}
+                        <span style={{ fontWeight: "bold" }}>Restante:</span>{" "}
                         &nbsp;
                         {remaining === total.total
                           ? 0.0
                           : formatNumber(remaining)}
-                        &nbsp;{" "}
+                        &nbsp;
                         <span style={{ fontWeight: "bold" }}>
                           {total.currency}
                         </span>
                       </div>
                       <div className="total">
-                        {" "}
                         <span style={{ fontWeight: "bold" }}>Total:</span>{" "}
                         &nbsp;
                         {formatNumber(total.total)}
@@ -201,17 +226,32 @@ export default class MakeSale extends React.Component {
                   </div>
                 )}
                 {this.state.step === 2 && (
-                  <div style={{ padding: 20 }}>
+                  <div style={{ padding: "0px 20px 20px" }}>
                     {typePay.map((pay, key) => {
                       return (
                         <div key={key}>
-                          <Label
-                            style={{ marginTop: 10 }}
-                            for="Sucursal"
-                            className="mr-sm-2"
-                          >
-                            {pay.label}
-                          </Label>
+                          <div className="titleInfo">
+                            <Label
+                              style={{ marginTop: 10 }}
+                              for="Sucursal"
+                              className="mr-sm-2"
+                            >
+                              {pay.label}
+                            </Label>
+                            <div>
+                              <div className="total">
+                                <span style={{ fontWeight: "bold" }}>
+                                  Total:
+                                </span>
+                                &nbsp;
+                                {formatNumber(values[pay.label].value)}
+                                &nbsp;
+                                <span style={{ fontWeight: "bold" }}>
+                                  {total.currency}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
                           <div className="inputIfoBank">
                             <div className="inputGroups">
                               <Label for="codigo" className="mr-sm-2">
@@ -219,16 +259,26 @@ export default class MakeSale extends React.Component {
                               </Label>
                               <Input
                                 type="select"
+                                value={values[pay.label].issuingbank}
                                 onChange={event => {
                                   setFieldValue(pay.label, {
-                                    value: event.target.value,
-                                    write: true
+                                    ...values[pay.label],
+                                    issuingbank: event.target.value
                                   });
                                 }}
                                 className="inputStyle"
                                 maxLength="40"
                               >
-                                <option>Select</option>
+                                {aplication.banking.map(banking => {
+                                  return (
+                                    <option
+                                      key={banking.value}
+                                      value={banking.value}
+                                    >
+                                      {banking.value}
+                                    </option>
+                                  );
+                                })}
                               </Input>
                             </div>
 
@@ -238,31 +288,40 @@ export default class MakeSale extends React.Component {
                               </Label>
                               <Input
                                 type="select"
-                                value={values[pay.label].value}
+                                value={values[pay.label].receivingbank}
                                 onChange={event => {
                                   setFieldValue(pay.label, {
-                                    value: event.target.value,
-                                    write: true
+                                    ...values[pay.label],
+                                    receivingbank: event.target.value
                                   });
                                 }}
                                 className="inputStyle"
                                 maxLength="40"
                               >
-                                <option>Select</option>
+                                {aplication.banking.map(banking => {
+                                  return (
+                                    <option
+                                      key={banking.value}
+                                      value={banking.value}
+                                    >
+                                      {banking.value}
+                                    </option>
+                                  );
+                                })}
                               </Input>
                             </div>
-                          </div>
-                          <div className="inputIfoBank">
-                            <div>
+
+                            <div className="inputGroups">
                               <Label for="codigo" className="mr-sm-2">
                                 Numero de operacion
                               </Label>
                               <Input
-                                value={values[pay.label].value}
+                                placeholder="Numero de operacion"
+                                value={values[pay.label].operation_number}
                                 onChange={event => {
                                   setFieldValue(pay.label, {
-                                    value: event.target.value,
-                                    write: true
+                                    ...values[pay.label],
+                                    operation_number: event.target.value
                                   });
                                 }}
                                 className="inputStyle"
@@ -273,11 +332,63 @@ export default class MakeSale extends React.Component {
                         </div>
                       );
                     })}
-                  </div>
-                )}
-                {this.state.electronic && (
-                  <div style={{ flex: 1, display: "flex" }}>
-                    <ElectronicBill {...this.props} />
+                    <div
+                      style={{
+                        padding: "20px 10px",
+                        display: "flex",
+                        flex: 1,
+                        justifyContent: "space-between",
+                        height: 85
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flex: 1,
+                          justifyContent: "space-evenly",
+                          alignItems: "center"
+                        }}
+                      >
+                        <div>
+                          <Radio
+                            color="primary"
+                            onClick={() => this.setState({ typeBill: 1 })}
+                            checked={typeBill === 1 ? true : false}
+                          />
+                          <Label check>Documento Electronico</Label>
+                        </div>
+                        <div>
+                          <Radio
+                            color="primary"
+                            onClick={() => this.setState({ typeBill: 2 })}
+                            checked={typeBill === 2 ? true : false}
+                          />
+                          <Label check>Boleta</Label>
+                        </div>
+
+                        <div>
+                          <Radio
+                            type="radio"
+                            color="primary"
+                            onClick={() => this.setState({ typeBill: 3 })}
+                            checked={typeBill === 3 ? true : false}
+                          />
+                          <Label check>Factura</Label>
+                        </div>
+                      </div>
+                      <div>
+                        <Button
+                          color="secondary"
+                          style={{ marginRight: 10 }}
+                          onClick={() => this.setState({ step: 1 })}
+                        >
+                          Atras
+                        </Button>
+                        <Button color="success" onClick={handleSubmit}>
+                          Completar venta
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 )}
               </Body>
@@ -300,10 +411,18 @@ const Body = styled(ModalBody)`
     align-items: center;
   }
 
+  .titleInfo {
+    border-bottom: 1px solid rgb(200, 206, 211);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
   .inputGroups {
     display: flex;
     flex-direction: column;
     flex: 1;
+    padding: 10px 10px 0px 10px;
   }
 
   .inputIfoBank {

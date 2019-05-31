@@ -20,7 +20,8 @@ import {
   queryBill,
   cancelledBill,
   cancelDiscount,
-  editDiscount
+  editDiscount,
+  createSale
 } from "../actions/ventasAction";
 import { openConfirmDialog , openSnackbars } from "../actions/aplicantionActions";
 import Footer from "../views/Ventas/Footer";
@@ -280,6 +281,8 @@ class VentasContainer extends React.Component {
               discount={this.props.discount}
               editAndCancel={this.props.cancelDiscount}
               openSnackbars={this.props.openSnackbars}
+              createSale={this.props.createSale}
+              dataGeneral={this.props.dataGeneral}
             />
           </div>
         </div>
@@ -301,7 +304,7 @@ const mapStateToProps = state => ({
   isSaved: state.ventas.get("saveBill"),
   bill_id: state.ventas.get("bill_id"),
   discount: state.ventas.get("discount"),
-  state: state.ventas.toJS()
+  dataGeneral: state.global.dataGeneral.dataGeneral
 });
 
 export default connect(
@@ -324,7 +327,8 @@ export default connect(
     cancelledBill,
     cancelDiscount,
     editDiscount,
-    openSnackbars
+    openSnackbars,
+    createSale
   }
 )(VentasContainer);
 

@@ -2,6 +2,7 @@ import { getDataToken, url } from "../core/connection";
 import { openSnackbars } from "./aplicantionActions";
 import axios from "axios";
 
+const createSaleUrl = `${url}/api/createSale`;
 const searchPatientUrl = `${url}/api/queryPatients`;
 const createPatientsUrl = `${url}/api/createPatients`;
 const searchProductUrl = `${url}/api/querySupplies`;
@@ -362,5 +363,23 @@ export const editDiscount = (obj, callback) => dispatch => {
         payload: { ...res.data, saveBill: true }
       });
     });
+  });
+};
+
+export const createSale = obj => dispatch => {
+  console.log(obj);
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: createSaleUrl,
+      data: obj,
+      ...token
+    })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   });
 };
