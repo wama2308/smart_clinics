@@ -13,8 +13,9 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import ListShop from "../views/Shop/ListShop";
-import { LoadShopFunction } from "../actions/ShopActions";
-import { openSnackbars, openConfirmDialog } from "../actions/aplicantionActions";
+import ListProduct from "../views/Shop/ListProduct";
+import { LoadShopFunction, LoadShopIdFunction, disableShopAction, queryOneSupplieWithLotFunction } from "../actions/ShopActions";
+import { openConfirmDialog } from "../actions/aplicantionActions";
 import classnames from "classnames";
 
 class ShopContainers extends Component {
@@ -38,7 +39,7 @@ class ShopContainers extends Component {
   }
 
   render() {   
-    console.log("props shop container", this.props.shop);
+    //console.log("props shop container", this.props.shop);
     return (
       <div className="animated fadeIn">
         <Row>
@@ -66,16 +67,22 @@ class ShopContainers extends Component {
                             <ListShop 
                               confirm={this.props.confirm}
                               data={this.props.shop.data}
-                              
-                            />
+                              allProducts={this.props.shop.allProducts}
+                              LoadShopIdFunction={this.props.LoadShopIdFunction}
+                              disableShopAction={this.props.disableShopAction}                              
+                            />                            
                           </TabPane>
                           <TabPane tabId="2">
-                            <span>AAAAAAAAAAQQQQQQQ</span>
+                            <ListProduct 
+                              confirm={this.props.confirm}
+                              allProducts={this.props.shop.allProducts}                                                             
+                              queryOneSupplieWithLotFunction={this.props.queryOneSupplieWithLotFunction}                                                             
+                            />
                           </TabPane>
                       </TabContent>
                   </div>
                 :
-                <div align="center" className="" style={{padding:"1%"}}><img src="assets/loader.gif" width="25%"  /></div>
+                <div align="center" className="" style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="25%"  /></div>
               }
               </CardBody>
             </Card>
@@ -94,7 +101,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({  
   LoadShopFunction: () => dispatch(LoadShopFunction()),  
-  /*DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),  */
+  LoadShopIdFunction: (shopId) => dispatch(LoadShopIdFunction(shopId)),  
+  disableShopAction: (shopId) => dispatch(disableShopAction(shopId)),    
+  queryOneSupplieWithLotFunction: (productId) => dispatch(queryOneSupplieWithLotFunction(productId)),    
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
 });
 

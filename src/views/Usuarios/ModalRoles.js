@@ -1,12 +1,9 @@
 import React from 'react';
 import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
+import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, FormFeedback } from 'reactstrap';
 import '../../components/style.css';
 import './Users.css';
-import axios from 'axios';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import { LoadRolIdFunction, testFunction } from "../../actions/UserAction";
@@ -209,7 +206,7 @@ class ModalRoles extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
                     }
                 </Modal>                
             </span> 

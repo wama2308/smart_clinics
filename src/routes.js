@@ -132,11 +132,6 @@ const Dashboard = Loadable({
   loading: Loading,
 });
 
-const Usuarios = Loadable({
-  loader: () => import('./views/Usuarios'),
-  loading: Loading,
-});
-
 const CoreUIIcons = Loadable({
   loader: () => import('./views/Icons/CoreUIIcons'),
   loading: Loading,

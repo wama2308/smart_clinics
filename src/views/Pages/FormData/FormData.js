@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Card, CardBody, CardFooter, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { Button, Card, CardBody, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import axios from 'axios';
-import { withRouter } from 'react-router';
 import LastStep, {notify} from 'react-notify-toast';
 import HeaderLogo from '../../../components/HeaderLogo';
 import Select from 'react-select';
 import { datosConexion } from '../../../components/Conexion.js'
-import { HashRouter, Route, Switch, Link, withRoute } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../../components/style.css';
 import jstz from 'jstz';
 

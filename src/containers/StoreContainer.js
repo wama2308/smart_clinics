@@ -1,20 +1,15 @@
 import React, { Component } from "react";
 import {
-  Nav,
-  NavItem,
-  NavLink,
   Card,
   CardBody,
   CardHeader,
   Col,
-  Row,
-  TabContent,
-  TabPane
+  Row  
 } from "reactstrap";
 import { connect } from "react-redux";
 import ListStore from "../views/Store/ListStore";
 import { LoadStoreFunction, LoadStoreIdFunction, DeleteStoreAction } from "../actions/StoreActions";
-import { openSnackbars, openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog } from "../actions/aplicantionActions";
 
 class StoreContainer extends Component {
   constructor(props) {
@@ -47,7 +42,7 @@ class StoreContainer extends Component {
                     />      
                   </div>
                 :
-                <div align="center" className="" style={{padding:"1%"}}><img src="assets/loader.gif" width="25%"  /></div>
+                <div align="center" className="" style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="25%"  /></div>
               }
               </CardBody>
             </Card>

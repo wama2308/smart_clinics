@@ -1,5 +1,4 @@
-import {Map , List} from 'immutable'
-const setData = (state, node , payload)=> state.set(node, payload)
+import { Map } from 'immutable'
 
 const setDataStoreId = (state, node, payload) => {
 	let estado = state.toJS();

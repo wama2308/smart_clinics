@@ -54,7 +54,7 @@ const formatValor = (campo,preformat) => {
 
         var sign = "";
 
-        if (vr.indexOf('-') != -1) {
+        if (vr.indexOf('-') !== -1) {
 
             vr = replaceAll( vr, "-" );
 
@@ -107,10 +107,10 @@ const formatValor = (campo,preformat) => {
 
         var pos = campo.value.indexOf('.');
 
-        if (pos != -1) {
+        if (pos !== -1) {
             vr = campo.value.substr( 0, pos );
 
-            if (vr == "00" || (vr.length == 2 && vr.substr( 0, 1) == "0")) campo.value =  campo.value.substr(1, tam);
+            if (vr === "00" || (vr.length === 2 && vr.substr( 0, 1) === "0")) campo.value =  campo.value.substr(1, tam);
 
         }
 
@@ -184,15 +184,15 @@ const formatValor = (campo,preformat) => {
             }
             default: {
                 if (amountformat) {
-                    if ((kcode < 48 || kcode > 57) && kcode != 13){                        
-                        if(kcode==37 || kcode==39){                            
+                    if ((kcode < 48 || kcode > 57) && kcode !== 13){                        
+                        if(kcode===37 || kcode===39){                            
                             //event.returnValue = true;
                             //formatValor(elem,true);
                             return true;
-                        }else if(kcode==8){
+                        }else if(kcode===8){
                             //event.returnValue = true;
                             //formatValor(elem,true);
-                            if(elem.value=="0" || elem.value=="00" || elem.value=="0.00" || elem.value=="0.00" || elem.value==""){
+                            if(elem.value==="0" || elem.value==="00" || elem.value==="0.00" || elem.value==="0.00" || elem.value===""){
                                 elem.value="0.00";
                             }
                             return true;
@@ -200,23 +200,23 @@ const formatValor = (campo,preformat) => {
                             event.preventDefault();                            
                         }
                     //break;
-                    }else if(kcode != 13){
+                    }else if(kcode !== 13){
                         formatValor(elem,false);
                         //break;
                         return true;
                     }else{
                         formatValor(elem,true);
-                        if(elem.value=="0" || elem.value=="00" || elem.value=="0.00" || elem.value=="0.00" || elem.value==""){
+                        if(elem.value==="0" || elem.value==="00" || elem.value==="0.00" || elem.value==="0.00" || elem.value===""){
                             elem.value="0.00";
                         }
                         //break;
                         return true;
                     }
                 } else {
-                    if ((kcode < 48 || kcode > 57) && kcode != 13){
+                    if ((kcode < 48 || kcode > 57) && kcode !== 13){
                         //event.returnValue = false;
                         return false;
-                    } else if (kcode == 46 && elem.value.indexOf('.')!==-1) {
+                    } else if (kcode === 46 && elem.value.indexOf('.')!==-1) {
                         //event.returnValue = false;
                         return false;
                     }

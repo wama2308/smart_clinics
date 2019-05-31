@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
-import { Delete, Edit, Visibility } from "@material-ui/icons";
+import { Edit, Visibility } from "@material-ui/icons";
 
 class ListCargos extends React.Component {
   constructor(props) {

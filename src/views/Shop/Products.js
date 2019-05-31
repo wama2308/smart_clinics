@@ -1,14 +1,9 @@
 import React from 'react';
-import { Collapse, Button, CardBody, Card, Form, FormGroup, Label, Input, FormFeedback, Table, InputGroup, InputGroupAddon, InputGroupText, Popover, PopoverHeader, PopoverBody} from 'reactstrap';
-import { FaMinusCircle, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaUserCircle } from 'react-icons/fa';
-import classnames from 'classnames';
+import { Collapse, Button, CardBody, Card, FormGroup, Label, Input, FormFeedback, Table, InputGroup, InputGroupAddon, Popover, PopoverHeader, PopoverBody} from 'reactstrap';
 import '../../components/style.css';
 import './Shop.css';
-import axios from 'axios';
 import { connect } from "react-redux";
-import IconButton from "@material-ui/core/IconButton";
-import { Delete, Visibility } from "@material-ui/icons";
-import { FaSearch } from 'react-icons/fa';
+import { Visibility } from "@material-ui/icons";
 import { addProductsFunction, verificationSuppliesAction, searchProduct, searchOneSuppplie, cleanInfoProductId, LoadProductPriceFunction } from "../../actions/ShopActions";
 import DefaultSearch from "../../components/DefaultSearch.js";
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
@@ -196,9 +191,7 @@ class Products extends React.Component {
         let valueTipo = "";
         let labelExento = "";
         let divPrecioVenta = '';
-        let divPrecioVentaError = '';
-        let divDescuento = '';
-        let divDescuentoError = '';
+        let divPrecioVentaError = '';        
         let divLimiteStock = '';     
         let divLimiteStockError = '';
         let cantidad_ingresar = parseFloat(this.state.cantidad);
@@ -255,7 +248,7 @@ class Products extends React.Component {
             divExento  = "borderColor";
         }        
         if(this.props.shop.products.length > 0){
-            const resultado = this.props.shop.products.find(products => products.product === this.state.producto);
+            const resultado = this.props.shop.products.find(products => products.name === this.state.producto);
             if(resultado){
                 divProductoError = "¡Este producto ya se encuentra agregado!";
                 divProducto = "borderColor";
@@ -320,6 +313,8 @@ class Products extends React.Component {
 
         let productos = { 
                             id: this.state.productoId, 
+                            shop_id: "0",
+                            lote_id: "0", 
                             name: this.state.producto, 
                             code: this.state.codigo, 
                             type_id: valueTipo, 
@@ -348,7 +343,7 @@ class Products extends React.Component {
     } 
 
     eventoBlur = (e) => {
-        if(this.state.precio == ''){
+        if(this.state.precio === ''){
             this.setState({
                 precio: '0.00'                      
             }); 
@@ -356,7 +351,7 @@ class Products extends React.Component {
     }
 
     eventoFocus = (e) => {        
-        if(this.state.precio == '0.00'){
+        if(this.state.precio === '0.00'){
             this.setState({
                 precio: ''                      
             }); 
@@ -364,7 +359,7 @@ class Products extends React.Component {
     }    
 
     eventoBlurPrecioVenta = (e) => {
-        if(this.state.precioVenta == ''){
+        if(this.state.precioVenta === ''){
             this.setState({
                 precioVenta: '0.00'                      
             }); 
@@ -372,7 +367,7 @@ class Products extends React.Component {
     }
 
     eventoFocusPrecioVenta = (e) => {        
-        if(this.state.precioVenta == '0.00'){
+        if(this.state.precioVenta === '0.00'){
             this.setState({
                 precioVenta: ''                      
             }); 
@@ -380,7 +375,7 @@ class Products extends React.Component {
     }        
 
     eventoBlurDescuento = (e) => {
-        if(this.state.descuento == ''){
+        if(this.state.descuento === ''){
             this.setState({
                 descuento: '0'                      
             }); 
@@ -388,7 +383,7 @@ class Products extends React.Component {
     }
 
     eventoFocusDescuento = (e) => {        
-        if(this.state.descuento == '0'){
+        if(this.state.descuento === '0'){
             this.setState({
                 descuento: ''                      
             }); 
@@ -396,7 +391,7 @@ class Products extends React.Component {
     }        
 
     eventoBlurCantidad = (e) => {
-        if(this.state.cantidad == ''){
+        if(this.state.cantidad === ''){
             this.setState({
                 cantidad: '0'                      
             }); 
@@ -404,7 +399,7 @@ class Products extends React.Component {
     }
 
     eventoFocusCantidad = (e) => {        
-        if(this.state.cantidad == '0'){
+        if(this.state.cantidad === '0'){
             this.setState({
                 cantidad: ''                      
             }); 
@@ -412,7 +407,7 @@ class Products extends React.Component {
     }        
 
     eventoBlurLimiteStock = (e) => {
-        if(this.state.limiteStock == ''){
+        if(this.state.limiteStock === ''){
             this.setState({
                 limiteStock: '0'                      
             }); 
@@ -420,7 +415,7 @@ class Products extends React.Component {
     }
 
     eventoFocusLimiteStock = (e) => {        
-        if(this.state.limiteStock == '0'){
+        if(this.state.limiteStock === '0'){
             this.setState({
                 limiteStock: ''                      
             }); 
@@ -540,14 +535,14 @@ class Products extends React.Component {
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="cantidad">Cantidad:</Label> 
                                 <div className={this.state.divCantidad}>                               
-                                    <Input disabled={this.state.disabled} name="cantidad" id="cantidad" onKeyUp={this.handlekeyCantidad} onChange={this.handleChange} value={this.state.cantidad} type="number" placeholder="Cantidad" onPaste = "false" onBlur ={this.eventoBlurCantidad} onFocus = {this.eventoFocusCantidad}/>
+                                    <Input disabled={this.state.disabled} name="cantidad" id="cantidad" onKeyUp={this.handlekeyCantidad} onChange={this.handleChange} value={this.state.cantidad} type="number" placeholder="Cantidad" onBlur ={this.eventoBlurCantidad} onFocus = {this.eventoFocusCantidad}/> 
                                 </div>
                                 <div className="errorSelect">{this.state.divCantidadError}</div>                                                                                                                                                                                         
                             </FormGroup> 
                             <FormGroup className="top form-group col-sm-6">                                                                 
                                 <Label for="precio">Precio de Compra:</Label> 
                                 <div className={this.state.divPrecio}>                               
-                                    <Input disabled={this.state.disabled} name="precio" id="precio" onKeyUp={this.handlekeyPrecio} onChange={this.handleChange} value={this.state.precio} type="text" placeholder="Precio de Compra" onKeyPress={ enterDecimal } onPaste = "false"  onBlur ={this.eventoBlur} onFocus = {this.eventoFocus} />                                    
+                                    <Input disabled={this.state.disabled} name="precio" id="precio" onKeyUp={this.handlekeyPrecio} onChange={this.handleChange} value={this.state.precio} type="text" placeholder="Precio de Compra" onKeyPress={ enterDecimal } onBlur ={this.eventoBlur} onFocus = {this.eventoFocus} />                                    
                                 </div>
                                 <div className="errorSelect">{this.state.divPrecioError}</div>                                                                                                                                                                                         
                             </FormGroup> 
@@ -562,7 +557,7 @@ class Products extends React.Component {
                                 <Label for="precioVenta">Precio de Venta:</Label> 
                                 <div className={this.state.divPrecioVenta}>
                                     <InputGroup>                               
-                                        <Input disabled={this.state.disabled} name="precioVenta" id="precioVenta" onKeyUp={this.handlekeyPrecioVenta} onChange={this.handleChange} value={this.state.precioVenta} type="text" placeholder="Precio de Venta" onKeyPress={enterDecimal} onPaste="false" onBlur={this.eventoBlurPrecioVenta} onFocus={this.eventoFocusPrecioVenta}/>
+                                        <Input disabled={this.state.disabled} name="precioVenta" id="precioVenta" onKeyUp={this.handlekeyPrecioVenta} onChange={this.handleChange} value={this.state.precioVenta} type="text" placeholder="Precio de Venta" onKeyPress={enterDecimal} onBlur={this.eventoBlurPrecioVenta} onFocus={this.eventoFocusPrecioVenta}/>
                                         <InputGroupAddon addonType="append">
                                             <Button id="popoverPrecios" className={this.state.buttonView} title="Ver Precios" onClick={this.togglePopover}><Visibility className="iconTable" /></Button>
                                         </InputGroupAddon>
@@ -589,7 +584,7 @@ class Products extends React.Component {
                                 <div className={this.state.divDescripcion}>
                                     <Input disabled={this.props.shop.searchProduct === 1 ? true : false} name="descripcion" id="descripcion" onKeyUp={this.handlekeyDescripcion} onChange={this.handleChange} value={this.state.descripcion} type="textarea" placeholder="Descripcion" />
                                 </div>
-                                <div tooltip>{this.state.divDescripcionError}</div>                                                                                                                                                            
+                                <div className="errorSelect">{this.state.divDescripcionError}</div>                                                                                                                                                            
                             </FormGroup>
                             <FormGroup className="top form-group col-sm-6">                                                                 
 								<Label for="foto">Foto:</Label>
@@ -600,7 +595,7 @@ class Products extends React.Component {
 								<InputGroupAddon addonType="append">
 								    <div>
 								        {
-								            this.state.foto != null && <img style={{width: 100, height: 100}}  className="image"  src={"data:image/jpeg;" + this.state.foto} />
+								            this.state.foto != null && <img alt="foto" style={{width: 100, height: 100}}  className="image"  src={"data:image/jpeg;" + this.state.foto} />
 								        }
 								    </div>
 								</InputGroupAddon>
@@ -642,7 +637,7 @@ class Products extends React.Component {
                                             </tbody>
                                         </Table>
                                         :
-                                        <div align="center" className="" style={{padding:"1%"}}><img src="assets/loader.gif" width="40%"  /></div>
+                                        <div align="center" className="" style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="40%"  /></div>
                                     }
                                        
                                     </div>                                    

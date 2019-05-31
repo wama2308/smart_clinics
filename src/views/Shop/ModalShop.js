@@ -1,23 +1,18 @@
 import React from 'react';
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
+import { Button, Table, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, } from 'reactstrap';
 import '../../components/style.css';
 import './Shop.css';
-import axios from 'axios';
 import Select from 'react-select';
-import { FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker"; 
 import "react-datepicker/dist/react-datepicker.css";
 import Products from './Products.js';
-import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
-import { cleanProducts, saveShopAction, editShopAction, deleteProductsFunction } from "../../actions/ShopActions";
+import { openConfirmDialog } from "../../actions/aplicantionActions";
+import { cleanProducts, saveShopAction, editShopAction, deleteProductsFunction, removeProductAction } from "../../actions/ShopActions";
 import { InitalState } from './InitialState.js';
 import IconButton from "@material-ui/core/IconButton";
-import { Delete } from "@material-ui/icons";
+import { Delete, Edit } from "@material-ui/icons";
 import { number_format } from "../../core/utils";
 
 class ModalShop extends React.Component {
@@ -66,9 +61,7 @@ class ModalShop extends React.Component {
         let divNroCompra= '';        
         let divNroCompraError= '';
         let divNroControl= '';        
-        let divNroControlError= '';
-        let divObservacion= '';        
-        let divObservacionError= '';
+        let divNroControlError= '';        
         let divCompraDate= '';        
         let divCompraDateError= '';
         let divDireccionPartida='';        
@@ -78,7 +71,6 @@ class ModalShop extends React.Component {
         let divTableProductos='';
         let divSucursalesSelect='';
         let divSucursalesSelectError='';
-
         
         if (!this.state.arrayTipoCompraSelect) {            
             divTipoCompraError = "¡Seleccione el tipo de compra!";
@@ -116,7 +108,7 @@ class ModalShop extends React.Component {
             divTableProductos = "¡Debe ingresar el o los productos de la compra!";            
         }
         if (divTipoCompraError || divProveedorError || divNroCompraError || divNroControlError || divDireccionPartidaError 
-            || divDireccionLlegadaError || divCompraDateError || divSucursalesSelectError) {            
+            || divDireccionLlegadaError || divCompraDateError || divSucursalesSelectError || divTableProductos) {            
             this.setState({ 
                 divTipoCompraError,
                 divTipoCompra,
@@ -163,7 +155,7 @@ class ModalShop extends React.Component {
             let valueSucursal = "";
             let arraySucursal = Object.values(this.state.arraySucursalesSelect);
             arraySucursal.forEach(function (elemento, indice) {
-                if(indice === 1){
+                if(indice === 0){
                     valueSucursal = elemento;
                 }            
             });            
@@ -206,28 +198,44 @@ class ModalShop extends React.Component {
                   }
                 )
             } 
-            /*else if(this.props.option === 3){
+            else if(this.props.option === 3){
+                console.log(valueTipoCompra)
+                console.log(valueSucursal)
+                console.log(this.state.nroCompra)
+                console.log(this.state.nroControl)
+                console.log(valueProveedor)
+                console.log(this.state.direccionPartida)
+                console.log(this.state.direccionLlegada)
+                console.log(compraDate)
+                console.log(this.state.observacion)
+                console.log(this.props.shop.subTotal)
+                console.log(this.props.shop.impuesto)
+                console.log(this.props.shop.total)
+                console.log(this.props.shop.products)
                 this.setState({loading:'show'})   
-                this.props.editDistributorAction(
+                this.props.editShopAction(
                   {
-                    id: this.props.userId,
-                    name:this.state.name,
-                    type_identity:this.state.arrayTypeIdentitySelect,
-                    tin:this.state.dni,
-                    email:this.state.tagsEmails,
-                    phone:this.state.tagsTelefonos,
-                    country:valuePais,
-                    province:valueProvince,
-                    district:valueDistrict,
-                    address:this.state.direccion,
-                    contact:this.props.distributor.contacs,                    
+                    shop_id: this.props.shop_id,
+                    typeshop: valueTipoCompra,
+                    number_invoice: this.state.nroCompra,
+                    numero_control: this.state.nroControl,
+                    provider_id: valueProveedor,
+                    sucursal_id: valueSucursal,
+                    starting_address: this.state.direccionPartida,
+                    arrival_address: this.state.direccionLlegada,
+                    date_purchase: compraDate,
+                    observacion: this.state.observacion,
+                    subtotal: this.props.shop.subTotal,
+                    igv: this.props.shop.impuesto,
+                    total: this.props.shop.total,
+                    products: this.props.shop.products,
                     timeZ: jstz.determine().name()
                   },
                   () => {
                     this.closeModal();                    
                   }
                 )
-            }*/
+            }
         }
     }
 
@@ -298,7 +306,7 @@ class ModalShop extends React.Component {
         });  
     }
 
-    deleteProduct = (key, cantidad, precio, exento, descuento) => {
+    deleteProduct = (key, id, cantidad, precio, exento, descuento, loteId) => {                
         let impuesto = 0;
         if(exento === 'NO'){
             impuesto = this.props.aplication.dataGeneral.dataCountries.tax_rate;
@@ -318,13 +326,17 @@ class ModalShop extends React.Component {
         };
         this.props.confirm(message, res => {
             if (res) {                
-                this.props.deleteProductsFunction(key, precio_cant, precio_imp, total);        
+                if(loteId !== ""){
+                    this.props.removeProductAction(this.props.shop_id, id, loteId);
+                    this.props.deleteProductsFunction(key, precio_cant, precio_imp, total);        
+                }else{
+                    this.props.deleteProductsFunction(key, precio_cant, precio_imp, total);        
+                }
             }
-        });        
+        });                            
     };   
 
     componentWillReceiveProps=(props)=>{        
-        console.log("props modal shop", this.props.shop);  
         if(this.props.shop.products.length > 0){
             this.setState({divTableProductos:''})
         } 
@@ -333,6 +345,30 @@ class ModalShop extends React.Component {
                 loading: 'hide',
             })
         }
+        if(props.option === 2 || props.option === 3){ 
+            if(props.shop.dataShopId){
+                if(props.shop.dataShopId.date_purchase){
+                    var date_purchase_split = props.shop.dataShopId.date_purchase.split('-');            
+                    var date_purchase = new Date(date_purchase_split[0], date_purchase_split[1] - 1, date_purchase_split[2]);
+                }        
+                if(props.shop.dataShopId.observation && this.state.action === 0){
+                    this.setState({
+                        arrayTipoCompraSelect: props.shop.dataShopId.type_shop,
+                        arraySucursalesSelect: props.shop.dataShopId.sucursal_id,
+                        nroCompra: props.shop.dataShopId.number_invoice,
+                        nroControl: props.shop.dataShopId.number_control,
+                        arrayProveedorSelect: props.shop.dataShopId.distribuidor_id,
+                        direccionPartida: props.shop.dataShopId.starting_address,
+                        direccionLlegada: props.shop.dataShopId.arrival_address,
+                        compraDate: date_purchase,
+                        observacion: props.shop.dataShopId.observation,
+                        loading: props.shop.loading,
+                        action:1
+                    })    
+                }                        
+                    
+            }
+        }
         if(props.option === 0){
             this.setState({
                 ...InitalState
@@ -340,11 +376,17 @@ class ModalShop extends React.Component {
         }
         
                 
-    }       
+    }        
+
+    closeModalEditProductShop = (valor) => {            
+        this.setState({
+            modal: valor,               
+        });                    
+    }  
 
     render() {         
         return (
-            <span>                            
+            <span>                
                 <Modal isOpen={this.props.modal} className="ModalShop">
                     {
                         this.state.loading === "hide" ?
@@ -370,14 +412,14 @@ class ModalShop extends React.Component {
                                     <FormGroup className="top form-group col-sm-6">                                                                 
                                         <Label for="nroCompra">Nro Compra</Label>
                                         <div className={this.state.divNroCompra}>
-                                            <Input disabled={this.props.disabled} name="nroCompra" id="nroCompra" onKeyUp={this.handlekeyNroCompra} onChange={this.handleChange} value={this.state.nroCompra} type="text" placeholder="Nro Compra" />
+                                            <Input disabled={this.props.disabled} name="nroCompra" id="nroCompra" onKeyUp={this.handlekeyNroCompra} onChange={this.handleChange} value={this.state.nroCompra?this.state.nroCompra:''} type="text" placeholder="Nro Compra" />
                                         </div>
                                         <div className="errorSelect">{this.state.divNroCompraError}</div>
                                     </FormGroup>
                                     <FormGroup className="top form-group col-sm-6">                                                                 
                                         <Label for="nroControl">Nro Control</Label>
                                         <div className={this.state.divNroControl}>
-                                            <Input disabled={this.props.disabled} name="nroControl" id="nroControl" onKeyUp={this.handlekeyNroControl} onChange={this.handleChange} value={this.state.nroControl} type="text" placeholder="Nro Control" />
+                                            <Input disabled={this.props.disabled} name="nroControl" id="nroControl" onKeyUp={this.handlekeyNroControl} onChange={this.handleChange} value={this.state.nroControl?this.state.nroControl:''} type="text" placeholder="Nro Control" />
                                         </div>
                                         <div className="errorSelect">{this.state.divNroControlError}</div>
                                     </FormGroup>
@@ -423,10 +465,10 @@ class ModalShop extends React.Component {
                                         <div className={this.state.divObservacion}>
                                             <Input disabled={this.props.disabled} name="observacion" id="observacion" onKeyUp={this.handlekeyObservacion} onChange={this.handleChange} value={this.state.observacion} type="textarea" placeholder="Observacion" />
                                         </div>
-                                        <div tooltip>{this.state.divObservacionError}</div>                                                                                                                                                            
+                                        <div className="errorSelect">{this.state.divObservacionError}</div>                                                                                                                                                            
                                     </FormGroup>                                                                 
                                 </div>            
-                                <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Productos</Button>                                                                                            
+                                <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Productos</Button>
                                 <br />
                                 <br />
                                 <Products 
@@ -457,14 +499,14 @@ class ModalShop extends React.Component {
                                                         <td>{list.name}</td>                                                                                                                                                    
                                                         <td>{list.code}</td>                                                                                                                                                                                                            
                                                         <td>{list.quantity}</td>                                                                                                                                                    
-                                                        <td>{list.price} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
+                                                        <td>{number_format(list.price, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
                                                         <td>{list.discount}</td>                                                                                                                                                                                                            
                                                         <td>{number_format(list.price_discount, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
-                                                        <td>{list.price_sale} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
+                                                        <td>{number_format(list.price_sale, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
                                                         <td>{list.exempt}</td>                                                                                                                                                                                                                                                                    
                                                         <td>
                                                             <div  className="float-left" >
-                                                                <IconButton aria-label="Delete" disabled={this.props.option === 2 ? true : false} title="Ver Rol" className="iconButtons" onClick={() => { this.deleteProduct(i, list.quantity, list.price, list.exempt, list.discount); }}><Delete className="iconTable" /></IconButton>
+                                                                <IconButton aria-label="Delete" disabled={this.props.option === 2 ? true : false} title="Eliminar Producto" className="iconButtons" onClick={() => { this.deleteProduct(i, list.id, list.quantity, number_format(list.price, 2), list.exempt, list.discount, list.lote_id); }}><Delete className="iconTable" /></IconButton>                                                                
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -517,13 +559,13 @@ class ModalShop extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
                     }
                 </Modal>                
             </span> 
         );
     }
-  }
+}
 const mapStateToProps = state => ({
   shop: state.shop.toJS(),
   authData: state.auth,
@@ -533,8 +575,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({  
     confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
     saveShopAction: (data, callback) =>dispatch(saveShopAction(data, callback)),
+    editShopAction: (data, callback) =>dispatch(editShopAction(data, callback)),
     deleteProductsFunction: (key, subtotal, impuesto, total) =>dispatch(deleteProductsFunction(key, subtotal, impuesto, total)),
-    cleanProducts: (key) =>dispatch(cleanProducts()),
+    removeProductAction: (shopId, productId, loteId) =>dispatch(removeProductAction(shopId, productId, loteId)),
+    cleanProducts: () =>dispatch(cleanProducts()),
 });
 
 export default connect(

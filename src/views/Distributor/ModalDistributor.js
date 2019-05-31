@@ -1,18 +1,13 @@
 import React from 'react';
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
+import { Button, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, FormFeedback, } from 'reactstrap';
 import '../../components/style.css';
 import './Distributor.css';
-import axios from 'axios';
 import Select from 'react-select';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import TagsInput from 'react-tagsinput';
 import ContacDistributor from './ContacDistributor.js';
-import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
+import { openConfirmDialog } from "../../actions/aplicantionActions";
 import { cleanContacs, saveDistributorAction, editDistributorAction } from "../../actions/DistributorActions";
 /*import 'react-tagsinput/react-tagsinput.css';*/
 
@@ -126,7 +121,7 @@ class ModalDistributor extends React.Component {
         this.state.tagsEmails.map((email, i) => {          
             let lastAtPos = email.lastIndexOf('@');
             let lastDotPos = email.lastIndexOf('.');
-            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf('@@') == -1 && lastDotPos > 2 && (email.length - lastDotPos) > 2)) {
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf('@@') === -1 && lastDotPos > 2 && (email.length - lastDotPos) > 2)) {
                 acumEmail++;
             }
         })
@@ -562,7 +557,7 @@ class ModalDistributor extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
                     }
                 </Modal>                
             </span> 

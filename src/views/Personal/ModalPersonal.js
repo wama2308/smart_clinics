@@ -1,13 +1,10 @@
 import React from 'react';
-import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
+import { Button, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, FormFeedback } from 'reactstrap';
 import '../../components/style.css';
 import './Personal.css';
 import { InitalState } from './InitialStatePersonal.js';
-import axios from 'axios';
-import { FaUserCircle, FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
+import { FaUserCircle, } from 'react-icons/fa';
 import jstz from 'jstz';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
@@ -16,8 +13,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import Select from 'react-select';
 import { ValidateEmailUsersFunction, savePersonalInternoAction, editPersonalAction, deleteInfoAction } from "../../actions/PersonalInternoActions";
-import { deleteInfoUserId, LoadAllUsersNoMasterFunction, saveRolAction, LoadRolIdFunction, saveUserNoMasterAction, editUserNoMasterAction, addSucursalFunction, deleteSucursalFunction, LoadIdUsersNoMasterFunction } from "../../actions/UserAction";
-import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
+import { deleteInfoUserId, saveRolAction, LoadRolIdFunction, saveUserNoMasterAction, editUserNoMasterAction, addSucursalFunction, deleteSucursalFunction, LoadIdUsersNoMasterFunction } from "../../actions/UserAction";
+import { openSnackbars } from "../../actions/aplicantionActions";
 import ModalUser from '../Usuarios/ModalUser.js';
 import Switch from '@material-ui/core/Switch';
 
@@ -515,7 +512,7 @@ class ModalCargos extends React.Component {
         tagsEmails.map((email, i) => {          
             let lastAtPos = email.lastIndexOf('@');
             let lastDotPos = email.lastIndexOf('.');
-            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf('@@') == -1 && lastDotPos > 2 && (email.length - lastDotPos) > 2)) {
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf('@@') === -1 && lastDotPos > 2 && (email.length - lastDotPos) > 2)) {
                 acumEmail++;
             }
         })
@@ -650,7 +647,6 @@ class ModalCargos extends React.Component {
             loading:'show'     
         });   
         if(props.aplication){
-            let arrayProvinces = [];
             props.aplication.dataGeneral.countries != null && 
             props.aplication.dataGeneral.countries.map((country, i) => {       
                 if(country.value === props.aplication.dataGeneral.dataCountries.id){
@@ -983,7 +979,7 @@ class ModalCargos extends React.Component {
                                             <InputGroupAddon addonType="append">
                                                 <div>
                                                     {
-                                                    this.state.foto != null && <img style={{width: 100, height: 100}}  className="image"  src={"data:image/jpeg;" + this.state.foto} />
+                                                    this.state.foto != null && <img alt="foto" style={{width: 100, height: 100}}  className="image"  src={"data:image/jpeg;" + this.state.foto} />
                                                     }
                                                 </div>
                                             </InputGroupAddon>
@@ -1027,7 +1023,7 @@ class ModalCargos extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
                     }
                 </Modal>                
             </span> 

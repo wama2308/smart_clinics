@@ -5,9 +5,7 @@ import classnames from "classnames";
 import "../views/Configurations/modal.css";
 import { connect } from "react-redux";
 import {} from "../actions/PersonalInternoActions";
-import UsersList from "../views/Usuarios/UsersList";
-import RolesList from "../views/Usuarios/RolesList";
-import { openSnackbars, openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog } from "../actions/aplicantionActions";
 import { LoadPersonalCargosFunction, DeletePersonalInternoAction, LoadPersonalIdFunction } from "../actions/PersonalInternoActions";
 import { LoadAllUsersNoMasterFunction } from "../actions/UserAction";
 import ListCargos from "../views/Personal/ListCargos";
@@ -86,7 +84,7 @@ class PersonalInterno extends Component {
                       </TabContent>
                     </div>
                   :
-                    <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="25%"  /></div>
+                    <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="25%"  /></div>
                 }
                 <br />
               </CardBody>
