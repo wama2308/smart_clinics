@@ -64,7 +64,7 @@ export default {
           icon: "fa fa-usd"
         },
         {
-          name: "Compras",
+          name: "Compras-Productos",
           url: "/administrative/shops",
           icon: "fa fa-shopping-cart"
         }

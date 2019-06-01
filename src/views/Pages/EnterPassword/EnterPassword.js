@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Card, CardBody, CardFooter, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
-import axios from 'axios';
-import { withRouter } from 'react-router';
+import { Button, Card, CardBody, Col, Container, Input, InputGroup, Row } from 'reactstrap';
 import LastStep, {notify} from 'react-notify-toast';
 import HeaderLogo from '../../../components/HeaderLogo';
-import { HashRouter, Route, Switch, Link, withRoute } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../../components/style.css';
 
 
@@ -19,18 +17,12 @@ class FormData extends Component {
       }
 
       componentDidMount(){
-      // Constante email seria vacia porque si alguien ingresa directamente a la direccion sin haber pasado
-      // el correo por el registro, el try, catch es porque si this.props.location.state.email es null
-      // la pagina explotara.
-
-      const email = "";
         try {
           this.email = this.props.location.state.email;
         }
         catch(err){
           console.log(err);
         }
-
       }
 
 
@@ -47,7 +39,7 @@ class FormData extends Component {
           let warningMessage = { background: "#d7b70c", text: "#FFFFFF" };
           notify.show("Por favor introduzca su contraseña", 'custom', 7000, warningMessage);
         } else if (
-            this.state.password != this.state.confirmPassword) {
+            this.state.password !== this.state.confirmPassword) {
               // console.log("Las contraseñas no coinciden");
               let warningMessage = { background: "#d7b70c", text: "#FFFFFF" };
               notify.show("Las contraseñas no coinciden", 'custom', 7000, warningMessage);

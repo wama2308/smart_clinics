@@ -1,10 +1,14 @@
-import {Map , List} from 'immutable'
+import {Map } from 'immutable'
 const setData = (state, node , payload)=> state.set(node, payload)
 
-const setDataShopId = (state, node, payload) => {
+const setDataShopId = (state, payload) => {
 	let estado = state.toJS();
-	estado.shelfs = payload.storeId.shelf;	
-	estado.storeId = payload;		
+	estado.dataShopId = payload.dataShopId;	
+	estado.products = payload.dataShopId.products;		
+	estado.loading = payload.loading;		
+	estado.subTotal = payload.dataShopId.subtotal;		
+	estado.impuesto = payload.dataShopId.igv;		
+	estado.total = payload.dataShopId.total;		
 	return Map(estado);
 }
 
@@ -14,6 +18,8 @@ const setStoreAddProducts = (state, payload) => {
 	estado.subTotal = estado.subTotal + payload.subTotal;		
 	estado.impuesto = estado.impuesto + payload.impuesto;		
 	estado.total = estado.total + payload.total;		
+	estado.dataProductId = {};			
+	estado.searchProduct = 0;	
 	return Map(estado);
 }
 
@@ -33,35 +39,81 @@ const setStoreCleanProducts = (state, payload) => {
 	estado.products = payload.products;		
 	estado.subTotal = 0;		
 	estado.impuesto = 0;		
-	estado.total = 0;		
+	estado.total = 0;	
+	estado.dataProductId = {};			
+	estado.searchProduct = 0;		
+	estado.dataProductPrice = [];		
+	estado.ProductLoteId = {};		
+	return Map(estado);
+}
+
+const setDataProductIdSearch = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataProductId = payload;			
+	estado.searchProduct = 1;			
+	return Map(estado);
+}
+
+const setCleanInfoProductId = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataProductId = payload;			
+	estado.dataProductPrice = [];			
+	estado.searchProduct = 0;			
+	return Map(estado);
+}
+
+const setProductIdPrice = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataProductPrice = payload.data;					
+	return Map(estado);
+}
+
+const setDataProductLoteId = (state, payload) => {
+	let estado = state.toJS();
+	estado.ProductLoteId = payload;			
 	return Map(estado);
 }
 
 const ShopReducer = (state = Map(), action) => {
-  switch (action.type) {
+  	switch (action.type) {
 
-	  case 'LOAD_COMPRAS': {
-	  	return Map(action.payload)
-	  }
+		case 'LOAD_COMPRAS': {
+		  	return Map(action.payload)
+		  }
 
-	  case 'LOAD_SHOP_ID': {
-	  	return setDataShopId(state, 'storeId', action.payload)
-	  }
+		case 'LOAD_SHOP_ID': {
+		  	return setDataShopId(state, action.payload)
+		  }
 
-	  case 'ADD_PRODUCTS': {
-	  	return setStoreAddProducts(state, action.payload)
-	  }
+		case 'ADD_PRODUCTS': {
+		  	return setStoreAddProducts(state, action.payload)
+		  }
 
-	  case 'DELETE_PRODUCTS': {
-	  	return setStoreDeleteProducts(state, action.payload)
-	  }
+		case 'DELETE_PRODUCTS': {
+		  	return setStoreDeleteProducts(state, action.payload)
+		  }
 
-	  case 'CLEAN_PRODUCTS': {
-	  	return setStoreCleanProducts(state, action.payload)
-	  } 
+		case 'CLEAN_PRODUCTS': {
+		  	return setStoreCleanProducts(state, action.payload)
+		  } 
 
-	  default:
-	  	return state;
+		case "SEARCH_PRODUCT_SHOP":
+	      	return setData(state, "dataProducts", action.payload);
+
+		case "SEARCH_ONE_PRODUCTS_SHOP":
+	  		return setDataProductIdSearch(state, action.payload);		
+
+  		case "CLEAN_INFO_PRODUCT_ID":
+	  		return setCleanInfoProductId(state, action.payload);		
+
+  		case "LOAD_PRODUCT_PRICE":
+	  		return setProductIdPrice(state, action.payload);		
+
+	  	case "LOAD_PRODUCT_LOTE_ID":
+	  		return setDataProductLoteId(state, action.payload);			
+
+		default:
+			return state;
   }
 };
 

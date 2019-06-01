@@ -1,9 +1,7 @@
 import React from 'react';
-import { Collapse, Button, CardBody, Card, Form, FormGroup, Label, Input, FormFeedback, Table} from 'reactstrap';
-import classnames from 'classnames';
+import { Collapse, Button, CardBody, Card, FormGroup, Label, Input, FormFeedback, Table} from 'reactstrap';
 import '../../components/style.css';
 import './Distributor.css';
-import axios from 'axios';
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
@@ -117,7 +115,7 @@ class ContacDistributor extends React.Component {
         if(typeof this.state.email !== ""){
            let lastAtPos = this.state.email.lastIndexOf('@');
            let lastDotPos = this.state.email.lastIndexOf('.');
-           if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+           if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
                 emailError = "¡Email invalido!";
                 emailInvalid = true;
             }

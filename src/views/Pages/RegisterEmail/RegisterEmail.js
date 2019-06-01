@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Card, CardBody, CardFooter, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
-// import {getLoginData} from '../../../components/LoginData'; 
+import { Button, Card, CardBody, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import axios from 'axios';
-import { HashRouter, Route, Switch, Link, withRoute } from 'react-router-dom';
-
-//import {RegisterEmailToConfirm} from '../../../components/RegisterEmailToConfirm'; 
+import { Link } from 'react-router-dom';
 import {ConfirmCode} from '../ConfirmCode/ConfirmCode';
 import Notifications, {notify} from 'react-notify-toast';
 import HeaderLogo from '../../../components/HeaderLogo';
@@ -35,27 +32,12 @@ class RegisterEmail extends Component {
     }
   }
 
-  // getUserData(){
-  //   getLoginData()
-  //     .then((login) => {
-  //       this.setState({login});
-  //       console.log({login});
-  //   });
-  // }
-
-  // componentDidMount(){
-  //   // this.getUserData();
-  // } 
-
-
   render() {
     const top = {
       position: "absolute",
       top: '20px',
       width: "10%",
-      left: '2%',
-      //paddingTop: '15px',
-      //paddingLeft: '10px',
+      left: '2%',      
       textAlign: 'center',
     }
     return (

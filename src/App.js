@@ -26,8 +26,7 @@ import {
 import {
   Page404,
   Page500,
-  Register,
-  TestUser,
+  Register,  
   RegisterEmail,
   TestPage,
   ConfirmCode,

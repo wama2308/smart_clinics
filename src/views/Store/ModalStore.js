@@ -1,17 +1,12 @@
 import React from 'react';
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
+import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, FormFeedback, } from 'reactstrap';
 import '../../components/style.css';
 import './Store.css';
-import axios from 'axios';
 import Select from 'react-select';
-import { FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import Shelf from './Shelf.js';
-import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
+import { openConfirmDialog } from "../../actions/aplicantionActions";
 import { saveStoreAction, editStoreAction, cleanShelfs } from "../../actions/StoreActions";
 import { InitalState } from './InitialState.js';
 
@@ -53,8 +48,7 @@ class ModalStore extends React.Component {
         let divSucursalesSelect = "";
         let divSucursalesSelectError = "";
         let descripcionError = "";
-        let descripcionInvalid = false;         
-        var sinEstantes = 0;      
+        let descripcionInvalid = false;                 
 
         if (this.state.almacen === "") {            
             almacenError = "¡Ingrese el almacen!";
@@ -280,7 +274,7 @@ class ModalStore extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
                     }
                 </Modal>                
             </span> 
