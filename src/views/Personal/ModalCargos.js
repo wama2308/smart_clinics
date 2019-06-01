@@ -34,24 +34,16 @@ class ModalCargos extends React.Component {
 
     validate = () => {
         let cargoInvalid = false;
-        let cargoError = "";        
-        let descripcionInvalid = false;
-        let descripcionError = "";       
+        let cargoError = "";                
 
         if (this.state.cargo === "") {
             cargoError = "¡Ingrese el cargo!";
             cargoInvalid = true;
-        }
-        if (this.state.descripcion === "") {
-            descripcionError = "¡Ingrese la descripcion!";
-            descripcionInvalid = true;
         }        
-        if (cargoError || descripcionError) {            
+        if (cargoError) {            
             this.setState({ 
                 cargoError,
-                cargoInvalid,                         
-                descripcionError,    
-                descripcionInvalid,                 
+                cargoInvalid
             });                           
             return false;
         }        

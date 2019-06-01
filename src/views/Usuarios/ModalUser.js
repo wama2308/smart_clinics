@@ -10,6 +10,7 @@ import ModalInfoUserEmail from './ModalInfoUserEmail.js';
 import RolesPermisos from './RolesPermisos.js';
 import SucursalesList from './SucursalesList.js';
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalUser extends React.Component {
 	constructor(props) {
@@ -17,6 +18,15 @@ class ModalUser extends React.Component {
 		this.state = {
 			modalUser: false,
             email:'',
+            nombres: '',
+            nombresInvalid: false,
+            nombresError: '',
+            apellidos: '',
+            apellidosInvalid: false,
+            apellidosError: '',
+            nombreUsuario: '',
+            nombreUsuarioInvalid: false,
+            nombreUsuarioError: '',
             emailError:'',
             emailInvalid:false,
             emailConsulta:'',
@@ -104,10 +114,40 @@ class ModalUser extends React.Component {
         })
     }    
 
+    handlekeyNombres = event =>{
+        this.setState({
+            nombresError: '',
+            nombresInvalid: false
+        })
+    }   
+
+    handlekeyApellidos = event =>{
+        this.setState({
+            apellidosError: '',
+            apellidosInvalid: false
+        })
+    }
+
+    handlekeyNombreUsuario = event =>{
+        this.setState({
+            nombreUsuarioError: '',
+            nombreUsuarioInvalid: false
+        })
+    }
+
     closeUser = () => {
     	this.setState({                     
             modalUser: false,  
             openModalInfoEmail: false,  
+            nombres:'',
+            nombresInvalid: false,                         
+            nombresError: "",             
+            apellidos: '',
+            apellidosInvalid: false,                         
+            apellidosError: "",             
+            nombreUsuario: '',
+            nombreUsuarioInvalid: false,
+            nombreUsuarioError: '',
             email:'',
             emailInvalid: false,
             emailError: "",
@@ -165,6 +205,12 @@ class ModalUser extends React.Component {
     validateUsers = () => {        
         let emailInvalid = false;
         let emailError = "";
+        let nombresInvalid = false;
+        let nombresError = "";
+        let apellidosInvalid = false;
+        let apellidosError = "";
+        let nombreUsuarioInvalid = false;
+        let nombreUsuarioError = "";
         let selectedInvalid = this.state.selectedInvalid;
         let selectedError = "";
         let divListBox = "";
@@ -196,6 +242,21 @@ class ModalUser extends React.Component {
         if (this.state.email === "") {            
             emailError = "¡Ingrese el email!";
             emailInvalid = true;
+        }
+
+        if (this.state.nombreUsuario === "") {            
+            nombreUsuarioError = "¡Ingrese el nombre de usuario!";
+            nombreUsuarioInvalid = true;
+        }
+
+        if (this.state.nombres === "") {            
+            nombresError = "¡Ingrese nombres!";
+            nombresInvalid = true;
+        }
+
+        if (this.state.apellidos === "") {            
+            apellidosError = "¡Ingrese apellidos!";
+            apellidosInvalid = true;
         }
 
         if(typeof this.state.email !== ""){
@@ -273,10 +334,16 @@ class ModalUser extends React.Component {
             }
         }     
 
-        if (emailError || selectedError || sucursalError || rolSelectError) {            
+        if (emailError || nombresError || apellidosError || nombreUsuarioError || selectedError || sucursalError || rolSelectError) {            
             this.setState({ 
                 emailInvalid,                         
                 emailError, 
+                nombresInvalid,
+                nombresError,
+                apellidosError,
+                apellidosInvalid,
+                nombreUsuarioInvalid,
+                nombreUsuarioError,                
                 selectedInvalid, 
                 selectedError,
                 divListBox,
@@ -346,6 +413,12 @@ class ModalUser extends React.Component {
             selectedInvalid: 0,                    
             emailInvalid: false,                         
             emailError: "",             
+            nombresInvalid: false,                         
+            nombresError: "",             
+            apellidosInvalid: false,                         
+            apellidosError: "",             
+            nombreUsuarioInvalid: false,                         
+            nombreUsuarioError: "",             
             selectedError: "",
             divListBox: "",
             sucursalError: "",
@@ -400,15 +473,23 @@ class ModalUser extends React.Component {
         }  
 
         if((props.option === 2) || (props.option === 3) || (props.option === 5) || (props.option === 6)){   
-            this.setState({
-                loading:'hide',
-                email: props.usersRoles.userIdView.email,
-                listSucursales: props.usersRoles.userIdView.sucursal,                           
-            })              
+            if(props.usersRoles.userIdView.email){
+                this.setState({
+                    loading:'hide',
+                    email: props.usersRoles.userIdView.email,
+                    names: props.usersRoles.userIdView.names,
+                    surnames: props.usersRoles.userIdView.surnames,
+                    username: props.usersRoles.userIdView.username,
+                    listSucursales: props.usersRoles.userIdView.sucursal,                           
+                })              
+            }            
         }else if (props.option === 1){  
             this.setState({
                 loading:'hide',
                 email: props.usersRoles.userIdView.email,
+                names: props.usersRoles.userIdView.names,
+                surnames: props.usersRoles.userIdView.surnames,
+                username: props.usersRoles.userIdView.username,
                 listSucursales: props.usersRoles.userIdView.sucursal,                
             })   
         }else if (props.option === 4){  
@@ -416,6 +497,9 @@ class ModalUser extends React.Component {
                 modalUser: props.modal,
                 loading:'hide',
                 email: props.emailUserSelect,
+                names: '',
+                surnames: '',
+                username: '',
                 listSucursales: props.usersRoles.userIdView.sucursal,                
             })   
         }                   
@@ -476,6 +560,9 @@ class ModalUser extends React.Component {
                     this.props.saveUserNoMasterAction(
                     {
                         email:this.state.email,
+                        names: this.state.nombres,
+                        surnames: this.state.apellidos,
+                        username: this.state.nombreUsuario,
                         listSuc: this.state.listSucursales,                        
                         onlyModules: this.props.modules,                                                
                         groupSucursales: grouped,                        
@@ -503,6 +590,9 @@ class ModalUser extends React.Component {
                     {
                         id:this.props.userIdEdit,
                         email:this.state.email,
+                        names: this.state.nombres,
+                        surnames: this.state.apellidos,
+                        username: this.state.nombreUsuario,
                         listSuc: this.state.listSucursales,                        
                         onlyModules: this.props.modules,                                                
                         groupSucursales: grouped,                        
@@ -529,6 +619,9 @@ class ModalUser extends React.Component {
                     this.props.saveUserNoMasterPersonalAction(
                     {                        
                         email:this.state.email,
+                        names: this.state.nombres,
+                        surnames: this.state.apellidos,
+                        username: this.state.nombreUsuario,
                         listSuc: this.state.listSucursales,                        
                         onlyModules: this.props.modules,                                                
                         groupSucursales: grouped,                        
@@ -558,6 +651,21 @@ class ModalUser extends React.Component {
                                     <Label for="email">Email</Label>
                                     <Input autoFocus={this.state.focus} disabled={this.props.disabledEmail} invalid={this.state.emailInvalid} name="email" id="email" onKeyUp={this.handlekey} onChange={this.handleChange} value={this.state.email} onBlur={this.pruebaOnBlur} type="text" placeholder="ejemplo@gmail.com" />
                                     <FormFeedback tooltip>{this.state.emailError}</FormFeedback>                                                            
+                                </FormGroup>
+                                <FormGroup className="top form-group col-sm-12">                                                                 
+                                    <Label for="nombres">Nombres:</Label>
+                                    <Input disabled={this.state.varDisabled} invalid={this.state.nombresInvalid} name="nombres" id="nombres" onKeyUp={this.handlekeyNombres} onChange={this.handleChange} value={this.state.nombres} type="text" placeholder="Nombres" />
+                                    <FormFeedback tooltip>{this.state.nombresError}</FormFeedback>                                                            
+                                </FormGroup>
+                                <FormGroup className="top form-group col-sm-12">                                                                 
+                                    <Label for="apellidos">Apellidos:</Label>
+                                    <Input disabled={this.state.varDisabled} invalid={this.state.apellidosInvalid} name="apellidos" id="apellidos" onKeyUp={this.handlekeyApellidos} onChange={this.handleChange} value={this.state.apellidos} type="text" placeholder="Apellidos" />
+                                    <FormFeedback tooltip>{this.state.apellidosError}</FormFeedback>                                                            
+                                </FormGroup>
+                                <FormGroup className="top form-group col-sm-12">                                                                 
+                                    <Label for="nombreUsuario">Nombre de Usuario:</Label>
+                                    <Input disabled={this.state.varDisabled} invalid={this.state.nombreUsuarioInvalid} name="nombreUsuario" id="nombreUsuario" onKeyUp={this.handlekeyNombreUsuario} onChange={this.handleChange} value={this.state.nombreUsuario} type="text" placeholder="Nombre de Usuario" />
+                                    <FormFeedback tooltip>{this.state.nombreUsuarioError}</FormFeedback>                                                            
                                 </FormGroup>
                                 {
                                     (this.props.option === 1 || this.props.option === 3 || this.props.option === 4 || this.props.option === 6)  &&
@@ -616,7 +724,9 @@ class ModalUser extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                        </div>
                     }
                 </Modal>                    
                 <ModalInfoUserEmail  

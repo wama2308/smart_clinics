@@ -84,7 +84,7 @@ class ListCargos extends React.Component {
           cargoId={this.state.cargoId}
           valorCloseModal={this.valorCloseModal}  
         />        
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar Cargos</Button>
         <br />
         <br />
         <div className="row">

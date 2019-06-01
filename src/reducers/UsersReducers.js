@@ -32,6 +32,9 @@ const setStoreDeleteSucursal = (state, payload) => {
 const setStoreDeleteUserIdView = (state, payload) => {
 	let estado = state.toJS();
 	estado.userIdView.email = payload.email;
+	estado.userIdView.names = payload.names;
+	estado.userIdView.surnames = payload.surnames;
+	estado.userIdView.username = payload.username;
 	estado.userIdView.sucursal = payload.sucursal;	
 	return Map(estado);
 }
@@ -39,6 +42,9 @@ const setStoreDeleteUserIdView = (state, payload) => {
 const setStoreEditUserView = (state, payload) => {
 	let estado = state.toJS();
 	estado.userIdView.email = payload.email;
+	estado.userIdView.names = payload.names;
+	estado.userIdView.surnames = payload.surnames;
+	estado.userIdView.username = payload.username;
 	estado.userIdView.sucursal = payload.sucursal;
 	return Map(estado);
 }

@@ -237,6 +237,14 @@ class ModalCargos extends React.Component {
                 }            
             });       
 
+            let valuePais = "";
+            let arrayPais = Object.values(this.state.arrayPaisSelect);
+            arrayPais.forEach(function (elemento, indice) {
+                if(indice === 0){
+                    valuePais = elemento;
+                }            
+            });
+
             let valueProvince = "";
             let arrayProvince = Object.values(this.state.arrayProvinceSelect);
             arrayProvince.forEach(function (elemento, indice, array) {
@@ -447,6 +455,17 @@ class ModalCargos extends React.Component {
         });                
     } 
 
+    handleChangeSelectPais = (arrayPaisSelect) => {
+        this.setState({ 
+            arrayPaisSelect,
+            arrayProvince: arrayPaisSelect.provinces,
+            divPaisSelect: '',
+            paisSelectError: '',
+            arrayProvinceSelect: [],                                
+            arrayDistrictSelect: [],                                
+        });  
+    }
+
     handleChangeSelectProvincia = (arrayProvinceSelect) => {            
         this.setState({ 
             arrayProvinceSelect,
@@ -546,7 +565,13 @@ class ModalCargos extends React.Component {
         });  
         if(valueSelectRegister === 'NO'){
             this.setState({
-                arrayUsersSelect: null
+                arrayUsersSelect: null,
+                disabledSelectUser: true
+            })
+        }else{
+            this.setState({
+                arrayUsersSelect: null,
+                disabledSelectUser: false
             })
         }
     }
@@ -668,6 +693,7 @@ class ModalCargos extends React.Component {
 
         if(props.option === 2 || props.option === 3){
             props.option === 2 ? this.setState({disabledSelectUser:true}) : false
+            props.option === 2 ? this.setState({disabledRegisterUser:true}) : false
             if(props.personaInterno.personalId.birth_date){
                 var parts_date_birth = props.personaInterno.personalId.birth_date.split('-');            
                 var birthDate = new Date(parts_date_birth[0], parts_date_birth[1] - 1, parts_date_birth[2]);                 
@@ -687,7 +713,7 @@ class ModalCargos extends React.Component {
             if(props.userId !== ""){
                 registarComoUsuario = { value: "SI", label: "SI" };
                 arrayUser = { value: props.userEmail, label: props.userEmail };
-                this.setState({disabledSelectUser:true});
+                this.setState({disabledSelectUser:true, disabledRegisterUser: true});
             }
             var emailsTags = [];            
             props.personaInterno.emailUsers.map((emails, i) => { emailsTags.push(emails.label) })
@@ -723,6 +749,7 @@ class ModalCargos extends React.Component {
             })   
         }else if(props.option === 1){          
             props.userId !== "" ? this.setState({disabledSelectUser: true,}): false            
+            props.userId !== "" ? this.setState({disabledRegisterUser: true,}): false            
             this.setState({                
                 loading:'hide',
                 arrayTypeIdentitySelect: props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],                           
@@ -832,7 +859,7 @@ class ModalCargos extends React.Component {
                                                         })
                                                     } 
                                                 </Input>
-                                            </InputGroupAddon>&nbsp;&nbsp;
+                                            </InputGroupAddon>
                                             <Input disabled={this.props.disabled} invalid={this.state.dniInvalid} name="dni" id="dni" onKeyUp={this.handlekeyDni} onChange={this.handleChange} value={this.state.dni?this.state.dni:''} type="text" placeholder="DNI" />                                                    
                                             <FormFeedback tooltip>{this.state.dniError}</FormFeedback>                                                                                                                                                                     
                                             </InputGroup> 
@@ -952,6 +979,13 @@ class ModalCargos extends React.Component {
                                             <div className="errorSelect">{this.state.entryDateError}</div>                                                                
                                         </FormGroup>   
                                         <FormGroup className="top form-group col-sm-6">                                                                 
+                                            <Label for="pais">Pais</Label>
+                                            <div className={this.state.divPaisSelect}>
+                                                <Select isSearchable="true" isDisabled={this.props.disabled} name="pais" value={this.state.arrayPaisSelect} onChange={this.handleChangeSelectPais} options={this.props.aplication.dataGeneral.countries} />
+                                            </div>
+                                            <div className="errorSelect">{this.state.paisSelectError}</div>                                                                
+                                        </FormGroup>
+                                        <FormGroup className="top form-group col-sm-6">                                                                 
                                             <Label for="province">Provincia</Label>
                                             <div className={this.state.divProvinceSelect}>
                                                 <Select isSearchable="true" isDisabled={this.props.disabled} name="province" value={this.state.arrayProvinceSelect} onChange={this.handleChangeSelectProvincia} options={this.state.arrayProvince} />
@@ -988,7 +1022,7 @@ class ModalCargos extends React.Component {
                                         <FormGroup className="top form-group col-sm-6">                                                                 
                                             <Label for="registerUser">¿Registrar como Usuario?</Label>
                                             <div className={this.state.divRegisterUserSelect}>
-                                                <Select isSearchable="true" isDisabled={this.state.disabledSelectUser} name="registerUser" value={this.state.arrayRegisterUserSelect} onChange={this.handleChangeSelectRegisterUser} options={this.state.arrayRegisterUser} />                                    
+                                                <Select isSearchable="true" isDisabled={this.state.disabledRegisterUser} name="registerUser" value={this.state.arrayRegisterUserSelect} onChange={this.handleChangeSelectRegisterUser} options={this.state.arrayRegisterUser} />                                    
                                             </div>
                                             <div className="errorSelect">{this.state.registerUserSelectError}</div>
                                         </FormGroup>   
@@ -998,7 +1032,7 @@ class ModalCargos extends React.Component {
                                                 <InputGroup>
                                                     <Select style={{display:'flex'}} className="selectUsers" isSearchable="true" isDisabled={this.state.disabledSelectUser} name="usersSelect" value={this.state.arrayUsersSelect} onChange={this.handleChangeUsersSelect} options={this.props.personaInterno.emailUsers} />
                                                     <InputGroupAddon addonType="prepend">
-                                                        <Button className={this.state.buttonView} title="Usuario" onClick={() => this.viewUserId()}><FaUserCircle size="1em"/></Button>
+                                                        <Button disabled={this.state.disabledSelectUser} className={this.state.buttonView} title="Usuario" onClick={() => this.viewUserId()}><FaUserCircle size="1em"/></Button>
                                                     </InputGroupAddon>
                                                 </InputGroup> 
                                             </div>

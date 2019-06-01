@@ -100,7 +100,7 @@ class ListPersonal extends React.Component {
           roles = {this.props.roles}                                 
           valorCloseModal={this.valorCloseModal}  
         />
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar Personal</Button>
         <br />
         <br />
         <div className="row">
