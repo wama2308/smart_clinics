@@ -1,19 +1,24 @@
-.iconButtons{
+.iconButtons {
   position: relative;
-  top: -10px
+  top: -10px;
 }
 
 .iconTable {
- font-size: 19px !important;
+  font-size: 19px !important;
 }
 
-.float-left{
+.float-left {
   height: 25px;
 }
 
-.sizeIconButton{  height: 25px;}
+.sizeIconButton {
+  height: 25px;
+}
 
-
-.inputStyle{
+.inputStyle {
   height: 44px !important;
+}
+
+.makeSale {
+  height: 100% !important;
 }

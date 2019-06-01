@@ -25,6 +25,13 @@ class Client extends React.Component {
   render() {
     const { patient } = this.props;
     const disabled = this.props.isSaved ? this.props.isSaved : false;
+    const message = {
+      "PENDING TO APPROVE": "PENDIENTE POR APROBAR",
+      BILLED: "COMPLETADA"
+    };
+    const color =
+      this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
+
     return (
       <Card style={{ margin: "0px 10px 10px 0px", flex: 1 }}>
         {this.state.openModal && (
@@ -110,10 +117,14 @@ class Client extends React.Component {
                   <div
                     style={{
                       display: "flex",
-                      justifyContent: "flex-end",
-                      paddingTop: 26
+                      justifyContent: "space-between",
+                      paddingTop: 26,
+                      alignItems: "center"
                     }}
                   >
+                    <div style={{ color: color }}>
+                      {message[this.props.statusSale]}
+                    </div>
                     <Button color="success" onClick={() => this.view()}>
                       Ver detalles
                     </Button>

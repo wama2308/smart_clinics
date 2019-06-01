@@ -2,6 +2,7 @@ import { getDataToken, url } from "../core/connection";
 import { openSnackbars } from "./aplicantionActions";
 import axios from "axios";
 
+const createSaleUrl = `${url}/api/createSale`;
 const searchPatientUrl = `${url}/api/queryPatients`;
 const createPatientsUrl = `${url}/api/createPatients`;
 const searchProductUrl = `${url}/api/querySupplies`;
@@ -105,7 +106,6 @@ export const searchOnePatient = search => dispatch => {
         });
       })
       .catch(err => {
-        const result = converToJson(err);
         dispatch(searchLoaded(true));
         dispatch(openSnackbars("error", "Paciente no registrado!"));
         dispatch({
@@ -194,12 +194,12 @@ export const searchOneSuppplie = data => dispatch => {
           type: "SEARCH_ONE_PRODUCTS",
           payload: {
             ...res.data,
-            quantity: 1
+            quantity: 1,
+            searched: true
           }
         });
       })
       .catch(err => {
-        const result = converToJson(err);
         dispatch(openSnackbars("error", "producto no encontrado"));
       });
   });
@@ -363,5 +363,26 @@ export const editDiscount = (obj, callback) => dispatch => {
       //   payload: { ...res.data, saveBill: true }
       // });
     });
+  });
+};
+
+export const createSale = (obj, callback) => dispatch => {
+  console.log(obj);
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: createSaleUrl,
+      data: obj,
+      ...token
+    })
+      .then(res => {
+        callback();
+        // dispatch(cancelToSell());
+        dispatch(openSnackbars("success", "Operacion exitosa!"));
+
+      })
+      .catch(err => {
+        console.log(err);
+      });
   });
 };

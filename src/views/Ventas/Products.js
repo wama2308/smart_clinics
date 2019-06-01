@@ -11,6 +11,7 @@ import {
   TableHead,
   IconButton
 } from "@material-ui/core";
+import { formatNumber } from "../../core/utils";
 
 class Products extends React.Component {
   constructor(props) {
@@ -47,7 +48,7 @@ class Products extends React.Component {
       ? (lastPrevData = prevProps.products[prevProps.products.length - 1])
       : null;
 
-    if (lastData && lastData !== lastPrevData) {
+    if (lastData && lastData.searched && lastData !== lastPrevData) {
       this.setState({ edit: lastData._id });
     }
 
@@ -78,7 +79,8 @@ class Products extends React.Component {
 
   render() {
     const { patient, products, aplication } = this.props;
-    const disableAllProductos = this.props.discount ? true : false;
+    const disableAllProductos =
+      this.props.discount || this.props.statusSale === "BILLED" ? true : false;
     const totalData = this.props.getTotal(products, aplication);
 
     const dataHead = [
@@ -167,11 +169,11 @@ class Products extends React.Component {
                           {product.quantity}
                         </Cell>
                       )}
-                      <Cell>{product.price}</Cell>
+                      <Cell>{formatNumber(product.price)}</Cell>
                       <Cell>
                         {product.quantity
-                          ? product.quantity * product.price
-                          : product.price}
+                          ? formatNumber(product.quantity * product.price)
+                          : formatNumber(product.price)}
                       </Cell>
                       <Cell>
                         <IconButton
@@ -193,7 +195,7 @@ class Products extends React.Component {
         <Footer style={{ flex: 1, display: "flex" }}>
           <div className="totalStyle">
             <span className="titleBol"> SubTotal</span>{" "}
-            {`${totalData.subTotal}`}
+            {`${formatNumber(totalData.subTotal)}`}
             <span className="titleBol">{aplication.current_simbol}</span>
           </div>
 
@@ -201,12 +203,13 @@ class Products extends React.Component {
             <span className="titleBol">{` Impuesto (${
               aplication.tax_rate
             }%) `}</span>
-            {totalData.iva}
+            {formatNumber(totalData.iva)}
             {<span className="titleBol">{aplication.current_simbol}</span>}
           </div>
 
           <div className="totalStyle">
-            <span className="titleBol"> Total</span> {`${totalData.total} `}{" "}
+            <span className="titleBol"> Total</span>{" "}
+            {`${formatNumber(totalData.total)} `}{" "}
             <span className="titleBol">{aplication.current_simbol}</span>
           </div>
         </Footer>

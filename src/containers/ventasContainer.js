@@ -20,9 +20,13 @@ import {
   queryBill,
   cancelledBill,
   cancelDiscount,
-  editDiscount
+  editDiscount,
+  createSale
 } from "../actions/ventasAction";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import {
+  openConfirmDialog,
+  openSnackbars
+} from "../actions/aplicantionActions";
 import Footer from "../views/Ventas/Footer";
 import DiscountRequest from "../views/Ventas/discountRequest";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -104,7 +108,10 @@ class VentasContainer extends React.Component {
       return obj;
     }
 
+    const discount = this.props.discount;
+
     let subtotal = 0;
+    let totaldiscount = 0;
     array.map(data => {
       const result = isNaN(data.quantity)
         ? data.price
@@ -112,11 +119,22 @@ class VentasContainer extends React.Component {
       subtotal = parseFloat(obj.subTotal) + parseFloat(result);
       obj.subTotal = subtotal.toFixed(2);
     });
+
+    if (discount) {
+      if (discount.percentage === 1) {
+        totaldiscount = (obj.subTotal * discount.discount) / 100;
+        obj.subTotal = parseFloat(obj.subTotal) - totaldiscount;
+      } else {
+        obj.subTotal = parseFloat(obj.subTotal) - parseFloat(discount.discount);
+      }
+    }
     const iva =
       (parseFloat(obj.subTotal) * parseFloat(aplication.tax_rate)) / 100;
     obj.total = parseFloat(obj.subTotal) + parseFloat(iva);
-    obj.total.toFixed(2);
+    obj.total = obj.total.toFixed(2);
     obj.iva = iva.toFixed(2);
+    obj.percentageIva = aplication.tax_rate;
+    obj.currency = aplication.current_simbol;
 
     return obj;
   };
@@ -200,6 +218,7 @@ class VentasContainer extends React.Component {
       this.props.products
     );
 
+    const totalData = this.getTotal(this.props.products, this.props.aplication);
     return (
       <Container>
         {!this.props.saleLoading && <Spinner />}
@@ -212,6 +231,7 @@ class VentasContainer extends React.Component {
             approvers={this.props.approvers}
             loading={this.state.modalLoading}
             edit={this.state.edit}
+            total={totalData}
           />
         )}
         <div style={{ height: "38%" }}>
@@ -224,6 +244,7 @@ class VentasContainer extends React.Component {
               clean={this.props.clean}
               options={optionsPatient}
               isSaved={this.props.isSaved}
+              statusSale={this.props.statusSale}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -247,20 +268,27 @@ class VentasContainer extends React.Component {
               getTotal={this.getTotal}
               discount={this.props.discount}
               loaded={this.props.loaded}
+              statusSale={this.props.statusSale}
             />
 
             <Footer
+              totalData={totalData}
               openModal={this.openModal}
-              editAndCancelDiscount
+              patient={this.props.patient}
               cancel={this.props.cancelToSell}
               confirm={this.props.openConfirmDialog}
               products={this.props.products}
               saveInvoice={this.saveSales}
+              statusSale={this.props.statusSale}
+              aplication={this.props.aplication}
               isSaved={this.props.isSaved}
               cancelled={this.props.cancelledBill}
               bill_id={this.props.bill_id}
               discount={this.props.discount}
               editAndCancel={this.props.cancelDiscount}
+              openSnackbars={this.props.openSnackbars}
+              createSale={this.props.createSale}
+              dataGeneral={this.props.dataGeneral}
             />
           </div>
         </div>
@@ -282,7 +310,8 @@ const mapStateToProps = state => ({
   isSaved: state.ventas.get("saveBill"),
   bill_id: state.ventas.get("bill_id"),
   discount: state.ventas.get("discount"),
-  state: state.ventas.toJS()
+  dataGeneral: state.global.dataGeneral.dataGeneral,
+  statusSale: state.ventas.get("status_sale")
 });
 
 export default connect(
@@ -304,7 +333,9 @@ export default connect(
     queryBill,
     cancelledBill,
     cancelDiscount,
-    editDiscount
+    editDiscount,
+    openSnackbars,
+    createSale
   }
 )(VentasContainer);
 

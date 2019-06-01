@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button, Input } from "reactstrap";
 import styled from "styled-components";
-import DiscountRequest from "./discountRequest";
+import MakeSale from "./MakeSale";
 
 const message = {
   clean: "Esta Seguro que desea limpiar los datos de esta Venta",
@@ -47,17 +47,35 @@ export default class Footer extends React.Component {
     });
   };
 
+  close = () => {
+    this.setState({ openModal: false });
+  };
+
   render() {
-    console.log("the footer", this.props);
     const disabled = this.props.products ? false : true;
-    console.log("discount", this.props.discount);
     const discountDisabled =
       this.props.discount && this.props.discount.status === "WAITING";
     const ventaDisabled = disabled || discountDisabled ? true : false;
     return (
       <Container style={{ marginBottom: 0, marginTop: 10 }}>
+        {this.state.openModal && (
+          <MakeSale
+            open={this.state.openModal}
+            close={this.close}
+            aplication={this.props.aplication}
+            patient={this.props.patient}
+            products={this.props.products}
+            discount={this.props.discount}
+            total={this.props.totalData}
+            openSnackbars={this.props.openSnackbars}
+            bill_id={this.props.bill_id}
+            createSale={this.props.createSale}
+            dataGeneral={this.props.dataGeneral}
+            cancel={this.props.cancel}
+          />
+        )}
         <div style={{ display: "flex", alignItems: "center" }}>
-          {!this.props.discount && (
+          {!this.props.discount && this.props.statusSale !== "BILLED" && (
             <Button
               disabled={disabled}
               className="sellButtons"
@@ -68,7 +86,7 @@ export default class Footer extends React.Component {
             </Button>
           )}
 
-          {discountDisabled && (
+          {discountDisabled && this.props.statusSale !== "BILLED" && (
             <div>
               <Button
                 disabled={disabled}
@@ -108,7 +126,7 @@ export default class Footer extends React.Component {
           )}
         </div>
 
-        <div>
+        <div style={{ display: "flex" }}>
           {this.props.products && (
             <Button
               color="danger"
@@ -120,33 +138,39 @@ export default class Footer extends React.Component {
             </Button>
           )}
 
-          {this.props.products && this.props.isSaved && (
-            <Button
-              color="danger"
-              disabled={disabled}
-              className="sellButtons"
-              onClick={() => this.confirm("cancel")}
-            >
-              ANULAR
-            </Button>
+          {this.props.products &&
+            this.props.isSaved &&
+            this.props.statusSale !== "BILLED" && (
+              <Button
+                color="danger"
+                disabled={disabled}
+                className="sellButtons"
+                onClick={() => this.confirm("cancel")}
+              >
+                ANULAR
+              </Button>
+            )}
+          {this.props.statusSale !== "BILLED" && (
+            <div>
+              <Button
+                disabled={disabled}
+                className="sellButtons"
+                color="primary"
+                onClick={this.props.saveInvoice}
+                disabled={ventaDisabled}
+              >
+                Guardar Factura
+              </Button>
+              <Button
+                color="primary"
+                className="sellButtons"
+                disabled={ventaDisabled}
+                onClick={() => this.setState({ openModal: true })}
+              >
+                Realizar Venta
+              </Button>
+            </div>
           )}
-
-          <Button
-            disabled={disabled}
-            className="sellButtons"
-            color="primary"
-            onClick={this.props.saveInvoice}
-            disabled={ventaDisabled}
-          >
-            Guardar Factura
-          </Button>
-          <Button
-            color="primary"
-            className="sellButtons"
-            disabled={ventaDisabled}
-          >
-            Realizar Venta
-          </Button>
         </div>
       </Container>
     );
