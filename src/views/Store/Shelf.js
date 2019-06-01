@@ -1,14 +1,12 @@
 import React from 'react';
-import { Collapse, Button, CardBody, Card, Form, FormGroup, Label, Input, FormFeedback, Table} from 'reactstrap';
-import classnames from 'classnames';
+import { Collapse, Button, CardBody, Card, FormGroup, Label, Input, FormFeedback, Table} from 'reactstrap';
 import '../../components/style.css';
 import './Store.css';
-import axios from 'axios';
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
 import { addShelfsFunction, deleteShelfsFunction } from "../../actions/StoreActions";
-import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
+import { openConfirmDialog } from "../../actions/aplicantionActions";
 import { InitalState } from './InitialState.js';
 
 class Shelf extends React.Component {

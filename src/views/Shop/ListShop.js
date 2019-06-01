@@ -18,7 +18,7 @@ class ListShop extends React.Component {
       option:0,
       position: 0,  
       isClearable: false,
-      userId: '',      
+      shop_id: '0',      
     };    
   }
 
@@ -36,7 +36,7 @@ class ListShop extends React.Component {
         isClearable: true,  
       })
     }else if(option === 2){
-      this.props.LoadDistributorIdFunction(id);
+      this.props.LoadShopIdFunction(id);
       this.setState({
         modal:true,
         option:option,
@@ -46,7 +46,7 @@ class ListShop extends React.Component {
         showHide: 'hide',                
       })
     }else if(option === 3){
-      this.props.LoadDistributorIdFunction(id);
+      this.props.LoadShopIdFunction(id);
       this.setState({
         modal:true,
         option:option,
@@ -55,19 +55,19 @@ class ListShop extends React.Component {
         disabled: false,
         showHide: 'show',
         position: pos,        
-        userId:id       
+        shop_id:id       
       })
     }  
   }  
 
-  deleteProveedor = (proveedorId) => {  
+  deleteRegister = (id) => {  
     const message = {
       title: "Eliminar Registro",
       info: "¿Esta seguro que desea eliminar este registro?"
     };
     this.props.confirm(message, res => {
       if (res) {
-        this.props.DeleteDistributorAction(proveedorId);
+        this.props.disableShopAction(id);
       }
     });    
   } 
@@ -90,6 +90,7 @@ class ListShop extends React.Component {
           disabled = {this.state.disabled}
           showHide = {this.state.showHide}             
           isClearable = {this.state.isClearable}             
+          shop_id = {this.state.shop_id}             
           branchOfficces={this.props.branchOfficces}                       
           valorCloseModal = {this.valorCloseModal}          
         />
@@ -124,9 +125,9 @@ class ListShop extends React.Component {
                     <td>{ number_format(shop.total, 2) }</td>
                     <td style={{'minWidth':"205px"}}>
                       <div className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, shop._id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, shop._id); }}><Edit className="iconTable" /></IconButton>                        
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteProveedor(shop._id); }}><Delete className="iconTable" /></IconButton>
+                        <IconButton aria-label="Delete" title="Ver Compra" className="iconButtons" onClick={() => { this.openModal(2, i, shop._id); }}><Visibility className="iconTable" /></IconButton>
+                        <IconButton aria-label="Delete" title="Editar Compra" className="iconButtons" onClick={() => { this.openModal(3, i, shop._id); }}><Edit className="iconTable" /></IconButton>                        
+                        <IconButton aria-label="Delete" title="Eliminar Compra" className="iconButtons" onClick={() => { this.deleteRegister(shop._id); }}><Delete className="iconTable" /></IconButton>
                       </div>
                     </td>                    
                   </tr>

@@ -1,12 +1,11 @@
 import React from 'react';
 import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, Collapse, Card, CardBody, CardFooter, CardHeader, CardTitle, CardText, Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
+import { Button, Input, InputGroup, FormGroup, Label, FormText, FormFeedback, Collapse, Card, CardBody, Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import classnames from 'classnames';
 import '../../components/style.css';
 import './Users.css';
-import axios from 'axios';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
+import { FaSearch, FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import { LoadPermitsMedicalCenterFunction, LoadRolIdFunction, testFunction } from "../../actions/UserAction";

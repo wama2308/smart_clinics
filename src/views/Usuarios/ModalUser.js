@@ -1,13 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
+import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, FormFeedback } from 'reactstrap';
 import '../../components/style.css';
 import './Users.css';
-import axios from 'axios';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import { ValidateEmailUserNoMasterFunction, deleteInfoUser, deleteUserIdView, addEmailStoreAction, saveUserNoMasterPersonalAction} from "../../actions/UserAction";
@@ -207,7 +202,7 @@ class ModalUser extends React.Component {
            let lastAtPos = this.state.email.lastIndexOf('@');
            let lastDotPos = this.state.email.lastIndexOf('.');
 
-           if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+           if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
                 emailError = "¡Email invalido!";
                 emailInvalid = true;
             }
@@ -242,17 +237,17 @@ class ModalUser extends React.Component {
                 valueTableRol = list.rol.value;
                 valueTablePermit = list.modulos;
 
-                if(valueTableSucursal == valueActualSucursal){
+                if(valueTableSucursal === valueActualSucursal){
                     acum++;
                 }
-                if((valueTableSucursal == valueActualSucursal) && (valueTableRol === valueActualRol)){
+                if((valueTableSucursal === valueActualSucursal) && (valueTableRol === valueActualRol)){
                     acumSucRol++;
                 }
 
                 let arrayMod = Object.values(this.state.selected);
                 arrayMod.forEach((elemento, indice, array) => {
                     let valorPermit = elemento;      
-                    if((valueTableSucursal == valueActualSucursal) && (valorPermit === valueTablePermit)){
+                    if((valueTableSucursal === valueActualSucursal) && (valorPermit === valueTablePermit)){
                         acumSucPermit++;
                     }                    
                 });                 
@@ -325,7 +320,6 @@ class ModalUser extends React.Component {
         }
           
         if(this.state.selectedInvalid !== 0){
-            let variable = "";
             let arrayMod = Object.values(this.state.selected);
             arrayMod.forEach((elemento, indice, array) => {
                 let valor = elemento;

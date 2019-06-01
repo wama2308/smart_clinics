@@ -1,8 +1,6 @@
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
-const loadCountriesArray = `${url}/api/loadCountriesArray`;
-const queryNationalPayments = `${url}/api/queryNationalPayments`;
 const listCountryProvider = `${url}/api/listCountryProvider`;
 const detailsProvider = `${url}/api/detailsProvider`;
 const createProvider = `${url}/api/createProvider`;

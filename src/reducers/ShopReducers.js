@@ -1,10 +1,14 @@
-import {Map , List} from 'immutable'
+import {Map } from 'immutable'
 const setData = (state, node , payload)=> state.set(node, payload)
 
-const setDataShopId = (state, node, payload) => {
+const setDataShopId = (state, payload) => {
 	let estado = state.toJS();
-	estado.shelfs = payload.storeId.shelf;	
-	estado.storeId = payload;		
+	estado.dataShopId = payload.dataShopId;	
+	estado.products = payload.dataShopId.products;		
+	estado.loading = payload.loading;		
+	estado.subTotal = payload.dataShopId.subtotal;		
+	estado.impuesto = payload.dataShopId.igv;		
+	estado.total = payload.dataShopId.total;		
 	return Map(estado);
 }
 
@@ -38,7 +42,8 @@ const setStoreCleanProducts = (state, payload) => {
 	estado.total = 0;	
 	estado.dataProductId = {};			
 	estado.searchProduct = 0;		
-	estado.dataProductPrice = [];	
+	estado.dataProductPrice = [];		
+	estado.ProductLoteId = {};		
 	return Map(estado);
 }
 
@@ -63,6 +68,12 @@ const setProductIdPrice = (state, payload) => {
 	return Map(estado);
 }
 
+const setDataProductLoteId = (state, payload) => {
+	let estado = state.toJS();
+	estado.ProductLoteId = payload;			
+	return Map(estado);
+}
+
 const ShopReducer = (state = Map(), action) => {
   	switch (action.type) {
 
@@ -71,7 +82,7 @@ const ShopReducer = (state = Map(), action) => {
 		  }
 
 		case 'LOAD_SHOP_ID': {
-		  	return setDataShopId(state, 'storeId', action.payload)
+		  	return setDataShopId(state, action.payload)
 		  }
 
 		case 'ADD_PRODUCTS': {
@@ -97,6 +108,9 @@ const ShopReducer = (state = Map(), action) => {
 
   		case "LOAD_PRODUCT_PRICE":
 	  		return setProductIdPrice(state, action.payload);		
+
+	  	case "LOAD_PRODUCT_LOTE_ID":
+	  		return setDataProductLoteId(state, action.payload);			
 
 		default:
 			return state;

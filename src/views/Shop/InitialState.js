@@ -7,6 +7,8 @@ const selectExento =
 
 export const InitalState = {
     productoId: '0',
+    keyProduct: '',
+    nroLote: '0',
     divTipoCompra: '',
     arrayTipoCompraSelect: null,
     divTipoCompraError: '',
@@ -85,6 +87,11 @@ export const InitalState = {
     action:0,    
     popoverOpen: false,
     collapse: false,
-    loading:'show',   
-
+    modal:false,
+    modalHeader: '',
+    modalFooter: '',
+    disabled: '',
+    showHide: '',
+    option:0,
+    loading:'show',       
 }

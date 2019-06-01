@@ -1,6 +1,5 @@
-import {Map , List} from 'immutable'
+import {Map} from 'immutable'
 
-const setState = (state, newState) => state.set(Map(newState));
 const setData = (state, node , payload)=> state.set(node, payload)
 
 const setStore = (state, payload) => {

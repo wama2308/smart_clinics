@@ -114,7 +114,7 @@ class UsersContainer extends Component {
                       </TabContent>
                     </div>
                   :
-                    <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="25%"  /></div>
+                    <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="25%"  /></div>
                 }
 
 

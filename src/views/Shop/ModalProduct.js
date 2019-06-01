@@ -1,26 +1,20 @@
 import React from 'react';
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
+import { Collapse, CardBody, Card, Button, Table, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, FormFeedback, Label, } from 'reactstrap';
 import '../../components/style.css';
 import './Shop.css';
-import axios from 'axios';
 import Select from 'react-select';
-import { FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
-import DatePicker from "react-datepicker"; 
-import "react-datepicker/dist/react-datepicker.css";
-import Products from './Products.js';
-import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
-import { cleanProducts, saveShopAction, editShopAction, deleteProductsFunction } from "../../actions/ShopActions";
 import { InitalState } from './InitialState.js';
-import IconButton from "@material-ui/core/IconButton";
-import { Delete } from "@material-ui/icons";
 import { number_format } from "../../core/utils";
+import { enterDecimal } from "../../core/utils";
+import { Edit, Visibility } from "@material-ui/icons";
+import IconButton from "@material-ui/core/IconButton";
+import { openConfirmDialog } from "../../actions/aplicantionActions";
+import { cleanProducts } from "../../actions/ShopActions";
+import ModalProductLote from './ModalProductLote.js';
 
-class ModalShop extends React.Component {
+class ModalProduct extends React.Component {
     constructor(props) {
         super(props);               
         this.state = {
@@ -28,26 +22,39 @@ class ModalShop extends React.Component {
         };
     }
 
-    componentDidMount(){
-        
-    }
+    componentDidMount(){}
 
     handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
             [name]: value
         });                
-    }       
+    }    
 
-    testOnclick = () => {
-        console.log(this.props.shop.products)
-    }
-
-    toggle = () => {
-        this.setState({ 
-            collapse: !this.state.collapse 
-        });
-    }
+    componentWillReceiveProps=(props)=>{
+        if(props.option === 1 || props.option === 2){ 
+            if(props.shop.ProductLoteId){                
+                if(props.shop.ProductLoteId.name && this.state.action === 0){
+                    this.setState({
+                        producto: props.shop.ProductLoteId.name,
+                        arrayTipoSelect: props.shop.ProductLoteId.type_select,
+                        codigo: props.shop.ProductLoteId.code,
+                        descripcion: props.shop.ProductLoteId.description,
+                        foto: props.shop.ProductLoteId.photo !== '' ? props.shop.ProductLoteId.photo : null,                        
+                        collapse: true,
+                        loading: props.shop.loading,
+                        action:1
+                    })    
+                }                        
+                    
+            }
+        }
+        if(props.option === 0){
+            this.setState({
+                ...InitalState
+            })   
+        }
+    }  
 
     closeModal = () => {
         this.setState({                        
@@ -56,442 +63,270 @@ class ModalShop extends React.Component {
         });   
         this.props.cleanProducts();
         this.props.valorCloseModal(false);       
-    }       
+    }     
 
-    validate = () => {
-        let divTipoCompra= '';        
-        let divTipoCompraError= '';
-        let divProveedor= '';        
-        let divProveedorError= '';
-        let divNroCompra= '';        
-        let divNroCompraError= '';
-        let divNroControl= '';        
-        let divNroControlError= '';
-        let divObservacion= '';        
-        let divObservacionError= '';
-        let divCompraDate= '';        
-        let divCompraDateError= '';
-        let divDireccionPartida='';        
-        let divDireccionPartidaError='';
-        let divDireccionLlegada='';        
-        let divDireccionLlegadaError='';
-        let divTableProductos='';
-        
-        if (!this.state.arrayTipoCompraSelect) {            
-            divTipoCompraError = "¡Seleccione el tipo de compra!";
-            divTipoCompra ="borderColor";
-        }
-        if (!this.state.arrayProveedorSelect) {            
-            divProveedorError = "¡Seleccione el proveedor!";
-            divProveedor = "borderColor";
-        }
-        if (this.state.nroCompra === "") {            
-            divNroCompraError = "¡Ingrese el numero de la compra!";
-            divNroCompra = "borderColor";
-        }                
-        if (this.state.nroControl === "") {            
-            divNroControlError = "¡Ingrese el numero de control!";
-            divNroControl = "borderColor";
-        }
-        if (this.state.direccionPartida === "") {            
-            divDireccionPartidaError = "¡Ingrese la direccion de partida!";
-            divDireccionPartida = "borderColor";
-        }
-        if (this.state.direccionLlegada === "") {            
-            divDireccionLlegadaError = "¡Ingrese la direccion de llegada!";
-            divDireccionLlegada = "borderColor";
-        }
-        if (!this.state.compraDate) {                  
-            divCompraDateError = "¡Ingrese la fecha de compra!";
-            divCompraDate = "borderColor";
-        }
-        if (this.props.shop.products.length === 0) {                  
-            divTableProductos = "¡Debe ingresar el o los productos de la compra!";            
-        }
-        if (divTipoCompraError || divProveedorError || divNroCompraError || divNroControlError || divDireccionPartidaError 
-            || divDireccionLlegadaError || divCompraDateError) {            
-            this.setState({ 
-                divTipoCompraError,
-                divTipoCompra,
-                divProveedorError,
-                divProveedor,
-                divNroCompraError,
-                divNroCompra,
-                divNroControlError,
-                divNroControl,
-                divDireccionPartidaError,
-                divDireccionPartida,
-                divDireccionLlegadaError,
-                divDireccionLlegada,  
-                divCompraDate,                        
-                divCompraDateError,   
-                divTableProductos                     
-            });  
-            return false;
-        }
-        return true;        
-    };
-
-    handleSaveCompras = event => {
-        event.preventDefault();
-        const isValid = this.validate();   
-        if (isValid) {             
-            alert(11)
-            let compraDate = new Date(this.state.compraDate).toISOString().slice(0,10);
-            let valueTipoCompra = "";
-            let arrayTipoCompra = Object.values(this.state.arrayTipoCompraSelect);
-            arrayTipoCompra.forEach(function (elemento, indice) {
-                if(indice === 1){
-                    valueTipoCompra = elemento;
-                }            
-            });
-            let valueProveedor = "";
-            let arrayProveedor = Object.values(this.state.arrayProveedorSelect);
-            arrayProveedor.forEach(function (elemento, indice) {
-                if(indice === 1){
-                    valueProveedor = elemento;
-                }            
-            });            
-            
-            if(this.props.option === 1)
-            {
-                console.log(valueTipoCompra)
-                console.log(this.state.nroCompra)
-                console.log(this.state.nroControl)
-                console.log(valueProveedor)
-                console.log(this.state.direccionPartida)
-                console.log(this.state.direccionLlegada)
-                console.log(compraDate)
-                console.log(this.state.observacion)
-                console.log(this.props.shop.subTotal)
-                console.log(this.props.shop.impuesto)
-                console.log(this.props.shop.total)
-                console.log(this.props.shop.products)
-                this.setState({loading:'show'})                                    
-                this.props.saveShopAction(
-                  {
-                    typeshop: valueTipoCompra,
-                    number_invoice: this.state.nroCompra,
-                    numero_control: this.state.nroControl,
-                    provider_id: valueProveedor,
-                    starting_address: this.state.direccionPartida,
-                    arrival_address: this.state.direccionLlegada,
-                    date_purchase: compraDate,
-                    observacion: this.state.observacion,
-                    subtotal: this.props.shop.subTotal,
-                    igv: this.props.shop.impuesto,
-                    total: this.props.shop.total,
-                    products: this.props.shop.products,
-                    timeZ: jstz.determine().name()
-                  },
-                  () => {
-                    this.closeModal();                    
-                  }
-                )
-            } 
-            /*else if(this.props.option === 3){
-                this.setState({loading:'show'})   
-                this.props.editDistributorAction(
-                  {
-                    id: this.props.userId,
-                    name:this.state.name,
-                    type_identity:this.state.arrayTypeIdentitySelect,
-                    tin:this.state.dni,
-                    email:this.state.tagsEmails,
-                    phone:this.state.tagsTelefonos,
-                    country:valuePais,
-                    province:valueProvince,
-                    district:valueDistrict,
-                    address:this.state.direccion,
-                    contact:this.props.distributor.contacs,                    
-                    timeZ: jstz.determine().name()
-                  },
-                  () => {
-                    this.closeModal();                    
-                  }
-                )
-            }*/
-        }
-    }
-
-    handleChangeTipoCompra = (arrayTipoCompraSelect) => {
+    toggleCollapse = () => {
         this.setState({ 
-            arrayTipoCompraSelect,
-            divTipoCompra: '',
-            divTipoCompraError: ''                                
-        });  
-    }
-
-    handlekeyNroCompra = event =>{
-        this.setState({
-            divNroCompra: "",
-            divNroCompraError: "",         
-        })
-    }    
-
-    handlekeyNroControl = event =>{
-        this.setState({
-            divNroControl: "",
-            divNroControlError: "",         
-        })
-    }
-
-    handleChangeProvider = (arrayProveedorSelect) => {
-        this.setState({ 
-            arrayProveedorSelect,
-            divProveedor: '',
-            divProveedorError: ''                                
-        });  
-    }
-
-    handleChangeCompraDate = (date) => {
-        this.setState({
-          compraDate: date,
-          divCompraDateError: "",
-          divCompraDate: ""
+            collapse: !this.state.collapse 
         });
     }
 
-    handlekeyDireccionPartida = event =>{
+    handlekeyProducto = event =>{
         this.setState({
-            divDireccionPartida: '',
-            divDireccionPartidaError: ''
-        })
-    }
-
-    handlekeyDireccionLLegada = event =>{
-        this.setState({
-            divDireccionLlegada: '',
-            divDireccionLlegadaError: ''
-        })
-    }
-
-    handlekeyObservacion = event =>{
-        this.setState({
-            divObservacion: '',
-            divObservacionError: ''
+            divProducto: "",
+            divProductoError: "",         
         })
     }    
 
-    deleteProduct = (key, cantidad, precio, exento, descuento) => {
-        let impuesto = 0;
-        if(exento === 'NO'){
-            impuesto = this.props.aplication.dataGeneral.dataCountries.tax_rate;
-        }else{
-            impuesto = 0;
-        }
-        let precio_replace = precio.replace(",", "");
-        let precio_float = parseFloat(precio_replace);
-        let precio_desc = precio_float - (precio_float * (descuento/100));
-        let cantidad_float = parseFloat(cantidad);
-        let precio_cant = precio_desc * cantidad_float;
-        let precio_imp = (precio_cant * (impuesto/100));        
-        let total = precio_cant + precio_imp;        
-        const message = {
-          title: "Eliminar Producto",
-          info: "¿Esta seguro que desea eliminar este producto?"
-        };
-        this.props.confirm(message, res => {
-            if (res) {                
-                this.props.deleteProductsFunction(key, precio_cant, precio_imp, total);        
-            }
-        });        
-    };   
+    handlekeyCodigo= event =>{
+        this.setState({
+            divCodigo: "",
+            divCodigoError: "",         
+        })
+    }            
 
-    componentWillReceiveProps=(props)=>{        
-        console.log("props modal shop", this.props.shop);  
-        if(this.props.shop.products.length > 0){
-            this.setState({divTableProductos:''})
-        } 
-        if(props.option === 1){
+    handlekeyDescripcion= event =>{
+        this.setState({
+            divDescripcion: "",
+            divDescripcionError: "",         
+        })
+    }
+
+    handleChangeTipo = (arrayTipoSelect) => {
+        this.setState({ 
+            arrayTipoSelect,
+            divTipo: '',
+            divTipoError: ''                                
+        });  
+    }    
+
+    fileHandlerFoto = event =>{ 
+      event.preventDefault();
+       if(event.target.files[0].size > 25000) {
             this.setState({
-                loading: 'hide',
+                fotoError:'El tamaño de la imagen no esta permitido ',
+                fotoInvalid:true,
+                collapseFil:true,
+            })           
+       }  
+       else {
+            this.setState({
+                fotoError:' ',
+                fotoInvalid:false,
             })
-        }
-        if(props.option === 0){
-            this.setState({
-                ...InitalState
-            })   
-        }
-        
-                
-    }       
+            let selectedFile = event.target.files;
+            let fileName = "";
+            let file = null
+            if (selectedFile.length > 0) {
+                let fileToLoad = selectedFile[0];
+                fileName = fileToLoad.name;
+                let fileReader = new FileReader();
+                fileReader.onload = function(fileLoadedEvent) {
+                    file = fileLoadedEvent.target.result;
+                    this.setState({
+                       foto: file
+                    })
+                }
+                .bind(this)
+                fileReader.readAsDataURL(fileToLoad);
+            }
+       }              
+    }    
+
+    openModal = (option, pos, _id, number, quantity_stock, quantity, price, discount, price_sale, limit_stock, exempt) => {  
+        var exento = { label: exempt, value: exempt };
+        if(option === 1){
+          this.setState({
+            modal:true,
+            option:option,
+            modalHeader:'Ver Lote',
+            modalFooter:'Guardar',
+            disabled: true,
+            showHide: 'hide',    
+            keyProduct: pos,    
+            productoId: _id,
+            nroLote: number,
+            cantidadAvailable: quantity_stock,
+            cantidad: quantity,
+            precio: price,
+            descuento: discount,
+            precioVenta: price_sale,
+            limiteStock: limit_stock,
+            arrayExentoSelect: exento
+          })
+        }else if(option === 2){
+          this.setState({
+            modal:true,
+            option:option,
+            modalHeader:'Editar Lote',
+            modalFooter:'Editar',
+            disabled: false,
+            showHide: 'show',               
+            productoId: _id,
+            keyProduct: pos, 
+            nroLote: number,
+            cantidadAvailable: quantity_stock,
+            cantidad: quantity,
+            precio: price,
+            descuento: discount,
+            precioVenta: price_sale,
+            limiteStock: limit_stock,
+            arrayExentoSelect: exento
+          })
+        }  
+    }  
+
+    closeModalProductLote = (valor) => {            
+        this.setState({
+            modal: valor,   
+            option: 0,       
+        });                    
+    } 
 
     render() {         
         return (
-            <span>                            
+            <span>
+                <ModalProductLote
+                    option = {this.state.option}
+                    modal = {this.state.modal}
+                    modalHeader = {this.state.modalHeader}
+                    modalFooter = {this.state.modalFooter}
+                    disabled = {this.state.disabled}
+                    showHide = {this.state.showHide}     
+                    productoId = {this.props.productoId}
+                    keyProduct = {this.state.keyProduct}
+                    nroLote = {this.state.nroLote}
+                    cantidadAvailable = {this.state.cantidadAvailable}
+                    cantidad = {this.state.cantidad}
+                    precio = {this.state.precio}
+                    descuento = {this.state.descuento}
+                    precioVenta = {this.state.precioVenta}
+                    limiteStock = {this.state.limiteStock}
+                    arrayExentoSelect = {this.state.arrayExentoSelect}
+                    closeModalProductLote = {this.closeModalProductLote}          
+                />      
                 <Modal isOpen={this.props.modal} className="ModalShop">
                     {
-                        this.state.loading === "hide" ?
-                            <div className={this.state.divContainer}>
+                        this.props.shop.ProductLoteId.name ?
+                        <div className={this.state.divContainer}>
                             <ModalHeader toggle={this.closeModal}>{this.props.modalHeader}</ModalHeader>
                             <ModalBody className="Scroll">      
-                            <form className="formCodeConfirm" onSubmit={this.handleSaveCompras.bind(this)}> 
-                                <div className="row"> 
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="tipoCompra">Tipo de Compra:</Label>
-                                        <div className={this.state.divTipoCompra}>
-                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="tipoCompra" value={this.state.arrayTipoCompraSelect} onChange={this.handleChangeTipoCompra} options={this.props.aplication.dataGeneral.dataGeneral.type_shop} />
-                                        </div>                                            
-                                        <div className="errorSelect">{this.state.divTipoCompraError}</div>
-                                    </FormGroup>
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="nroCompra">Nro Compra</Label>
-                                        <div className={this.state.divNroCompra}>
-                                            <Input disabled={this.props.disabled} name="nroCompra" id="nroCompra" onKeyUp={this.handlekeyNroCompra} onChange={this.handleChange} value={this.state.nroCompra} type="text" placeholder="Nro Compra" />
-                                        </div>
-                                        <div className="errorSelect">{this.state.divNroCompraError}</div>
-                                    </FormGroup>
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="nroControl">Nro Control</Label>
-                                        <div className={this.state.divNroControl}>
-                                            <Input disabled={this.props.disabled} name="nroControl" id="nroControl" onKeyUp={this.handlekeyNroControl} onChange={this.handleChange} value={this.state.nroControl} type="text" placeholder="Nro Control" />
-                                        </div>
-                                        <div className="errorSelect">{this.state.divNroControlError}</div>
-                                    </FormGroup>
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="proveedor">Proveedor:</Label>
-                                        <div className={this.state.divProveedor}>
-                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="proveedor" value={this.state.arrayProveedorSelect} onChange={this.handleChangeProvider} options={this.props.aplication.dataGeneral.dataCountries.providers} />
-                                        </div>                                            
-                                        <div className="errorSelect">{this.state.divProveedorError}</div>
-                                    </FormGroup>    
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="direccionPartida">Direccion de Partida:</Label>
-                                        <div className={this.state.divDireccionPartida}>
-                                            <Input disabled={this.props.disabled} name="direccionPartida" id="direccionPartida" onKeyUp={this.handlekeyDireccionPartida} onChange={this.handleChange} value={this.state.direccionPartida} type="textarea" placeholder="Direccion de Partida" />
-                                        </div>
-                                        <div className="errorSelect">{this.state.divDireccionPartidaError}</div>                                                                                                                                                            
-                                    </FormGroup>                                
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="direccionLlegada">Direccion de LLegada:</Label>
-                                        <div className={this.state.divDireccionLlegada}>
-                                            <Input disabled={this.props.disabled} name="direccionLlegada" id="direccionLlegada" onKeyUp={this.handlekeyDireccionLLegada} onChange={this.handleChange} value={this.state.direccionLlegada} type="textarea" placeholder="Direccion de Llegada" />
-                                        </div>
-                                        <div className="errorSelect">{this.state.divDireccionLlegadaError}</div>
-                                    </FormGroup>
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="emails">Fecha de Compra</Label>
-                                        <div className={this.state.divCompraDate} style={{width:"45%"}}>
-                                            <DatePicker
-                                                selected={this.state.compraDate}
-                                                onChange={this.handleChangeCompraDate}
-                                                dateFormat="dd-MM-yyyy"       
-                                                isClearable={this.props.isClearable}    
-                                                showYearDropdown
-                                                dateFormatCalendar="MMMM"
-                                                className="form-control"
-                                                disabled={this.props.disabled}
-                                            />
-                                        </div>
-                                        <div className="errorSelect">{this.state.divCompraDateError}</div>                                                                
-                                    </FormGroup>
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
-                                        <Label for="observacion">Observacion:</Label>
-                                        <div className={this.state.divObservacion}>
-                                            <Input disabled={this.props.disabled} name="observacion" id="observacion" onKeyUp={this.handlekeyObservacion} onChange={this.handleChange} value={this.state.observacion} type="textarea" placeholder="Observacion" />
-                                        </div>
-                                        <div tooltip>{this.state.divObservacionError}</div>                                                                                                                                                            
-                                    </FormGroup>                                                                 
-                                </div>            
-                                <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Productos</Button>                                                                                            
-                                <br />
-                                <br />
-                                <Products 
-                                    collapse={this.state.collapse}
-                                />
-                                <div className="errorSelect" style={{width:"100%"}}>{this.state.divTableProductos}</div>
-                                <Table hover responsive borderless>
-                                    <thead className="thead-light">
-                                        <tr>
-                                            <th className="text-left">Nro</th>
-                                            <th className="text-left ">Producto</th>                                                        
-                                            <th className="text-left">Codigo</th>                                                        
-                                            <th className="text-left">Cantidad</th>                                                        
-                                            <th className="text-left">Precio Compra</th>                                                        
-                                            <th className="text-left">Desc %</th>                                                        
-                                            <th className="text-left">Precio Desc</th>                                                        
-                                            <th className="text-left">Precio Venta</th>                                                        
-                                            <th className="text-left">Exento</th>                                                        
-                                            <th className="text-left">Acciones</th>                                                        
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.props.shop.products ? this.props.shop.products.map((list, i) => {
-                                                return (
-                                                    <tr key={i}>
-                                                        <td>{i+1}</td>
-                                                        <td>{list.name}</td>                                                                                                                                                    
-                                                        <td>{list.code}</td>                                                                                                                                                                                                            
-                                                        <td>{list.quantity}</td>                                                                                                                                                    
-                                                        <td>{list.price} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
-                                                        <td>{list.discount}</td>                                                                                                                                                                                                            
-                                                        <td>{number_format(list.price_discount, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
-                                                        <td>{list.price_sale} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
-                                                        <td>{list.exempt}</td>                                                                                                                                                                                                                                                                    
-                                                        <td>
-                                                            <div  className="float-left" >
-                                                                <IconButton aria-label="Delete" disabled={this.props.option === 2 ? true : false} title="Ver Rol" className="iconButtons" onClick={() => { this.deleteProduct(i, list.quantity, list.price, list.exempt, list.discount); }}><Delete className="iconTable" /></IconButton>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        :
-                                          null
-                                        }
-                                    </tbody>
-                                </Table>
-                                <hr />
-                                <br />
-                                <div className="divFlexRight">
-                                    <div style={{width:"60%"}}>
-                                        <FormGroup className="labelFlexRight">
-                                            <div style={{width:"90%"}}>
-                                                <InputGroup>
-                                                    <InputGroupAddon addonType="prepend" style={{width:"79px"}}>Subtotal</InputGroupAddon>
-                                                        <Input type="text" disabled={true} name="subtotal" id="subtotal" placeholder="Subtotal" value={number_format(this.props.shop.subTotal, 2)}/>
-                                                    <InputGroupAddon addonType="append">{this.props.aplication.dataGeneral.dataCountries.current_simbol}</InputGroupAddon>
-                                                  </InputGroup>
+                                <form className="formCodeConfirm" onSubmit=""> 
+                                    <div className="row"> 
+                                        <FormGroup className="top form-group col-sm-6">                                                                 
+                                            <Label for="producto">Producto:</Label> 
+                                            <div className={this.state.divProducto}>                               
+                                                <Input disabled={this.props.disabled} name="producto" id="producto" onKeyUp={this.handlekeyProducto} onChange={this.handleChange} value={this.state.producto} onBlur={this.productoOnBlur} type="text" placeholder="Producto" />
+                                            </div>
+                                            <div className="errorSelect">{this.state.divProductoError}</div>
+                                        </FormGroup> 
+                                        <FormGroup className="top form-group col-sm-6">                                                                 
+                                            <Label for="tipo">Tipo:</Label>
+                                            <div className={this.state.divTipo}>
+                                                <Select isSearchable="true" isDisabled={this.props.disabled} name="tipo" value={this.state.arrayTipoSelect} onChange={this.handleChangeTipo} options={this.props.aplication.dataGeneral.dataGeneral.type_supplies} />
                                             </div>                                            
+                                            <div className="errorSelect">{this.state.divTipoError}</div>
                                         </FormGroup>
-                                        <FormGroup className="labelFlexRight">
-                                            <div style={{width:"90%"}}>
-                                                <InputGroup>
-                                                    <InputGroupAddon addonType="prepend" style={{width:"79px"}}>Impuesto</InputGroupAddon>
-                                                        <Input type="text" disabled={true} name="impuesto" id="impuesto" placeholder="Impuesto" value={number_format(this.props.shop.impuesto, 2)}/>
-                                                    <InputGroupAddon addonType="append">{this.props.aplication.dataGeneral.dataCountries.current_simbol}</InputGroupAddon>
-                                                  </InputGroup>
-                                            </div>                                            
+                                        <FormGroup className="top form-group col-sm-6">                                                                 
+                                            <Label for="codigo">Codigo:</Label> 
+                                            <div className={this.state.divCodigo}>                               
+                                                <Input disabled={this.props.disabled} name="codigo" id="codigo" onKeyUp={this.handlekeyCodigo} onChange={this.handleChange} value={this.state.codigo} onBlur={this.codigoOnBlur} type="text" placeholder="Codigo" />
+                                            </div>
+                                            <div className="errorSelect">{this.state.divCodigoError}</div>                                                                                                                                                                                         
+                                        </FormGroup> 
+                                        <FormGroup className="top form-group col-sm-6">                                                                 
+                                            <Label for="descripcion">Descripcion:</Label>
+                                            <div className={this.state.divDescripcion}>
+                                                <Input disabled={this.props.disabled} name="descripcion" id="descripcion" onKeyUp={this.handlekeyDescripcion} onChange={this.handleChange} value={this.state.descripcion} type="textarea" placeholder="Descripcion" />
+                                            </div>
+                                            <div className="errorSelect">{this.state.divDescripcionError}</div>                                                                                                                                                            
                                         </FormGroup>
-                                        <FormGroup className="labelFlexRight">
-                                            <div style={{width:"90%"}}>
-                                                <InputGroup>
-                                                    <InputGroupAddon addonType="prepend" style={{width:"79px"}}>Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</InputGroupAddon>
-                                                        <Input type="text" disabled={true} name="Total" id="Total" placeholder="Total" value={number_format(this.props.shop.total, 2)}/>
-                                                    <InputGroupAddon addonType="append">{this.props.aplication.dataGeneral.dataCountries.current_simbol}</InputGroupAddon>
-                                                </InputGroup>
-                                            </div>                                            
+                                        <FormGroup className="top form-group col-sm-6">                                                                 
+                                            <Label for="foto">Foto:</Label>
+                                            <br />
+                                            <InputGroup>
+                                            <Input disabled={this.props.disabled} className="top" type="file" accept="image/*" invalid={this.state.fotoInvalid} onChange={this.fileHandlerFoto} />
+                                            <FormFeedback tooltip>{this.state.fotoError}</FormFeedback>  
+                                            <InputGroupAddon addonType="append">
+                                                <div>
+                                                    {
+                                                        this.state.foto != null && <img alt="foto" style={{width: 100, height: 100}}  className="image"  src={"data:image/jpeg;" + this.state.foto} />
+                                                    }
+                                                </div>
+                                            </InputGroupAddon>
+                                            </InputGroup>
                                         </FormGroup>
                                     </div>
-                                </div>
-                                <br />                                
-                            </form>                                                                    
+                                    <Button disabled={this.props.disabled} color="primary" onClick={this.toggleCollapse} style={{ marginBottom: '1rem' }}>Lista de Lotes</Button>
+                                    <br />
+                                    <br />
+                                    <Collapse isOpen={this.state.collapse}>
+                                        <Card>
+                                            <CardBody>       
+                                                <Table hover responsive borderless>
+                                                    <thead className="thead-light">
+                                                        <tr>
+                                                            <th className="text-left">Nro</th>
+                                                            <th className="text-left ">Lote</th>                                                        
+                                                            <th className="text-left ">Compra</th>                                                        
+                                                            <th className="text-left">Cantidad</th>                                                        
+                                                            <th className="text-left">Stock</th>                                                        
+                                                            <th className="text-left">Limite Stock</th>                                                        
+                                                            <th className="text-left">Precio/Compra</th>                                                        
+                                                            <th className="text-left">Precio/venta</th>                                                        
+                                                            <th className="text-left">Desc %</th>                                                                                                                    
+                                                            <th className="text-left">Exento</th>                                                        
+                                                            <th className="text-left">Acciones</th>                                                        
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            this.props.shop.ProductLoteId.lote ? this.props.shop.ProductLoteId.lote.map((product, i) => {
+                                                                return (
+                                                                    <tr key={i}>
+                                                                        <td>{i+1}</td>
+                                                                        <td>{product.number}</td>                                                                                                                                                    
+                                                                        <td>{product.number_invoice}</td>                                                                                                                                                                                                            
+                                                                        <td>{product.quantity}</td>                                                                                                                                                    
+                                                                        <td>{product.quantity_stock}</td>                                                                                                                                                    
+                                                                        <td>{product.limit_stock}</td>                                                                                                                                                    
+                                                                        <td>{number_format(product.price, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
+                                                                        <td>{number_format(product.price_sale, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
+                                                                        <td>{product.discount}</td>                                                                       
+                                                                        <td>{product.exempt}</td>
+                                                                        <td>
+                                                                            <div  className="float-left" >
+                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Editar lote" className="iconButtons" onClick={() => { this.openModal(1, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Visibility className="iconTable" /></IconButton>
+                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Ver lote" className="iconButtons" onClick={() => { this.openModal(2, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Edit className="iconTable" /></IconButton>                                                                                
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        :
+                                                          null
+                                                        }
+                                                    </tbody>
+                                                </Table>                                    
+                                            </CardBody>
+                                        </Card>
+                                    </Collapse>
+                                </form>
                             </ModalBody>
                             <ModalFooter>
                                 <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCompras}>{this.props.modalFooter}</Button>
                                 <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                             </ModalFooter>
-                            </div>
+                        </div>  
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                        <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>  
                     }
-                </Modal>                
+                 </Modal>               
             </span> 
         );
     }
-  }
+}    
+
 const mapStateToProps = state => ({
   shop: state.shop.toJS(),
   authData: state.auth,
@@ -499,13 +334,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({  
-    confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
-    saveShopAction: (data, callback) =>dispatch(saveShopAction(data, callback)),
-    deleteProductsFunction: (key, subtotal, impuesto, total) =>dispatch(deleteProductsFunction(key, subtotal, impuesto, total)),
-    cleanProducts: (key) =>dispatch(cleanProducts()),
+    cleanProducts: () =>dispatch(cleanProducts()),
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalShop);
+)(ModalProduct);
