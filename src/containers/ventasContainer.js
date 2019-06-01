@@ -23,7 +23,10 @@ import {
   editDiscount,
   createSale
 } from "../actions/ventasAction";
-import { openConfirmDialog , openSnackbars } from "../actions/aplicantionActions";
+import {
+  openConfirmDialog,
+  openSnackbars
+} from "../actions/aplicantionActions";
 import Footer from "../views/Ventas/Footer";
 import DiscountRequest from "../views/Ventas/discountRequest";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -216,7 +219,6 @@ class VentasContainer extends React.Component {
     );
 
     const totalData = this.getTotal(this.props.products, this.props.aplication);
-
     return (
       <Container>
         {!this.props.saleLoading && <Spinner />}
@@ -229,6 +231,7 @@ class VentasContainer extends React.Component {
             approvers={this.props.approvers}
             loading={this.state.modalLoading}
             edit={this.state.edit}
+            total={totalData}
           />
         )}
         <div style={{ height: "38%" }}>
@@ -241,6 +244,7 @@ class VentasContainer extends React.Component {
               clean={this.props.clean}
               options={optionsPatient}
               isSaved={this.props.isSaved}
+              statusSale={this.props.statusSale}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -264,6 +268,7 @@ class VentasContainer extends React.Component {
               getTotal={this.getTotal}
               discount={this.props.discount}
               loaded={this.props.loaded}
+              statusSale={this.props.statusSale}
             />
 
             <Footer
@@ -274,6 +279,7 @@ class VentasContainer extends React.Component {
               confirm={this.props.openConfirmDialog}
               products={this.props.products}
               saveInvoice={this.saveSales}
+              statusSale={this.props.statusSale}
               aplication={this.props.aplication}
               isSaved={this.props.isSaved}
               cancelled={this.props.cancelledBill}
@@ -304,7 +310,8 @@ const mapStateToProps = state => ({
   isSaved: state.ventas.get("saveBill"),
   bill_id: state.ventas.get("bill_id"),
   discount: state.ventas.get("discount"),
-  dataGeneral: state.global.dataGeneral.dataGeneral
+  dataGeneral: state.global.dataGeneral.dataGeneral,
+  statusSale: state.ventas.get("status_sale")
 });
 
 export default connect(

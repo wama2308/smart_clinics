@@ -71,10 +71,11 @@ export default class Footer extends React.Component {
             bill_id={this.props.bill_id}
             createSale={this.props.createSale}
             dataGeneral={this.props.dataGeneral}
+            cancel={this.props.cancel}
           />
         )}
         <div style={{ display: "flex", alignItems: "center" }}>
-          {!this.props.discount && (
+          {!this.props.discount && this.props.statusSale !== "BILLED" && (
             <Button
               disabled={disabled}
               className="sellButtons"
@@ -85,7 +86,7 @@ export default class Footer extends React.Component {
             </Button>
           )}
 
-          {discountDisabled && (
+          {discountDisabled && this.props.statusSale !== "BILLED" && (
             <div>
               <Button
                 disabled={disabled}
@@ -125,7 +126,7 @@ export default class Footer extends React.Component {
           )}
         </div>
 
-        <div>
+        <div style={{ display: "flex" }}>
           {this.props.products && (
             <Button
               color="danger"
@@ -137,34 +138,39 @@ export default class Footer extends React.Component {
             </Button>
           )}
 
-          {this.props.products && this.props.isSaved && (
-            <Button
-              color="danger"
-              disabled={disabled}
-              className="sellButtons"
-              onClick={() => this.confirm("cancel")}
-            >
-              ANULAR
-            </Button>
+          {this.props.products &&
+            this.props.isSaved &&
+            this.props.statusSale !== "BILLED" && (
+              <Button
+                color="danger"
+                disabled={disabled}
+                className="sellButtons"
+                onClick={() => this.confirm("cancel")}
+              >
+                ANULAR
+              </Button>
+            )}
+          {this.props.statusSale !== "BILLED" && (
+            <div>
+              <Button
+                disabled={disabled}
+                className="sellButtons"
+                color="primary"
+                onClick={this.props.saveInvoice}
+                disabled={ventaDisabled}
+              >
+                Guardar Factura
+              </Button>
+              <Button
+                color="primary"
+                className="sellButtons"
+                disabled={ventaDisabled}
+                onClick={() => this.setState({ openModal: true })}
+              >
+                Realizar Venta
+              </Button>
+            </div>
           )}
-
-          <Button
-            disabled={disabled}
-            className="sellButtons"
-            color="primary"
-            onClick={this.props.saveInvoice}
-            disabled={ventaDisabled}
-          >
-            Guardar Factura
-          </Button>
-          <Button
-            color="primary"
-            className="sellButtons"
-            disabled={ventaDisabled}
-            onClick={() => this.setState({ openModal: true })}
-          >
-            Realizar Venta
-          </Button>
         </div>
       </Container>
     );

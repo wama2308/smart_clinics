@@ -11,7 +11,7 @@ import {
   FormFeedback
 } from "reactstrap";
 import { Formik } from "formik";
-import { InitialValue } from "./const";
+import { formatNumber } from "../../core/utils";
 
 export default class DiscountRequest extends React.Component {
   constructor(props) {
@@ -44,6 +44,20 @@ export default class DiscountRequest extends React.Component {
     this.props.discountRequest(type, obj);
   };
 
+  handleChange = (event, name, setFieldValue, discountType) => {
+    console.log(discountType);
+    if (discountType === "porcentaje" && Number(event.target.value) <= 100) {
+      console.log("entro aca");
+      setFieldValue(name, event.target.value);
+    } else if (
+      discountType === "valor" &&
+      Number(event.target.value) <= this.props.total.total
+    ) {
+      console.log("entro 2");
+      setFieldValue(name, event.target.value);
+    }
+  };
+
   render() {
     console.log("data", this.props.edit);
     const type = [
@@ -56,6 +70,7 @@ export default class DiscountRequest extends React.Component {
         type: "valor"
       }
     ];
+
     const InitialValue = {
       discountType: type[0].type,
       value: "",
@@ -70,7 +85,28 @@ export default class DiscountRequest extends React.Component {
           const disabled = values.value.length < 1 ? true : false;
           return (
             <Modal isOpen={this.props.open} toggle={this.props.close}>
-              <ModalHeader>Peticion de descuento</ModalHeader>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: 20,
+                  borderBottom: "1px solid #c8ced3",
+                  alignItems: "flex-end"
+                }}
+              >
+                <h5 style={{ margin: 0 }}>Peticion de descuento</h5>
+                <div>
+                  <div className="total">
+                    <span style={{ fontWeight: "bold" }}>Total:</span>
+                    &nbsp;
+                    {formatNumber(this.props.total.total)}
+                    &nbsp;
+                    <span style={{ fontWeight: "bold" }}>
+                      {this.props.total.currency}
+                    </span>
+                  </div>
+                </div>
+              </div>
               <ModalBody>
                 {!this.props.loading && (
                   <div
@@ -107,19 +143,27 @@ export default class DiscountRequest extends React.Component {
                           >
                             {type.map((type, key) => {
                               return (
-                                <option key={type.type}>{type.value}</option>
+                                <option key={type.type} value={type.type}>
+                                  {type.value}
+                                </option>
                               );
                             })}
                           </Input>
                         </div>
                         <div>
                           <Input
-                            type="text"
+                            type="number"
                             name="value"
                             placeholder="Ingrese monto a descontar"
+                            value={values.value}
                             className="inputStyle"
                             onChange={event =>
-                              setFieldValue("value", event.target.value)
+                              this.handleChange(
+                                event,
+                                "value",
+                                setFieldValue,
+                                values.discountType
+                              )
                             }
                           />
                         </div>

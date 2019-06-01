@@ -10,7 +10,8 @@ import {
 import { Radio } from "@material-ui/core";
 import { formatNumber } from "../../core/utils";
 import { Formik } from "formik";
-// import ElectronicBill from "./ElectronicBill";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import ElectronicBill from "./ElectronicBill";
 import styled from "styled-components";
 
 export default class MakeSale extends React.Component {
@@ -19,7 +20,8 @@ export default class MakeSale extends React.Component {
     this.state = {
       electronic: false,
       step: 1,
-      typeBill: 1
+      typeBill: 1,
+      loading: true
     };
   }
 
@@ -59,7 +61,9 @@ export default class MakeSale extends React.Component {
   getDataTypes = allvalues => {
     const pay = this.props.aplication.way_to_pay;
 
-    return pay.filter(pay => allvalues[pay.label].value > 0);
+    return pay.filter(
+      pay => allvalues[pay.label].value > 0 && pay.label !== "EFECTIVO"
+    );
   };
 
   pressKey = (e, set, key, allvalues, values) => {
@@ -112,7 +116,18 @@ export default class MakeSale extends React.Component {
   };
 
   handleSubmit = async values => {
+    this.setState({ loading: false });
+
     const way_to_pay = await this.getSubmitedValues(values);
+    let completed = this.getRemaining(values);
+    completed =
+      completed > 0
+        ? this.props.dataGeneral.payment_type.find(type => {
+            return type.label === "Abono";
+          })
+        : this.props.dataGeneral.payment_type.find(type => {
+            return type.label === "Completo";
+          });
     const obj = {
       bill_id: this.props.bill_id,
       patient_id: this.props.patient._id,
@@ -120,10 +135,47 @@ export default class MakeSale extends React.Component {
       way_to_pay: way_to_pay,
       sub_total: this.props.total.subTotal,
       igv: this.props.total.iva,
-      total: this.props.total.total
+      total: this.props.total.total,
+      payment_type: completed.value
     };
 
-    this.props.createSale(obj);
+    this.props.createSale(obj, () => {
+      if (this.state.typeBill === 1) {
+        this.setState({ loading: true, step: 3 });
+      } else {
+        this.props.close();
+      }
+    });
+  };
+
+  getStylesFromStep = () => {
+    switch (this.state.step) {
+      case 1:
+        return {
+          minWidth: "35%"
+        };
+      case 2:
+        return {
+          minWidth: "60%"
+        };
+
+      case 3:
+        return {
+          height: "90%",
+          minWidth: "50%"
+        };
+    }
+  };
+
+  getDisabledButton = (typePay, values) => {
+    let disabled = false;
+    typePay.map(pay => {
+      if (values[pay.label].operation_number.length < 1) {
+        disabled = true;
+      }
+    });
+
+    return disabled;
   };
 
   render() {
@@ -131,7 +183,8 @@ export default class MakeSale extends React.Component {
     const InitialValues = this.getInitial(aplication.way_to_pay);
     const typeBill = this.state.typeBill;
 
-    console.log("data", typeBill);
+    const styles = this.getStylesFromStep();
+
     return (
       <Formik
         onSubmit={this.handleSubmit}
@@ -139,13 +192,15 @@ export default class MakeSale extends React.Component {
         render={({ values, setFieldValue, handleSubmit }) => {
           const remaining = this.getRemaining(values);
           const typePay = this.getDataTypes(values);
+
+          const disabled = this.getDisabledButton(typePay, values);
           const whidth = this.state.step === 1 ? "35%" : "60%";
           return (
             <Modal
               isOpen={open}
               toggle={close}
               contentClassName="makeSale"
-              style={{ minWidth: whidth }}
+              style={{ ...styles }}
             >
               <ModalHeader toggle={close}>Realizar venta</ModalHeader>
               <Body
@@ -155,7 +210,19 @@ export default class MakeSale extends React.Component {
                   paddingLeft: 0
                 }}
               >
-                {this.state.step === 1 && (
+                {!this.state.loading && (
+                  <div
+                    style={{
+                      minHeight: 262,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <CircularProgress />
+                  </div>
+                )}
+                {this.state.loading && this.state.step === 1 && (
                   <div className="tipePayment">
                     {aplication.way_to_pay.map((pay, key) => {
                       return (
@@ -225,7 +292,7 @@ export default class MakeSale extends React.Component {
                     </div>
                   </div>
                 )}
-                {this.state.step === 2 && (
+                {this.state.loading && this.state.step === 2 && (
                   <div style={{ padding: "0px 20px 20px" }}>
                     {typePay.map((pay, key) => {
                       return (
@@ -321,6 +388,7 @@ export default class MakeSale extends React.Component {
                                 onChange={event => {
                                   setFieldValue(pay.label, {
                                     ...values[pay.label],
+                                    way_to_pay: pay.label,
                                     operation_number: event.target.value
                                   });
                                 }}
@@ -384,11 +452,21 @@ export default class MakeSale extends React.Component {
                         >
                           Atras
                         </Button>
-                        <Button color="success" onClick={handleSubmit}>
+                        <Button
+                          color="success"
+                          disabled={disabled}
+                          onClick={handleSubmit}
+                        >
                           Completar venta
                         </Button>
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {this.state.step === 3 && (
+                  <div style={{ flex: 1, display: "flex" }}>
+                    <ElectronicBill {...this.props} />
                   </div>
                 )}
               </Body>
@@ -456,65 +534,5 @@ const Body = styled(ModalBody)`
   }
   .inputPayment {
     width: 70%;
-  }
-
-  .list {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 35px;
-    &-body {
-      flex: 1;
-      display: flex;
-      padding-right: 3%;
-      align-items: baseline;
-    }
-
-    .subtitle {
-      font-weight: 700;
-      font-size: 17px;
-      padding-right: 5px;
-      padding-left: 10px;
-    }
-    .textSpace {
-      font-size: 16px;
-    }
-  }
-
-  .makePaciente {
-    flex: 0.8;
-
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .makeTable {
-    flex: 1.5;
-    border: 1px solid #c8ced3;
-  }
-
-  .makeTotal {
-    flex: 1;
-    border: 1px solid #c8ced3;
-    display: flex;
-    justify-content: space-between;
-
-    .qrStyle {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .totalStyle {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      border: 1px solid #c8ced3;
-      flex-direction: column;
-    }
   }
 `;

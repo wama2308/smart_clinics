@@ -79,7 +79,8 @@ class Products extends React.Component {
 
   render() {
     const { patient, products, aplication } = this.props;
-    const disableAllProductos = this.props.discount ? true : false;
+    const disableAllProductos =
+      this.props.discount || this.props.statusSale === "BILLED" ? true : false;
     const totalData = this.props.getTotal(products, aplication);
 
     const dataHead = [

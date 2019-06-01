@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ModalHeader, ModalBody } from "reactstrap";
+import { ModalFooter, Button } from "reactstrap";
 import {
   Typography,
   Table,
@@ -12,6 +12,13 @@ import styled from "styled-components";
 import { formatNumber } from "../../core/utils";
 
 export default class electronicBill extends React.Component {
+
+  continue=()=>{
+    this.props.cancel()
+    this.props.close()
+  }
+
+
   render() {
     const { patient, products, total, discount } = this.props;
     const totalDiscount = !discount ? 0 : discount.discount;
@@ -24,6 +31,14 @@ export default class electronicBill extends React.Component {
     ];
     return (
       <Container>
+        <div
+          style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        >
+          <div className="documentInfo">
+            <h5>Documento electronico</h5>
+            <h5>N° 249</h5>
+          </div>
+        </div>
         <div className="makePaciente">
           <div className="list" style={{ borderTop: "none" }}>
             <div className="list-body">
@@ -115,14 +130,13 @@ export default class electronicBill extends React.Component {
           </div>
         </div>
         <div className="makeTotal">
-          <div className="qrStyle" />
           <div className="totalStyle">
-            <div className="list" style={{ borderTop: "none" }}>
-              <div className="list-body" style={{ justifyContent: "center" }}>
-                <Typography variant="subtitle1" className="subtitle">
+            <div className="list" style={{ paddingLeft: "10%" }}>
+              <div className="list-body">
+                <Typography variant="subtitle1" className="totalTitle">
                   Monto Neto:
                 </Typography>
-                <Typography variant="body1" className="textSpace">
+                <Typography variant="body1" className="numberStyle">
                   {formatNumber(total.subTotal)}
                 </Typography>
                 <Typography variant="subtitle1" className="subtitle">
@@ -131,12 +145,12 @@ export default class electronicBill extends React.Component {
               </div>
             </div>
 
-            <div className="list" style={{ borderTop: "none" }}>
-              <div className="list-body" style={{ justifyContent: "center" }}>
-                <Typography variant="subtitle1" className="subtitle">
+            <div className="list" style={{ paddingLeft: "10%" }}>
+              <div className="list-body">
+                <Typography variant="subtitle1" className="totalTitle">
                   Impuesto ({total.percentageIva}%):
                 </Typography>
-                <Typography variant="body1" className="textSpace">
+                <Typography variant="body1" className="numberStyle">
                   {formatNumber(total.iva)}
                 </Typography>
                 <Typography variant="subtitle1" className="subtitle">
@@ -145,12 +159,12 @@ export default class electronicBill extends React.Component {
               </div>
             </div>
 
-            <div className="list" style={{ borderTop: "none" }}>
-              <div className="list-body" style={{ justifyContent: "center" }}>
-                <Typography variant="subtitle1" className="subtitle">
+            <div className="list" style={{ paddingLeft: "10%" }}>
+              <div className="list-body">
+                <Typography variant="subtitle1" className="totalTitle">
                   Descuento:
                 </Typography>
-                <Typography variant="body1" className="textSpace">
+                <Typography variant="body1" className="numberStyle">
                   {formatNumber(totalDiscount)}
                 </Typography>
                 <Typography variant="subtitle1" className="subtitle">
@@ -159,12 +173,12 @@ export default class electronicBill extends React.Component {
               </div>
             </div>
 
-            <div className="list" style={{ borderTop: "none" }}>
-              <div className="list-body" style={{ justifyContent: "center" }}>
-                <Typography variant="subtitle1" className="subtitle">
+            <div className="list" style={{ paddingLeft: "10%" }}>
+              <div className="list-body">
+                <Typography variant="subtitle1" className="totalTitle">
                   Total:
                 </Typography>
-                <Typography variant="body1" className="textSpace">
+                <Typography variant="body1" className="numberStyle">
                   {formatNumber(total.total)}
                 </Typography>
                 <Typography variant="subtitle1" className="subtitle">
@@ -174,6 +188,11 @@ export default class electronicBill extends React.Component {
             </div>
           </div>
         </div>
+
+        <ModalFooter>
+          <Button color="primary">Imprimir</Button>
+          <Button color="success" onClick={this.continue}>Continuar</Button>
+        </ModalFooter>
       </Container>
     );
   }
@@ -191,6 +210,23 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+
+  .totalTitle {
+    width: 43%;
+    font-weight: bold;
+  }
+
+  .numberStyle {
+    width: 25%;
+  }
+
+  .documentInfo {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: red;
+  }
   .list {
     display: flex;
     align-items: center;
@@ -217,8 +253,7 @@ const Container = styled.div`
 
   .makePaciente {
     flex: 0.8;
-
-    width: 60%;
+    width: 70%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -233,7 +268,7 @@ const Container = styled.div`
     flex: 1;
     border: 1px solid #c8ced3;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
 
     .qrStyle {
       flex: 1;
@@ -243,11 +278,10 @@ const Container = styled.div`
     }
 
     .totalStyle {
-      flex: 1;
+      width: 50%;
       display: flex;
-      justify-content: center;
-      border: 1px solid #c8ced3;
       flex-direction: column;
+      justify-content: center;
     }
   }
 `;

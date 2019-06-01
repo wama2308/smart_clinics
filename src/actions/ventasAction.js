@@ -366,7 +366,7 @@ export const editDiscount = (obj, callback) => dispatch => {
   });
 };
 
-export const createSale = obj => dispatch => {
+export const createSale = (obj, callback) => dispatch => {
   console.log(obj);
   getDataToken().then(token => {
     axios({
@@ -376,7 +376,10 @@ export const createSale = obj => dispatch => {
       ...token
     })
       .then(res => {
-        console.log(res.data);
+        callback();
+        // dispatch(cancelToSell());
+        dispatch(openSnackbars("success", "Operacion exitosa!"));
+
       })
       .catch(err => {
         console.log(err);

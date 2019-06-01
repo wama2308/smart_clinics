@@ -7,6 +7,8 @@ import {
   TableRow,
   TableHead
 } from "@material-ui/core";
+
+import { FiberManualRecord } from "@material-ui/icons";
 import moment from "moment";
 import styled from "styled-components";
 import classnames from "classnames";
@@ -64,6 +66,10 @@ class Ventas extends React.Component {
       { label: "TIEMPO" }
     ];
     const list = this.getDataTab(this.props.listSales);
+
+    const color =
+      this.props.status_sale === "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
+
     return (
       <Card style={{ flex: 1, margin: "0px 0px 10px 10px" }}>
         <Header>
@@ -139,7 +145,20 @@ class Ventas extends React.Component {
                       style={{ height: 30 }}
                       onClick={() => this.confirm(list.bill)}
                     >
-                      <Cell>{list.code}</Cell>
+                      <Cell>
+                        {" "}
+                        {this.state.activeTab === 1 && (
+                          <FiberManualRecord
+                            style={{
+                              position: "relative",
+                              left: "-25%",
+                              width: 12,
+                              color: color
+                            }}
+                          />
+                        )}{" "}
+                        {list.code}
+                      </Cell>
                       <Cell>{list.patient}</Cell>
                       <Cell>{list.patient_dni}</Cell>
                       <Cell>{list.total}</Cell>
