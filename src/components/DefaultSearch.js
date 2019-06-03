@@ -175,7 +175,7 @@ class DefaultSearch extends React.Component {
     };
 
     return (
-      <div>
+      <div style={{ width: this.props.width ? this.props.width : null }}>
         <Autosuggest
           varian={"outline"}
           {...autosuggestProps}

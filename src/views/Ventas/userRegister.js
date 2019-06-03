@@ -17,6 +17,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createPatients } from "../../actions/ventasAction";
 import { validationSquema } from "./const";
+import Search from "../../components/DefaultSearch";
 
 class UserRegister extends React.Component {
   constructor(props) {
@@ -76,6 +77,12 @@ class UserRegister extends React.Component {
 
   render() {
     const { open, close, aplication, patient, disabled } = this.props;
+    const reference = [
+      { label: "Cuenta propia", value: "Cuenta propia" },
+      { label: "Personal interno", value: "Personal interno" },
+      { label: "Centro medico externo", value: "Centro medico externo" },
+      { label: "Redes sociales", value: "Redes sociales" }
+    ];
     const InitialValue = {
       type_identity: aplication.dataCountries.type_identity[0].value,
       dni: "",
@@ -90,10 +97,11 @@ class UserRegister extends React.Component {
       sex_id: aplication.dataGeneral.sex[0].value,
       civil_state_id: aplication.dataGeneral.civil_state[2].value,
       photo: "",
+      reference: reference[0].label,
       birth_date: new Date()
     };
 
-     const values= patient? patient: InitialValue
+    const values = patient ? patient : InitialValue;
     return (
       <Formik
         onSubmit={this.save}
@@ -365,7 +373,7 @@ class UserRegister extends React.Component {
                               placeholder: "Telefono",
                               className: "react-tagsinput-inputMy",
                               type: "number",
-                              disabled:disabled
+                              disabled: disabled
                             }}
                             focusedClassName="react-tagsinput-focusedMy"
                             tagProps={{
@@ -389,7 +397,7 @@ class UserRegister extends React.Component {
                               placeholder: "Email",
                               className: "react-tagsinput-inputMy",
                               type: "email",
-                              disabled:disabled
+                              disabled: disabled
                             }}
                             focusedClassName="react-tagsinput-focusedMy"
                             tagProps={{
@@ -420,12 +428,112 @@ class UserRegister extends React.Component {
                           {this.state.birthDateError}
                         </div>
                       </FormGroup>
+
+                      <FormGroup className="top form-group col-sm-6">
+                        <Label for="provincia">Referencias</Label>
+                        <Input
+                          type="select"
+                          name="provincia"
+                          id="provincia"
+                          disabled={disabled}
+                          className="inputStyle"
+                          value={values.reference}
+                          onChange={event =>
+                            setFieldValue(
+                              "reference",
+                              event.target.value.toString()
+                            )
+                          }
+                        >
+                          {reference.map((reference, key) => {
+                            return (
+                              <option key={key} value={reference.value}>
+                                {reference.label}
+                              </option>
+                            );
+                          })}
+                        </Input>
+                      </FormGroup>
+
+                      {values.reference === "Personal interno" && (
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flex: 1,
+                            flexDirection:"column",
+                            display: "flex",
+                            minWidth: "40%",
+                            paddingTop: 20
+                          }}
+                        >
+                          <div style={{ width: "40%" }}>
+                            <Search placeholder="Nombre o cedula del personal Externo" />
+                          </div>
+                          <div style={{width:"100%", display:"flex"}}>
+                            <FormGroup className="top form-group col-sm-6">
+                              <Label for="Sucursal" className="mr-sm-2">
+                                Nombres
+                              </Label>
+                              <Input
+                                type="text"
+                                name="names"
+                                className="inputStyle"
+                                value={values.names}
+                                disabled={disabled}
+                                onBlur={handleBlur}
+                                onChange={event =>
+                                  setFieldValue("names", event.target.value)
+                                }
+                              />
+
+                              {errors.names && touched.names && (
+                                <FormFeedback
+                                  style={{ display: "block" }}
+                                  tooltip
+                                >
+                                  {errors.names}
+                                </FormFeedback>
+                              )}
+                            </FormGroup>
+
+                            <FormGroup className="top form-group col-sm-6">
+                              <Label for="Sucursal" className="mr-sm-2">
+                                Apellidos
+                              </Label>
+                              <Input
+                                type="text"
+                                name="surnames"
+                                className="inputStyle"
+                                disabled={disabled}
+                                value={values.surnames}
+                                onBlur={handleBlur}
+                                onChange={event =>
+                                  setFieldValue("surnames", event.target.value)
+                                }
+                              />
+
+                              {errors.surnames && touched.surnames && (
+                                <FormFeedback
+                                  style={{ display: "block" }}
+                                  tooltip
+                                >
+                                  {errors.surnames}
+                                </FormFeedback>
+                              )}
+                            </FormGroup>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <hr />
                   </ModalBody>
                   <ModalFooter>
                     <Button onClick={close}>Atras</Button>
-                    <Button color="success" disabled={disabled} onClick={handleSubmit}>
+                    <Button
+                      color="success"
+                      disabled={disabled}
+                      onClick={handleSubmit}
+                    >
                       Save
                     </Button>
                   </ModalFooter>
