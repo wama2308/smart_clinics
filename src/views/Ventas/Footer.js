@@ -147,7 +147,7 @@ export default class Footer extends React.Component {
                 className="sellButtons"
                 onClick={() => this.confirm("cancel")}
               >
-                ANULAR
+                Anular
               </Button>
             )}
           {this.props.statusSale !== "BILLED" && (

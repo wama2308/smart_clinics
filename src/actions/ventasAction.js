@@ -357,11 +357,7 @@ export const editDiscount = (obj, callback) => dispatch => {
       ...token
     }).then(res => {
       callback();
-      // dispatch(openSnackbars("success", "Operacion exitosa!"));
-      // dispatch({
-      //   type: "EDIT_ALL_BILL",
-      //   payload: { ...res.data, saveBill: true }
-      // });
+      dispatch(openSnackbars("success", "Operacion exitosa!"));
     });
   });
 };
@@ -379,7 +375,6 @@ export const createSale = (obj, callback) => dispatch => {
         callback();
         // dispatch(cancelToSell());
         dispatch(openSnackbars("success", "Operacion exitosa!"));
-
       })
       .catch(err => {
         console.log(err);

@@ -384,7 +384,9 @@ class UserRegister extends React.Component {
                             onChange={event => setFieldValue("phone", event)}
                           />
                         </div>
-                        <div className="errorSelect">{errors.phone}</div>
+                        {errors.phone && touched.phone && (
+                          <div className="errorSelect">{errors.phone}</div>
+                        )}
                       </FormGroup>
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="emails">Emails</Label>
@@ -408,7 +410,9 @@ class UserRegister extends React.Component {
                             onChange={event => setFieldValue("email", event)}
                           />
                         </div>
-                        <div className="errorSelect">{errors.email}</div>
+                        {errors.email && touched.email && (
+                          <div className="errorSelect">{errors.email}</div>
+                        )}
                       </FormGroup>
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="emails">Fecha de Nacimiento</Label>
@@ -433,8 +437,6 @@ class UserRegister extends React.Component {
                         <Label for="provincia">Referencias</Label>
                         <Input
                           type="select"
-                          name="provincia"
-                          id="provincia"
                           disabled={disabled}
                           className="inputStyle"
                           value={values.reference}
@@ -455,57 +457,53 @@ class UserRegister extends React.Component {
                         </Input>
                       </FormGroup>
 
-                      {values.reference === "Personal interno" && (
+                      <hr />
+
+                      {(values.reference === "Personal interno" ||
+                        values.reference === "Centro medico externo") && (
                         <div
                           style={{
                             justifyContent: "center",
                             alignItems: "center",
                             flex: 1,
-                            flexDirection:"column",
+                            flexDirection: "column",
                             display: "flex",
                             minWidth: "40%",
                             paddingTop: 20
                           }}
                         >
                           <div style={{ width: "40%" }}>
-                            <Search placeholder="Nombre o cedula del personal Externo" />
+                            <Search
+                              placeholder={`Nombre del ${values.reference}`}
+                            />
                           </div>
-                          <div style={{width:"100%", display:"flex"}}>
+                          <div style={{ width: "100%", display: "flex" }}>
                             <FormGroup className="top form-group col-sm-6">
                               <Label for="Sucursal" className="mr-sm-2">
-                                Nombres
+                                {`Nombre del ${values.reference}`}
                               </Label>
                               <Input
                                 type="text"
                                 name="names"
                                 className="inputStyle"
                                 value={values.names}
-                                disabled={disabled}
+                                disabled={true}
                                 onBlur={handleBlur}
                                 onChange={event =>
                                   setFieldValue("names", event.target.value)
                                 }
                               />
-
-                              {errors.names && touched.names && (
-                                <FormFeedback
-                                  style={{ display: "block" }}
-                                  tooltip
-                                >
-                                  {errors.names}
-                                </FormFeedback>
-                              )}
                             </FormGroup>
 
                             <FormGroup className="top form-group col-sm-6">
                               <Label for="Sucursal" className="mr-sm-2">
-                                Apellidos
+                                {`DNI ${values.reference}`}
                               </Label>
                               <Input
                                 type="text"
                                 name="surnames"
                                 className="inputStyle"
-                                disabled={disabled}
+                                disabled={true}
                                 value={values.surnames}
                                 onBlur={handleBlur}
                                 onChange={event =>

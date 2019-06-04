@@ -35,6 +35,13 @@ const setField = (state, node, field, payload) => {
   return state.setIn([node, field], payload);
 };
 
+const cancelDiscount = (state, payload) => {
+  const result = state.toJS();
+  result.status = undefined;
+  result.discount.status = payload;
+  return Map(result);
+};
+
 const saveOrDiscountBill = (state, payload) => {
   const json = state.toJS();
   const obj = {
@@ -115,7 +122,7 @@ const VentasReducer = (state = initialState, action) => {
       return saveOrDiscountBill(state, action.payload);
 
     case "DISCOUNT_CANCELLED":
-      return setField(state, "discount", "status", action.payload);
+      return cancelDiscount(state, action.payload);
     default:
       return state;
   }
