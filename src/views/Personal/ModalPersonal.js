@@ -17,6 +17,7 @@ import { deleteInfoUserId, saveRolAction, LoadRolIdFunction, saveUserNoMasterAct
 import { openSnackbars } from "../../actions/aplicantionActions";
 import ModalUser from '../Usuarios/ModalUser.js';
 import Switch from '@material-ui/core/Switch';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalCargos extends React.Component {
 	constructor(props) {
@@ -73,6 +74,8 @@ class ModalCargos extends React.Component {
         let divTagsEmails = "";
         let tagsEmailsError = "";
         let divEntryDate = "";
+        let divPaisSelect = "";
+        let paisSelectError = "";
         let entryDateError = "";
         let divProvinceSelect = "";
         let provinceSelectError = "";
@@ -93,7 +96,7 @@ class ModalCargos extends React.Component {
                     valueRegisterUser = elemento;
                 }            
             });     
-        }        
+        }       
         if (!this.state.dni){            
             dniInvalid = true;
             dniError = "¡Ingrese el Dni!";                        
@@ -146,6 +149,10 @@ class ModalCargos extends React.Component {
             divTagsEmails = "borderColor";
             tagsEmailsError = "¡Ingrese al menos un correo!";                        
         }
+        if (!this.state.arrayPaisSelect){            
+            divPaisSelect = "borderColor";
+            paisSelectError = "¡Seleccione el pais!";                        
+        }
         if (!this.state.arrayProvinceSelect){            
             divProvinceSelect = "borderColor";
             provinceSelectError = "¡Seleccione la provincia!";                        
@@ -169,7 +176,7 @@ class ModalCargos extends React.Component {
             }
         }
         if (dniError || chargesSelectError || namesError || surnamesError || sexSelectError || birthDateError || estateCivilSelectError || professionSelectError || 
-            especializationSelectError || divSucursalesSelectError || entryDateError || tagsTelefonosError || tagsEmailsError || provinceSelectError || DistrictSelectError || 
+            especializationSelectError || divSucursalesSelectError || entryDateError || tagsTelefonosError || tagsEmailsError || paisSelectError || provinceSelectError || DistrictSelectError || 
             direccionError || registerUserSelectError || divUsersSelectError) {            
             this.setState({ 
                 dniInvalid,
@@ -198,6 +205,8 @@ class ModalCargos extends React.Component {
                 divProvinceSelect,
                 DistrictSelectError,
                 divDistrictSelect,                
+                divPaisSelect,
+                paisSelectError,
                 direccionError,
                 direccionInvalid,
                 divSucursalesSelect,
@@ -240,7 +249,7 @@ class ModalCargos extends React.Component {
             let valuePais = "";
             let arrayPais = Object.values(this.state.arrayPaisSelect);
             arrayPais.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valuePais = elemento;
                 }            
             });
@@ -305,6 +314,7 @@ class ModalCargos extends React.Component {
             
             if(this.props.option === 1)
             {
+                console.log(this.state.tagsEmails)
                 this.setState({loading:'show'})    
                 this.props.savePersonalInternoAction(
                   {
@@ -313,6 +323,7 @@ class ModalCargos extends React.Component {
                     dni:this.state.dni,
                     names:this.state.names,
                     surnames: this.state.surnames,   
+                    country_id: valuePais,   
                     province_id: valueProvince,   
                     district_id: valueDistrito,   
                     profession_id: valueProfesion,   
@@ -355,6 +366,7 @@ class ModalCargos extends React.Component {
                     dni:this.state.dni,
                     names:this.state.names,
                     surnames: this.state.surnames,   
+                    country_id: valuePais,
                     province_id: valueProvince,   
                     district_id: valueDistrito,   
                     profession_id: valueProfesion,   
@@ -666,7 +678,13 @@ class ModalCargos extends React.Component {
     componentWillReceiveProps=(props)=>{            
         /*console.log("modal personal personaInterno", props.personaInterno);              
         console.log("modal personal usersRoles", props.usersRoles.toJS()); */                     
-        //console.log("modal personal application ", props.aplication);                      
+        //console.log("modal personal application ", props.aplication);     
+        let type_identity = "";
+        props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
+            if(typeIdentity.default === 1){
+                type_identity = typeIdentity.value;
+            }                 
+        })                 
         this.setState({
             modal: props.modal,       
             loading:'show'     
@@ -721,46 +739,55 @@ class ModalCargos extends React.Component {
 
             Array.prototype.unique=function(a){
               return function(){return this.filter(a)}}(function(a,b,c){return c.indexOf(a,b+1)<0
-            });                   
-            this.setState({
-                arrayTypeIdentitySelect: props.personaInterno.personalId.type_identity,                
-                dni: props.personaInterno.personalId.dni,
-                arrayChargesSelect: props.personaInterno.personalId.array_positions,                
-                names: props.personaInterno.personalId.names,
-                surnames: props.personaInterno.personalId.surnames,
-                arraySexSelect: props.personaInterno.personalId.array_sex,
-                birthDate: birthDate,
-                arrayEstatetCivilSelect: props.personaInterno.personalId.array_civil_state,
-                arrayProfessionSelect: props.personaInterno.personalId.array_profession,
-                arrayEspecializationSelect: props.personaInterno.personalId.array_specialization,
-                arraySucursalesSelect: props.personaInterno.personalId.surcursales_id,
-                tagsTelefonos: props.personaInterno.personalId.phone?props.personaInterno.personalId.phone:[],
-                tagsEmails: emailsTags.unique()?emailsTags.unique():[],
-                arrayProvinceSelect: props.personaInterno.personalId.array_province,
-                arrayDistrictSelect: props.personaInterno.personalId.array_district,
-                direccion: props.personaInterno.personalId.address,
-                foto: props.personaInterno.personalId.photo,
-                entryDate: entryDate,
-                arrayRegisterUserSelect: registarComoUsuario,
-                arrayUsersSelect: arrayUser,
-                checkedA: props.personaInterno.personalId.visitor,
-                userIdEdit: props.personaInterno.userId,
-                loading: props.personaInterno.personalId.loading,
-            })   
+            }); 
+            let photo = '';          
+            if(props.personaInterno.personalId.photo === ''){
+                photo = null;
+            }else{
+                photo = props.personaInterno.personalId.photo;
+            }
+
+            if(props.personaInterno.personalId.dni){
+                this.setState({
+                    arrayTypeIdentitySelect: props.personaInterno.personalId.type_identity,                
+                    dni: props.personaInterno.personalId.dni,
+                    arrayChargesSelect: props.personaInterno.personalId.array_positions,                
+                    names: props.personaInterno.personalId.names,
+                    surnames: props.personaInterno.personalId.surnames,
+                    arraySexSelect: props.personaInterno.personalId.array_sex,
+                    birthDate: birthDate,
+                    arrayEstatetCivilSelect: props.personaInterno.personalId.array_civil_state,
+                    arrayProfessionSelect: props.personaInterno.personalId.array_profession,
+                    arrayEspecializationSelect: props.personaInterno.personalId.array_specialization,
+                    arraySucursalesSelect: props.personaInterno.personalId.surcursales_id,
+                    tagsTelefonos: props.personaInterno.personalId.phone?props.personaInterno.personalId.phone:[],
+                    tagsEmails: emailsTags.unique()?emailsTags.unique():[],
+                    arrayPaisSelect: props.personaInterno.personalId.array_country,
+                    arrayProvinceSelect: props.personaInterno.personalId.array_province,
+                    arrayDistrictSelect: props.personaInterno.personalId.array_district,
+                    direccion: props.personaInterno.personalId.address,
+                    foto: photo,
+                    entryDate: entryDate,
+                    arrayRegisterUserSelect: registarComoUsuario,
+                    arrayUsersSelect: arrayUser,
+                    checkedA: props.personaInterno.personalId.visitor,
+                    userIdEdit: props.personaInterno.userId,
+                    loading: props.personaInterno.personalId.loading,
+                })   
+            }            
         }else if(props.option === 1){          
             props.userId !== "" ? this.setState({disabledSelectUser: true,}): false            
             props.userId !== "" ? this.setState({disabledRegisterUser: true,}): false            
             this.setState({                
                 loading:'hide',
-                arrayTypeIdentitySelect: props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],                           
+                arrayTypeIdentitySelect: type_identity,                           
             })                
         }else if(props.option === 0){                     
             this.setState({
-                arrayTypeIdentitySelect: props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],                
+                arrayTypeIdentitySelect: type_identity,                
                 ...InitalState
             })    
-        }
-                 
+        }                 
     }
 
     viewUserId = () =>{
@@ -854,7 +881,7 @@ class ModalCargos extends React.Component {
                                                         this.props.aplication.dataGeneral.dataCountries.type_identity != null && 
                                                         this.props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
                                                             return(
-                                                                <option key={i} value={typeIdentity.label} >{typeIdentity.label}</option>                                                            
+                                                                <option key={i} value={typeIdentity.value} >{typeIdentity.label}</option>                                                            
                                                             )                                                        
                                                         })
                                                     } 
@@ -1053,11 +1080,13 @@ class ModalCargos extends React.Component {
                             </ModalBody>
                             <ModalFooter>
                                 <Button className={this.props.showHide} color="primary" onClick={this.handleSavePersonal}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                        </div>
                     }
                 </Modal>                
             </span> 

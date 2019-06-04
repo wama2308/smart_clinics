@@ -1,26 +1,44 @@
 import React, { Component } from "react";
 import {  
+  Nav,
+  NavItem,
+  NavLink,
   Card,
   CardBody,
   CardHeader,
   Col,
   Row,  
+  TabContent,
+  TabPane
 } from "reactstrap";
 import { connect } from "react-redux";
 import ListDistributor from "../views/Distributor/ListDistributor";
-import { LoadDistributorFunction, LoadDistributorIdFunction, DeleteDistributorAction } from "../actions/DistributorActions";
+import ListDistributorInactivo from "../views/Distributor/ListDistributorInactivo";
+import { LoadDistributorFunction, LoadDistributorIdFunction, DeleteDistributorAction, enableProviderFunction } from "../actions/DistributorActions";
 import { openConfirmDialog } from "../actions/aplicantionActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import classnames from "classnames";
 
 class DistributorContainers extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      activeTab: "1"
+    };
 
   }
 
   componentDidMount = () => {
     this.props.LoadDistributorFunction();
   };  
+
+  toggleTab(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
+  }
 
   render() {   
     //console.log("props ", this.props.distributor.toJS());     
@@ -34,15 +52,40 @@ class DistributorContainers extends Component {
               {
                 this.props.distributor.get('loading') === 'hide' ?
                   <div>
-                    <ListDistributor 
-                      confirm={this.props.confirm}
-                      listDistributor={this.props.distributor.get("data")}
-                      LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
-                      DeleteDistributorAction={this.props.DeleteDistributorAction}                      
-                    />                
+                    <Nav tabs>
+                      <NavItem>
+                          <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
+                              Proveedores
+                          </NavLink>
+                      </NavItem>
+                      <NavItem>
+                          <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
+                              Proveedores Inactivos
+                          </NavLink>
+                      </NavItem>                      
+                    </Nav>
+                    <TabContent activeTab={this.state.activeTab}>
+                      <TabPane tabId="1">
+                        <ListDistributor 
+                          confirm={this.props.confirm}
+                          listDistributor={this.props.distributor.get("data")}
+                          LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
+                          DeleteDistributorAction={this.props.DeleteDistributorAction}                      
+                        />
+                      </TabPane>
+                      <TabPane tabId="2">
+                        <ListDistributorInactivo 
+                          confirm={this.props.confirm}
+                          listDistributor={this.props.distributor.get("proveedoresInactivos")}                          
+                          enableProviderFunction={this.props.enableProviderFunction}                      
+                        />
+                      </TabPane>
+                    </TabContent>
                   </div>
                 :
-                <div align="center" className="" style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="25%"  /></div>
+                <div style={{height: "55vh"}}>
+                  <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />                        
+                </div>
               }
               </CardBody>
             </Card>
@@ -63,6 +106,7 @@ const mapDispatchToProps = dispatch => ({
   LoadDistributorFunction: () => dispatch(LoadDistributorFunction()),  
   LoadDistributorIdFunction: (distrbutorId) => dispatch(LoadDistributorIdFunction(distrbutorId)),  
   DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),  
+  enableProviderFunction: (distrbutorId) => dispatch(enableProviderFunction(distrbutorId)),  
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
 });
 

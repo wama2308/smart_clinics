@@ -89,48 +89,45 @@ class ListDistributor extends React.Component {
                        
           valorCloseModal = {this.valorCloseModal}          
         />
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar Proveedor</Button>
         <br />
-        <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">DNI</th>
-                  <th className="text-left">Proveedor</th>
-                  <th className="text-left">Email</th>
-                  <th className="text-left">Telefono</th>                                    
-                  <th className="text-left" style={{'minWidth':"205px"}}>Acciones</th>                  
+        <br />        
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th className="text-left">Nro</th>
+                <th className="text-left" style={{'minWidth':"105px"}}>DNI</th>
+                <th className="text-left">Proveedor</th>
+                <th className="text-left">Email</th>
+                <th className="text-left">Telefono</th>                                    
+                <th className="text-left" style={{'minWidth':"205px"}}>Acciones</th>                  
+              </tr>
+            </thead>
+            <tbody>
+             {this.props.listDistributor? this.props.listDistributor.map((distributor, i) => {
+              return (
+                <tr key={i} className="text-left">
+                  <td>{ i + 1 }</td>
+                  <td style={{'minWidth':"105px"}}>{ distributor.typeIdentity }-{distributor.tin}</td>
+                  <td>{ distributor.name }</td>
+                  <td>{ distributor.email[0] }</td>
+                  <td>{ distributor.phone[0] }</td>
+                  <td style={{'minWidth':"205px"}}>
+                    <div className="float-left" >
+                      <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, distributor.id); }}><Visibility className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>                        
+                    </div>
+                  </td>                    
                 </tr>
-              </thead>
-              <tbody>
-               {this.props.listDistributor? this.props.listDistributor.map((distributor, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td>{ distributor.typeIdentity } - {distributor.tin}</td>
-                    <td>{ distributor.name }</td>
-                    <td>{ distributor.email[0] }</td>
-                    <td>{ distributor.phone[0] }</td>
-                    <td style={{'minWidth':"205px"}}>
-                      <div className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, distributor.id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>                        
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>                        
-                      </div>
-                    </td>                    
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
-          </div>
-        </div>
+              );
+             })
+              :
+                null
+              }
+            </tbody>
+          </Table>
+          
       </div>
     );
   }

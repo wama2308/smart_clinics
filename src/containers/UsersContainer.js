@@ -82,12 +82,12 @@ class UsersContainer extends Component {
                         </NavItem>
                         <NavItem>
                             <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
-                                Usuarios Inactivos
+                                Roles
                             </NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
-                                Roles
+                                Usuarios Inactivos
                             </NavLink>
                         </NavItem>
                         <NavItem>
@@ -118,13 +118,6 @@ class UsersContainer extends Component {
                             />
                           </TabPane>
                           <TabPane tabId="2">
-                            <UsersInactivosList
-                              users = {this.props.usersRoles.get('usersInactivos')}
-                              confirmDeleteUser = {this.props.confirmDeleteUser}
-                              ActivateUserNoMasterAction = {this.props.ActivateUserNoMasterAction}                              
-                            />
-                          </TabPane>
-                          <TabPane tabId="3">
                             <RolesList
                               roles = {this.props.usersRoles.get('roles')}
                               saveRolAction = {this.props.saveRolAction}
@@ -134,6 +127,13 @@ class UsersContainer extends Component {
                               modules={this.props.usersRoles.get('modules')}
                               confirmDeleteUser = {this.props.confirmDeleteUser}
                               disabledRolAction = {this.props.disabledRolAction}
+                            />                            
+                          </TabPane>
+                          <TabPane tabId="3">
+                            <UsersInactivosList
+                              users = {this.props.usersRoles.get('usersInactivos')}
+                              confirmDeleteUser = {this.props.confirmDeleteUser}
+                              ActivateUserNoMasterAction = {this.props.ActivateUserNoMasterAction}                              
                             />
                           </TabPane>
                           <TabPane tabId="4">
