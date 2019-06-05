@@ -56,6 +56,9 @@ export default class Footer extends React.Component {
     const discountDisabled =
       this.props.discount && this.props.discount.status === "WAITING";
     const ventaDisabled = disabled || discountDisabled ? true : false;
+
+    const saveDisabled =
+      this.props.statusSale === "PAID" || ventaDisabled ? true : false;
     return (
       <Container style={{ marginBottom: 0, marginTop: 10 }}>
         {this.state.openModal && (
@@ -72,45 +75,51 @@ export default class Footer extends React.Component {
             createSale={this.props.createSale}
             dataGeneral={this.props.dataGeneral}
             cancel={this.props.cancel}
+            confirm={this.props.confirm}
+            code_bill={this.props.code_bill}
           />
         )}
         <div style={{ display: "flex", alignItems: "center" }}>
-          {!this.props.discount && this.props.statusSale !== "BILLED" && (
-            <Button
-              disabled={disabled}
-              className="sellButtons"
-              color="primary"
-              onClick={() => this.props.openModal(false)}
-            >
-              Peticion de descuento
-            </Button>
-          )}
-
-          {discountDisabled && this.props.statusSale !== "BILLED" && (
-            <div>
-              <Button
-                disabled={disabled}
-                className="sellButtons"
-                color="danger"
-                onClick={() => {
-                  this.editOrCancelDiscount(0);
-                }}
-              >
-                Cancelar Solicitud
-              </Button>
-
+          {!this.props.discount &&
+            this.props.statusSale !== "BILLED" &&
+            this.props.statusSale !== "PAID" && (
               <Button
                 disabled={disabled}
                 className="sellButtons"
                 color="primary"
-                onClick={() => {
-                  this.props.openModal(true);
-                }}
+                onClick={() => this.props.openModal(false)}
               >
-                Editar Solicitud
+                Peticion de descuento
               </Button>
-            </div>
-          )}
+            )}
+
+          {discountDisabled &&
+            this.props.statusSale !== "BILLED" &&
+            this.props.statusSale !== "PAID" && (
+              <div>
+                <Button
+                  disabled={disabled}
+                  className="sellButtons"
+                  color="danger"
+                  onClick={() => {
+                    this.editOrCancelDiscount(0);
+                  }}
+                >
+                  Cancelar Solicitud
+                </Button>
+
+                <Button
+                  disabled={disabled}
+                  className="sellButtons"
+                  color="primary"
+                  onClick={() => {
+                    this.props.openModal(true);
+                  }}
+                >
+                  Editar Solicitud
+                </Button>
+              </div>
+            )}
 
           {this.props.discount && this.props.discount.status === "CANCELLED" && (
             <Button
@@ -134,7 +143,7 @@ export default class Footer extends React.Component {
               className="sellButtons"
               onClick={() => this.confirm("clean")}
             >
-              Cancelar
+              Limpiar
             </Button>
           )}
 
@@ -157,7 +166,7 @@ export default class Footer extends React.Component {
                 className="sellButtons"
                 color="primary"
                 onClick={this.props.saveInvoice}
-                disabled={ventaDisabled}
+                disabled={saveDisabled}
               >
                 Guardar Factura
               </Button>

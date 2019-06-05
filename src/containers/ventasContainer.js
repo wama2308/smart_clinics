@@ -289,6 +289,7 @@ class VentasContainer extends React.Component {
               openSnackbars={this.props.openSnackbars}
               createSale={this.props.createSale}
               dataGeneral={this.props.dataGeneral}
+              code_bill={this.props.code_bill}
             />
           </div>
         </div>
@@ -311,6 +312,7 @@ const mapStateToProps = state => ({
   bill_id: state.ventas.get("bill_id"),
   discount: state.ventas.get("discount"),
   dataGeneral: state.global.dataGeneral.dataGeneral,
+  code_bill: state.ventas.get("code"),
   statusSale: state.ventas.get("status_sale")
 });
 

@@ -54,6 +54,8 @@ class Ventas extends React.Component {
         return list.sales_save;
       case 3:
         return list.sales_billed;
+      case 4:
+        return list.sales_paid;
     }
   };
 
@@ -112,6 +114,19 @@ class Ventas extends React.Component {
                 }}
               >
                 Facturas diarias
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                style={{ height: 50 }}
+                className={classnames({
+                  active: this.state.activeTab === 4
+                })}
+                onClick={() => {
+                  this.toggleTab(4);
+                }}
+              >
+                Facturas Abonadas
               </NavLink>
             </NavItem>
           </Nav>

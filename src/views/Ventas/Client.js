@@ -27,8 +27,10 @@ class Client extends React.Component {
     const disabled = this.props.isSaved ? this.props.isSaved : false;
     const message = {
       "PENDING TO APPROVE": "PENDIENTE POR APROBAR",
-      BILLED: "COMPLETADA"
+      BILLED: "COMPLETADA",
+      PAID: "POR PAGAR"
     };
+    console.log("data",this.props.statusSale)
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
 

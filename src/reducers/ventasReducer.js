@@ -37,8 +37,9 @@ const setField = (state, node, field, payload) => {
 
 const cancelDiscount = (state, payload) => {
   const result = state.toJS();
-  result.status = undefined;
+  delete result.status_sale;
   result.discount.status = payload;
+  console.log("aca", result);
   return Map(result);
 };
 
@@ -69,6 +70,14 @@ const editBill = (state, payload) => {
 const cleanAllData = (state, initalState) => {
   const result = state.get("salesList");
   return initalState.set("salesList", result);
+};
+
+const completedSale = (state, payload) => {
+  const result = state.toJS();
+  const obj = { ...result, ...payload };
+
+  console.log("objeto", obj);
+  return Map(obj);
 };
 
 const initialState = Map({
@@ -123,6 +132,9 @@ const VentasReducer = (state = initialState, action) => {
 
     case "DISCOUNT_CANCELLED":
       return cancelDiscount(state, action.payload);
+
+    case "SELL_COMPLETED":
+      return completedSale(state, action.payload);
     default:
       return state;
   }

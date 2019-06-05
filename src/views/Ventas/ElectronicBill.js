@@ -36,7 +36,7 @@ export default class electronicBill extends React.Component {
         >
           <div className="documentInfo">
             <h5>Documento electronico</h5>
-            <h5>N° 249</h5>
+            <h5>{`N° ${this.props.code_bill}`}</h5>
           </div>
         </div>
         <div className="makePaciente">

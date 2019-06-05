@@ -373,7 +373,11 @@ export const createSale = (obj, callback) => dispatch => {
     })
       .then(res => {
         callback();
-        // dispatch(cancelToSell());
+        //  dispatch(cancelToSell());
+        dispatch({
+          type:"SELL_COMPLETED",
+          payload:res.data
+        })
         dispatch(openSnackbars("success", "Operacion exitosa!"));
       })
       .catch(err => {
