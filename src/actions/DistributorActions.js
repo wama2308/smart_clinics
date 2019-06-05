@@ -22,7 +22,9 @@ export const LoadDistributorFunction = () => dispatch => {
               data: res.data,        
               proveedoresInactivos: proveedoresInactivos,        
               contacs: [],
-              tableContac: 0
+              tableContac: 0,
+              distributorId: {},
+              action: 0
             }
           });          		
         });

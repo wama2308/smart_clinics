@@ -682,7 +682,7 @@ class ModalCargos extends React.Component {
         let type_identity = "";
         props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
             if(typeIdentity.default === 1){
-                type_identity = typeIdentity.value;
+                type_identity = typeIdentity.label;
             }                 
         })                 
         this.setState({
@@ -881,7 +881,7 @@ class ModalCargos extends React.Component {
                                                         this.props.aplication.dataGeneral.dataCountries.type_identity != null && 
                                                         this.props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
                                                             return(
-                                                                <option key={i} value={typeIdentity.value} >{typeIdentity.label}</option>                                                            
+                                                                <option key={i} value={typeIdentity.label} >{typeIdentity.label}</option>                                                            
                                                             )                                                        
                                                         })
                                                     } 

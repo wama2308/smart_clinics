@@ -1,9 +1,9 @@
 import {Map} from 'immutable'
 
-const setDataDistributorId = (state, node, payload) => {
+const setDataDistributorId = (state, payload) => {
 	let estado = state.toJS();
 	estado.contacs = payload.distributorId.contacts;	
-	estado.distributorId = payload;	
+	estado.distributorId = payload.distributorId;	
 	estado.tableContac = 1;	
 	return Map(estado);
 }
@@ -12,6 +12,7 @@ const setStoreAddContacto = (state, payload) => {
 	let estado = state.toJS();
 	estado.contacs.push(payload.objContacto);	
 	estado.tableContac = 1;	
+	estado.action = 1;	
 	return Map(estado);
 }
 
@@ -20,13 +21,16 @@ const setStoreDeleteContacto = (state, payload) => {
 	var listContacs = estado.contacs;
 	listContacs.splice(payload, 1);        
 	estado.contacs = listContacs;		
+	estado.action = 1;	
 	return Map(estado);
 }
 
 const setStoreCleanConstacs = (state, payload) => {
 	let estado = state.toJS();
 	estado.contacs = payload.contacs;	
+	estado.distributorId = {};	
 	estado.tableContac = 0;	
+	estado.action = 0;	
 	return Map(estado);
 }
 
@@ -38,7 +42,7 @@ const distributorReducer = (state = Map(), action) => {
 	  }
 
 	  case 'LOAD_DISTRIBUTOR_ID': {
-	  	return setDataDistributorId(state, 'distributorId', action.payload)
+	  	return setDataDistributorId(state, action.payload)
 	  }
 
 	  case 'ADD_CONTACTO': {

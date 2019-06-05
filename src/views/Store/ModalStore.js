@@ -87,7 +87,10 @@ class ModalStore extends React.Component {
                     valueSucursales = elemento;
                 }            
             });
-            
+            console.log("sucursal_id ", valueSucursales)
+            console.log("name ", this.state.almacen)
+            console.log("description ", this.state.descripcion)
+            console.log("shelf ",this.props.store.shelfs)     
             if(this.props.option === 1)
             {
                 if(this.props.store.shelfs.length === 0){
@@ -208,7 +211,7 @@ class ModalStore extends React.Component {
                 ...InitalState
             })   
         }
-        if(props.option === 2 || props.option === 3){                  
+        if(props.option === 2 || props.option === 3){                          
             if(props.store.storeId && this.state.action === 0){
                 this.setState({
                     almacen: props.store.storeId.storeId.name,
