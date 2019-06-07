@@ -148,7 +148,7 @@ export default class MakeSale extends React.Component {
     if (completed === "Abono") {
       this.props.confirm(info, res => {
         if (res) {
-          return this.props.createSale(obj, () => {
+          return this.props.createSale(obj, this.state.typeBill, () => {
             if (this.state.typeBill === 1) {
               this.setState({ loading: true, step: 3 });
             } else {
@@ -159,7 +159,7 @@ export default class MakeSale extends React.Component {
       });
     }
 
-    this.props.createSale(obj, () => {
+    this.props.createSale(obj, this.state.typeBill, () => {
       if (this.state.typeBill === 1) {
         this.setState({ loading: true, step: 3 });
       } else {

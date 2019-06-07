@@ -30,12 +30,14 @@ class Client extends React.Component {
       BILLED: "COMPLETADA",
       PAID: "POR PAGAR"
     };
-    console.log("data",this.props.statusSale)
+    console.log("data", this.props.statusSale);
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
 
     return (
-      <Card style={{ margin: "0px 10px 10px 0px", flex: 1 }}>
+      <Card
+        style={{ margin: "0px 10px 10px 0px", flex: 1, maxHeight: 335.365 }}
+      >
         {this.state.openModal && (
           <UserRegister
             open={this.state.openModal}

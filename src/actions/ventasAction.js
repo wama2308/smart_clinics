@@ -15,6 +15,7 @@ const querySalesUrl = `${url}/api/querySales`;
 const queryBillurl = `${url}/api/queryBill`;
 const cancelInvoice = `${url}/api/cancelInvoice`;
 const editCashierDiscount = `${url}/api/editCashierDiscount`;
+const referencePersonnelUrl = `${url}/api/referencePersonnel`;
 
 export const searchPatient = search => dispatch => {
   if (search.length < 1) {
@@ -362,7 +363,7 @@ export const editDiscount = (obj, callback) => dispatch => {
   });
 };
 
-export const createSale = (obj, callback) => dispatch => {
+export const createSale = (obj, typeBill, callback) => dispatch => {
   console.log(obj);
   getDataToken().then(token => {
     axios({
@@ -373,15 +374,54 @@ export const createSale = (obj, callback) => dispatch => {
     })
       .then(res => {
         callback();
-        //  dispatch(cancelToSell());
+        if (typeBill !== 1) {
+          dispatch(cancelToSell());
+        }
         dispatch({
-          type:"SELL_COMPLETED",
-          payload:res.data
-        })
+          type: "SELL_COMPLETED",
+          payload: res.data
+        });
         dispatch(openSnackbars("success", "Operacion exitosa!"));
       })
       .catch(err => {
         console.log(err);
       });
+  });
+};
+
+export const cleanSearch = () => {
+  return {
+    type: "SEARCH_DATA",
+    payload: ""
+  };
+};
+
+export const getOptionsPersonal = (staff, value) => dispatch => {
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: value
+  });
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: referencePersonnelUrl,
+      data: {
+        staff: staff,
+        value: value
+      },
+      ...token
+    }).then(res => {
+      if(staff === 0){
+        dispatch({
+          type: "OPTIONS_INTERNALS",
+          payload: Object.values(res.data)
+        });
+      }else{
+        dispatch({
+          type: "OPTIONS_EXTERNAL",
+          payload: Object.values(res.data)
+        });
+      }
+    });
   });
 };

@@ -313,7 +313,8 @@ const mapStateToProps = state => ({
   discount: state.ventas.get("discount"),
   dataGeneral: state.global.dataGeneral.dataGeneral,
   code_bill: state.ventas.get("code"),
-  statusSale: state.ventas.get("status_sale")
+  statusSale: state.ventas.get("status_sale"),
+  state: state.ventas.toJS()
 });
 
 export default connect(

@@ -105,6 +105,13 @@ const VentasReducer = (state = initialState, action) => {
     case "PATIENT_OPTIONS": {
       return setData(state, "options_patient", action.payload);
     }
+
+    case "OPTIONS_INTERNALS":
+      return setData(state, "options_internal", action.payload);
+
+    case "OPTIONS_EXTERNAL":
+      return setData(state, "options_external", action.payload);
+
     case "DELETE_ITEM": {
       return remove(state, "array_products", action.payload);
     }

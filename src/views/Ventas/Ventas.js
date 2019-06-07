@@ -73,7 +73,9 @@ class Ventas extends React.Component {
       this.props.status_sale === "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
 
     return (
-      <Card style={{ flex: 1, margin: "0px 0px 10px 10px" }}>
+      <Card
+        style={{ flex: 1, margin: "0px 0px 10px 10px", maxHeight: 335.365 }}
+      >
         <Header>
           <Nav tabs>
             <NavItem>
