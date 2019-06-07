@@ -42,38 +42,35 @@ class RolesInactivosList extends React.Component {
   render() {
      return (
       <div className="container">        
-        <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">Rol</th>
-                  <th className="text-left">Acciones</th>
+        <br />        
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th className="text-left">Nro</th>
+                <th className="text-left">Rol</th>
+                <th className="text-left">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+             {this.props.roles? this.props.roles.map((rol, i) => {
+              return (
+                <tr key={i} className="text-left">
+                  <td>{ i + 1 }</td>
+                  <td>{ rol.rol }</td>
+                  <td>
+                    <div className="float-left" >                        
+                      <IconButton aria-label="Delete" title="Activar Rol" className="iconButtons" onClick={() => { this.activateRoles(rol._id); }}><HowToReg className="iconTable" /></IconButton>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-               {this.props.roles? this.props.roles.map((rol, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td>{ rol.rol }</td>
-                    <td>
-                      <div className="float-left" >                        
-                        <IconButton aria-label="Delete" title="Activar Rol" className="iconButtons" onClick={() => { this.activateRoles(rol._id); }}><HowToReg className="iconTable" /></IconButton>
-                      </div>
-                    </td>
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
-          </div>
-        </div>
+              );
+             })
+              :
+                null
+              }
+            </tbody>
+          </Table>
+          
       </div>
     );
   }

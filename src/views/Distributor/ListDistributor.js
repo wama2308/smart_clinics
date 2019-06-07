@@ -72,6 +72,7 @@ class ListDistributor extends React.Component {
   valorCloseModal = (valor) => {            
     this.setState({
         modal: valor,          
+        option: 0,  
     });                    
   } 
 

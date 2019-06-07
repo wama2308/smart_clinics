@@ -93,40 +93,37 @@ class RolesList extends React.Component {
 
         <Button color="success" onClick={() => { this.openRoles(1); }}>Agregar Rol</Button>
         <br />
-        <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">Rol</th>
-                  <th className="text-left">Acciones</th>
+        <br />        
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th className="text-left">Nro</th>
+                <th className="text-left">Rol</th>
+                <th className="text-left">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+             {this.props.roles? this.props.roles.map((rol, i) => {
+              return (
+                <tr key={i} className="text-left">
+                  <td>{ i + 1 }</td>
+                  <td>{ rol.rol }</td>
+                  <td>
+                    <div className="float-left" >
+                      <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openRoles(2, i, rol._id); }}><Visibility className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openRoles(3, i, rol._id); }}><Edit className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Inactivar Rol" className="iconButtons" onClick={() => { this.deleteRoles(rol._id); }}><Delete className="iconTable" /></IconButton>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-               {this.props.roles? this.props.roles.map((rol, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td>{ rol.rol }</td>
-                    <td>
-                      <div className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openRoles(2, i, rol._id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openRoles(3, i, rol._id); }}><Edit className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Inactivar Rol" className="iconButtons" onClick={() => { this.deleteRoles(rol._id); }}><Delete className="iconTable" /></IconButton>
-                      </div>
-                    </td>
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
-          </div>
-        </div>
+              );
+             })
+              :
+                null
+              }
+            </tbody>
+          </Table>
+          
       </div>
     );
   }

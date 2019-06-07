@@ -111,43 +111,40 @@ class UsersList extends React.Component {
         <Button color="success" onClick={() => { this.openUser(1); }}>Agregar Usuario</Button>
         <br />
         <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">Email</th>
-                  <th className="text-left">Nombres y Apellidos</th>                  
-                  <th className="text-left">Nombre de Usuario</th>                  
-                  <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                  
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th className="text-left">Nro</th>
+                <th className="text-left">Email</th>
+                <th className="text-left">Nombres y Apellidos</th>                  
+                <th className="text-left">Nombre de Usuario</th>                  
+                <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                  
+              </tr>
+            </thead>
+            <tbody>
+              {this.props.users? this.props.users.map((user, i) => {
+              return (
+                <tr key={i} className="text-left">
+                  <td>{ i + 1 }</td>
+                  <td>{ user.email }</td>
+                  <td>{ user.names } { user.surnames }</td>
+                  <td>{ user.username }</td>                    
+                  <td style={{'minWidth':"155px"}}>
+                    <div style={{'height':"15px"}} className={"text-left"} >
+                      <IconButton aria-label="Delete" title="Ver Usuario" className="iconButtons" onClick={() => { this.openUser(2, i, user.id); }}><Visibility className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Usuario" className="iconButtons" onClick={() => { this.openUser(3, i, user.id); }}><Edit className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Inactivar Usuario" className="iconButtons" onClick={() => { this.deleteUser(user.id); }}><Delete className="iconTable" /></IconButton>
+                    </div>
+                  </td>  
                 </tr>
-              </thead>
-              <tbody>
-                {this.props.users? this.props.users.map((user, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td>{ user.email }</td>
-                    <td>{ user.names } { user.surnames }</td>
-                    <td>{ user.username }</td>                    
-                    <td style={{'minWidth':"155px"}}>
-                      <div style={{'height':"15px"}} className={"text-left"} >
-                        <IconButton aria-label="Delete" title="Ver Usuario" className="iconButtons" onClick={() => { this.openUser(2, i, user.id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Usuario" className="iconButtons" onClick={() => { this.openUser(3, i, user.id); }}><Edit className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Inactivar Usuario" className="iconButtons" onClick={() => { this.deleteUser(user.id); }}><Delete className="iconTable" /></IconButton>
-                      </div>
-                    </td>  
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
-          </div>
-        </div>
+              );
+             })
+              :
+                null
+              }
+            </tbody>
+          </Table>
+          
       </div>
     );
   }

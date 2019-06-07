@@ -170,7 +170,13 @@ class ContacDistributor extends React.Component {
 	render() {           
         return (
             <div>  
-                <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Lista de Contactos</Button>
+                {
+                    this.props.option === 2 ?
+                    <Label for="descripcion"><b>Lista de Contactos</b></Label>
+                    :
+                    <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Lista de Contactos</Button>
+                }
+                
                 <Collapse isOpen={this.state.collapse}>
                   <Card>
                     <CardBody>                        
@@ -210,8 +216,11 @@ class ContacDistributor extends React.Component {
                                             <th className="text-left">Nro</th>
                                             <th className="text-left">Nombres</th>                                                        
                                             <th className="text-left">Telefono</th>                                                        
-                                            <th className="text-left">Email</th>                                                        
-                                            <th className="text-left">Acciones</th>                                                        
+                                            <th className="text-left">Email</th> 
+                                            {
+                                                this.props.option !== 2 &&                                                       
+                                                <th className="text-left">Acciones</th>                                                        
+                                            }
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -222,12 +231,15 @@ class ContacDistributor extends React.Component {
                                                         <td>{i+1}</td>
                                                         <td>{list.name}</td>                                                                                                                                                    
                                                         <td>{list.phone}</td>                                                                                                                                                    
-                                                        <td>{list.email}</td>   
-                                                        <td>
-                                                            <div  className={`float-left`} >
-                                                                <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.deleteContac(i); }}><Delete className="iconTable" /></IconButton>                                                    
-                                                            </div>
-                                                        </td>
+                                                        <td>{list.email}</td>
+                                                        {
+                                                            this.props.option !== 2 &&   
+                                                            <td>
+                                                                <div  className={`float-left`} >
+                                                                    <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.deleteContac(i); }}><Delete className="iconTable" /></IconButton>                                                    
+                                                                </div>
+                                                            </td>
+                                                        }
                                                     </tr>
                                                 )
                                             })

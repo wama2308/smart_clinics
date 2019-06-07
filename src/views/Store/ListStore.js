@@ -95,44 +95,40 @@ class ListStore extends React.Component {
         />
         <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
         <br />
-        <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">Almacen</th>
-                  <th className="text-left">Sucursal</th>
-                  <th className="text-left">Descripcion</th>                  
-                  <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>                  
+        <br />        
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th className="text-left">Nro</th>
+                <th className="text-left">Almacen</th>
+                <th className="text-left">Sucursal</th>
+                <th className="text-left">Descripcion</th>                  
+                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>                  
+              </tr>
+            </thead>
+            <tbody>
+             {this.props.data? this.props.data.map((data, i) => {
+              return (
+                <tr key={i} className="text-left">
+                  <td>{ i + 1 }</td>
+                  <td>{ data.name }</td>
+                  <td>{ data.branchoffice.label }</td>
+                  <td>{ data.description }</td>
+                  <td style={{'minWidth':"205px"}}>
+                    <div className="float-left" >
+                      <IconButton aria-label="Delete" title="Ver Almacen" className="iconButtons" onClick={() => { this.openModal(2, i, data._id, data.branchoffice.value); }}><Visibility className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Almacen" className="iconButtons" onClick={() => { this.openModal(3, i, data._id, data.branchoffice.value); }}><Edit className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Editar Almacen" className="iconButtons" onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}><Delete className="iconTable" /></IconButton>
+                    </div>
+                  </td>                    
                 </tr>
-              </thead>
-              <tbody>
-               {this.props.data? this.props.data.map((data, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td>{ data.name }</td>
-                    <td>{ data.sucursal.label }</td>
-                    <td>{ data.description }</td>
-                    <td style={{'minWidth':"205px"}}>
-                      <div className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, data._id, data.sucursal.value); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, data._id, data.sucursal.value); }}><Edit className="iconTable" /></IconButton>                        
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteStore(data._id, data.sucursal.value); }}><Delete className="iconTable" /></IconButton>
-                      </div>
-                    </td>                    
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
-          </div>
-        </div>
+              );
+             })
+              :
+                null
+              }
+            </tbody>
+          </Table>          
       </div>
     );
   }
