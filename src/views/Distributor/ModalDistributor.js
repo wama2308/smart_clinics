@@ -9,6 +9,7 @@ import TagsInput from 'react-tagsinput';
 import ContacDistributor from './ContacDistributor.js';
 import { openConfirmDialog } from "../../actions/aplicantionActions";
 import { cleanContacs, saveDistributorAction, editDistributorAction } from "../../actions/DistributorActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 /*import 'react-tagsinput/react-tagsinput.css';*/
 
 class ModalDistributor extends React.Component {
@@ -205,7 +206,7 @@ class ModalDistributor extends React.Component {
             let valuePais = "";
             let arrayPais = Object.values(this.state.arrayPaisSelect);
             arrayPais.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valuePais = elemento;
                 }            
             });
@@ -213,7 +214,7 @@ class ModalDistributor extends React.Component {
             let valueProvince = "";
             let arrayProvince = Object.values(this.state.arrayProvinceSelect);
             arrayProvince.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valueProvince = elemento;
                 }            
             });
@@ -221,7 +222,7 @@ class ModalDistributor extends React.Component {
             let valueDistrict = "";
             let arrayDistrict = Object.values(this.state.arrayDistrictSelect);
             arrayDistrict.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valueDistrict = elemento;
                 }            
             });            
@@ -331,19 +332,21 @@ class ModalDistributor extends React.Component {
                     value: props.distributor.distributorId.distributorId.address.id_district, 
                     label: props.distributor.distributorId.distributorId.address.name_district 
                 };
-                this.setState({
-                    loading:props.distributor.distributorId.loading, 
-                    arrayTypeIdentitySelect: props.distributor.distributorId.distributorId.type_identity,
-                    dni: props.distributor.distributorId.distributorId.tin,
-                    name: props.distributor.distributorId.distributorId.name,    
-                    tagsTelefonos: props.distributor.distributorId.distributorId.phones,
-                    tagsEmails: props.distributor.distributorId.distributorId.emails,
-                    arrayPaisSelect: selectPais,
-                    arrayProvinceSelect: selectProvince,
-                    arrayDistrictSelect: selectDistrict,
-                    direccion: props.distributor.distributorId.distributorId.address.address,   
-                    collapse:true,                                  
-                })       
+                if(props.distributor.distributorId.distributorId.name){
+                    this.setState({
+                        loading:props.distributor.distributorId.loading, 
+                        arrayTypeIdentitySelect: props.distributor.distributorId.distributorId.type_identity,
+                        dni: props.distributor.distributorId.distributorId.tin,
+                        name: props.distributor.distributorId.distributorId.name,    
+                        tagsTelefonos: props.distributor.distributorId.distributorId.phones,
+                        tagsEmails: props.distributor.distributorId.distributorId.emails,
+                        arrayPaisSelect: selectPais,
+                        arrayProvinceSelect: selectProvince,
+                        arrayDistrictSelect: selectDistrict,
+                        direccion: props.distributor.distributorId.distributorId.address.address,   
+                        collapse:true,                                  
+                    })
+                }                       
                 if((props.distributor.contacs.length !== 0) && (props.distributor.tableContac === 1)){
                     this.setState({
                         errorListContacs:"",
@@ -358,9 +361,15 @@ class ModalDistributor extends React.Component {
             }
         }else{        
             if((props.distributor.contacs.length === 0) && (props.distributor.tableContac === 0)){
+                let type_identity = "";
+                props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
+                    if(typeIdentity.default === 1){
+                        type_identity = typeIdentity.value;
+                    }                 
+                })
                 this.setState({
                     loading:'hide',
-                    arrayTypeIdentitySelect: this.props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],
+                    arrayTypeIdentitySelect: type_identity,
                     dni:'',
                     name: '',
                     tagsEmails: [],
@@ -472,12 +481,12 @@ class ModalDistributor extends React.Component {
                                                     this.props.aplication.dataGeneral.dataCountries.type_identity != null && 
                                                     this.props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
                                                         return(
-                                                            <option key={i} value={typeIdentity.label} >{typeIdentity.label}</option>                                                            
+                                                            <option key={i} value={typeIdentity.value} >{typeIdentity.label}</option>                                                            
                                                         )                                                        
                                                     })
                                                 } 
                                                 </Input>
-                                            </InputGroupAddon>&nbsp;&nbsp;
+                                            </InputGroupAddon>
                                             <Input disabled={this.props.disabled} invalid={this.state.dniInvalid} name="dni" id="dni" onKeyUp={this.handlekeyDni} onChange={this.handleChange} value={this.state.dni} type="text" placeholder="DNI" />                                                    
                                             <FormFeedback tooltip>{this.state.dniError}</FormFeedback>                                                                                                                                                                     
                                         </InputGroup> 
@@ -548,6 +557,7 @@ class ModalDistributor extends React.Component {
                                     errorListContacs = {this.state.errorListContacs}
                                     collapse = {this.state.collapse}
                                     disabled={this.props.disabled}
+                                    option={this.props.option}
                                 />
                             </form>                                                                    
                             </ModalBody>
@@ -557,7 +567,9 @@ class ModalDistributor extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />                        
+                        </div>
                     }
                 </Modal>                
             </span> 

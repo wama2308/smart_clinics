@@ -100,51 +100,49 @@ class ListPersonal extends React.Component {
           roles = {this.props.roles}                                 
           valorCloseModal={this.valorCloseModal}  
         />
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar Personal</Button>
         <br />
         <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left" style={{'minWidth':"110px"}}>DNI</th>
-                  <th className="text-left">Personal</th>
-                  <th className="text-left">Cargo</th>
-                  <th className="text-left">Email</th>
-                  <th className="text-left">Telefonos</th>                                                      
-                  <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                  
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th className="text-left">Nro</th>
+                <th className="text-left" style={{'minWidth':"110px"}}>DNI</th>
+                <th className="text-left">Personal</th>
+                <th className="text-left">Cargo</th>
+                <th className="text-left">Email</th>
+                <th className="text-left">Telefonos</th>                                                      
+                <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                  
+              </tr>
+            </thead>
+            <tbody>
+             {this.props.personal? this.props.personal.map((personal, i) => {
+              return (
+                <tr key={i} className="text-left">
+                  <td>{ i + 1 }</td>
+                  <td style={{'minWidth':"110px"}}>{personal.type_identity} - {personal.dni}</td>
+                  <td>{personal.names} {personal.surnames}</td>
+                  <td>{personal.positions}</td>
+                  <td>{personal.email[0]}</td>
+                  <td>{personal.phone[0]}</td>
+                  <td style={{'minWidth':"155px"}}>
+                    <div className="float-left" >
+                      <IconButton aria-label="Delete" title="Ver Personal" className="iconButtons" onClick={() => { this.openModal(2, i, personal._id); }}><Visibility className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Personal" className="iconButtons" onClick={() => { this.openModal(3, i, personal._id); }}><Edit className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Eliminar Personal" className="iconButtons" onClick={() => { this.deletePersonal(personal._id); }}><Delete className="iconTable" /></IconButton>                        
+                    </div>
+                  </td>                    
                 </tr>
-              </thead>
-              <tbody>
-               {this.props.personal? this.props.personal.map((personal, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td style={{'minWidth':"110px"}}>{personal.type_identity} - {personal.dni}</td>
-                    <td>{personal.names} {personal.surnames}</td>
-                    <td>{personal.positions}</td>
-                    <td>{personal.email[0]}</td>
-                    <td>{personal.phone[0]}</td>
-                    <td style={{'minWidth':"155px"}}>
-                      <div className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Personal" className="iconButtons" onClick={() => { this.openModal(2, i, personal._id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Personal" className="iconButtons" onClick={() => { this.openModal(3, i, personal._id); }}><Edit className="iconTable" /></IconButton>                        
-                        <IconButton aria-label="Delete" title="Eliminar Personal" className="iconButtons" onClick={() => { this.deletePersonal(i); }}><Delete className="iconTable" /></IconButton>                        
-                      </div>
-                    </td>                    
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
-          </div>
-        </div>
+              );
+             })
+              :
+                null
+              }
+            </tbody>
+          </Table>
       </div>
+        
+      
     );
   }
 }

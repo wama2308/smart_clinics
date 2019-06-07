@@ -4,7 +4,7 @@ import ModalUser from './ModalUser.js';
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 
-class RolesList extends React.Component {
+class UsersList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,10 +65,9 @@ class RolesList extends React.Component {
   } 
 
   deleteUser = (userId) => {  
-    console.log(userId)
     const message = {
-      title: "Eliminar Usuario",
-      info: "¿Esta seguro que desea eliminar este usuario?"
+      title: "Inactivar Usuario",
+      info: "¿Esta seguro que desea inactivar este usuario?"
     };
     this.props.confirmDeleteUser(message, res => {
       if (res) {
@@ -109,7 +108,7 @@ class RolesList extends React.Component {
           userIdEdit = {this.state.userIdEdit}               
         />     
         
-        <Button color="success" onClick={() => { this.openUser(1); }}>Agregar</Button>
+        <Button color="success" onClick={() => { this.openUser(1); }}>Agregar Usuario</Button>
         <br />
         <br />
         <div className="row">
@@ -118,7 +117,9 @@ class RolesList extends React.Component {
               <thead className="thead-light">
                 <tr>
                   <th className="text-left">Nro</th>
-                  <th className="text-left">Usuario</th>
+                  <th className="text-left">Email</th>
+                  <th className="text-left">Nombres y Apellidos</th>                  
+                  <th className="text-left">Nombre de Usuario</th>                  
                   <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                  
                 </tr>
               </thead>
@@ -128,11 +129,13 @@ class RolesList extends React.Component {
                   <tr key={i} className="text-left">
                     <td>{ i + 1 }</td>
                     <td>{ user.email }</td>
+                    <td>{ user.names } { user.surnames }</td>
+                    <td>{ user.username }</td>                    
                     <td style={{'minWidth':"155px"}}>
                       <div style={{'height':"15px"}} className={"text-left"} >
                         <IconButton aria-label="Delete" title="Ver Usuario" className="iconButtons" onClick={() => { this.openUser(2, i, user.id); }}><Visibility className="iconTable" /></IconButton>
                         <IconButton aria-label="Delete" title="Editar Usuario" className="iconButtons" onClick={() => { this.openUser(3, i, user.id); }}><Edit className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Eliminar Usuario" className="iconButtons" onClick={() => { this.deleteUser(user.id); }}><Delete className="iconTable" /></IconButton>
+                        <IconButton aria-label="Delete" title="Inactivar Usuario" className="iconButtons" onClick={() => { this.deleteUser(user.id); }}><Delete className="iconTable" /></IconButton>
                       </div>
                     </td>  
                   </tr>
@@ -150,4 +153,4 @@ class RolesList extends React.Component {
   }
 }
 
-export default RolesList;
+export default UsersList;

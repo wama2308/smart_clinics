@@ -7,6 +7,7 @@ import './Users.css';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import { LoadRolIdFunction, testFunction } from "../../actions/UserAction";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalRoles extends React.Component {
 	constructor(props) {
@@ -159,12 +160,14 @@ class ModalRoles extends React.Component {
 
         if(props.option !== 1){
             if(props.usersRoles.rolIdView){
-                this.setState({
-                    loading:'hide',
-                    rol: props.usersRoles.rolIdView.rolId.rol,
-                    selected: props.usersRoles.rolIdView.rolId.modules,
-                    selectedInvalid: 1,             
-                })  
+                if(props.usersRoles.rolIdView.rolId.rol){
+                    this.setState({
+                        loading:'hide',
+                        rol: props.usersRoles.rolIdView.rolId.rol,
+                        selected: props.usersRoles.rolIdView.rolId.modules,
+                        selectedInvalid: 1,             
+                    })  
+                }                
             }
         }else{            
             this.setState({
@@ -206,7 +209,9 @@ class ModalRoles extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                        </div>
                     }
                 </Modal>                
             </span> 

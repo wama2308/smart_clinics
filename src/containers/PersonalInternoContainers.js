@@ -6,10 +6,13 @@ import "../views/Configurations/modal.css";
 import { connect } from "react-redux";
 import {} from "../actions/PersonalInternoActions";
 import { openConfirmDialog } from "../actions/aplicantionActions";
-import { LoadPersonalCargosFunction, DeletePersonalInternoAction, LoadPersonalIdFunction } from "../actions/PersonalInternoActions";
+import { LoadPersonalCargosFunction, DeletePersonalInternoAction, LoadPersonalIdFunction, enabledInternalStaffAction, disabledPositionAction, enabledPositionAction } from "../actions/PersonalInternoActions";
 import { LoadAllUsersNoMasterFunction } from "../actions/UserAction";
 import ListCargos from "../views/Personal/ListCargos";
 import ListPersonal from "../views/Personal/ListPersonal";
+import ListPersonalInactivo from "../views/Personal/ListPersonalInactivo";
+import ListCargosInactivos from "../views/Personal/ListCargosInactivos";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class PersonalInterno extends Component {
   constructor(props) {
@@ -59,6 +62,16 @@ class PersonalInterno extends Component {
                                 Cargos
                             </NavLink>
                         </NavItem>
+                        <NavItem>
+                            <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
+                                Personal Inactivo
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink className={classnames({ active: this.state.activeTab === '4' })} onClick={() => { this.toggleTab('4'); }} >
+                                Cargos Inactivos
+                            </NavLink>
+                        </NavItem>
                       </Nav>
                       <TabContent activeTab={this.state.activeTab}>
                           <TabPane tabId="1">
@@ -78,13 +91,31 @@ class PersonalInterno extends Component {
                           </TabPane>
                           <TabPane tabId="2">
                             <ListCargos 
-                            	cargos={this.props.personaInterno.get('cargos')}                            	
+                              cargos={this.props.personaInterno.get('cargos')}                              
+                              disabledPositionAction={this.props.disabledPositionAction}                              
+                              confirm={this.props.confirm}
+                            />
+                          </TabPane>
+                          <TabPane tabId="3">                            
+                            <ListPersonalInactivo 
+                              personalInactivo={this.props.personaInterno.get('personalInactivo')}                              
+                              enabledInternalStaffAction={this.props.enabledInternalStaffAction}   
+                              confirm={this.props.confirm}                           
+                            />
+                          </TabPane>
+                          <TabPane tabId="4">
+                            <ListCargosInactivos 
+                              cargosInactivos={this.props.personaInterno.get('cargosInactivos')}                              
+                              enabledPositionAction={this.props.enabledPositionAction}                              
+                              confirm={this.props.confirm}
                             />
                           </TabPane>
                       </TabContent>
                     </div>
                   :
-                    <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="25%"  /></div>
+                  <div style={{height: "55vh"}}>
+                    <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                  </div>
                 }
                 <br />
               </CardBody>
@@ -107,6 +138,9 @@ const mapDispatchToProps = dispatch => ({
   DeletePersonalInternoAction: (id) => dispatch(DeletePersonalInternoAction(id)),  
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
   LoadPersonalIdFunction: (id) =>dispatch(LoadPersonalIdFunction(id)),
+  enabledInternalStaffAction: (id) =>dispatch(enabledInternalStaffAction(id)),
+  disabledPositionAction: (id) =>dispatch(disabledPositionAction(id)),
+  enabledPositionAction: (id) =>dispatch(enabledPositionAction(id)),
   loadUsersRoles: () => dispatch(LoadAllUsersNoMasterFunction()),
 });
 export default connect(

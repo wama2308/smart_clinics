@@ -32,6 +32,10 @@ export const InitalState = {
     divChargesSelect: '',
     chargesSelectError: '',
 
+    arrayPaisSelect: null,
+    divPaisSelect: '',
+    paisSelectError: '',
+
     arrayProvince:[],
     arrayProvinceSelect: null,
     divProvinceSelect: '',
@@ -66,6 +70,7 @@ export const InitalState = {
     divUsersSelect:'',
     divUsersSelectError:'',
 
+    disabledRegisterUser: false,
     disabledSelectUser: false,
 
     divSucursalesSelect:'',

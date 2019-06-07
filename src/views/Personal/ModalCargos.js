@@ -6,6 +6,7 @@ import { InitalState } from './InitialStatePersonal.js';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import { saveCargoAction, editCargoAction } from "../../actions/PersonalInternoActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalCargos extends React.Component {
 	constructor(props) {
@@ -34,24 +35,16 @@ class ModalCargos extends React.Component {
 
     validate = () => {
         let cargoInvalid = false;
-        let cargoError = "";        
-        let descripcionInvalid = false;
-        let descripcionError = "";       
+        let cargoError = "";                
 
         if (this.state.cargo === "") {
             cargoError = "¡Ingrese el cargo!";
             cargoInvalid = true;
-        }
-        if (this.state.descripcion === "") {
-            descripcionError = "¡Ingrese la descripcion!";
-            descripcionInvalid = true;
         }        
-        if (cargoError || descripcionError) {            
+        if (cargoError) {            
             this.setState({ 
                 cargoError,
-                cargoInvalid,                         
-                descripcionError,    
-                descripcionInvalid,                 
+                cargoInvalid
             });                           
             return false;
         }        
@@ -112,12 +105,13 @@ class ModalCargos extends React.Component {
             modal: props.modal,       
             loading:'show'     
         });
-
-        this.setState({
-            cargo: props.cargo,
-            descripcion: props.descripcion,             
-            loading:'hide',
-        })                 
+        if(props.cargo){
+            this.setState({
+                cargo: props.cargo,
+                descripcion: props.descripcion,             
+                loading:'hide',
+            })
+        }                         
     }
 
 	render() {   
@@ -148,7 +142,9 @@ class ModalCargos extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                        </div>
                     }
                 </Modal>                
             </span> 
