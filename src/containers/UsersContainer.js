@@ -147,7 +147,7 @@ class UsersContainer extends Component {
                     </div>
                   :
                   <div style={{height: "55vh"}}>
-                    <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                    <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
                   </div>
                 }
 

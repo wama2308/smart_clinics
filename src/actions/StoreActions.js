@@ -7,6 +7,8 @@ const editStoreBranchOffices = `${url}/api/editStoreBranchOffices`;
 const queryStoreBranchOffices = `${url}/api/queryStoreBranchOffices`;
 const queryOneStoreBranchOffices = `${url}/api/queryOneStoreBranchOffices`;
 const disableStoreBranchOffices = `${url}/api/disableStoreBranchOffices`;
+const enableStoreBranchOffices = `${url}/api/enableStoreBranchOffices`;
+const queryStoreBranchOfficesDisabled = `${url}/api/queryStoreBranchOfficesDisabled`;
 
 export const LoadStoreFunction = () => dispatch => {
   getDataToken()
@@ -14,15 +16,19 @@ export const LoadStoreFunction = () => dispatch => {
     	axios.get(queryStoreBranchOffices, datos)
     	.then(res => {		 
         LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {   
-          dispatch({
-            type: "LOAD_STORE",
-            payload: {
-              loading: "hide",
-              data: res.data,                            
-              branchOfficces: arrayBranchOffices,
-              shelfs:[]
-            }
-          });          		
+          queryStoreBranchOfficesDisabledFunction(datos, storeInactivos => {   
+            dispatch({
+              type: "LOAD_STORE",
+              payload: {
+                loading: "hide",
+                data: res.data,                            
+                storeInactivos: storeInactivos,                            
+                branchOfficces: arrayBranchOffices,
+                shelfs:[],
+                action:0
+              }
+            });          		
+          });
         });
   	   })
       .catch(error => {
@@ -45,6 +51,21 @@ const LoadSelectBranchOfficesFunction = (datos, execute) => {
     .catch(error => {
       console.log(
         "Error consultando la api para consultar las sucursales",
+        error.toString()
+      );
+    });
+};
+
+const queryStoreBranchOfficesDisabledFunction = (datos, execute) => {
+  axios
+    .get(queryStoreBranchOfficesDisabled, datos)
+    .then(res => {
+      //console.log(res.data);
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log(
+        "Error consultando la api para consultar los almacenes inactivos",
         error.toString()
       );
     });
@@ -187,6 +208,30 @@ export const DeleteStoreAction = (storeId, sucursalId) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error eliminando el almacen"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const enableStoreBranchOfficesAction = (storeId, sucursalId) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: enableStoreBranchOffices,
+        data: {
+          sucursal_id: sucursalId,
+          store_id: storeId
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Almacen activado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error activado el almacen"));
         });
     })
     .catch(() => {

@@ -170,7 +170,13 @@ class ContacDistributor extends React.Component {
 	render() {           
         return (
             <div>  
-                <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Lista de Contactos</Button>
+                {
+                    this.props.option === 2 ?
+                    <Label for="descripcion"><b>Lista de Contactos</b></Label>
+                    :
+                    <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Lista de Contactos</Button>
+                }
+                
                 <Collapse isOpen={this.state.collapse}>
                   <Card>
                     <CardBody>                        
