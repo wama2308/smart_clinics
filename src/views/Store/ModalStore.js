@@ -9,6 +9,7 @@ import Shelf from './Shelf.js';
 import { openConfirmDialog } from "../../actions/aplicantionActions";
 import { saveStoreAction, editStoreAction, cleanShelfs } from "../../actions/StoreActions";
 import { InitalState } from './InitialState.js';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalStore extends React.Component {
 	constructor(props) {
@@ -87,7 +88,10 @@ class ModalStore extends React.Component {
                     valueSucursales = elemento;
                 }            
             });
-            
+            console.log("sucursal_id ", valueSucursales)
+            console.log("name ", this.state.almacen)
+            console.log("description ", this.state.descripcion)
+            console.log("shelf ",this.props.store.shelfs)     
             if(this.props.option === 1)
             {
                 if(this.props.store.shelfs.length === 0){
@@ -198,6 +202,7 @@ class ModalStore extends React.Component {
     }    
 
     componentWillReceiveProps=(props)=>{       
+        console.log("modal store ", props.store)
         if(props.option === 1){
             this.setState({
                 loading: 'hide',
@@ -208,15 +213,18 @@ class ModalStore extends React.Component {
                 ...InitalState
             })   
         }
-        if(props.option === 2 || props.option === 3){                  
-            if(props.store.storeId && this.state.action === 0){
-                this.setState({
-                    almacen: props.store.storeId.storeId.name,
-                    arraySucursalesSelect: props.store.storeId.storeId.sucursal,
-                    descripcion: props.store.storeId.storeId.description,
-                    loading: props.store.storeId.loading,
-                    action:1
-                })                  
+        if(props.option === 2 || props.option === 3){                          
+            if(props.store.action === 0 && props.aplication.confirm.message === "" && props.store.storeId){                    
+                if(props.store.storeId.storeId){
+                    if(props.store.storeId.storeId.name){
+                        this.setState({
+                            almacen: props.store.storeId.storeId.name,
+                            arraySucursalesSelect: props.store.storeId.storeId.sucursal,
+                            descripcion: props.store.storeId.storeId.description,
+                            loading: props.store.storeId.loading,                    
+                        })
+                    }
+                }                                  
             }       
             if(props.store.shelfs.length > 0){
                 this.setState({
@@ -261,7 +269,12 @@ class ModalStore extends React.Component {
                                         <FormFeedback tooltip>{this.state.descripcionError}</FormFeedback>                                                                                                                                                            
                                     </FormGroup>                                                                 
                                 </div>            
-                                <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Estantes</Button>                                                                                            
+                                {
+                                    this.props.option === 2 ?
+                                    <Label for="descripcion"><b>Lista de Estantes</b></Label>
+                                    :
+                                    <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Lista de Estantes</Button>
+                                }                                   
                                 <Shelf 
                                     collapse={this.state.collapse}
                                     option={this.props.option}
@@ -274,7 +287,9 @@ class ModalStore extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
+                        </div>
                     }
                 </Modal>                
             </span> 

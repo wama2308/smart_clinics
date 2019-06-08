@@ -26,7 +26,7 @@ class Plantillas extends React.Component {
     });
   };
 
-  view = (item) => {
+  view = item => {
     this.setState({
       editTemplate: item,
       openModal: true,
@@ -60,7 +60,7 @@ class Plantillas extends React.Component {
   render() {
     let count = [];
     return (
-      <div className="container">
+      <div>
         {this.state.openModal && (
           <ModalPlantilla
             open={this.state.openModal}
@@ -69,7 +69,11 @@ class Plantillas extends React.Component {
             edit={this.state.editTemplate}
           />
         )}
-        <div className="row">
+        <div
+          style={{
+            paddingLeft: 20
+          }}
+        >
           <Button
             color="success"
             onClick={() => this.setState({ openModal: true })}
@@ -91,9 +95,8 @@ class Plantillas extends React.Component {
             <tbody>
               {this.props.template.length > 0 &&
                 this.props.template.map((template, i) => {
-
                   if (template.status === true) {
-                    count.push(i)
+                    count.push(i);
                     return (
                       <tr key={i}>
                         <td scope="row" style={{ width: "30%" }}>

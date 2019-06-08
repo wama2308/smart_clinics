@@ -4,7 +4,7 @@ import '../../components/style.css';
 import './Users.css';
 import {FaExclamationCircle} from 'react-icons/fa';
 import PopoverItem from '../../components/PopoverItem.js';
-
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalInfoUserEmail extends React.Component {
 	constructor(props) {
@@ -121,7 +121,9 @@ class ModalInfoUserEmail extends React.Component {
                                 </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alT="loading" src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                        </div>    
                     }
                 </Modal>
             </span>

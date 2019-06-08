@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalRoles from './ModalRoles.js';
 import IconButton from "@material-ui/core/IconButton";
-import { Edit, Visibility } from "@material-ui/icons";
+import { Edit, Visibility, Delete } from "@material-ui/icons";
 
 class RolesList extends React.Component {
   constructor(props) {
@@ -55,6 +55,18 @@ class RolesList extends React.Component {
     }
   }
 
+  deleteRoles = (rolId) => {  
+    const message = {
+      title: "Inactivar Rol",
+      info: "¿Esta seguro que desea inactivar este rol?"
+    };
+    this.props.confirmDeleteUser(message, res => {
+      if (res) {
+        this.props.disabledRolAction(rolId);
+      }
+    });    
+  } 
+
   valorCloseModalRoles = (valor) => {
     this.setState({
         modal: valor,
@@ -79,41 +91,39 @@ class RolesList extends React.Component {
           valorCloseModalRoles={this.valorCloseModalRoles}
         />
 
-        <Button color="success" onClick={() => { this.openRoles(1); }}>Agregar</Button>
+        <Button color="success" onClick={() => { this.openRoles(1); }}>Agregar Rol</Button>
         <br />
-        <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">Rol</th>
-                  <th className="text-left">Acciones</th>
+        <br />        
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th className="text-left">Nro</th>
+                <th className="text-left">Rol</th>
+                <th className="text-left">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+             {this.props.roles? this.props.roles.map((rol, i) => {
+              return (
+                <tr key={i} className="text-left">
+                  <td>{ i + 1 }</td>
+                  <td>{ rol.rol }</td>
+                  <td>
+                    <div className="float-left" >
+                      <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openRoles(2, i, rol._id); }}><Visibility className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openRoles(3, i, rol._id); }}><Edit className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Inactivar Rol" className="iconButtons" onClick={() => { this.deleteRoles(rol._id); }}><Delete className="iconTable" /></IconButton>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-               {this.props.roles? this.props.roles.map((rol, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td>{ rol.rol }</td>
-                    <td>
-                      <div className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openRoles(2, i, rol._id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openRoles(3, i, rol._id); }}><Edit className="iconTable" /></IconButton>
-                      </div>
-                    </td>
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
-          </div>
-        </div>
+              );
+             })
+              :
+                null
+              }
+            </tbody>
+          </Table>
+          
       </div>
     );
   }

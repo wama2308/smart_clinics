@@ -25,11 +25,17 @@ import {
   editUserNoMasterAction,
   DeleteUserNoMasterAction,  
   addSucursalFunction,
-  deleteSucursalFunction
+  deleteSucursalFunction,
+  ActivateUserNoMasterAction,
+  disabledRolAction,
+  enabledRolAction
 } from "../actions/UserAction";
 import UsersList from "../views/Usuarios/UsersList";
 import RolesList from "../views/Usuarios/RolesList";
+import UsersInactivosList from "../views/Usuarios/UsersInactivosList";
+import RolesInactivosList from "../views/Usuarios/RolesInactivosList";
 import { openSnackbars, openConfirmDialog } from "../actions/aplicantionActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class UsersContainer extends Component {
   constructor(props) {
@@ -64,7 +70,7 @@ class UsersContainer extends Component {
           <Col>
             <Card>
               <CardHeader>Configuracion de Usuarios</CardHeader>
-              <CardBody>
+              <CardBody> 
                 {
                   this.props.usersRoles.get('loading') === 'hide' ?
                     <div>
@@ -77,6 +83,16 @@ class UsersContainer extends Component {
                         <NavItem>
                             <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
                                 Roles
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
+                                Usuarios Inactivos
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink className={classnames({ active: this.state.activeTab === '4' })} onClick={() => { this.toggleTab('4'); }} >
+                                Roles Inactivos
                             </NavLink>
                         </NavItem>
                       </Nav>
@@ -109,12 +125,30 @@ class UsersContainer extends Component {
                               LoadRolIdFunction = {this.props.LoadRolIdFunction}
                               permits={this.props.usersRoles.get('permits')}
                               modules={this.props.usersRoles.get('modules')}
+                              confirmDeleteUser = {this.props.confirmDeleteUser}
+                              disabledRolAction = {this.props.disabledRolAction}
+                            />                            
+                          </TabPane>
+                          <TabPane tabId="3">
+                            <UsersInactivosList
+                              users = {this.props.usersRoles.get('usersInactivos')}
+                              confirmDeleteUser = {this.props.confirmDeleteUser}
+                              ActivateUserNoMasterAction = {this.props.ActivateUserNoMasterAction}                              
+                            />
+                          </TabPane>
+                          <TabPane tabId="4">
+                            <RolesInactivosList
+                              roles = {this.props.usersRoles.get('rolesInactivos')}
+                              confirmDeleteUser = {this.props.confirmDeleteUser}
+                              enabledRolAction = {this.props.enabledRolAction}
                             />
                           </TabPane>
                       </TabContent>
                     </div>
                   :
-                    <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="25%"  /></div>
+                  <div style={{height: "55vh"}}>
+                    <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
+                  </div>
                 }
 
 
@@ -143,6 +177,9 @@ const mapDispatchToProps = dispatch => ({
   saveUserNoMasterAction: (data, callback) => dispatch(saveUserNoMasterAction(data, callback)),  
   editUserNoMasterAction: (data, callback) => dispatch(editUserNoMasterAction(data, callback)),  
   DeleteUserNoMasterAction: (userId) => dispatch(DeleteUserNoMasterAction(userId)),  
+  disabledRolAction: (rolId) => dispatch(disabledRolAction(rolId)),  
+  enabledRolAction: (rolId) => dispatch(enabledRolAction(rolId)),  
+  ActivateUserNoMasterAction: (userId) => dispatch(ActivateUserNoMasterAction(userId)),  
   addSucursalFunction: (email, arraySucursal) => dispatch(addSucursalFunction(email, arraySucursal)),  
   deleteSucursalFunction: (key, callback) => dispatch(deleteSucursalFunction(key, callback)),  
   confirmDeleteUser: (message, callback) =>dispatch(openConfirmDialog(message, callback)),

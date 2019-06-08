@@ -134,10 +134,15 @@ class Shelf extends React.Component {
                                 <FormFeedback tooltip>{this.state.estanteDescripcionError}</FormFeedback>                                                                                                                                                            
                             </FormGroup> 
                             <FormGroup className="top form-group col-sm-12">      
-                                <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="primary" onClick={this.handleSubmitShelfs}>Agregar</Button>
-                                &nbsp; 
-                                &nbsp;                                 
-                                <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>
+                                {
+                                    this.props.option !== 2 &&
+                                    <div>
+                                        <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="primary" onClick={this.handleSubmitShelfs}>Agregar</Button>
+                                        &nbsp; 
+                                        &nbsp;                                 
+                                        <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>
+                                    </div>
+                                }  
                                 <br />
                                 <br />
                                 <div className="error">{this.props.errorListContacs}</div>
@@ -146,8 +151,11 @@ class Shelf extends React.Component {
                                         <tr>
                                             <th className="text-left">Nro</th>
                                             <th className="text-left">Estante</th>                                                        
-                                            <th className="text-left">Descripcion</th>                                                        
-                                            <th className="text-left">Acciones</th>                                                        
+                                            <th className="text-left">Descripcion</th>  
+                                            {
+                                                this.props.option !== 2 &&                                                       
+                                                    <th className="text-left">Acciones</th>                                                        
+                                            }
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -157,12 +165,15 @@ class Shelf extends React.Component {
                                                     <tr key={i}>
                                                         <td>{i+1}</td>
                                                         <td>{list.name}</td>                                                                                                                                                    
-                                                        <td>{list.description}</td>                                                                                                                                                                                                             
-                                                        <td>
-                                                            <div  className="float-left" >
-                                                                <IconButton aria-label="Delete" disabled={this.props.option === 2 ? true : false} title="Ver Rol" className="iconButtons" onClick={() => { this.deleteShelfs(i); }}><Delete className="iconTable" /></IconButton>                                                    
-                                                            </div>
-                                                        </td>
+                                                        <td>{list.description}</td>   
+                                                        {
+                                                            this.props.option !== 2 &&                                                                                                                                                                                                           
+                                                            <td>
+                                                                <div  className="float-left" >
+                                                                    <IconButton aria-label="Delete" disabled={this.props.option === 2 ? true : false} title="Ver Rol" className="iconButtons" onClick={() => { this.deleteShelfs(i); }}><Delete className="iconTable" /></IconButton>                                                    
+                                                                </div>
+                                                            </td>
+                                                        }
                                                     </tr>
                                                 )
                                             })

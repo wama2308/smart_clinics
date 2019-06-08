@@ -9,6 +9,7 @@ import TagsInput from 'react-tagsinput';
 import ContacDistributor from './ContacDistributor.js';
 import { openConfirmDialog } from "../../actions/aplicantionActions";
 import { cleanContacs, saveDistributorAction, editDistributorAction } from "../../actions/DistributorActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 /*import 'react-tagsinput/react-tagsinput.css';*/
 
 class ModalDistributor extends React.Component {
@@ -47,7 +48,7 @@ class ModalDistributor extends React.Component {
             divDistrictSelect: '',
             districtSelectError: '',
             errorListContacs:'',
-            loading:'show',                                           
+            loading:'show',                     
 		};
 	}
 
@@ -202,10 +203,18 @@ class ModalDistributor extends React.Component {
         event.preventDefault();
         const isValid = this.validate();        
         if (isValid) { 
+            let valueTypeIdentity = "";
+            let arrayTypeIdentity = Object.values(this.state.arrayTypeIdentitySelect);
+            arrayTypeIdentity.forEach(function (elemento, indice) {
+                if(indice === 0){
+                    valueTypeIdentity = elemento;
+                }            
+            });
+
             let valuePais = "";
             let arrayPais = Object.values(this.state.arrayPaisSelect);
             arrayPais.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valuePais = elemento;
                 }            
             });
@@ -213,7 +222,7 @@ class ModalDistributor extends React.Component {
             let valueProvince = "";
             let arrayProvince = Object.values(this.state.arrayProvinceSelect);
             arrayProvince.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valueProvince = elemento;
                 }            
             });
@@ -221,17 +230,19 @@ class ModalDistributor extends React.Component {
             let valueDistrict = "";
             let arrayDistrict = Object.values(this.state.arrayDistrictSelect);
             arrayDistrict.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valueDistrict = elemento;
                 }            
-            });            
+            });      
+            console.log(valueTypeIdentity)      
+            console.log(valuePais)      
             if(this.props.option === 1)
             {
                 this.setState({loading:'show'})                                    
                 this.props.saveDistributorAction(
                   {
                     name:this.state.name,
-                    type_identity:this.state.arrayTypeIdentitySelect,
+                    type_identity:valueTypeIdentity,
                     tin:this.state.dni,
                     email:this.state.tagsEmails,
                     phone:this.state.tagsTelefonos,
@@ -253,7 +264,7 @@ class ModalDistributor extends React.Component {
                   {
                     id: this.props.userId,
                     name:this.state.name,
-                    type_identity:this.state.arrayTypeIdentitySelect,
+                    type_identity:valueTypeIdentity,
                     tin:this.state.dni,
                     email:this.state.tagsEmails,
                     phone:this.state.tagsTelefonos,
@@ -310,66 +321,26 @@ class ModalDistributor extends React.Component {
     }
 
     componentWillReceiveProps=(props)=>{        
-        //console.log("modal distributor ", props.distributor);
+        /*console.log("modal distributor ", props.distributor);
+        console.log("props ", props.aplication.confirm);*/
         this.setState({
-            modal: props.modal,       
-            loading:'show'     
-        });       
-        if(props.option !== 1){
-            if(props.distributor.distributorId){    
-                const selectPais = { 
-                    value: props.distributor.distributorId.distributorId.address.id_country, 
-                    label: props.distributor.distributorId.distributorId.address.name_country 
-                };
-                  
-                const selectProvince = { 
-                    value: props.distributor.distributorId.distributorId.address.id_province, 
-                    label: props.distributor.distributorId.distributorId.address.name_province 
-                };  
+            modal: props.modal            
+        });   
 
-                const selectDistrict = { 
-                    value: props.distributor.distributorId.distributorId.address.id_district, 
-                    label: props.distributor.distributorId.distributorId.address.name_district 
-                };
-                this.setState({
-                    loading:props.distributor.distributorId.loading, 
-                    arrayTypeIdentitySelect: props.distributor.distributorId.distributorId.type_identity,
-                    dni: props.distributor.distributorId.distributorId.tin,
-                    name: props.distributor.distributorId.distributorId.name,    
-                    tagsTelefonos: props.distributor.distributorId.distributorId.phones,
-                    tagsEmails: props.distributor.distributorId.distributorId.emails,
-                    arrayPaisSelect: selectPais,
-                    arrayProvinceSelect: selectProvince,
-                    arrayDistrictSelect: selectDistrict,
-                    direccion: props.distributor.distributorId.distributorId.address.address,   
-                    collapse:true,                                  
-                })       
-                if((props.distributor.contacs.length !== 0) && (props.distributor.tableContac === 1)){
-                    this.setState({
-                        errorListContacs:"",
-                        collapse:true
-                    }) 
-                }else if((props.distributor.contacs.length === 0) && (props.distributor.tableContac === 1)){
-                    this.setState({
-                        errorListContacs:"¡Ingrese al menos un  contacto!",
-                        collapse:true 
-                    }) 
-                }                     
-            }
-        }else{        
-            if((props.distributor.contacs.length === 0) && (props.distributor.tableContac === 0)){
+        if(props.option === 0){            
+            this.cleanState();            
+        }
+        if(props.option === 1){
+            let type_identity = "";
+            props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
+                if(typeIdentity.default === 1){
+                    type_identity = typeIdentity.label;
+                }                 
+            })            
+            if((props.distributor.contacs.length === 0) && (props.distributor.tableContac === 0)){                
                 this.setState({
                     loading:'hide',
-                    arrayTypeIdentitySelect: this.props.aplication.dataGeneral.dataCountries.type_identity[0]["value"],
-                    dni:'',
-                    name: '',
-                    tagsEmails: [],
-                    tagsTelefonos: [],
-                    arrayPaisSelect: null,
-                    arrayProvinceSelect: null,
-                    arrayDistrictSelect: null,
-                    direccion: '',    
-                    collapse:false,       
+                    arrayTypeIdentitySelect: type_identity,
                 })                      
             }else if((props.distributor.contacs.length !== 0) && (props.distributor.tableContac === 1)){
                 this.setState({
@@ -384,7 +355,69 @@ class ModalDistributor extends React.Component {
                     collapse:true 
                 }) 
             }            
-        }        
+        }
+        if(props.option === 2 || props.option === 3){
+            if(props.distributor.distributorId.id){    
+                if(props.aplication){
+                    props.aplication.dataGeneral.countries != null && 
+                    props.aplication.dataGeneral.countries.map((country, i) => {       
+                        if(country.value === props.aplication.dataGeneral.dataCountries.id){
+                            this.setState({
+                                arrayProvince:country.provinces,                        
+                            })                                                
+                            country.provinces.map((province, i) => {       
+                                if(province.value === props.distributor.distributorId.address.id_province){
+                                    this.setState({
+                                        arrayDistrict:province.districts,                        
+                                    })
+                                }
+                            })                            
+                        }                
+                    }) 
+                }
+                const selectPais = { 
+                    label: props.distributor.distributorId.address.name_country,
+                    value: props.distributor.distributorId.address.id_country
+                };
+                  
+                const selectProvince = { 
+                    label: props.distributor.distributorId.address.name_province,
+                    value: props.distributor.distributorId.address.id_province
+                };  
+
+                const selectDistrict = { 
+                    label: props.distributor.distributorId.address.name_district,
+                    value: props.distributor.distributorId.address.id_district
+                };                
+                if(props.distributor.action === 0 && props.aplication.confirm.message === ""){                    
+                    this.setState({
+                        arrayTypeIdentitySelect: props.distributor.distributorId.type_identity,
+                        dni: props.distributor.distributorId.tin,
+                        name: props.distributor.distributorId.name,    
+                        tagsTelefonos: props.distributor.distributorId.phones,
+                        tagsEmails: props.distributor.distributorId.emails,
+                        arrayPaisSelect: selectPais,
+                        arrayProvinceSelect: selectProvince,
+                        arrayDistrictSelect: selectDistrict,
+                        direccion: props.distributor.distributorId.address.address,   
+                        collapse:true,                                  
+                        loading:props.distributor.loading,                         
+                    })
+                }                    
+                
+                if((props.distributor.contacs.length !== 0) && (props.distributor.tableContac === 1)){
+                    this.setState({
+                        errorListContacs:"",
+                        collapse:true
+                    }) 
+                }else if((props.distributor.contacs.length === 0) && (props.distributor.tableContac === 1)){
+                    this.setState({
+                        errorListContacs:"¡Ingrese al menos un  contacto!",
+                        collapse:true 
+                    }) 
+                }                     
+            }
+        }
     }
 
     handleChangeSelectPais = (arrayPaisSelect) => {
@@ -424,6 +457,7 @@ class ModalDistributor extends React.Component {
 
     cleanState = () =>{
         this.setState({
+            modal: false,  
             dni: '',
             dniInvalid: false,
             dniError: '', 
@@ -449,6 +483,8 @@ class ModalDistributor extends React.Component {
             divDistrictSelect: '',
             districtSelectError: '',            
             errorListContacs:'',
+            collapse:false,       
+            loading:'show',            
         })
     }            
 
@@ -477,7 +513,7 @@ class ModalDistributor extends React.Component {
                                                     })
                                                 } 
                                                 </Input>
-                                            </InputGroupAddon>&nbsp;&nbsp;
+                                            </InputGroupAddon>
                                             <Input disabled={this.props.disabled} invalid={this.state.dniInvalid} name="dni" id="dni" onKeyUp={this.handlekeyDni} onChange={this.handleChange} value={this.state.dni} type="text" placeholder="DNI" />                                                    
                                             <FormFeedback tooltip>{this.state.dniError}</FormFeedback>                                                                                                                                                                     
                                         </InputGroup> 
@@ -548,6 +584,7 @@ class ModalDistributor extends React.Component {
                                     errorListContacs = {this.state.errorListContacs}
                                     collapse = {this.state.collapse}
                                     disabled={this.props.disabled}
+                                    option={this.props.option}
                                 />
                             </form>                                                                    
                             </ModalBody>
@@ -557,7 +594,9 @@ class ModalDistributor extends React.Component {
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />                        
+                        </div>
                     }
                 </Modal>                
             </span> 

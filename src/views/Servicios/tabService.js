@@ -40,7 +40,7 @@ export default class tabService extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div >
         {this.state.modal && (
           <ModalServicio
             open={this.state.modal}
