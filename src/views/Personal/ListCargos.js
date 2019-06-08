@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
-import { Edit, Visibility } from "@material-ui/icons";
+import { Edit, Visibility, Delete } from "@material-ui/icons";
 
 class ListCargos extends React.Component {
   constructor(props) {
@@ -63,6 +63,18 @@ class ListCargos extends React.Component {
     }  
   }  
 
+  deleteCargo = (id) => {  
+    const message = {
+      title: "Eliminar Cargo",
+      info: "¿Esta seguro que desea eliminar este cargo?"
+    };
+    this.props.confirm(message, res => {
+      if (res) {
+        this.props.disabledPositionAction(id);
+      }
+    });    
+  }   
+
   valorCloseModal = (valor) => {            
     this.setState({
         modal: valor,          
@@ -84,41 +96,38 @@ class ListCargos extends React.Component {
           cargoId={this.state.cargoId}
           valorCloseModal={this.valorCloseModal}  
         />        
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar Cargos</Button>
         <br />
-        <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">Cargo</th>
-                  <th className="text-left">Acciones</th>                  
+        <br />        
+          <Table hover responsive borderless>
+            <thead className="thead-light">
+              <tr>
+                <th className="text-left">Nro</th>
+                <th className="text-left">Cargo</th>
+                <th className="text-left">Acciones</th>                  
+              </tr>
+            </thead>
+            <tbody>
+             {this.props.cargos? this.props.cargos.map((cargo, i) => {
+              return (
+                <tr key={i} className="text-left">
+                  <td>{ i + 1 }</td>
+                  <td>{ cargo.label }</td>
+                  <td>
+                    <div className="float-left" >
+                      <IconButton aria-label="Delete" title="Ver Cargo" className="iconButtons" onClick={() => { this.openModal(2, i, cargo.value, cargo.label, cargo.description); }}><Visibility className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Cargo" className="iconButtons" onClick={() => { this.openModal(3, i, cargo.value, cargo.label, cargo.description); }}><Edit className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Eliminar Cargo" className="iconButtons" onClick={() => { this.deleteCargo(cargo.value); }}><Delete className="iconTable" /></IconButton>                        
+                    </div>
+                  </td>                    
                 </tr>
-              </thead>
-              <tbody>
-               {this.props.cargos? this.props.cargos.map((cargo, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td>{ cargo.label }</td>
-                    <td>
-                      <div className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Cargo" className="iconButtons" onClick={() => { this.openModal(2, i, cargo.value, cargo.label, cargo.description); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Cargo" className="iconButtons" onClick={() => { this.openModal(3, i, cargo.value, cargo.label, cargo.description); }}><Edit className="iconTable" /></IconButton>                        
-                      </div>
-                    </td>                    
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
-          </div>
-        </div>
+              );
+             })
+              :
+                null
+              }
+            </tbody>
+          </Table>          
       </div>
     );
   }

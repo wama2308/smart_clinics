@@ -54,6 +54,8 @@ class Ventas extends React.Component {
         return list.sales_save;
       case 3:
         return list.sales_billed;
+      case 4:
+        return list.sales_paid;
     }
   };
 
@@ -71,7 +73,9 @@ class Ventas extends React.Component {
       this.props.status_sale === "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
 
     return (
-      <Card style={{ flex: 1, margin: "0px 0px 10px 10px" }}>
+      <Card
+        style={{ flex: 1, margin: "0px 0px 10px 10px", maxHeight: 335.365 }}
+      >
         <Header>
           <Nav tabs>
             <NavItem>
@@ -112,6 +116,19 @@ class Ventas extends React.Component {
                 }}
               >
                 Facturas diarias
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                style={{ height: 50 }}
+                className={classnames({
+                  active: this.state.activeTab === 4
+                })}
+                onClick={() => {
+                  this.toggleTab(4);
+                }}
+              >
+                Facturas Abonadas
               </NavLink>
             </NavItem>
           </Nav>

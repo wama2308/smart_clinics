@@ -11,6 +11,7 @@ import {
   FormFeedback
 } from "reactstrap";
 import { Formik } from "formik";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { formatNumber } from "../../core/utils";
 
 export default class DiscountRequest extends React.Component {
@@ -45,21 +46,17 @@ export default class DiscountRequest extends React.Component {
   };
 
   handleChange = (event, name, setFieldValue, discountType) => {
-    console.log(discountType);
     if (discountType === "porcentaje" && Number(event.target.value) <= 100) {
-      console.log("entro aca");
       setFieldValue(name, event.target.value);
     } else if (
       discountType === "valor" &&
       Number(event.target.value) <= this.props.total.total
     ) {
-      console.log("entro 2");
       setFieldValue(name, event.target.value);
     }
   };
 
   render() {
-    console.log("data", this.props.edit);
     const type = [
       {
         value: "%",
@@ -114,7 +111,7 @@ export default class DiscountRequest extends React.Component {
                     className={"show"}
                     style={{ padding: "5%" }}
                   >
-                    <img src="assets/loader.gif" width="30%" />
+                    <CircularProgress />
                   </div>
                 )}
                 {this.props.loading && (

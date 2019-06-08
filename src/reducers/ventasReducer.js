@@ -35,6 +35,14 @@ const setField = (state, node, field, payload) => {
   return state.setIn([node, field], payload);
 };
 
+const cancelDiscount = (state, payload) => {
+  const result = state.toJS();
+  delete result.status_sale;
+  result.discount.status = payload;
+  console.log("aca", result);
+  return Map(result);
+};
+
 const saveOrDiscountBill = (state, payload) => {
   const json = state.toJS();
   const obj = {
@@ -64,6 +72,14 @@ const cleanAllData = (state, initalState) => {
   return initalState.set("salesList", result);
 };
 
+const completedSale = (state, payload) => {
+  const result = state.toJS();
+  const obj = { ...result, ...payload };
+
+  console.log("objeto", obj);
+  return Map(obj);
+};
+
 const initialState = Map({
   loadingSell: true
 });
@@ -89,6 +105,13 @@ const VentasReducer = (state = initialState, action) => {
     case "PATIENT_OPTIONS": {
       return setData(state, "options_patient", action.payload);
     }
+
+    case "OPTIONS_INTERNALS":
+      return setData(state, "options_internal", action.payload);
+
+    case "OPTIONS_EXTERNAL":
+      return setData(state, "options_external", action.payload);
+
     case "DELETE_ITEM": {
       return remove(state, "array_products", action.payload);
     }
@@ -115,7 +138,10 @@ const VentasReducer = (state = initialState, action) => {
       return saveOrDiscountBill(state, action.payload);
 
     case "DISCOUNT_CANCELLED":
-      return setField(state, "discount", "status", action.payload);
+      return cancelDiscount(state, action.payload);
+
+    case "SELL_COMPLETED":
+      return completedSale(state, action.payload);
     default:
       return state;
   }

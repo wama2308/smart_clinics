@@ -6,21 +6,28 @@ const detailsProvider = `${url}/api/detailsProvider`;
 const createProvider = `${url}/api/createProvider`;
 const editProvider = `${url}/api/editProvider`;
 const disableProvider = `${url}/api/disableProvider`;
+const listCountryProviderDisabled = `${url}/api/listCountryProviderDisabled`;
+const enableProvider = `${url}/api/enableProvider`;
 
 export const LoadDistributorFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
     	axios.get(listCountryProvider, datos)
-    	.then(res => {		    
-        dispatch({
-          type: "LOAD_DISTRIBUTOR",
-          payload: {
-            loading: "hide",
-            data: res.data,                
-            contacs: [],
-            tableContac: 0
-          }
-        });          		
+    	.then(res => {		   
+        listCountryProviderDisabledFunction(datos, proveedoresInactivos => {        
+          dispatch({
+            type: "LOAD_DISTRIBUTOR",
+            payload: {
+              loading: "hide",
+              data: res.data,        
+              proveedoresInactivos: proveedoresInactivos,        
+              contacs: [],
+              tableContac: 0,
+              distributorId: {},
+              action: 0
+            }
+          });          		
+        });
     	})
       .catch(error => {
 			console.log("Error consultando la api de usuarios no master",error.toString());
@@ -29,6 +36,17 @@ export const LoadDistributorFunction = () => dispatch => {
     })
     .catch(() => {
       console.log("Problemas con el token");
+    });
+};
+
+const listCountryProviderDisabledFunction = (datos, execute) => {
+  axios
+    .get(listCountryProviderDisabled, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de proveedores inactivos", error.toString());
     });
 };
 
@@ -167,6 +185,29 @@ export const DeleteDistributorAction = proveedorId => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error eliminando el proveedor"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const enableProviderFunction = proveedorId => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: enableProvider,
+        data: {
+          id: proveedorId
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Proveedor activado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error activando el proveedor"));
         });
     })
     .catch(() => {

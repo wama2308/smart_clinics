@@ -83,8 +83,8 @@ class Sucursales extends React.Component {
             disabled={this.state.disabled}
           />
         )}
-        <div className="container">
-          <div className="">
+        <div>
+          <div>
             <p className="text-muted">
               Ajuste la informacion de las sucursales de su Centro Medico
             </p>

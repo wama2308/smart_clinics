@@ -10,6 +10,7 @@ const setDataStoreId = (state, node, payload) => {
 const setStoreAddShelfs = (state, payload) => {
 	let estado = state.toJS();
 	estado.shelfs.push(payload.objShelfs);		
+	estado.action = 1;
 	return Map(estado);
 }
 
@@ -18,12 +19,15 @@ const setStoreDeleteShelfs = (state, payload) => {
 	var listShelfs = estado.shelfs;
 	listShelfs.splice(payload, 1);        
 	estado.shelfs = listShelfs;		
+	estado.action = 1;
 	return Map(estado);
 }
 
 const setStoreCleanShelfs = (state, payload) => {
 	let estado = state.toJS();
 	estado.shelfs = payload.shelfs;		
+	estado.action = 0;
+	estado.storeId = {};
 	return Map(estado);
 }
 

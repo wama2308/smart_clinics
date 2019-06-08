@@ -139,7 +139,27 @@ export default class MakeSale extends React.Component {
       payment_type: completed.value
     };
 
-    this.props.createSale(obj, () => {
+    const info = {
+      title: "Completar Venta",
+      info:
+        "El pago de esta factura no esta completa. Desea agregarla como abono?"
+    };
+
+    if (completed === "Abono") {
+      this.props.confirm(info, res => {
+        if (res) {
+          return this.props.createSale(obj, this.state.typeBill, () => {
+            if (this.state.typeBill === 1) {
+              this.setState({ loading: true, step: 3 });
+            } else {
+              this.props.close();
+            }
+          });
+        }
+      });
+    }
+
+    this.props.createSale(obj, this.state.typeBill, () => {
       if (this.state.typeBill === 1) {
         this.setState({ loading: true, step: 3 });
       } else {
