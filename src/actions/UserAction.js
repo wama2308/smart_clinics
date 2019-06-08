@@ -84,7 +84,7 @@ export const LoadAllUsersNoMasterFunction = () => dispatch => {
                           payload: {
                             loading: "hide",
                             ...roles,
-                            ...res.data,
+                            users:res.data,
                             usersInactivos:usersInactivos,
                             rolesInactivos:rolesInactivos,
                             totalBranchOffices,
@@ -103,8 +103,8 @@ export const LoadAllUsersNoMasterFunction = () => dispatch => {
                             userEmail:'',
                         }
                       });
-                    });    
-                  });    
+                    });
+                  });
                 });
               });
             });
@@ -480,8 +480,8 @@ export const disabledRolAction = rolId => dispatch => {
         },
         headers: datos.headers
       })
-        .then(() => {            
-          dispatch(openSnackbars("success", "Rol eliminado con exito"));                
+        .then(() => {
+          dispatch(openSnackbars("success", "Rol eliminado con exito"));
         })
         .catch(error => {
           dispatch(openSnackbars("warning", "Este rol no puede ser eliminado, se encuentra asignado a un usuario"));
@@ -632,18 +632,18 @@ export const saveUserNoMasterPersonalAction = (data, email, userId, callback) =>
         headers: datos.headers
       })
         .then(() => {
-          UserRegisterLatestFunction(email, usuario => {                      
+          UserRegisterLatestFunction(email, usuario => {
             dispatch({
               type: "LOAD_USUARIO_REGISTRADO_PERSONAL",
               payload: usuario
-            });          
+            });
           });
           callback();
           dispatch(openSnackbars("success", "Operacion Exitosa"));
           if(userId !== ""){
             //DeleteUserRegisterFunction(userId);
           }
-          
+
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error guardando el usuario"));
