@@ -8,6 +8,23 @@ const setStore = (state, payload) => {
   return Map(estado);
 };
 
+const setStoreSaveRolPusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.roles.push(payload);
+	return Map(estado);
+}
+
+const setStoreEditRolPusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.roles.map((rol, i) => {
+		if(rol._id === payload._id){
+			rol.rol = payload.rol
+			rol.modules = payload.modules
+		}
+	})
+	return Map(estado);
+}
+
 const setStoreDeleteInfoEmailUser = (state, payload) => {
   let estado = state.toJS();
   estado.infoEmailUser.data = payload;
@@ -71,58 +88,62 @@ const setStoreDeleteInfoUserId = (state, payload) => {
 
 const userReducer = (state = Map(), action) => {
   switch (action.type) {
-    case "LOAD_USERS_ROLES": {
-      return Map(action.payload);
-    }
 
-    case "LOAD_ROL_ID": {
-      return setData(state, "rolIdView", action.payload);
-    }
+	  case 'LOAD_USERS_ROLES': {
+	  	return Map(action.payload)
+	  }
 
-    case "LOAD_EMAIL_INFO_USER": {
-      return setData(state, "infoEmailUser", action.payload);
-    }
+	  case 'LOAD_ROL_ID': {
+	  	return setData(state, 'rolIdView', action.payload)
+	  }
 
-    case "LOAD_ROL_NEW": {
-      //console.log("store",state.toJS());
-      return setStore(state, action.payload);
-    }
+	  case 'LOAD_EMAIL_INFO_USER': {
+	  	return setData(state, 'infoEmailUser', action.payload)
+	  }
 
-    case "DELETE_DATA_INFO_USER": {
-      //console.log("store",state.toJS());
-      return setStoreDeleteInfoEmailUser(state, action.payload);
-    }
+	  case 'DELETE_DATA_INFO_USER': {
+	  	//console.log("store",state.toJS());
+	  	return setStoreDeleteInfoEmailUser(state, action.payload)
+	  }
 
-    case "LOAD_USER_ID": {
-      return setStoreEditUserView(state, action.payload);
-    }
+	  case 'LOAD_USER_ID': {
+	  	return setStoreEditUserView(state, action.payload)
+	  }
 
-    case "ADD_SUCURSAL": {
-      return setStoreAddSucursal(state, action.payload);
-    }
+	  case 'ADD_SUCURSAL': {
+	  	return setStoreAddSucursal(state, action.payload)
+	  }
 
-    case "DELETE_SUCURSAL": {
-      return setStoreDeleteSucursal(state, action.payload);
-    }
+	  case 'DELETE_SUCURSAL': {
+	  	return setStoreDeleteSucursal(state, action.payload)
+	  }
 
-    case "DELETE_USER_ID_VIEW": {
-      return setStoreDeleteUserIdView(state, action.payload);
-    }
+	  case 'DELETE_USER_ID_VIEW': {
+	  	return setStoreDeleteUserIdView(state, action.payload)
+	  }
 
-    case "ADD_EMAIL_STORE": {
-      return setStoreAddEmail(state, action.payload);
-    }
+	  case 'ADD_EMAIL_STORE': {
+	  	return setStoreAddEmail(state, action.payload)
+	  }
 
-    case "LOAD_USUARIO_REGISTRADO_PERSONAL": {
-      return setStoreUserId(state, action.payload);
-    }
+	  case 'LOAD_USUARIO_REGISTRADO_PERSONAL': {
+	  	return setStoreUserId(state, action.payload)
+	  }
 
-    case "DELETE_DATA_INFO_USER_ID": {
-      return setStoreDeleteInfoUserId(state, action.payload);
-    }
+	  case 'DELETE_DATA_INFO_USER_ID': {
+	  	return setStoreDeleteInfoUserId(state, action.payload)
+	  }
 
-    default:
-      return state;
+	  case 'LOAD_ROL_NEW_PUSHER': {
+	  	return setStoreSaveRolPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_ROL_EDIT_PUSHER': {
+	  	return setStoreEditRolPusher(state, action.payload)
+	  }
+
+	  default:
+	  	return state;
   }
 };
 

@@ -16,6 +16,7 @@ class RolesList extends React.Component {
       showHide: '',
       option:0,
       position: 0,
+      id: '',
     };
   }
 
@@ -51,6 +52,7 @@ class RolesList extends React.Component {
         disabled: false,
         showHide: 'show',
         position: pos,
+        id: rolId,
       })
     }
   }
@@ -75,7 +77,7 @@ class RolesList extends React.Component {
 
   render() {
      return (
-      <div className="container">
+      <div>
        <ModalRoles
           option = {this.state.option}
           modal = {this.state.modal}
@@ -87,7 +89,7 @@ class RolesList extends React.Component {
           permits = {this.props.permits}
           saveRolAction = {this.props.saveRolAction}
           editRolAction = {this.props.editRolAction}
-          position = {this.state.position}
+          id = {this.state.id}
           valorCloseModalRoles={this.valorCloseModalRoles}
         />
 

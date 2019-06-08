@@ -6,7 +6,7 @@ import '../../components/style.css';
 import './Users.css';
 import jstz from 'jstz';
 import { connect } from "react-redux";
-import { LoadRolIdFunction, testFunction } from "../../actions/UserAction";
+import { LoadRolIdFunction, loadRolNewPusher } from "../../actions/UserAction";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalRoles extends React.Component {
@@ -131,7 +131,7 @@ class ModalRoles extends React.Component {
                 this.setState({loading:'show'})    
                 this.props.editRolAction(
                   {
-                    posicion: this.props.position,
+                    _id: this.props.id,
                     rol:this.state.rol,
                     selected: this.state.selected,
                     onlyModules: this.state.onlyModules,
@@ -205,7 +205,7 @@ class ModalRoles extends React.Component {
                             </ModalBody>
                             <ModalFooter>
                                 <Button className={this.props.showHide} color="primary" onClick={this.handleSaveRoles}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeRoles}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                           
+                                <Button className="" color="danger" onClick={this.closeRoles}>Cancelar</Button>
                             </ModalFooter>
                             </div>
                         :
@@ -226,7 +226,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({  
   LoadRolViewId: (pos) => dispatch(LoadRolIdFunction(pos)),
-  LoadRolNew: () => dispatch(testFunction()),
+  LoadRolNew: () => dispatch(loadRolNewPusher()),
 });
 
 export default connect(

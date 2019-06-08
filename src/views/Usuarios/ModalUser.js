@@ -474,12 +474,13 @@ class ModalUser extends React.Component {
 
         if((props.option === 2) || (props.option === 3) || (props.option === 5) || (props.option === 6)){   
             if(props.usersRoles.userIdView.email){
+                console.log(props.usersRoles.userIdView.names)
                 this.setState({
                     loading:'hide',
                     email: props.usersRoles.userIdView.email,
-                    names: props.usersRoles.userIdView.names,
-                    surnames: props.usersRoles.userIdView.surnames,
-                    username: props.usersRoles.userIdView.username,
+                    nombres: props.usersRoles.userIdView.names,
+                    apellidos: props.usersRoles.userIdView.surnames,
+                    nombreUsuario: props.usersRoles.userIdView.username,
                     listSucursales: props.usersRoles.userIdView.sucursal,                           
                 })              
             }            
@@ -487,9 +488,9 @@ class ModalUser extends React.Component {
             this.setState({
                 loading:'hide',
                 email: props.usersRoles.userIdView.email,
-                names: props.usersRoles.userIdView.names,
-                surnames: props.usersRoles.userIdView.surnames,
-                username: props.usersRoles.userIdView.username,
+                nombres: props.usersRoles.userIdView.names,
+                apellidos: props.usersRoles.userIdView.surnames,
+                nombreUsuario: props.usersRoles.userIdView.username,
                 listSucursales: props.usersRoles.userIdView.sucursal,                
             })   
         }else if (props.option === 4){  
@@ -497,9 +498,9 @@ class ModalUser extends React.Component {
                 modalUser: props.modal,
                 loading:'hide',
                 email: props.emailUserSelect,
-                names: '',
-                surnames: '',
-                username: '',
+                nombres: '',
+                apellidos: '',
+                nombreUsuario: '',
                 listSucursales: props.usersRoles.userIdView.sucursal,                
             })   
         }                   

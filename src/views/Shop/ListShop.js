@@ -81,7 +81,7 @@ class ListShop extends React.Component {
 
   render() {
      return (
-      <div className="container">
+      <div>
         <ModalShop 
           option = {this.state.option}
           modal = {this.state.modal}
