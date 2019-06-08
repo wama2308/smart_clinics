@@ -2,9 +2,20 @@ import {Map} from 'immutable'
 
 const setData = (state, node , payload)=> state.set(node, payload)
 
-const setStore = (state, payload) => {
+const setStoreSaveRolPusher = (state, payload) => {
 	let estado = state.toJS();
 	estado.roles.push(payload);
+	return Map(estado);
+}
+
+const setStoreEditRolPusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.roles.map((rol, i) => {
+		if(rol._id === payload._id){
+			rol.rol = payload.rol
+			rol.modules = payload.modules
+		}
+	}) 	
 	return Map(estado);
 }
 
@@ -84,11 +95,6 @@ const userReducer = (state = Map(), action) => {
 	  	return setData(state, 'infoEmailUser', action.payload)
 	  }
 
-	  case 'LOAD_ROL_NEW': {
-	  	//console.log("store",state.toJS());
-	  	return setStore(state, action.payload)
-	  }
-
 	  case 'DELETE_DATA_INFO_USER': {
 	  	//console.log("store",state.toJS());
 	  	return setStoreDeleteInfoEmailUser(state, action.payload)
@@ -120,6 +126,16 @@ const userReducer = (state = Map(), action) => {
 
 	  case 'DELETE_DATA_INFO_USER_ID': {
 	  	return setStoreDeleteInfoUserId(state, action.payload)
+	  }
+
+	  case 'LOAD_ROL_NEW_PUSHER': {
+	  	//console.log("store",state.toJS());
+	  	return setStoreSaveRolPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_ROL_EDIT_PUSHER': {
+	  	//console.log("store",state.toJS());
+	  	return setStoreEditRolPusher(state, action.payload)
 	  }
 
 	  default:

@@ -83,7 +83,7 @@ class ListCargos extends React.Component {
 
   render() {
      return (
-      <div className="container">
+      <div>
        <ModalCargos 
           option = {this.state.option}
           modal = {this.state.modal}

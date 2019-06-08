@@ -78,7 +78,7 @@ class ListDistributor extends React.Component {
 
   render() {
      return (
-      <div className="container">
+      <div>
         <ModalDistributor 
           option = {this.state.option}
           modal = {this.state.modal}
