@@ -344,6 +344,7 @@ export const deleteInfoUserId = () => dispatch => {
 };
 
 export const saveUserNoMasterAction = (data, callback) => dispatch => {
+  console.log(data)
   getPosts()
     .then(datos => {
       axios({
@@ -655,13 +656,28 @@ export const saveUserNoMasterPersonalAction = (data, email, userId, callback) =>
 };
 
  /***************************TEST WAMA***************************/
-export const testFunction = () => dispatch => {
+export const loadRolNewPusher = rolNew => dispatch => {
   getPosts()
     .then(datos => {
       dispatch({
-        type: "LOAD_ROL_NEW",
+        type: "LOAD_ROL_NEW_PUSHER",
         payload: {
           ...rolNew
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadRolEditPusher = rolEdit => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_EDIT_PUSHER",
+        payload: {
+          ...rolEdit
         }
       });
     })

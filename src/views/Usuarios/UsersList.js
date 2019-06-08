@@ -84,7 +84,7 @@ class UsersList extends React.Component {
 
   render() {      
      return (
-      <div className="container">      
+      <div>      
         <ModalUser 
           option = {this.state.option}
           modal = {this.state.modal}
