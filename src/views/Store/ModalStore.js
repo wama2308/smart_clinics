@@ -13,9 +13,9 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalStore extends React.Component {
 	constructor(props) {
-		super(props);		        
+		super(props);
 		this.state = {
-            ...InitalState                              
+            ...InitalState
         };
 	}
 
@@ -25,23 +25,23 @@ class ModalStore extends React.Component {
         const { name, value } = e.target;
         this.setState({
             [name]: value
-        });                
-    }   	
+        });
+    }
 
     toggle = () => {
-        this.setState({ 
-            collapse: !this.state.collapse 
+        this.setState({
+            collapse: !this.state.collapse
         });
     }
 
     closeModal = () => {
-        this.setState({                        
+        this.setState({
             ...InitalState,
             loading: 'show'
-        });   
+        });
         this.props.cleanShelfs();
-        this.props.valorCloseModal(false);       
-    }       
+        this.props.valorCloseModal(false);
+    }
 
     validate = () => {
         let almacenInvalid = "";
@@ -49,49 +49,45 @@ class ModalStore extends React.Component {
         let divSucursalesSelect = "";
         let divSucursalesSelectError = "";
         let descripcionError = "";
-        let descripcionInvalid = false;                 
+        let descripcionInvalid = false;
 
-        if (this.state.almacen === "") {            
+        if (this.state.almacen === "") {
             almacenError = "¡Ingrese el almacen!";
             almacenInvalid ="borderColor";
         }
-        if (this.state.arraySucursalesSelect === null) {            
+        if (this.state.arraySucursalesSelect === null) {
             divSucursalesSelectError = "¡Seleccione la sucursal!";
             divSucursalesSelect = "borderColor";
         }
-        if (this.state.descripcion === "") {            
+        if (this.state.descripcion === "") {
             descripcionError = "¡Ingrese la descripcion!";
             descripcionInvalid =true;
-        }                
-        if (almacenError || divSucursalesSelectError || descripcionError) {            
-            this.setState({ 
+        }
+        if (almacenError || divSucursalesSelectError || descripcionError) {
+            this.setState({
                 almacenError,
                 almacenInvalid,
                 divSucursalesSelectError,
                 divSucursalesSelect,
                 descripcionError,
-                descripcionInvalid,                                
-            });  
+                descripcionInvalid,
+            });
             return false;
         }
-        return true;        
+        return true;
     };
 
     handleSaveAlmacen = event => {
         event.preventDefault();
-        const isValid = this.validate();           
-        if (isValid) {             
+        const isValid = this.validate();
+        if (isValid) {
             let valueSucursales = "";
             let arraySucursales = Object.values(this.state.arraySucursalesSelect);
             arraySucursales.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valueSucursales = elemento;
-                }            
+                }
             });
-            console.log("sucursal_id ", valueSucursales)
-            console.log("name ", this.state.almacen)
-            console.log("description ", this.state.descripcion)
-            console.log("shelf ",this.props.store.shelfs)     
             if(this.props.option === 1)
             {
                 if(this.props.store.shelfs.length === 0){
@@ -100,38 +96,38 @@ class ModalStore extends React.Component {
                       info: "¿Esta seguro que desea guardar el almacen sin estantes?"
                     };
                     this.props.confirm(message, res => {
-                        if (res) {                
-                            this.setState({loading:'show'})                                    
+                        if (res) {
+                            this.setState({loading:'show'})
                             this.props.saveStoreAction(
                             {
                                 sucursal_id:valueSucursales,
                                 name:this.state.almacen,
                                 description:this.state.descripcion,
-                                shelf:this.props.store.shelfs,                        
+                                shelf:this.props.store.shelfs,
                                 timeZ: jstz.determine().name()
                             },
                               () => {
-                                this.closeModal();                    
+                                this.closeModal();
                               }
                             )
                         }
-                    });  
+                    });
                 }else{
-                    this.setState({loading:'show'})                                    
+                    this.setState({loading:'show'})
                     this.props.saveStoreAction(
                     {
                         sucursal_id:valueSucursales,
                         name:this.state.almacen,
                         description:this.state.descripcion,
-                        shelf:this.props.store.shelfs,                        
+                        shelf:this.props.store.shelfs,
                         timeZ: jstz.determine().name()
                     },
                       () => {
-                        this.closeModal();                    
+                        this.closeModal();
                       }
                     )
-                }                
-            } 
+                }
+            }
             else if(this.props.option === 3)
             {
                 if(this.props.store.shelfs.length === 0){
@@ -140,8 +136,8 @@ class ModalStore extends React.Component {
                       info: "¿Esta seguro que desea guardar el almacen sin estantes?"
                     };
                     this.props.confirm(message, res => {
-                        if (res) {  
-                            this.setState({loading:'show'})   
+                        if (res) {
+                            this.setState({loading:'show'})
                             this.props.editStoreAction(
                               {
                                 store_id:this.props.id,
@@ -149,17 +145,17 @@ class ModalStore extends React.Component {
                                 sucursal_id:valueSucursales,
                                 name:this.state.almacen,
                                 description:this.state.descripcion,
-                                shelf:this.props.store.shelfs,                        
+                                shelf:this.props.store.shelfs,
                                 timeZ: jstz.determine().name()
                               },
                               () => {
-                                this.closeModal();                    
+                                this.closeModal();
                               }
                             )
                         }
                     });
                 }else{
-                    this.setState({loading:'show'})   
+                    this.setState({loading:'show'})
                     this.props.editStoreAction(
                       {
                         store_id:this.props.id,
@@ -167,31 +163,31 @@ class ModalStore extends React.Component {
                         sucursal_id:valueSucursales,
                         name:this.state.almacen,
                         description:this.state.descripcion,
-                        shelf:this.props.store.shelfs,                        
+                        shelf:this.props.store.shelfs,
                         timeZ: jstz.determine().name()
                       },
                       () => {
-                        this.closeModal();                    
+                        this.closeModal();
                       }
                     )
-                }                    
-            }        
+                }
+            }
         }
     }
 
     handlekeyAlmacen = event =>{
         this.setState({
             almacenError: "",
-            almacenInvalid: false,         
+            almacenInvalid: false,
         })
-    }    
+    }
 
     handleChangeSucursalesSelect = (arraySucursalesSelect) => {
-        this.setState({ 
+        this.setState({
             arraySucursalesSelect,
             divSucursalesSelect: '',
-            divSucursalesSelectError: ''                                
-        });  
+            divSucursalesSelectError: ''
+        });
     }
 
     handlekeyDescripcion = event =>{
@@ -199,10 +195,9 @@ class ModalStore extends React.Component {
             descripcionError: '',
             descripcionInvalid: false
         })
-    }    
+    }
 
-    componentWillReceiveProps=(props)=>{       
-        console.log("modal store ", props.store)
+    componentWillReceiveProps=(props)=>{
         if(props.option === 1){
             this.setState({
                 loading: 'hide',
@@ -211,21 +206,21 @@ class ModalStore extends React.Component {
         if(props.option === 0){
             this.setState({
                 ...InitalState
-            })   
+            })
         }
-        if(props.option === 2 || props.option === 3){                          
-            if(props.store.action === 0 && props.aplication.confirm.message === "" && props.store.storeId){                    
+        if(props.option === 2 || props.option === 3){
+            if(props.store.action === 0 && props.aplication.confirm.message === "" && props.store.storeId){
                 if(props.store.storeId.storeId){
                     if(props.store.storeId.storeId.name){
                         this.setState({
                             almacen: props.store.storeId.storeId.name,
                             arraySucursalesSelect: props.store.storeId.storeId.sucursal,
                             descripcion: props.store.storeId.storeId.description,
-                            loading: props.store.storeId.loading,                    
+                            loading: props.store.storeId.loading,
                         })
                     }
-                }                                  
-            }       
+                }
+            }
             if(props.store.shelfs.length > 0){
                 this.setState({
                     collapse: true
@@ -234,56 +229,56 @@ class ModalStore extends React.Component {
                 this.setState({
                     collapse: false
                 })
-            }      
-        }       
-    }   
+            }
+        }
+    }
 
-	render() {         
+	render() {
         return (
-            <span>                            
+            <span>
         		<Modal isOpen={this.props.modal} className="ModalStore">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
                             <ModalHeader toggle={this.closeModal}>{this.props.modalHeader}</ModalHeader>
-                            <ModalBody className="Scroll">      
-                            <form className="formCodeConfirm" onSubmit={this.handleSaveAlmacen.bind(this)}> 
-                                <div className="row"> 
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
+                            <ModalBody className="Scroll">
+                            <form className="formCodeConfirm" onSubmit={this.handleSaveAlmacen.bind(this)}>
+                                <div className="row">
+                                    <FormGroup className="top form-group col-sm-6">
                                         <Label for="almacen">Almacen:</Label>
                                         <div className={this.state.almacenInvalid}>
                                             <Input disabled={this.props.disabled} name="almacen" id="almacen" onKeyUp={this.handlekeyAlmacen} onChange={this.handleChange} value={this.state.almacen} type="text" placeholder="Almacen" />
-                                        </div>                                            
+                                        </div>
                                         <div className="errorSelect">{this.state.almacenError}</div>
-                                    </FormGroup>                                     
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
+                                    </FormGroup>
+                                    <FormGroup className="top form-group col-sm-6">
                                         <Label for="sucursales">Sucursales</Label>
                                         <div className={this.state.divSucursalesSelect}>
                                             <Select isSearchable="true" isDisabled={this.props.disabled} name="sucursales" value={this.state.arraySucursalesSelect} onChange={this.handleChangeSucursalesSelect} options={this.props.branchOfficces} />
                                         </div>
                                         <div className="errorSelect">{this.state.divSucursalesSelectError}</div>
-                                    </FormGroup>                                      
-                                    <FormGroup className="top form-group col-sm-6">                                                                 
+                                    </FormGroup>
+                                    <FormGroup className="top form-group col-sm-6">
                                         <Label for="descripcion">Descripcion:</Label>
                                         <Input disabled={this.props.disabled} invalid={this.state.descripcionInvalid} name="descripcion" id="descripcion" onKeyUp={this.handlekeyDescripcion} onChange={this.handleChange} value={this.state.descripcion} type="textarea" placeholder="Descripcion" />
-                                        <FormFeedback tooltip>{this.state.descripcionError}</FormFeedback>                                                                                                                                                            
-                                    </FormGroup>                                                                 
-                                </div>            
+                                        <FormFeedback tooltip>{this.state.descripcionError}</FormFeedback>
+                                    </FormGroup>
+                                </div>
                                 {
                                     this.props.option === 2 ?
                                     <Label for="descripcion"><b>Lista de Estantes</b></Label>
                                     :
                                     <Button disabled={this.props.disabled} color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Lista de Estantes</Button>
-                                }                                   
-                                <Shelf 
+                                }
+                                <Shelf
                                     collapse={this.state.collapse}
                                     option={this.props.option}
                                 />
-                            </form>                                                                    
+                            </form>
                             </ModalBody>
                             <ModalFooter>
                                 <Button className={this.props.showHide} color="primary" onClick={this.handleSaveAlmacen}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
                             </ModalFooter>
                             </div>
                         :
@@ -291,8 +286,8 @@ class ModalStore extends React.Component {
                             <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
                         </div>
                     }
-                </Modal>                
-            </span> 
+                </Modal>
+            </span>
 		);
 	}
   }
@@ -302,11 +297,11 @@ const mapStateToProps = state => ({
   aplication: state.global
 });
 
-const mapDispatchToProps = dispatch => ({  
+const mapDispatchToProps = dispatch => ({
     confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
     saveStoreAction: (data, callback) =>dispatch(saveStoreAction(data, callback)),
-    editStoreAction: (data, callback) =>dispatch(editStoreAction(data, callback)),    
-    cleanShelfs: () =>dispatch(cleanShelfs()),    
+    editStoreAction: (data, callback) =>dispatch(editStoreAction(data, callback)),
+    cleanShelfs: () =>dispatch(cleanShelfs()),
 });
 
 export default connect(
