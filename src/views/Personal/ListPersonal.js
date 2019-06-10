@@ -81,7 +81,7 @@ class ListPersonal extends React.Component {
 
   render() {
      return (
-      <div className="container">
+      <div>
        <ModalPersonal 
           option = {this.state.option}
           modal = {this.state.modal}

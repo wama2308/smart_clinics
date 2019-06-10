@@ -41,7 +41,7 @@ class UsersInactivosList extends React.Component {
 
   render() {      
      return (
-      <div className="container">      
+      <div>      
         <br />
         <div className="row">
           <div className="form-group col-sm-12">

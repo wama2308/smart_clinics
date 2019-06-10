@@ -4,7 +4,7 @@ import { Table } from "reactstrap";
 class Licencias extends React.Component {
   render() {
      return (
-      <div className="container">
+      <div>
         <p className="text-muted">Licencias de su Centro Medico</p>
         <div className="row">
           <div className="form-group col-sm-12">
