@@ -180,7 +180,7 @@ const mapDispatchToProps = dispatch => ({
   disabledRolAction: (rolId) => dispatch(disabledRolAction(rolId)),  
   enabledRolAction: (rolId) => dispatch(enabledRolAction(rolId)),  
   ActivateUserNoMasterAction: (userId) => dispatch(ActivateUserNoMasterAction(userId)),  
-  addSucursalFunction: (email, arraySucursal) => dispatch(addSucursalFunction(email, arraySucursal)),  
+  addSucursalFunction: (email, names, surnames, username, arraySucursal) => dispatch(addSucursalFunction(email, names, surnames, username, arraySucursal)),  
   deleteSucursalFunction: (key, callback) => dispatch(deleteSucursalFunction(key, callback)),  
   confirmDeleteUser: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
   alert: (type, message) => dispatch(openSnackbars(type, message)), 

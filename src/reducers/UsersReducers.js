@@ -16,12 +16,9 @@ const setStoreSaveRolPusher = (state, payload) => {
 
 const setStoreEditRolPusher = (state, payload) => {
 	let estado = state.toJS();
-	estado.roles.map((rol, i) => {
-		if(rol._id === payload._id){
-			rol.rol = payload.rol
-			rol.modules = payload.modules
-		}
-	})
+	const key = estado.roles.findIndex(rol => rol._id === payload._id);
+	estado.roles[key].rol = payload.rol;
+	estado.roles[key].modules = payload.modules;	
 	return Map(estado);
 }
 
@@ -35,6 +32,9 @@ const setStoreAddSucursal = (state, payload) => {
   let estado = state.toJS();
   estado.userIdView.sucursal = payload.arraySucursal;
   estado.userIdView.email = payload.email;
+  estado.userIdView.names = payload.names;
+  estado.userIdView.surnames = payload.surnames;
+  estado.userIdView.username = payload.username;
   return Map(estado);
 };
 
