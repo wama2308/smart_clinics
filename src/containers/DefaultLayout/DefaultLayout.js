@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import { Container } from "reactstrap";
 
 import {
-  AppAside,  
+  AppAside,
   AppFooter,
   AppHeader,
   AppSidebar,
@@ -29,18 +29,15 @@ class DefaultLayout extends Component {
           <DefaultHeader />
         </AppHeader>
         <div className="app-body ">
-          <AppSidebar fixed display="lg">
-            <AppSidebarHeader />
-            <AppSidebarForm />
+          <AppSidebar fixed display="lg" minimized>
             <AppSidebarNav
               navConfig={navigation}
               location={this.props.location}
-              isOpen={true}
             />
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
-          <main className="main">            
+          <main className="main">
             <Container fluid style={{ height: "100%", padding: 20 }}>
               <Switch>
                 {routes.map((route, idx) => {
@@ -53,7 +50,7 @@ class DefaultLayout extends Component {
                       render={props => <route.component {...props} />}
                     />
                   ) : null;
-                })}                
+                })}
               </Switch>
             </Container>
           </main>
