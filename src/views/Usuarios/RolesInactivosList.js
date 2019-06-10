@@ -41,7 +41,7 @@ class RolesInactivosList extends React.Component {
 
   render() {
      return (
-      <div className="container">        
+      <div>        
         <br />        
           <Table hover responsive borderless>
             <thead className="thead-light">
