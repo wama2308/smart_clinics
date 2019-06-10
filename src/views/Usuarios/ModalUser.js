@@ -403,7 +403,7 @@ class ModalUser extends React.Component {
                 )                                                                                
             });              
         }    
-        this.props.addSucursalFunction(this.state.email, this.state.listSucursales);
+        this.props.addSucursalFunction(this.state.email, this.state.nombres, this.state.apellidos, this.state.nombreUsuario, this.state.listSucursales);
         this.setState({
             selectedSucursalOption: null,
             selectedRolOption: null,

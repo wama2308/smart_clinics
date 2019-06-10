@@ -516,13 +516,16 @@ export const enabledRolAction = rolId => dispatch => {
     });
 };
 
-export const addSucursalFunction = (email, arraySucursal) => dispatch => {
+export const addSucursalFunction = (email, names, surnames, username, arraySucursal) => dispatch => {
   getPosts()
     .then(datos => {
       dispatch({
         type: "ADD_SUCURSAL",
         payload: {
           email: email,
+          names: names,
+          surnames: surnames,
+          username: username,
           arraySucursal: arraySucursal
         }
       });
