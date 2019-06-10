@@ -43,7 +43,7 @@ class RegisterEmail extends Component {
       left: "2%",
       textAlign: "center"
     };
-
+    console.log("data", this.props.step);
     const disabled = this.state.email.length <= 1 ? true : false;
     return (
       <div className="app flex-row align-items-center background">
@@ -113,52 +113,13 @@ class RegisterEmail extends Component {
       </div>
     );
   }
-
-  // redirect() {
-  //   this.props.history.push("/Login");
-  // }
-
-  // sendEmail(event) {
-  //   event.preventDefault();
-  //   const token = {
-  //     email: this.state.email,
-  //     timeZ: this.state.timeZ,
-
-  //     headers: {
-  //       "Access-Control-Allow-Origin": "*",
-  //       Accept: "application/json",
-  //       "Content-type": "application/json"
-  //     }
-  //   };
-  //   axios.put(url + "/api/CheckMaster", token).then(res => {
-  //     this.state.message = res.data;
-  //     if (this.state.message === "Operacion exitosa") {
-  //       this.props.history.push({
-  //         pathname: "/confirm-code",
-  //         state: { email: this.state.email }
-  //       });
-  //     } else if (
-  //       this.state.message ===
-  //       "¡Ya le fue enviado un codigo de validacion, por favor revise su correo e ingrese el codigo!"
-  //     ) {
-  //       let warningMessage = { background: "#d7b70c", text: "#FFFFFF" };
-  //       notify.show(this.state.message, "custom", 7000, warningMessage);
-  //       setTimeout(() => {
-  //         this.props.history.push({
-  //           pathname: "/confirm-code",
-  //           state: { email: this.state.email }
-  //         });
-  //       }, 4000);
-  //     } else {
-  //       this.setState({ email: "" });
-  //       let warningMessage = { background: "#d7b70c", text: "#FFFFFF" };
-  //       notify.show(this.state.message, "custom", 7000, warningMessage);
-  //     }
-  //   });
-  // }
 }
 
+const mapStateToProps = state => ({
+  step: state.auth.toJS()
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   { register }
 )(RegisterEmail);

@@ -52,13 +52,38 @@ export const register = (email, timeZ) => dispatch => {
   axios
     .put(url + "/api/CheckMaster", token)
     .then(res => {
-      console.log(res.data);
+      console.log("aca");
+      dispatch({
+        type: "NEW_STEP",
+        payload: 1
+      });
     })
     .catch(error => {
       const result = JSON.stringify(error);
       const errorR = JSON.parse(result);
+      console.log(errorR);
       Object.keys(errorR.response.data).map(key => {
         dispatch(openSnackbars("error", errorR.response.data[key]));
       });
+    });
+};
+
+export const confirmCode = (email, code) => {
+  const token = {
+    email: email,
+    validation_code: code,
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json"
+    }
+  };
+  console.log(token);
+  axios
+    .put(url + "/api/CheckCodeValidation", token)
+    .then(res => {
+      console.log(res.data);
+    })
+    .catch(err => {
+      console.log(err);
     });
 };
