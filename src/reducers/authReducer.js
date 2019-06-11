@@ -1,9 +1,8 @@
-import {Map , List} from 'immutable'
-import AuthState from '../state/authState'
+import { Map, List } from "immutable";
 
 const setState = (state, newState) => state.mergeDeep(Map(newState));
 
-const setdata = (state,node,payload) =>   state.set(node , Array.isArray(payload)? List(payload) : Map(payload))
+const setData = (state, node, payload) => state.set(node, payload);
 
 // search = (state,node,payload) => state.set(node , payload)
 
@@ -11,23 +10,24 @@ const setdata = (state,node,payload) =>   state.set(node , Array.isArray(payload
 //    return  state.set(node ,  state.get(node).push(payload))
 // }
 
-const INITIAL_STATE = AuthState
-
-
 const authReducer = (state = Map(), action) => {
   switch (action.type) {
-  case 'SESION_OFF':{
-    return setState(state, {logged: false })
-  }
-  case 'GET_DATA_USER':{
-    return setState(state, action.payload)
-  }
-  case 'VERIFYING':{
-    return setdata(state, 'user' , action.payload)
-  }
- 
-  default:
-    return state;
+    case "SESION_OFF": {
+      return setState(state, { logged: false });
+    }
+    case "GET_DATA_USER": {
+      return setState(state, action.payload);
+    }
+
+    case "NEW_STEP": {
+      return setData(state, "authStep", action.payload);
+    }
+    case "VERIFYING": {
+      return setData(state, "user", action.payload);
+    }
+
+    default:
+      return state;
   }
 };
 
