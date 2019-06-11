@@ -47,15 +47,16 @@ class App extends Component {
     }
   };
   render() {
-    if (this.props.logged && this.props.location.pathname === "/login") {
+    if (this.props.logged && this.props.location.pathname === "/auth") {
       return <Redirect to="/dasboard" />;
-    } else if (
-      this.props.logged === false &&
-      (this.props.location.pathname !== "/login" &&
-        this.props.location.pathname !== "/register-email")
-    ) {
-      return <Redirect to="/login" />;
     }
+    // else if (
+    //   this.props.logged === false &&
+    //   (this.props.location.pathname !== "/auth" &&
+    //     this.props.location.pathname !== "/register-email")
+    // ) {
+    //   return <Redirect to="/auth" />;
+    // }
     return (
       <div>
         <Snackbars />
@@ -74,7 +75,7 @@ class App extends Component {
         <Switch>
           <Route
             exact
-            path="/login"
+            path="/auth"
             name="Login Page"
             component={SessionContainer}
           />
