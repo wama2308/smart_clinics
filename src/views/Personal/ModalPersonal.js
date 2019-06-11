@@ -314,7 +314,6 @@ class ModalCargos extends React.Component {
             
             if(this.props.option === 1)
             {
-                console.log(this.state.tagsEmails)
                 this.setState({loading:'show'})    
                 this.props.savePersonalInternoAction(
                   {

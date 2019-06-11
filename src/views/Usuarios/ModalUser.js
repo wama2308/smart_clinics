@@ -474,7 +474,6 @@ class ModalUser extends React.Component {
 
         if((props.option === 2) || (props.option === 3) || (props.option === 5) || (props.option === 6)){   
             if(props.usersRoles.userIdView.email){
-                console.log(props.usersRoles.userIdView.names)
                 this.setState({
                     loading:'hide',
                     email: props.usersRoles.userIdView.email,
@@ -641,7 +640,7 @@ class ModalUser extends React.Component {
 	render() {                               
         return (
             <span>                            
-        		<Modal isOpen={this.state.modalUser}  className="ModalUsersRoles">
+        		<Modal isOpen={this.state.modalUser} toggle={this.closeUser} className="ModalUsersRoles">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>

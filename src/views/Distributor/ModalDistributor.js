@@ -233,9 +233,7 @@ class ModalDistributor extends React.Component {
                 if(indice === 1){
                     valueDistrict = elemento;
                 }            
-            });      
-            console.log(valueTypeIdentity)      
-            console.log(valuePais)      
+            });                  
             if(this.props.option === 1)
             {
                 this.setState({loading:'show'})                                    

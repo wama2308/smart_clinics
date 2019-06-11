@@ -102,8 +102,8 @@ class ModalCargos extends React.Component {
 
     componentWillReceiveProps=(props)=>{        
         this.setState({
-            modal: props.modal,       
-            loading:'show'     
+            modal: props.modal,                   
+            loading:'hide',
         });
         if(props.cargo){
             this.setState({

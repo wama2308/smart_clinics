@@ -343,8 +343,7 @@ export const deleteInfoUserId = () => dispatch => {
     });
 };
 
-export const saveUserNoMasterAction = (data, callback) => dispatch => {
-  console.log(data)
+export const saveUserNoMasterAction = (data, callback) => dispatch => {  
   getPosts()
     .then(datos => {
       axios({
