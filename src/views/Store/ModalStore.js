@@ -84,14 +84,10 @@ class ModalStore extends React.Component {
             let valueSucursales = "";
             let arraySucursales = Object.values(this.state.arraySucursalesSelect);
             arraySucursales.forEach(function (elemento, indice) {
-                if(indice === 0){
+                if(indice === 1){
                     valueSucursales = elemento;
                 }            
             });
-            console.log("sucursal_id ", valueSucursales)
-            console.log("name ", this.state.almacen)
-            console.log("description ", this.state.descripcion)
-            console.log("shelf ",this.props.store.shelfs)     
             if(this.props.option === 1)
             {
                 if(this.props.store.shelfs.length === 0){
@@ -133,7 +129,7 @@ class ModalStore extends React.Component {
                 }                
             } 
             else if(this.props.option === 3)
-            {
+            {                
                 if(this.props.store.shelfs.length === 0){
                     const message = {
                       title: "¡Registrar sin estantes!",
@@ -202,7 +198,6 @@ class ModalStore extends React.Component {
     }    
 
     componentWillReceiveProps=(props)=>{       
-        console.log("modal store ", props.store)
         if(props.option === 1){
             this.setState({
                 loading: 'hide',
