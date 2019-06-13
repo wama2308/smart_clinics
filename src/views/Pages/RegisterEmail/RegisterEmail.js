@@ -22,7 +22,6 @@ import jstz from "jstz";
 class RegisterEmail extends Component {
   constructor(props) {
     super(props);
-
     const timezone = jstz.determine();
     this.state = {
       email: "",
@@ -37,7 +36,7 @@ class RegisterEmail extends Component {
   };
 
   render() {
-    const { email } = this.props;
+    const { email, step } = this.props;
     const top = {
       position: "absolute",
       top: "20px",
@@ -46,7 +45,6 @@ class RegisterEmail extends Component {
       textAlign: "center"
     };
     const disabled = !email ? true : false;
-    console.log("aca", this.props);
     return (
       <div className="app flex-row align-items-center background">
         <Container>
@@ -84,12 +82,14 @@ class RegisterEmail extends Component {
                     <Row style={{ align: "center" }}>
                       <div style={{ width: "7.5%" }} />
                       <Col xs="5" className="text-right">
-                        <Link to="/login">
-                          <Button style={{ width: "100%" }} color="danger">
-                            <i className="icon-arrow-left" />
-                            Volver
-                          </Button>
-                        </Link>
+                        <Button
+                          style={{ width: "100%" }}
+                          onClick={() => this.props.backStep(undefined)}
+                          color="danger"
+                        >
+                          <i className="icon-arrow-left" />
+                          Volver
+                        </Button>
                       </Col>
                       <Col xs="5">
                         <Button

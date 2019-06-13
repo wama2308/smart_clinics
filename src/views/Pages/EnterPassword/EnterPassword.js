@@ -17,12 +17,19 @@ import "../../../components/style.css";
 class FormData extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      confirmPassword: ""
-    };
   }
 
+  verifyPassword = event => {
+    event.preventDefault();
+    if (this.props.password !== this.props.confirmPassword) {
+      alert("es diferente");
+    } else {
+      this.props.newStep(this.props.step);
+    }
+  };
+
   render() {
+    const { step } = this.props;
     const top = {
       position: "absolute",
       top: "20px",
@@ -41,10 +48,7 @@ class FormData extends Component {
             <Col md="6">
               <Card className="mx-4">
                 <CardBody className="p-4">
-                  <form
-                    className="formCodeConfirm"
-                    onSubmit={e => this.enterPassword(e)}
-                  >
+                  <form className="formCodeConfirm">
                     <h1>Introduza su nueva contraseña</h1>
                     <p className="text-muted">
                       Cree la contraseña para su cuenta.
@@ -61,9 +65,9 @@ class FormData extends Component {
                       <Input
                         type="password"
                         placeholder=" Confirm Password"
-                        value={this.state.confirmPassword}
+                        value={this.props.confirmPassword}
                         onChange={e =>
-                          this.setState({ confirmPassword: e.target.value })
+                          this.props.setConfirmPassword(e.target.value)
                         }
                       />
                     </InputGroup>
@@ -71,18 +75,21 @@ class FormData extends Component {
                     <Row style={{ align: "center" }}>
                       <div style={{ width: "7.5%" }} />
                       <Col xs="5" className="text-right">
-                        <Link to="/confirm-code">
-                          <Button style={{ width: "100%" }} color="danger">
-                            <i className="icon-arrow-left" />
-                            Volver
-                          </Button>
-                        </Link>
+                        <Button
+                          style={{ width: "100%" }}
+                          onClick={() => this.props.backStep(step)}
+                          color="danger"
+                        >
+                          <i className="icon-arrow-left" />
+                          Volver
+                        </Button>
                       </Col>
                       <Col xs="5">
                         <Button
                           style={{ width: "100%" }}
                           type="submit"
                           color="primary"
+                          onClick={this.verifyPassword}
                           block
                         >
                           Aceptar

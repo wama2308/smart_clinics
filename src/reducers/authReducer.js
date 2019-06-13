@@ -26,6 +26,14 @@ const authReducer = (state = Map(), action) => {
       return setData(state, "user", action.payload);
     }
 
+    case "LOAD_SECRECT_QUESTIONS": {
+      return setData(state, "secretQuestion", action.payload);
+    }
+
+    case "SET_TYPE_USER":{
+      return setData(state, "typeUser", action.payload);
+    }
+
     default:
       return state;
   }

@@ -46,6 +46,7 @@ class ConfirmCode extends Component {
   };
 
   render() {
+    const { step } = this.props;
     const top = {
       position: "absolute",
       top: "20px",
@@ -88,12 +89,14 @@ class ConfirmCode extends Component {
                     <Row style={{ align: "center" }}>
                       <div style={{ width: "7.5%" }} />
                       <Col xs="5" className="text-right">
-                        <Link to="/register-email">
-                          <Button style={{ width: "100%" }} color="danger">
-                            <i className="icon-arrow-left" />
-                            Volver
-                          </Button>
-                        </Link>
+                        <Button
+                          style={{ width: "100%" }}
+                          onClick={() => this.props.backStep(step)}
+                          color="danger"
+                        >
+                          <i className="icon-arrow-left" />
+                          Volver
+                        </Button>
                       </Col>
                       <Col xs="5">
                         <Button

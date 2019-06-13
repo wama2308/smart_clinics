@@ -35,7 +35,7 @@ export const ConfigGeneralFunction = () => dispatch => {
     });
 };
 
-const queryNationalPaymentsFunction = (datos, execute) => {  
+const queryNationalPaymentsFunction = (datos, execute) => {
   axios
     .get(queryNationalPayments, datos)
     .then(res => {
@@ -111,7 +111,6 @@ export const insideClick = () => {
 };
 
 export const search = data => {
-  console.log("porque vale");
   return {
     type: "SEARCH_DATA",
     payload: data

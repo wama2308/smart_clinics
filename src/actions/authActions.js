@@ -44,6 +44,7 @@ export const verify = () => dispatch => {
 };
 
 export const register = (email, timeZ) => dispatch => {
+  console.log("aca", email);
   const token = {
     email: email,
     timeZ: timeZ,
@@ -72,6 +73,8 @@ export const register = (email, timeZ) => dispatch => {
             payload: 2
           });
           dispatch(openSnackbars("warning", errorR.response.data[key]));
+        } else {
+          dispatch(openSnackbars("error", errorR.response.data[key]));
         }
       });
     });
@@ -88,10 +91,14 @@ export const confirmCode = (email, code) => dispatch => {
   };
   axios
     .put(url + "/api/checkCodeValidation", token)
-    .then(() => {
+    .then(res => {
       dispatch({
         type: "NEW_STEP",
         payload: 3
+      });
+      dispatch({
+        type: "SET_TYPE_USER",
+        payload: res.data.type
       });
     })
     .catch(err => {
@@ -106,11 +113,41 @@ export const registerStep = () => {
   };
 };
 
-
-export const backStep = (step) => {
+export const backStep = step => {
   return {
     type: "NEW_STEP",
     payload: step - 1
   };
 };
 
+export const newStep = step => {
+  return {
+    type: "NEW_STEP",
+    payload: step + 1
+  };
+};
+
+export const loadSelect = () => dispatch => {
+  axios.get(url + "/api/LoadSelects").then(res => {
+    dispatch({
+      type: "LOAD_SECRECT_QUESTIONS",
+      payload: res.data
+    });
+  });
+};
+
+export const saveUser = obj => dispatch => {
+  const token = {
+    ...obj,
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json"
+    }
+  };
+
+  console.log("token", token);
+
+  axios.post(url + "/api/registerUser", token).then(res => {
+    dispatch(openSnackbars("success", "Registro exitoso!"));
+  });
+};

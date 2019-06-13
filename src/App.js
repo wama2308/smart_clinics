@@ -49,14 +49,12 @@ class App extends Component {
   render() {
     if (this.props.logged && this.props.location.pathname === "/auth") {
       return <Redirect to="/dasboard" />;
+    } else if (
+      this.props.logged === false &&
+      this.props.location.pathname !== "/auth"
+    ) {
+      return <Redirect to="/auth" />;
     }
-    // else if (
-    //   this.props.logged === false &&
-    //   (this.props.location.pathname !== "/auth" &&
-    //     this.props.location.pathname !== "/register-email")
-    // ) {
-    //   return <Redirect to="/auth" />;
-    // }
     return (
       <div>
         <Snackbars />
@@ -79,37 +77,7 @@ class App extends Component {
             name="Login Page"
             component={SessionContainer}
           />
-          <Route
-            exact
-            path="/register"
-            name="Register Page"
-            component={Register}
-          />
-          <Route
-            exact
-            path="/register-email"
-            name="Register Email Page"
-            component={RegisterEmail}
-          />
-          <Route exact path="/testpage" name="TestPage" component={TestPage} />
-          <Route
-            exact
-            path="/confirm-code"
-            name="Confirm Code"
-            component={ConfirmCode}
-          />
-          <Route
-            exact
-            path="/enter-password"
-            name="Confirm Code"
-            component={EnterPassword}
-          />
-          <Route
-            exact
-            path="/form-data"
-            name="Form Data"
-            component={FormData}
-          />
+
           <Route
             exact
             path="/reset-password"

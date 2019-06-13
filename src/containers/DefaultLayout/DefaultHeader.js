@@ -42,9 +42,9 @@ class DefaultHeader extends Component {
   }
 
   handleLougout() {
-    this.props.loggout( ()=>{
-      this.props.history.replace('/login')
-    })
+    this.props.loggout(() => {
+      this.props.history.replace("/auth");
+    });
   }
 
   static propTypes = {
@@ -156,7 +156,7 @@ DefaultHeader.propTypes = propTypes;
 DefaultHeader.defaultProps = defaultProps;
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  loggout: (route) => dispatch(logout(route))
+  loggout: route => dispatch(logout(route))
 });
 
 export default withRouter(
