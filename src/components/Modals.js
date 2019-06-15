@@ -6,7 +6,6 @@ import "../views/Configurations/loading.css";
 import "../views/Configurations/modal.css";
 
 export function Loading(props) {
-  console.log(props);
   return (
     <div>
       {/* Modal Loading */}

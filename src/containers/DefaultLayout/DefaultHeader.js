@@ -56,7 +56,6 @@ class DefaultHeader extends Component {
     const token = window.localStorage.getItem("id_token");
 
     var decoded = jwt_decode(token);
-    // console.log(decoded.profile[0].medical_center);
     Object.keys(decoded.profile[0].medical_center).map(i => {
       if (decoded.profile[0].medical_center[i].is_default === 1) {
         this.setState({

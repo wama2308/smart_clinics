@@ -30,7 +30,6 @@ class Client extends React.Component {
       BILLED: "COMPLETADA",
       PAID: "POR PAGAR"
     };
-    console.log("data", this.props.statusSale);
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
 

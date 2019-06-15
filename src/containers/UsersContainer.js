@@ -23,7 +23,7 @@ import {
   saveUserNoMasterAction,
   LoadIdUsersNoMasterFunction,
   editUserNoMasterAction,
-  DeleteUserNoMasterAction,  
+  DeleteUserNoMasterAction,
   addSucursalFunction,
   deleteSucursalFunction,
   ActivateUserNoMasterAction,
@@ -58,22 +58,16 @@ class UsersContainer extends Component {
   }
 
   render() {
-    // console.log("usersRoles padre", this.props.usersRoles.toJS());
-    // console.log(this.props.usersRoles.get("permits"));
-    // console.log(this.props.usersRoles.get("users"));
-    // const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
-    // console.log("loading", this.props.usersRoles.get("loading"));
-    //console.log(this.props)
     return (
       <div className="animated fadeIn">
         <Row>
           <Col>
             <Card>
               <CardHeader>Configuracion de Usuarios</CardHeader>
-              <CardBody> 
+              <CardBody>
                 {
                   this.props.usersRoles.get('loading') === 'hide' ?
-                    <div> 
+                    <div>
                       <Nav tabs>
                         <NavItem>
                             <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
@@ -127,13 +121,13 @@ class UsersContainer extends Component {
                               modules={this.props.usersRoles.get('modules')}
                               confirmDeleteUser = {this.props.confirmDeleteUser}
                               disabledRolAction = {this.props.disabledRolAction}
-                            />                            
+                            />
                           </TabPane>
                           <TabPane tabId="3">
                             <UsersInactivosList
                               users = {this.props.usersRoles.get('usersInactivos')}
                               confirmDeleteUser = {this.props.confirmDeleteUser}
-                              ActivateUserNoMasterAction = {this.props.ActivateUserNoMasterAction}                              
+                              ActivateUserNoMasterAction = {this.props.ActivateUserNoMasterAction}
                             />
                           </TabPane>
                           <TabPane tabId="4">
@@ -174,16 +168,16 @@ const mapDispatchToProps = dispatch => ({
   editRolAction: (data, callback) => dispatch(editRolAction(data, callback)),
   LoadRolIdFunction: pos => dispatch(LoadRolIdFunction(pos)),
   LoadIdUsersNoMasterFunction: id => dispatch(LoadIdUsersNoMasterFunction(id)),
-  saveUserNoMasterAction: (data, callback) => dispatch(saveUserNoMasterAction(data, callback)),  
-  editUserNoMasterAction: (data, callback) => dispatch(editUserNoMasterAction(data, callback)),  
-  DeleteUserNoMasterAction: (userId) => dispatch(DeleteUserNoMasterAction(userId)),  
-  disabledRolAction: (rolId) => dispatch(disabledRolAction(rolId)),  
-  enabledRolAction: (rolId) => dispatch(enabledRolAction(rolId)),  
-  ActivateUserNoMasterAction: (userId) => dispatch(ActivateUserNoMasterAction(userId)),  
-  addSucursalFunction: (email, names, surnames, username, arraySucursal) => dispatch(addSucursalFunction(email, names, surnames, username, arraySucursal)),  
-  deleteSucursalFunction: (key, callback) => dispatch(deleteSucursalFunction(key, callback)),  
+  saveUserNoMasterAction: (data, callback) => dispatch(saveUserNoMasterAction(data, callback)),
+  editUserNoMasterAction: (data, callback) => dispatch(editUserNoMasterAction(data, callback)),
+  DeleteUserNoMasterAction: (userId) => dispatch(DeleteUserNoMasterAction(userId)),
+  disabledRolAction: (rolId) => dispatch(disabledRolAction(rolId)),
+  enabledRolAction: (rolId) => dispatch(enabledRolAction(rolId)),
+  ActivateUserNoMasterAction: (userId) => dispatch(ActivateUserNoMasterAction(userId)),
+  addSucursalFunction: (email, names, surnames, username, arraySucursal) => dispatch(addSucursalFunction(email, names, surnames, username, arraySucursal)),
+  deleteSucursalFunction: (key, callback) => dispatch(deleteSucursalFunction(key, callback)),
   confirmDeleteUser: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
-  alert: (type, message) => dispatch(openSnackbars(type, message)), 
+  alert: (type, message) => dispatch(openSnackbars(type, message)),
 });
 
 export default connect(
