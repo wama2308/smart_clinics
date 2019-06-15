@@ -14,18 +14,39 @@ import {
 import { Link } from "react-router-dom";
 import ValidateCode, { notify } from "react-notify-toast";
 import HeaderLogo from "../../../components/HeaderLogo";
+import { connect } from "react-redux";
+import { confirmCode } from "../../../actions/authActions";
+import { withRouter } from "react-router-dom";
 
 class ConfirmCode extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
       validation_code: "",
       message: ""
     };
   }
 
+  confirmCode = e => {
+    e.preventDefault();
+    this.props.confirmCode(this.props.email, this.state.validation_code);
+  };
+
+  componentDidMount = () => {
+    if (!this.props.step) {
+      this.props.history.push("/register-email");
+    }
+  };
+
+  componentWillReceiveProps = props => {
+    console.log("data", props);
+    if (props.step && props.step.step === 2) {
+      props.history.push("/enter-password");
+    }
+  };
+
   render() {
+    const { step } = this.props;
     const top = {
       position: "absolute",
       top: "20px",
@@ -44,10 +65,7 @@ class ConfirmCode extends Component {
             <Col md="6">
               <Card className="mx-4">
                 <CardBody className="p-4">
-                  <form
-                    className="formCodeConfirm"
-                    onSubmit={event => this.confirmCode(event)}
-                  >
+                  <form className="formCodeConfirm" onSubmit={this.confirmCode}>
                     <h1>Confirmar Cuenta</h1>
                     <p className="text-muted">
                       Introduza el codigo enviado a {this.state.email}
@@ -70,6 +88,16 @@ class ConfirmCode extends Component {
                     <br />
                     <Row style={{ align: "center" }}>
                       <div style={{ width: "7.5%" }} />
+                      <Col xs="5" className="text-right">
+                        <Button
+                          style={{ width: "100%" }}
+                          onClick={() => this.props.backStep(step)}
+                          color="danger"
+                        >
+                          <i className="icon-arrow-left" />
+                          Volver
+                        </Button>
+                      </Col>
                       <Col xs="5">
                         <Button
                           style={{ width: "100%" }}
@@ -79,14 +107,6 @@ class ConfirmCode extends Component {
                         >
                           Aceptar
                         </Button>
-                      </Col>
-                      <Col xs="5" className="text-right">
-                        <Link to="/register-email">
-                          <Button style={{ width: "100%" }} color="danger">
-                            <i className="icon-arrow-left" />
-                            Volver
-                          </Button>
-                        </Link>
                       </Col>
                     </Row>
                   </form>
@@ -100,4 +120,13 @@ class ConfirmCode extends Component {
   }
 }
 
-export default ConfirmCode;
+const mapStateToProps = state => ({
+  step: state.auth.get("authStep")
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { confirmCode }
+  )(ConfirmCode)
+);

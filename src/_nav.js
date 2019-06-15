@@ -52,7 +52,6 @@ export default {
         }
       ]
     },
-    ,
     {
       name: "Administrativo",
       url: "/buttons",

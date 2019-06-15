@@ -99,7 +99,7 @@ class Login extends Component {
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button type="submit" color="success" block 
+                          <Button type="submit" color="success" block
                             style={{verticalAlign: 'top'}}
                           >
                             Iniciar Sesión
@@ -124,11 +124,9 @@ class Login extends Component {
                     <div>
                       <h2>Registrar Cuenta</h2>
                       <p>Crear una cuenta en SmartClinic</p>
-                      <Link to={"/register-email"}>
-                        <Button color="primary" className="mt-3" active>
+                        <Button color="primary" onClick={this.props.preRegister} className="mt-3" active>
                           Registrarse Ahora
                         </Button>
-                      </Link>
                     </div>
                   </CardBody>
                 </Card>

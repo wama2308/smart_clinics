@@ -6,6 +6,10 @@ import { url } from "../core/connection";
 
 const auth = new AuthService(url);
 
+const type = {
+  "Ya le fue enviado un codigo de validacion": 1
+};
+
 export function setState() {
   return {
     type: "SETSTATE",
@@ -40,6 +44,7 @@ export const verify = () => dispatch => {
 };
 
 export const register = (email, timeZ) => dispatch => {
+  console.log("aca", email);
   const token = {
     email: email,
     timeZ: timeZ,
@@ -50,25 +55,32 @@ export const register = (email, timeZ) => dispatch => {
     }
   };
   axios
-    .put(url + "/api/CheckMaster", token)
+    .put(url + "/api/checkUser", token)
     .then(res => {
-      console.log("aca");
       dispatch({
         type: "NEW_STEP",
-        payload: 1
+        payload: 2
       });
     })
     .catch(error => {
       const result = JSON.stringify(error);
       const errorR = JSON.parse(result);
-      console.log(errorR);
+
       Object.keys(errorR.response.data).map(key => {
-        dispatch(openSnackbars("error", errorR.response.data[key]));
+        if (type[errorR.response.data[key]]) {
+          dispatch({
+            type: "NEW_STEP",
+            payload: 2
+          });
+          dispatch(openSnackbars("warning", errorR.response.data[key]));
+        } else {
+          dispatch(openSnackbars("error", errorR.response.data[key]));
+        }
       });
     });
 };
 
-export const confirmCode = (email, code) => {
+export const confirmCode = (email, code) => dispatch => {
   const token = {
     email: email,
     validation_code: code,
@@ -77,13 +89,66 @@ export const confirmCode = (email, code) => {
       "Content-type": "application/json"
     }
   };
-  console.log(token);
   axios
-    .put(url + "/api/CheckCodeValidation", token)
+    .put(url + "/api/checkCodeValidation", token)
     .then(res => {
-      console.log(res.data);
+      dispatch({
+        type: "NEW_STEP",
+        payload: 3
+      });
+      dispatch({
+        type: "SET_TYPE_USER",
+        payload: res.data.type
+      });
     })
     .catch(err => {
       console.log(err);
     });
+};
+
+export const registerStep = () => {
+  return {
+    type: "NEW_STEP",
+    payload: 1
+  };
+};
+
+export const backStep = step => {
+  return {
+    type: "NEW_STEP",
+    payload: step - 1
+  };
+};
+
+export const newStep = step => {
+  return {
+    type: "NEW_STEP",
+    payload: step + 1
+  };
+};
+
+export const loadSelect = () => dispatch => {
+  axios.get(url + "/api/LoadSelects").then(res => {
+    dispatch({
+      type: "LOAD_SECRECT_QUESTIONS",
+      payload: res.data
+    });
+  });
+};
+
+export const saveUser = obj => dispatch => {
+  const token = {
+    ...obj,
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json"
+    }
+  };
+  axios.post(url + "/api/registerUser", token).then(res => {
+    dispatch({
+      type: "NEW_STEP",
+      payload: undefined
+    });
+    dispatch(openSnackbars("success", "Registro exitoso!"));
+  });
 };
