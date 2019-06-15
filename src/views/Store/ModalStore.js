@@ -129,7 +129,7 @@ class ModalStore extends React.Component {
                 }
             }
             else if(this.props.option === 3)
-            {
+            {                
                 if(this.props.store.shelfs.length === 0){
                     const message = {
                       title: "¡Registrar sin estantes!",

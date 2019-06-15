@@ -72,6 +72,7 @@ class RolesList extends React.Component {
   valorCloseModalRoles = (valor) => {
     this.setState({
         modal: valor,
+        option: 0
     });
   }
 

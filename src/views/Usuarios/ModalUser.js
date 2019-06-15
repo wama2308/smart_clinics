@@ -474,7 +474,6 @@ class ModalUser extends React.Component {
 
         if((props.option === 2) || (props.option === 3) || (props.option === 5) || (props.option === 6)){   
             if(props.usersRoles.userIdView.email){
-                console.log(props.usersRoles.userIdView.names)
                 this.setState({
                     loading:'hide',
                     email: props.usersRoles.userIdView.email,
