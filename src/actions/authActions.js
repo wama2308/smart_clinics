@@ -144,10 +144,11 @@ export const saveUser = obj => dispatch => {
       "Content-type": "application/json"
     }
   };
-
-  console.log("token", token);
-
   axios.post(url + "/api/registerUser", token).then(res => {
+    dispatch({
+      type: "NEW_STEP",
+      payload: undefined
+    });
     dispatch(openSnackbars("success", "Registro exitoso!"));
   });
 };

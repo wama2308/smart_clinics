@@ -16,9 +16,9 @@ import {
 
 class SessionContainer extends React.Component {
   state = {
-    email: "kevinvelasco190@gmail.com",
-    password: "21492475",
-    confirmPassword: "21492475"
+    email: "",
+    password: "",
+    confirmPassword: ""
   };
 
   setEmail = data => {
