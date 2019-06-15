@@ -116,8 +116,8 @@ class ModalInfoUserEmail extends React.Component {
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button color="primary" onClick={() => { this.closeModalInfoUserEmail(1, this.state.exist) }}>Aceptar</Button>
                                     <Button color="danger" onClick={() => { this.closeModalInfoUserEmail(0, this.state.exist) }}>Cancelar</Button>
+                                    <Button color="primary" onClick={() => { this.closeModalInfoUserEmail(1, this.state.exist) }}>Aceptar</Button>                                    
                                 </ModalFooter>
                             </div>
                         :

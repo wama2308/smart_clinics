@@ -84,8 +84,6 @@ class configContainer extends Component {
   render() {
     const permits = this.numberSucursales(this.props.medicalCenter.toJS());
     const symbol = "$";
-
-    console.log(this.props.medicalCenter.toJS());
     return (
       <div className="animated fadeIn">
         <Row>

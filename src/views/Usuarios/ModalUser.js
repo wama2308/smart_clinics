@@ -14,7 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalUser extends React.Component {
 	constructor(props) {
-		super(props);		
+		super(props);
 		this.state = {
 			modalUser: false,
             email:'',
@@ -33,16 +33,16 @@ class ModalUser extends React.Component {
             selected: [],
             divListBox: "",
             selectedError: "",
-            selectedInvalid: 0,  
+            selectedInvalid: 0,
             selectedRolOption:null,
             divSelectRol:'',
             rolSelectError:'',
             listSucursales: [],
             selectedSucursalOption: null,
             sucursalError: '',
-            divSelectSucursal: '',   
-            sucursal: [],       
-            rolSelect:[],      
+            divSelectSucursal: '',
+            sucursal: [],
+            rolSelect:[],
             openModalInfoEmail:false,
             totalBranchOffices: 0,
             arrayBranchOffices: [],
@@ -51,43 +51,35 @@ class ModalUser extends React.Component {
             emailExist: 0,
             modules: [],
             onlyModules: [],
-            collapseNuevoRol: false,       
-            activeTab: "1",   
-            loading:'show',                                             
+            collapseNuevoRol: false,
+            activeTab: "1",
+            loading:'show',
 		};
 	}
 
 	componentDidMount(){
         this.setState({
             totalBranchOffices: this.props.totalBranchOffices,
-            sucursal: this.props.arrayBranchOffices,            
+            sucursal: this.props.arrayBranchOffices,
         })
-        this.props.roles != null && 
-        this.props.roles.map((list, i) => {            
+        this.props.roles != null &&
+        this.props.roles.map((list, i) => {
             this.state.rolSelect.push(
-                { 
+                {
                     label: list.rol,
-                    value: list._id,                    
+                    value: list._id,
                 }
-            )         
-        })            
-        if (this.props.option === 4){  
+            )
+        })
+        if (this.props.option === 4){
             this.setState({
                 modalUser: this.props.modal,
                 loading:'hide',
                 email: this.props.emailUserSelect,
-                listSucursales: this.props.usersRoles.userIdView.sucursal,                
-            })   
+                nombres: this.props.namesSelect,
+                apellidos: this.props.surnamesSelect,
+            })
         }
-        /*else if(this.props.option === 5){
-            
-            this.setState({
-                modalUser: this.props.modal,
-                loading:'hide',
-                email: this.props.usersRoles.userIdView.email,
-                listSucursales: this.props.usersRoles.userIdView.sucursal,                           
-            })              
-        }*/
     }
 
     testWama = () => {}
@@ -96,8 +88,8 @@ class ModalUser extends React.Component {
         const { name, value } = e.target;
         this.setState({
             [name]: value
-        });                
-    }   
+        });
+    }
 
     valorTab = (tab) => {
         if (this.state.activeTab !== tab) {
@@ -105,21 +97,21 @@ class ModalUser extends React.Component {
                 activeTab: tab
             });
         }
-    } 
+    }
 
 	handlekey= event =>{
         this.setState({
             emailError: '',
             emailInvalid: false
         })
-    }    
+    }
 
     handlekeyNombres = event =>{
         this.setState({
             nombresError: '',
             nombresInvalid: false
         })
-    }   
+    }
 
     handlekeyApellidos = event =>{
         this.setState({
@@ -136,22 +128,22 @@ class ModalUser extends React.Component {
     }
 
     closeUser = () => {
-    	this.setState({                     
-            modalUser: false,  
-            openModalInfoEmail: false,  
+    	this.setState({
+            modalUser: false,
+            openModalInfoEmail: false,
             nombres:'',
-            nombresInvalid: false,                         
-            nombresError: "",             
+            nombresInvalid: false,
+            nombresError: "",
             apellidos: '',
-            apellidosInvalid: false,                         
-            apellidosError: "",             
+            apellidosInvalid: false,
+            apellidosError: "",
             nombreUsuario: '',
             nombreUsuarioInvalid: false,
             nombreUsuarioError: '',
             email:'',
             emailInvalid: false,
             emailError: "",
-            listSucursales:[],            
+            listSucursales:[],
             selectedInvalid: 0,
             divListBox:"",
             selectedError: "",
@@ -163,46 +155,46 @@ class ModalUser extends React.Component {
             sucursalError: "",
             activeTab: "1",
             loading:'show'
-        });   
-        this.props.valorCloseModalRoles(false);    
-        this.props.deleteUserIdView();            
-    }  
+        });
+        this.props.valorCloseModalRoles(false);
+        this.props.deleteUserIdView();
+    }
 
     pruebaOnBlur = (e) => {
         const { name, value } = e.target;
         this.setState({
             [name]: value,
             emailConsulta: value
-        });     
+        });
         if(value !== ""){
             this.props.ValidateEmailUserNoMasterFunction(value);
             this.props.addEmailStoreAction(value);
         }
-        
-    }     
+
+    }
 
     valorCloseModalInfoUser = (valor) => {
         if(valor === 0){
             this.setState({
-                openModalInfoEmail: false,  
+                openModalInfoEmail: false,
                 email:''
-            });            
+            });
         }else{
             this.setState({
-                openModalInfoEmail: false,                  
-            });            
+                openModalInfoEmail: false,
+            });
         }
-    } 
+    }
 
     handleChangeSelectSucursales = (selectedSucursalOption) => {
-        this.setState({ 
+        this.setState({
             selectedSucursalOption,
             sucursalError: '',
-            divSelectSucursal: ''                                
-        });                
-    }   
+            divSelectSucursal: ''
+        });
+    }
 
-    validateUsers = () => {        
+    validateUsers = () => {
         let emailInvalid = false;
         let emailError = "";
         let nombresInvalid = false;
@@ -217,16 +209,15 @@ class ModalUser extends React.Component {
         let sucursalError = "";
         let divSelectSucursal = "";
         let rolSelectError = "";
-        let divSelectRol = "";     
-        let valueActualSucursal = "";        
-        
+        let divSelectRol = "";
+        let valueActualSucursal = "";
         if (this.state.selectedSucursalOption){
             let arraySuc = Object.values(this.state.selectedSucursalOption);
             arraySuc.forEach(function (elemento, indice, array) {
                 if(indice === 0){
                     valueActualSucursal = elemento;
-                }            
-            });        
+                }
+            });
         }
 
         let valueActualRol = "";
@@ -235,26 +226,26 @@ class ModalUser extends React.Component {
             arrayRol.forEach(function (elemento, indice, array) {
                 if(indice === 0){
                     valueActualRol = elemento;
-                }            
-            });        
+                }
+            });
         }
-        
-        if (this.state.email === "") {            
+
+        if (this.state.email === "") {
             emailError = "¡Ingrese el email!";
             emailInvalid = true;
         }
 
-        if (this.state.nombreUsuario === "") {            
+        if (this.state.nombreUsuario === "") {
             nombreUsuarioError = "¡Ingrese el nombre de usuario!";
             nombreUsuarioInvalid = true;
         }
 
-        if (this.state.nombres === "") {            
+        if (this.state.nombres === "") {
             nombresError = "¡Ingrese nombres!";
             nombresInvalid = true;
         }
 
-        if (this.state.apellidos === "") {            
+        if (this.state.apellidos === "") {
             apellidosError = "¡Ingrese apellidos!";
             apellidosInvalid = true;
         }
@@ -267,23 +258,23 @@ class ModalUser extends React.Component {
                 emailError = "¡Email invalido!";
                 emailInvalid = true;
             }
-       }  
-        
+       }
+
         if ((this.state.selectedInvalid === 0) && ((this.state.selectedRolOption === null) || (this.state.selectedRolOption.length === 0) || (valueActualRol === "0"))) {
             divListBox = "borderColor";
             selectedError = "¡Seleccione los permisos!";
-            selectedInvalid = 0;            
-        }   
+            selectedInvalid = 0;
+        }
 
-        if ((this.state.selectedSucursalOption === null) || (this.state.selectedSucursalOption.length === 0)){            
+        if ((this.state.selectedSucursalOption === null) || (this.state.selectedSucursalOption.length === 0)){
             divSelectSucursal = "borderColor";
-            sucursalError = "¡Seleccione las sucursales!";                        
-        }        
+            sucursalError = "¡Seleccione las sucursales!";
+        }
 
-        if (((this.state.selectedRolOption === null) || (this.state.selectedRolOption.length === 0) || (valueActualRol === "0")) && (this.state.selectedInvalid === 0)){            
+        if (((this.state.selectedRolOption === null) || (this.state.selectedRolOption.length === 0) || (valueActualRol === "0")) && (this.state.selectedInvalid === 0)){
             divSelectRol = "borderColor sizeDivGroup";
-            rolSelectError = "¡Seleccione los roles!";                        
-        } 
+            rolSelectError = "¡Seleccione los roles!";
+        }
 
         let valueTableSucursal = "";
         let valueTableRol = "";
@@ -292,8 +283,8 @@ class ModalUser extends React.Component {
         let acumSucRol = 0;
         let acumSucPermit = 0;
         let sucursalIgual = 0;
-        if(this.state.listSucursales != null){                                                                                 
-            this.state.listSucursales.map((list, i) => {        
+        if(this.state.listSucursales != null){
+            this.state.listSucursales.map((list, i) => {
                 valueTableSucursal = list.value;
                 valueTableRol = list.rol.value;
                 valueTablePermit = list.modulos;
@@ -307,11 +298,11 @@ class ModalUser extends React.Component {
 
                 let arrayMod = Object.values(this.state.selected);
                 arrayMod.forEach((elemento, indice, array) => {
-                    let valorPermit = elemento;      
+                    let valorPermit = elemento;
                     if((valueTableSucursal === valueActualSucursal) && (valorPermit === valueTablePermit)){
                         acumSucPermit++;
-                    }                    
-                });                 
+                    }
+                });
             })
 
             if(acum > 0){
@@ -320,38 +311,38 @@ class ModalUser extends React.Component {
 
             if(acumSucRol > 0){
                 divSelectSucursal = "borderColor";
-                sucursalError = "¡Esta sucursal ya se encuentra agregada!";   
+                sucursalError = "¡Esta sucursal ya se encuentra agregada!";
                 divSelectRol = "borderColor sizeDivGroup";
-                rolSelectError = "¡Este rol ya se encuentra agregado con la sucursal seleccionada!";         
+                rolSelectError = "¡Este rol ya se encuentra agregado con la sucursal seleccionada!";
             }
 
             if(acumSucPermit > 0){
                 divSelectSucursal = "borderColor";
-                sucursalError = "¡Esta sucursal ya se encuentra agregada!";   
+                sucursalError = "¡Esta sucursal ya se encuentra agregada!";
                 divListBox = "borderColor";
                 selectedError = "¡Estos permisos ya estan agregados con la sucursal seleccionada!";
-                selectedInvalid = 0;                
+                selectedInvalid = 0;
             }
-        }     
+        }
 
-        if (emailError || nombresError || apellidosError || nombreUsuarioError || selectedError || sucursalError || rolSelectError) {            
-            this.setState({ 
-                emailInvalid,                         
-                emailError, 
+        if (emailError || nombresError || apellidosError || nombreUsuarioError || selectedError || sucursalError || rolSelectError) {
+            this.setState({
+                emailInvalid,
+                emailError,
                 nombresInvalid,
                 nombresError,
                 apellidosError,
                 apellidosInvalid,
                 nombreUsuarioInvalid,
-                nombreUsuarioError,                
-                selectedInvalid, 
+                nombreUsuarioError,
+                selectedInvalid,
                 selectedError,
                 divListBox,
                 sucursalError,
                 divSelectSucursal,
                 rolSelectError,
                 divSelectRol
-            });              
+            });
             return false;
         }
 
@@ -362,30 +353,30 @@ class ModalUser extends React.Component {
             arraySuc.forEach(function (elemento, indice, array) {
                 if(indice === 0){
                     valueSucursal = elemento;
-                }            
+                }
                 if(indice === 1){
                     labelSucursal = elemento;
-                }            
-            });        
+                }
+            });
         }
 
         let rolValue = "";
-        if((this.state.selectedRolOption === null) || (this.state.selectedRolOption.length === 0)){            
+        if((this.state.selectedRolOption === null) || (this.state.selectedRolOption.length === 0)){
             rolValue= {};
         }
         else{
-            rolValue = this.state.selectedRolOption;            
+            rolValue = this.state.selectedRolOption;
             this.state.listSucursales.push(
-                { 
+                {
                     label: labelSucursal,
                     value: valueSucursal,
                     rol: rolValue,
                     modulos: '',
-                    moduloMostrar: '',                    
+                    moduloMostrar: '',
                 }
-            )                                                                    
+            )
         }
-          
+
         if(this.state.selectedInvalid !== 0){
             let arrayMod = Object.values(this.state.selected);
             arrayMod.forEach((elemento, indice, array) => {
@@ -393,62 +384,62 @@ class ModalUser extends React.Component {
                 var arreglo = valor.split("-");
                 var permiso = arreglo[0]+"-"+arreglo[2];
                 this.state.listSucursales.push(
-                    { 
+                    {
                         label: labelSucursal,
                         value: valueSucursal,
                         rol: '',
                         modulos: valor,
                         moduloMostrar: permiso,
                     }
-                )                                                                                
-            });              
-        }    
+                )
+            });
+        }
         this.props.addSucursalFunction(this.state.email, this.state.nombres, this.state.apellidos, this.state.nombreUsuario, this.state.listSucursales);
         this.setState({
             selectedSucursalOption: null,
             selectedRolOption: null,
-            selected: [],              
-            collapseNuevoRol: false,       
-            activeTab: "1",   
-            selectedInvalid: 0,                    
-            emailInvalid: false,                         
-            emailError: "",             
-            nombresInvalid: false,                         
-            nombresError: "",             
-            apellidosInvalid: false,                         
-            apellidosError: "",             
-            nombreUsuarioInvalid: false,                         
-            nombreUsuarioError: "",             
+            selected: [],
+            collapseNuevoRol: false,
+            activeTab: "1",
+            selectedInvalid: 0,
+            emailInvalid: false,
+            emailError: "",
+            nombresInvalid: false,
+            nombresError: "",
+            apellidosInvalid: false,
+            apellidosError: "",
+            nombreUsuarioInvalid: false,
+            nombreUsuarioError: "",
             selectedError: "",
             divListBox: "",
             sucursalError: "",
             divSelectSucursal: "",
             rolSelectError: "",
             divSelectRol: "",
-        })           
-        return true;   
+        })
+        return true;
     }
 
-    handleSubmitTable = event => {        
+    handleSubmitTable = event => {
         event.preventDefault();
-        const isValid = this.validateUsers();        
-        if (isValid) {                  
-            console.log(this.state.listSucursales);                 
+        const isValid = this.validateUsers();
+        if (isValid) {
+            console.log(this.state.listSucursales);
         }
-    }    
+    }
 
     componentWillReceiveProps=(props)=>{
         this.setState({
             modalUser: props.modal,
-            loading:'show'            
-        });        
+            loading:'show'
+        });
         if(props.aplication.snackBars){
             if(props.aplication.snackBars.open === true){
                 this.setState({email:''})
             }
         }
 
-        if(props.usersRoles.infoEmailUser){            
+        if(props.usersRoles.infoEmailUser){
             if(props.usersRoles.infoEmailUser.data.infoEmail){
                 this.setState({
                     openModalInfoEmail: true,
@@ -457,22 +448,22 @@ class ModalUser extends React.Component {
                     emailExist: props.usersRoles.infoEmailUser.data.exist,
                 })
                 if(props.usersRoles.infoEmailUser.data.infoEmail.exist === 1){
-                    this.setState({email:''})    
+                    this.setState({email:''})
                 }
             }
             else{
                 if(props.usersRoles.infoEmailUser.data.exist === 1){
-                    this.setState({email:''})    
+                    this.setState({email:''})
                 }
                 if((props.usersRoles.infoEmailUser.data.exist === 0) && (props.usersRoles.infoEmailUser.data.clean === 0)){
-                    this.setState({email:''})    
+                    this.setState({email:''})
                 }
             }
-        }else{            
+        }else{
             this.setState({email:''})
-        }  
+        }
 
-        if((props.option === 2) || (props.option === 3) || (props.option === 5) || (props.option === 6)){   
+        if((props.option === 2) || (props.option === 3) || (props.option === 5) || (props.option === 6)){
             if(props.usersRoles.userIdView.email){
                 this.setState({
                     loading:'hide',
@@ -480,67 +471,67 @@ class ModalUser extends React.Component {
                     nombres: props.usersRoles.userIdView.names,
                     apellidos: props.usersRoles.userIdView.surnames,
                     nombreUsuario: props.usersRoles.userIdView.username,
-                    listSucursales: props.usersRoles.userIdView.sucursal,                           
-                })              
-            }            
-        }else if (props.option === 1){  
+                    listSucursales: props.usersRoles.userIdView.sucursal,
+                })
+            }
+        }else if (props.option === 1){
             this.setState({
                 loading:'hide',
                 email: props.usersRoles.userIdView.email,
                 nombres: props.usersRoles.userIdView.names,
                 apellidos: props.usersRoles.userIdView.surnames,
                 nombreUsuario: props.usersRoles.userIdView.username,
-                listSucursales: props.usersRoles.userIdView.sucursal,                
-            })   
-        }else if (props.option === 4){  
+                listSucursales: props.usersRoles.userIdView.sucursal,
+            })
+        }else if (props.option === 4){
             this.setState({
                 modalUser: props.modal,
                 loading:'hide',
                 email: props.emailUserSelect,
-                nombres: '',
-                apellidos: '',
-                nombreUsuario: '',
-                listSucursales: props.usersRoles.userIdView.sucursal,                
-            })   
-        }                   
+                nombres: props.usersRoles.userIdView.names,
+                apellidos: props.usersRoles.userIdView.surnames,
+                nombreUsuario: props.usersRoles.userIdView.username,
+                listSucursales: props.usersRoles.userIdView.sucursal,
+            })
+        }
     }
 
-    valorSelectRol = (valor) => {        
+    valorSelectRol = (valor) => {
         this.setState({
-            selectedRolOption: valor,  
+            selectedRolOption: valor,
             rolSelectError: '',
             divSelectRol: '',
             divListBox: "",
-            selectedError: "",  
-        });                            
-    } 
+            selectedError: "",
+        });
+    }
 
-    valorSelectPermisos = (selected) => { 
+    valorSelectPermisos = (selected) => {
         if(Object.keys(selected).length === 0 )
         {
-            this.setState({                 
-                selected: selected, 
-                selectedInvalid: 0, 
+            this.setState({
+                selected: selected,
+                selectedInvalid: 0,
                 divListBox: "borderColor",
-                selectedError: "¡Seleccione los permisos!" 
+                selectedError: "¡Seleccione los permisos!"
             });
         }
         else
         {
-            this.setState({ 
-                selected: selected, 
-                selectedInvalid: 1, 
+            this.setState({
+                selected: selected,
+                selectedInvalid: 1,
                 divListBox: "",
                 selectedError: "",
                 rolSelectError: '',
-                divSelectRol: ''      
+                divSelectRol: ''
             });
-        }            
-    } 
-    
+        }
+    }
+
     handleSaveUser = event => {
         if(this.state.listSucursales.length === 0){
-            this.props.alert("warning", "¡Debe ingresar datos en la tabla de sucursales!");      
+            this.props.alert("warning", "¡Debe ingresar datos en la tabla de sucursales!");
         }
         else{
             if(this.props.option === 1)
@@ -556,20 +547,20 @@ class ModalUser extends React.Component {
                     }
                     groups[o.label].push(o.value);
                 });
-                this.setState({loading:'show'})    
+                this.setState({loading:'show'})
                     this.props.saveUserNoMasterAction(
                     {
                         email:this.state.email,
                         names: this.state.nombres,
                         surnames: this.state.apellidos,
                         username: this.state.nombreUsuario,
-                        listSuc: this.state.listSucursales,                        
-                        onlyModules: this.props.modules,                                                
-                        groupSucursales: grouped,                        
+                        listSuc: this.state.listSucursales,
+                        onlyModules: this.props.modules,
+                        groupSucursales: grouped,
                         timeZ: jstz.determine().name()
                     },
                     () => {
-                        this.closeUser();                    
+                        this.closeUser();
                     }
                 )
             }
@@ -585,7 +576,7 @@ class ModalUser extends React.Component {
                     }
                     groups[o.label].push(o.value);
                 });
-                this.setState({loading:'show'})    
+                this.setState({loading:'show'})
                     this.props.editUserNoMasterAction(
                     {
                         id:this.props.userIdEdit,
@@ -593,13 +584,13 @@ class ModalUser extends React.Component {
                         names: this.state.nombres,
                         surnames: this.state.apellidos,
                         username: this.state.nombreUsuario,
-                        listSuc: this.state.listSucursales,                        
-                        onlyModules: this.props.modules,                                                
-                        groupSucursales: grouped,                        
+                        listSuc: this.state.listSucursales,
+                        onlyModules: this.props.modules,
+                        groupSucursales: grouped,
                         timeZ: jstz.determine().name()
                     },
                     () => {
-                        this.closeUser();                    
+                        this.closeUser();
                     }
                 )
             }
@@ -615,82 +606,82 @@ class ModalUser extends React.Component {
                     }
                     groups[o.label].push(o.value);
                 });
-                this.setState({loading:'show'})    
+                this.setState({loading:'show'})
                     this.props.saveUserNoMasterPersonalAction(
-                    {                        
+                    {
                         email:this.state.email,
                         names: this.state.nombres,
                         surnames: this.state.apellidos,
                         username: this.state.nombreUsuario,
-                        listSuc: this.state.listSucursales,                        
-                        onlyModules: this.props.modules,                                                
-                        groupSucursales: grouped,                        
+                        listSuc: this.state.listSucursales,
+                        onlyModules: this.props.modules,
+                        groupSucursales: grouped,
                         timeZ: jstz.determine().name()
                     },
                     this.state.email,
                     this.props.userIdEdit,
                     () => {
-                        this.closeUser();                    
+                        this.closeUser();
                     }
                 )
             }
         }
     }
 
-	render() {                               
+	render() {
         return (
-            <span>                            
-        		<Modal isOpen={this.state.modalUser}  className="ModalUsersRoles">
+            <span>
+        		<Modal isOpen={this.state.modalUser} toggle={this.closeUser} className="ModalUsersRoles">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
                             <ModalHeader toggle={this.closeUser}>{this.props.modalHeader}</ModalHeader>
-                            <ModalBody className="Scroll">      
-                            <form className="formCodeConfirm" onSubmit={this.handleSaveUser.bind(this)}> 
-                                <FormGroup className="top form-group col-sm-12">                                                                 
+                            <ModalBody className="Scroll">
+                            <form className="formCodeConfirm" onSubmit={this.handleSaveUser.bind(this)}>
+                                <FormGroup className="top form-group col-sm-12">
                                     <Label for="email">Email</Label>
                                     <Input autoFocus={this.state.focus} disabled={this.props.disabledEmail} invalid={this.state.emailInvalid} name="email" id="email" onKeyUp={this.handlekey} onChange={this.handleChange} value={this.state.email} onBlur={this.pruebaOnBlur} type="text" placeholder="ejemplo@gmail.com" />
-                                    <FormFeedback tooltip>{this.state.emailError}</FormFeedback>                                                            
+                                    <FormFeedback tooltip>{this.state.emailError}</FormFeedback>
                                 </FormGroup>
-                                <FormGroup className="top form-group col-sm-12">                                                                 
+                                <FormGroup className="top form-group col-sm-12">
                                     <Label for="nombres">Nombres:</Label>
                                     <Input disabled={this.state.varDisabled} invalid={this.state.nombresInvalid} name="nombres" id="nombres" onKeyUp={this.handlekeyNombres} onChange={this.handleChange} value={this.state.nombres} type="text" placeholder="Nombres" />
-                                    <FormFeedback tooltip>{this.state.nombresError}</FormFeedback>                                                            
+                                    <FormFeedback tooltip>{this.state.nombresError}</FormFeedback>
                                 </FormGroup>
-                                <FormGroup className="top form-group col-sm-12">                                                                 
+                                <FormGroup className="top form-group col-sm-12">
                                     <Label for="apellidos">Apellidos:</Label>
                                     <Input disabled={this.state.varDisabled} invalid={this.state.apellidosInvalid} name="apellidos" id="apellidos" onKeyUp={this.handlekeyApellidos} onChange={this.handleChange} value={this.state.apellidos} type="text" placeholder="Apellidos" />
-                                    <FormFeedback tooltip>{this.state.apellidosError}</FormFeedback>                                                            
+                                    <FormFeedback tooltip>{this.state.apellidosError}</FormFeedback>
                                 </FormGroup>
-                                <FormGroup className="top form-group col-sm-12">                                                                 
+                                <FormGroup className="top form-group col-sm-12">
                                     <Label for="nombreUsuario">Nombre de Usuario:</Label>
                                     <Input disabled={this.state.varDisabled} invalid={this.state.nombreUsuarioInvalid} name="nombreUsuario" id="nombreUsuario" onKeyUp={this.handlekeyNombreUsuario} onChange={this.handleChange} value={this.state.nombreUsuario} type="text" placeholder="Nombre de Usuario" />
-                                    <FormFeedback tooltip>{this.state.nombreUsuarioError}</FormFeedback>                                                            
+                                    <FormFeedback tooltip>{this.state.nombreUsuarioError}</FormFeedback>
                                 </FormGroup>
                                 {
                                     (this.props.option === 1 || this.props.option === 3 || this.props.option === 4 || this.props.option === 6)  &&
                                     <span>
                                         <FormGroup tag="fieldset">
-                                            <h5>Sucursales-Roles-Permisos</h5>                                                            
-                                            <FormGroup className="top form-group col-sm-12">                                                                 
+                                            <h5>Sucursales-Roles-Permisos</h5>
+                                            <FormGroup className="top form-group col-sm-12">
                                                 <Label for="sucursal">Sucursal</Label>
                                                 <div className={this.state.divSelectSucursal}>
                                                     <Select isSearchable isDisabled={this.state.varDisabled} name="sucursal" value={this.state.selectedSucursalOption} onChange={this.handleChangeSelectSucursales} options={this.state.sucursal} />
                                                 </div>
-                                                <div className="errorSelect">{this.state.sucursalError}</div>                                                                
+                                                <div className="errorSelect">{this.state.sucursalError}</div>
                                             </FormGroup>
                                         </FormGroup>
-                                        <RolesPermisos 
+                                        <RolesPermisos
                                             rolSelect = {this.state.rolSelect}
-                                            modules = {this.props.modules}         
-                                            permits = {this.props.permits}  
+                                            modules = {this.props.modules}
+                                            permits = {this.props.permits}
                                             saveRolAction = {this.props.saveRolAction}
                                             LoadRolIdFunction = {this.props.LoadRolIdFunction}
                                             alert = {this.props.alert}
                                             valorSelectRol={this.valorSelectRol}
                                             valorSelectPermisos={this.valorSelectPermisos}
                                             valorTab={this.valorTab}
-                                            collapseNuevoRol={this.state.collapseNuevoRol}       
+                                            collapseNuevoRol={this.state.collapseNuevoRol}
                                             activeTab={this.state.activeTab}
                                             divSelectRol={this.state.divSelectRol}
                                             rolSelectError={this.state.rolSelectError}
@@ -702,42 +693,42 @@ class ModalUser extends React.Component {
                                         <br />
                                         <Button className={this.state.ocultarBotones} disabled={this.state.varDisabled} color="success" onClick={this.handleSubmitTable}>Agregar</Button>
                                         <br />
-                                        <br /> 
+                                        <br />
                                     </span>
-                                }                                
-                                <SucursalesList 
+                                }
+                                <SucursalesList
                                     option={this.props.option}
                                     listSucursales={this.state.listSucursales}
                                     LoadRolIdFunction = {this.props.LoadRolIdFunction}
-                                    modules = {this.props.modules}         
-                                    permits = {this.props.permits}  
-                                    confirmDeleteBranchOffices = {this.props.confirmDeleteBranchOffices}  
-                                    deleteRowListBranchOffices = {this.deleteRowListBranchOffices}  
-                                    deleteSucursalFunction = {this.props.deleteSucursalFunction}  
-                                    alert = {this.props.alert}  
+                                    modules = {this.props.modules}
+                                    permits = {this.props.permits}
+                                    confirmDeleteBranchOffices = {this.props.confirmDeleteBranchOffices}
+                                    deleteRowListBranchOffices = {this.deleteRowListBranchOffices}
+                                    deleteSucursalFunction = {this.props.deleteSucursalFunction}
+                                    alert = {this.props.alert}
                                 />
-                            </form>                                                                    
+                            </form>
                             </ModalBody>
                             <ModalFooter>
+                                <Button className="" color="danger" onClick={this.closeUser}>Cancelar</Button>
                                 <Button className={this.props.showHide} color="primary" onClick={this.handleSaveUser}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeUser}>Cancelar</Button>                                                                                                                                                                                                              
                             </ModalFooter>
                             </div>
                         :
                         <div style={{height: "55vh"}}>
-                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
                         </div>
                     }
-                </Modal>                    
-                <ModalInfoUserEmail  
+                </Modal>
+                <ModalInfoUserEmail
                     open={this.state.openModalInfoEmail}
                     infoEmail={this.state.infoEmail}
                     estadoUser={this.state.estadoUser}
                     emailExist={this.state.emailExist}
-                    emailConsulta={this.state.emailConsulta}   
-                    deleteInfoUser={this.props.deleteInfoUser}      
-                    valorCloseModalInfoUser={this.valorCloseModalInfoUser}                
-                />                            
+                    emailConsulta={this.state.emailConsulta}
+                    deleteInfoUser={this.props.deleteInfoUser}
+                    valorCloseModalInfoUser={this.valorCloseModalInfoUser}
+                />
             </span>
 		);
 	}
@@ -749,12 +740,12 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  ValidateEmailUserNoMasterFunction: (email) => dispatch(ValidateEmailUserNoMasterFunction(email)),    
-  deleteInfoUser: (clean, exist) => dispatch(deleteInfoUser(clean, exist)),  
-  addEmailStoreAction: (email) => dispatch(addEmailStoreAction(email)),  
-  alert: (type, message) => dispatch(openSnackbars(type, message)), 
+  ValidateEmailUserNoMasterFunction: (email) => dispatch(ValidateEmailUserNoMasterFunction(email)),
+  deleteInfoUser: (clean, exist) => dispatch(deleteInfoUser(clean, exist)),
+  addEmailStoreAction: (email) => dispatch(addEmailStoreAction(email)),
+  alert: (type, message) => dispatch(openSnackbars(type, message)),
   confirmDeleteBranchOffices: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
-  saveUserNoMasterPersonalAction: (data, email, userId, callback) =>dispatch(saveUserNoMasterPersonalAction(data, email, userId, callback)),  
+  saveUserNoMasterPersonalAction: (data, email, userId, callback) =>dispatch(saveUserNoMasterPersonalAction(data, email, userId, callback)),
   deleteUserIdView: () =>dispatch(deleteUserIdView()),
 });
 

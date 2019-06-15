@@ -79,20 +79,22 @@ class RolesList extends React.Component {
   render() {
      return (
       <div>
-       <ModalRoles
-          option = {this.state.option}
-          modal = {this.state.modal}
-          modalHeader = {this.state.modalHeader}
-          modalFooter = {this.state.modalFooter}
-          disabled = {this.state.disabled}
-          showHide = {this.state.showHide}
-          modules = {this.props.modules}
-          permits = {this.props.permits}
-          saveRolAction = {this.props.saveRolAction}
-          editRolAction = {this.props.editRolAction}
-          id = {this.state.id}
-          valorCloseModalRoles={this.valorCloseModalRoles}
-        />
+        
+          <ModalRoles
+            option = {this.state.option}
+            modal = {this.state.modal}
+            modalHeader = {this.state.modalHeader}
+            modalFooter = {this.state.modalFooter}
+            disabled = {this.state.disabled}
+            showHide = {this.state.showHide}
+            modules = {this.props.modules}
+            permits = {this.props.permits}
+            saveRolAction = {this.props.saveRolAction}
+            editRolAction = {this.props.editRolAction}
+            id = {this.state.id}
+            valorCloseModalRoles={this.valorCloseModalRoles}
+          />
+               
 
         <Button color="success" onClick={() => { this.openRoles(1); }}>Agregar Rol</Button>
         <br />

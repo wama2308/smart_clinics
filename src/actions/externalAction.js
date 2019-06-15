@@ -117,7 +117,6 @@ export const viewDataExternal = obj => dispatch => {
 };
 
 export const saveOrCancelledExternal = (obj, callback) => dispatch => {
-  console.log("action", obj);
   getDataToken().then(data => {
     axios({
       method: "POST",

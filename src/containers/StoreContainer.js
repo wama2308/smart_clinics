@@ -82,7 +82,7 @@ class StoreContainer extends Component {
                     </TabContent>
                   </div>
                 :
-                <div style={{height: "55vh"}}>
+                <div style={{height: "60vh"}}>
                   <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
                 </div>
               }

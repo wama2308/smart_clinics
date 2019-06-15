@@ -15,6 +15,8 @@ const disableShop = `${url}/api/disableShop`;
 const verificationSupplies = `${url}/api/verificationSupplies`;
 const queryAllSupplies = `${url}/api/queryAllSupplies`;
 const queryOneSupplieWithLot = `${url}/api/queryOneSupplieWithLot`;
+const editSupplie = `${url}/api/editSupplie`;
+const editSupplieLot = `${url}/api/editSupplieLot`;
 
 export const LoadShopFunction = () => dispatch => {
   getDataToken()
@@ -40,6 +42,7 @@ export const LoadShopFunction = () => dispatch => {
                 dataShopId: {},
                 allProducts: allProducts,
                 ProductLoteId: {},
+                action: 0
               }
             });          		
           });
@@ -290,6 +293,55 @@ export const editShopAction = (data, callback) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error editando la compra"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const editSupplieAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: editSupplie,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error editando el producto"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const editSupplieLotAction = (data, callback) => dispatch => {
+  console.log("data ", data)
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: editSupplieLot,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch({
+            type: "LOAD_LOTE_PRODUCTO",
+            payload: data,
+          });
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error editando el lote del producto"));
         });
     })
     .catch(() => {

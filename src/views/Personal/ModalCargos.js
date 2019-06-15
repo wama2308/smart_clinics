@@ -102,8 +102,8 @@ class ModalCargos extends React.Component {
 
     componentWillReceiveProps=(props)=>{        
         this.setState({
-            modal: props.modal,       
-            loading:'show'     
+            modal: props.modal,                   
+            loading:'hide',
         });
         if(props.cargo){
             this.setState({
@@ -117,7 +117,7 @@ class ModalCargos extends React.Component {
 	render() {   
         return (
             <span>                            
-        		<Modal isOpen={this.props.modal} className="ModalUsersRoles">
+        		<Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalUsersRoles">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -137,8 +137,8 @@ class ModalCargos extends React.Component {
                             </form>                                                                    
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCargos}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                           
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCargos}>{this.props.modalFooter}</Button>                                
                             </ModalFooter>
                             </div>
                         :

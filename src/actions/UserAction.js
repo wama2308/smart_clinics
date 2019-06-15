@@ -343,8 +343,7 @@ export const deleteInfoUserId = () => dispatch => {
     });
 };
 
-export const saveUserNoMasterAction = (data, callback) => dispatch => {
-  console.log(data)
+export const saveUserNoMasterAction = (data, callback) => dispatch => {  
   getPosts()
     .then(datos => {
       axios({
@@ -516,7 +515,7 @@ export const enabledRolAction = rolId => dispatch => {
     });
 };
 
-export const addSucursalFunction = (email, names, surnames, username, arraySucursal) => dispatch => {
+export const addSucursalFunction = (email, names, surnames, username, arraySucursal) => dispatch => {  
   getPosts()
     .then(datos => {
       dispatch({

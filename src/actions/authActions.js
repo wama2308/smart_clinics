@@ -44,7 +44,6 @@ export const verify = () => dispatch => {
 };
 
 export const register = (email, timeZ) => dispatch => {
-  console.log("aca", email);
   const token = {
     email: email,
     timeZ: timeZ,
@@ -65,7 +64,6 @@ export const register = (email, timeZ) => dispatch => {
     .catch(error => {
       const result = JSON.stringify(error);
       const errorR = JSON.parse(result);
-
       Object.keys(errorR.response.data).map(key => {
         if (type[errorR.response.data[key]]) {
           dispatch({

@@ -7,6 +7,7 @@ const selectExento =
 
 export const InitalState = {
     productoId: '0',
+    loteId: '0',
     keyProduct: '',
     nroLote: '0',
     divTipoCompra: '',
@@ -83,14 +84,12 @@ export const InitalState = {
     acumSubTotal: 0.00,
     acumImp: 0.00,
     acumTotal: 0.00,
-    disabled: false,
-    action:0,    
+    disabled: false,    
     popoverOpen: false,
     collapse: false,
     modal:false,
     modalHeader: '',
     modalFooter: '',
-    disabled: '',
     showHide: '',
     option:0,
     loading:'show',       
