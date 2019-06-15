@@ -376,11 +376,12 @@ export const createSale = (obj, typeBill, callback) => dispatch => {
         callback();
         if (typeBill !== 1) {
           dispatch(cancelToSell());
+        } else {
+          dispatch({
+            type: "SELL_COMPLETED",
+            payload: res.data
+          });
         }
-        dispatch({
-          type: "SELL_COMPLETED",
-          payload: res.data
-        });
         dispatch(openSnackbars("success", "Operacion exitosa!"));
       })
       .catch(err => {
@@ -411,12 +412,12 @@ export const getOptionsPersonal = (staff, value) => dispatch => {
       },
       ...token
     }).then(res => {
-      if(staff === 0){
+      if (staff === 0) {
         dispatch({
           type: "OPTIONS_INTERNALS",
           payload: Object.values(res.data)
         });
-      }else{
+      } else {
         dispatch({
           type: "OPTIONS_EXTERNAL",
           payload: Object.values(res.data)

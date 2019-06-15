@@ -217,7 +217,7 @@ class VentasContainer extends React.Component {
       this.props.options_Product,
       this.props.products
     );
-
+    console.log("maldita sea", this.props.bill_id);
     const totalData = this.getTotal(this.props.products, this.props.aplication);
     return (
       <Container>

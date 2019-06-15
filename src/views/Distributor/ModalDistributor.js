@@ -318,8 +318,6 @@ class ModalDistributor extends React.Component {
     }
 
     componentWillReceiveProps=(props)=>{        
-        /*console.log("modal distributor ", props.distributor);
-        console.log("props ", props.aplication.confirm);*/
         this.setState({
             modal: props.modal            
         });   

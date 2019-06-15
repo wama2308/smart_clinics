@@ -128,6 +128,7 @@ export default class MakeSale extends React.Component {
         : this.props.dataGeneral.payment_type.find(type => {
             return type.label === "Completo";
           });
+    console.log("data", this.props.bill_id);
     const obj = {
       bill_id: this.props.bill_id,
       patient_id: this.props.patient._id,
@@ -204,7 +205,7 @@ export default class MakeSale extends React.Component {
     const typeBill = this.state.typeBill;
 
     const styles = this.getStylesFromStep();
-
+    console.log("bill_id", this.props.bill_id);
     return (
       <Formik
         onSubmit={this.handleSubmit}
