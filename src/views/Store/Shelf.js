@@ -45,7 +45,7 @@ class Shelf extends React.Component {
     handlekeyEstante = event =>{
         this.setState({
             estanteError: "",
-            estanteInvalid: false,         
+            estanteInvalid: "",         
         })
     }    
 
@@ -137,10 +137,10 @@ class Shelf extends React.Component {
                                 {
                                     this.props.option !== 2 &&
                                     <div>
-                                        <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="primary" onClick={this.handleSubmitShelfs}>Agregar</Button>
+                                        <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>                                        
                                         &nbsp; 
                                         &nbsp;                                 
-                                        <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>
+                                        <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="primary" onClick={this.handleSubmitShelfs}>Agregar</Button>
                                     </div>
                                 }  
                                 <br />

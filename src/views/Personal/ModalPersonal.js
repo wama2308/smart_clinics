@@ -646,7 +646,7 @@ class ModalCargos extends React.Component {
                 disabled: false,
                 disabledEmail: true,
                 showHide: 'show',
-                emailUserSelect: valueEmailUser
+                emailUserSelect: valueEmailUser,                
             });                          
         }
     }
@@ -675,8 +675,7 @@ class ModalCargos extends React.Component {
     } 
 
     componentWillReceiveProps=(props)=>{            
-        /*console.log("modal personal personaInterno", props.personaInterno);              
-        console.log("modal personal usersRoles", props.usersRoles.toJS()); */                     
+        /*console.log("modal personal usersRoles", props.usersRoles.toJS()); */                     
         //console.log("modal personal application ", props.aplication);     
         let type_identity = "";
         props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
@@ -774,16 +773,19 @@ class ModalCargos extends React.Component {
                     loading: props.personaInterno.personalId.loading,
                 })   
             }            
-        }else if(props.option === 1){          
+        }else if(props.option === 1){    
             props.userId !== "" ? this.setState({disabledSelectUser: true,}): false            
-            props.userId !== "" ? this.setState({disabledRegisterUser: true,}): false            
+            props.userId !== "" ? this.setState({disabledRegisterUser: true,}): false      
             this.setState({                
-                loading:'hide',
-                arrayTypeIdentitySelect: type_identity,                           
-            })                
+                loading:'hide'                                    
+            })
+            if(this.state.arrayTypeIdentitySelect.length === 0){
+                this.setState({                                    
+                    arrayTypeIdentitySelect: type_identity                           
+                })    
+            }
         }else if(props.option === 0){                     
-            this.setState({
-                arrayTypeIdentitySelect: type_identity,                
+            this.setState({                
                 ...InitalState
             })    
         }                 
@@ -838,7 +840,7 @@ class ModalCargos extends React.Component {
 	render() {   
         return (
             <span>
-        		<Modal isOpen={this.props.modal} className="ModalPersonal">
+        		<Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalPersonal">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -865,6 +867,8 @@ class ModalCargos extends React.Component {
                                   deleteSucursalFunction = {this.props.deleteSucursalFunction}          
                                   userIdEdit = {this.state.userIdEdit}               
                                   emailUserSelect = {this.state.emailUserSelect}                                                              
+                                  namesSelect = {this.state.names}                                                              
+                                  surnamesSelect = {this.state.surnames}                                                              
                                 />
                             }                            
                             <ModalHeader toggle={this.closeModal}>{this.props.modalHeader}</ModalHeader>
@@ -1078,8 +1082,8 @@ class ModalCargos extends React.Component {
                                 </form>                                                                
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSavePersonal}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleSavePersonal}>{this.props.modalFooter}</Button>                                
                             </ModalFooter>
                             </div>
                         :
@@ -1108,7 +1112,7 @@ const mapDispatchToProps = dispatch => ({
     LoadRolIdFunction: pos => dispatch(LoadRolIdFunction(pos)),
     saveUserNoMasterAction: (data, callback) => dispatch(saveUserNoMasterAction(data, callback)),  
     editUserNoMasterAction: (data, callback) => dispatch(editUserNoMasterAction(data, callback)),  
-    addSucursalFunction: (email, arraySucursal) => dispatch(addSucursalFunction(email, arraySucursal)),  
+    addSucursalFunction: (email, names, surnames, username, arraySucursal) => dispatch(addSucursalFunction(email, names, surnames, username, arraySucursal)),  
     deleteSucursalFunction: (key, callback) => dispatch(deleteSucursalFunction(key, callback)),  
     LoadIdUsersNoMasterFunction: id => dispatch(LoadIdUsersNoMasterFunction(id)),
     deleteInfoUserId: () => dispatch(deleteInfoUserId()),    

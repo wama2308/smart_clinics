@@ -11,8 +11,9 @@ import { enterDecimal } from "../../core/utils";
 import { Edit, Visibility } from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import { openConfirmDialog } from "../../actions/aplicantionActions";
-import { cleanProducts } from "../../actions/ShopActions";
+import { cleanProducts, editSupplieAction } from "../../actions/ShopActions";
 import ModalProductLote from './ModalProductLote.js';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalProduct extends React.Component {
     constructor(props) {
@@ -34,7 +35,7 @@ class ModalProduct extends React.Component {
     componentWillReceiveProps=(props)=>{
         if(props.option === 1 || props.option === 2){ 
             if(props.shop.ProductLoteId){                
-                if(props.shop.ProductLoteId.name && this.state.action === 0){
+                if(props.shop.ProductLoteId.name){
                     this.setState({
                         producto: props.shop.ProductLoteId.name,
                         arrayTipoSelect: props.shop.ProductLoteId.type_select,
@@ -43,7 +44,7 @@ class ModalProduct extends React.Component {
                         foto: props.shop.ProductLoteId.photo !== '' ? props.shop.ProductLoteId.photo : null,                        
                         collapse: true,
                         loading: props.shop.loading,
-                        action:1
+                        
                     })    
                 }                        
                     
@@ -133,7 +134,7 @@ class ModalProduct extends React.Component {
        }              
     }    
 
-    openModal = (option, pos, _id, number, quantity_stock, quantity, price, discount, price_sale, limit_stock, exempt) => {  
+    openModal = (option, pos, lote_id, number, quantity_stock, quantity, price, discount, price_sale, limit_stock, exempt) => {  
         var exento = { label: exempt, value: exempt };
         if(option === 1){
           this.setState({
@@ -144,7 +145,7 @@ class ModalProduct extends React.Component {
             disabled: true,
             showHide: 'hide',    
             keyProduct: pos,    
-            productoId: _id,
+            loteId: lote_id,
             nroLote: number,
             cantidadAvailable: quantity_stock,
             cantidad: quantity,
@@ -162,7 +163,7 @@ class ModalProduct extends React.Component {
             modalFooter:'Editar',
             disabled: false,
             showHide: 'show',               
-            productoId: _id,
+            loteId: lote_id,
             keyProduct: pos, 
             nroLote: number,
             cantidadAvailable: quantity_stock,
@@ -183,7 +184,74 @@ class ModalProduct extends React.Component {
         });                    
     } 
 
-    render() {         
+    validate = () => {
+        let divProducto= '';        
+        let divProductoError= '';        
+        let divTipo= '';        
+        let divTipoError= '';        
+        let divCodigo= '';        
+        let divCodigoError= '';        
+        
+        if (this.state.producto === "") {            
+            divProductoError = "¡Ingrese el producto!";
+            divProducto = "borderColor";
+        }
+        if (!this.state.arrayTipoSelect) {            
+            divTipoError = "¡Seleccione el tipo de producto!";
+            divTipo ="borderColor";
+        }
+        if (this.state.codigo === "") {            
+            divCodigoError = "¡Ingrese el codigo del producto!";
+            divCodigo ="borderColor";
+        }        
+        if (divProductoError || divTipoError || divCodigoError ) {            
+            this.setState({ 
+                divProductoError,
+                divProducto,
+                divTipoError,
+                divTipo,
+                divCodigoError,
+                divCodigo,                
+            });  
+            return false;
+        }
+        return true;        
+    };
+
+    handleAction = event => {
+        event.preventDefault();
+        const isValid = this.validate();   
+        if (isValid) {             
+            let valueTipo = "";
+            let arrayTipo = Object.values(this.state.arrayTipoSelect);
+            arrayTipo.forEach(function (elemento, indice) {
+                if(indice === 1){
+                    valueTipo = elemento;
+                }            
+            });
+            
+            if(this.props.option === 2)
+            {
+                this.setState({loading:'show'})                                    
+                this.props.editSupplieAction(
+                  {
+                    id: this.props.productoId,
+                    name: this.state.producto,
+                    code: this.state.codigo,
+                    type_id: valueTipo,
+                    photo: this.state.foto,
+                    description: this.state.descripcion,
+                    timeZ: jstz.determine().name()
+                  },
+                  () => {
+                    this.closeModal();                    
+                  }
+                )
+            }             
+        }
+    }
+
+    render() {   
         return (
             <span>
                 <ModalProductLote
@@ -194,6 +262,7 @@ class ModalProduct extends React.Component {
                     disabled = {this.state.disabled}
                     showHide = {this.state.showHide}     
                     productoId = {this.props.productoId}
+                    loteId = {this.state.loteId}
                     keyProduct = {this.state.keyProduct}
                     nroLote = {this.state.nroLote}
                     cantidadAvailable = {this.state.cantidadAvailable}
@@ -205,13 +274,13 @@ class ModalProduct extends React.Component {
                     arrayExentoSelect = {this.state.arrayExentoSelect}
                     closeModalProductLote = {this.closeModalProductLote}          
                 />      
-                <Modal isOpen={this.props.modal} className="ModalShop">
+                <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalShop">
                     {
                         this.props.shop.ProductLoteId.name ?
                         <div className={this.state.divContainer}>
                             <ModalHeader toggle={this.closeModal}>{this.props.modalHeader}</ModalHeader>
                             <ModalBody className="Scroll">      
-                                <form className="formCodeConfirm" onSubmit=""> 
+                                <form className="formCodeConfirm" onSubmit={this.handleAction.bind(this)}> 
                                     <div className="row"> 
                                         <FormGroup className="top form-group col-sm-6">                                                                 
                                             <Label for="producto">Producto:</Label> 
@@ -296,8 +365,8 @@ class ModalProduct extends React.Component {
                                                                         <td>{product.exempt}</td>
                                                                         <td>
                                                                             <div  className="float-left" >
-                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Editar lote" className="iconButtons" onClick={() => { this.openModal(1, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Visibility className="iconTable" /></IconButton>
-                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Ver lote" className="iconButtons" onClick={() => { this.openModal(2, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Edit className="iconTable" /></IconButton>                                                                                
+                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Ver lote" className="iconButtons" onClick={() => { this.openModal(1, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Visibility className="iconTable" /></IconButton>
+                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Editar lote" className="iconButtons" onClick={() => { this.openModal(2, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Edit className="iconTable" /></IconButton>                                                                                
                                                                             </div>
                                                                         </td>
                                                                     </tr>
@@ -314,12 +383,14 @@ class ModalProduct extends React.Component {
                                 </form>
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCompras}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleAction}>{this.props.modalFooter}</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                             </ModalFooter>
                         </div>  
                         :
-                        <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>  
+                        <div style={{height: "55vh"}}>
+                          <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
+                        </div>
                     }
                  </Modal>               
             </span> 
@@ -335,6 +406,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({  
     cleanProducts: () =>dispatch(cleanProducts()),
+    editSupplieAction: (data, callback) =>dispatch(editSupplieAction(data, callback)),
 });
 
 export default connect(

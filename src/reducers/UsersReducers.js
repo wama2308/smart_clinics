@@ -28,7 +28,7 @@ const setStoreDeleteInfoEmailUser = (state, payload) => {
   return Map(estado);
 };
 
-const setStoreAddSucursal = (state, payload) => {
+const setStoreAddSucursal = (state, payload) => {	
   let estado = state.toJS();
   estado.userIdView.sucursal = payload.arraySucursal;
   estado.userIdView.email = payload.email;

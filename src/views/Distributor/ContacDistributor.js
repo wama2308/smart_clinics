@@ -200,10 +200,10 @@ class ContacDistributor extends React.Component {
                                 {
                                     this.props.option !== 2 &&
                                     <div>
+                                        <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>                                        
+                                        &nbsp;
+                                        &nbsp;
                                         <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="primary" onClick={this.handleSubmitContac}>Agregar</Button>
-                                        &nbsp;
-                                        &nbsp;
-                                        <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>
                                     </div>
                                 }  
                                 

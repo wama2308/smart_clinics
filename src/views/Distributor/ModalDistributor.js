@@ -63,8 +63,7 @@ class ModalDistributor extends React.Component {
         });                
     }   	
 
-    testOnclick = () => {//this.props.LoadRolNew();
-    }
+    testOnclick = () => {}
 
     closeModal = () => {
         this.cleanState();
@@ -489,7 +488,7 @@ class ModalDistributor extends React.Component {
 	render() {         
         return (
             <span>                            
-        		<Modal isOpen={this.state.modal} className="ModalDistributor">
+        		<Modal isOpen={this.state.modal} toggle={this.closeModal} className="ModalDistributor">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -587,8 +586,8 @@ class ModalDistributor extends React.Component {
                             </form>                                                                    
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveProveedor}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveProveedor}>{this.props.modalFooter}</Button>                                
                             </ModalFooter>
                             </div>
                         :

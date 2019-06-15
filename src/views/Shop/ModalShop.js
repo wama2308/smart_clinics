@@ -14,6 +14,7 @@ import { InitalState } from './InitialState.js';
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit } from "@material-ui/icons";
 import { number_format } from "../../core/utils";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalShop extends React.Component {
     constructor(props) {
@@ -325,7 +326,7 @@ class ModalShop extends React.Component {
                     var date_purchase_split = props.shop.dataShopId.date_purchase.split('-');            
                     var date_purchase = new Date(date_purchase_split[0], date_purchase_split[1] - 1, date_purchase_split[2]);
                 }        
-                if(props.shop.dataShopId.observation && this.state.action === 0){
+                if(props.shop.dataShopId.observation && props.aplication.confirm.message === "" && props.shop.action === 0){
                     this.setState({
                         arrayTipoCompraSelect: props.shop.dataShopId.type_shop,
                         arraySucursalesSelect: props.shop.dataShopId.sucursal_id,
@@ -336,8 +337,7 @@ class ModalShop extends React.Component {
                         direccionLlegada: props.shop.dataShopId.arrival_address,
                         compraDate: date_purchase,
                         observacion: props.shop.dataShopId.observation,
-                        loading: props.shop.loading,
-                        action:1
+                        loading: props.shop.loading,                        
                     })    
                 }                        
                     
@@ -361,7 +361,7 @@ class ModalShop extends React.Component {
     render() {         
         return (
             <span>                
-                <Modal isOpen={this.props.modal} className="ModalShop">
+                <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalShop">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -528,12 +528,14 @@ class ModalShop extends React.Component {
                             </form>                                                                    
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCompras}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCompras}>{this.props.modalFooter}</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
+                        </div>
                     }
                 </Modal>                
             </span> 

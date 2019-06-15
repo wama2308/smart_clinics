@@ -13,8 +13,7 @@ class ModalRoles extends React.Component {
 	constructor(props) {
 		super(props);		
 		this.state = {
-			modalRoles: false,
-            rol: '',
+			rol: '',
             rolError: "",
             rolInvalid: false,
             selected: [],
@@ -52,8 +51,8 @@ class ModalRoles extends React.Component {
             rolInvalid: false,
             selected: [],
             divListBox: "",
-            selectedError: "",            
-            modalRoles: false,  
+            selectedError: "",                        
+            loading:'show'
         });      
         this.props.valorCloseModalRoles(false);       
     }   
@@ -152,13 +151,14 @@ class ModalRoles extends React.Component {
         })
     }    
 
-    componentWillReceiveProps=(props)=>{        
-        this.setState({
-            modalRoles: props.modal,       
-            loading:'show'     
-        });
-
-        if(props.option !== 1){
+    componentWillReceiveProps=(props)=>{     
+        if(props.option === 0){
+            this.closeRoles();
+        }else if(props.option === 1){      
+            this.setState({
+                loading:'hide',                
+            })   
+        }else if(props.option === 2 || props.option === 3){
             if(props.usersRoles.rolIdView){
                 if(props.usersRoles.rolIdView.rolId.rol){
                     this.setState({
@@ -169,20 +169,13 @@ class ModalRoles extends React.Component {
                     })  
                 }                
             }
-        }else{            
-            this.setState({
-                loading:'hide',
-                rol: '',
-                selected: [],
-                selectedInvalid: 0,             
-            })   
         }        
     }
 
 	render() {   
         return (
             <span>                            
-        		<Modal isOpen={this.state.modalRoles} className="ModalUsersRoles">
+        		<Modal isOpen={this.props.modal} toggle={this.closeRoles} className="ModalUsersRoles">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -204,8 +197,8 @@ class ModalRoles extends React.Component {
                             </form>                                                                    
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveRoles}>{this.props.modalFooter}</Button>
                                 <Button className="" color="danger" onClick={this.closeRoles}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveRoles}>{this.props.modalFooter}</Button>                                
                             </ModalFooter>
                             </div>
                         :

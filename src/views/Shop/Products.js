@@ -601,9 +601,9 @@ class Products extends React.Component {
 								</InputGroup>
 							</FormGroup>
 							<FormGroup className="top form-group col-sm-12">      
-                                <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="primary" onClick={this.handleSubmitProductsNew}>Agregar</Button>
+                                <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>                                
                                 &nbsp;&nbsp;                                 
-                                <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="danger" onClick={this.cleanState}>Limpiar</Button>
+                                <Button className={this.state.ocultarBotones} disabled={this.props.disabled} color="primary" onClick={this.handleSubmitProductsNew}>Agregar</Button>                                
                             </FormGroup>
                             <Popover placement="bottom" isOpen={this.state.popoverOpen} target="popoverPrecios" toggle={this.togglePopover}>
                                 <PopoverHeader>Precios por Lote</PopoverHeader>

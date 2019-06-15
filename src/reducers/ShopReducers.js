@@ -20,6 +20,7 @@ const setStoreAddProducts = (state, payload) => {
 	estado.total = estado.total + payload.total;		
 	estado.dataProductId = {};			
 	estado.searchProduct = 0;	
+	estado.action = 1;	
 	return Map(estado);
 }
 
@@ -31,6 +32,7 @@ const setStoreDeleteProducts = (state, payload) => {
 	estado.total = estado.total - payload.total;		
 	listProducts.splice(payload.key, 1);        
 	estado.products = listProducts;		
+	estado.action = 1;	
 	return Map(estado);
 }
 
@@ -44,6 +46,7 @@ const setStoreCleanProducts = (state, payload) => {
 	estado.searchProduct = 0;		
 	estado.dataProductPrice = [];		
 	estado.ProductLoteId = {};		
+	estado.action = 0;	
 	return Map(estado);
 }
 
@@ -71,6 +74,18 @@ const setProductIdPrice = (state, payload) => {
 const setDataProductLoteId = (state, payload) => {
 	let estado = state.toJS();
 	estado.ProductLoteId = payload;			
+	return Map(estado);
+}
+
+const setStoreProductoLote = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.ProductLoteId.lote.findIndex(lote => lote._id === payload.lote_id);
+	estado.ProductLoteId.lote[key].price = payload.price;
+	estado.ProductLoteId.lote[key].discount = payload.discount;
+	estado.ProductLoteId.lote[key].price_sale = payload.price_sale;
+	estado.ProductLoteId.lote[key].limit_stock = payload.limit_stock;
+	estado.ProductLoteId.lote[key].exempt = payload.exempt;
+	
 	return Map(estado);
 }
 
@@ -111,6 +126,9 @@ const ShopReducer = (state = Map(), action) => {
 
 	  	case "LOAD_PRODUCT_LOTE_ID":
 	  		return setDataProductLoteId(state, action.payload);			
+
+  		case "LOAD_LOTE_PRODUCTO":
+	  		return setStoreProductoLote(state, action.payload);			
 
 		default:
 			return state;

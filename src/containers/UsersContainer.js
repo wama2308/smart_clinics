@@ -73,7 +73,7 @@ class UsersContainer extends Component {
               <CardBody> 
                 {
                   this.props.usersRoles.get('loading') === 'hide' ?
-                    <div>
+                    <div> 
                       <Nav tabs>
                         <NavItem>
                             <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
@@ -146,7 +146,7 @@ class UsersContainer extends Component {
                       </TabContent>
                     </div>
                   :
-                  <div style={{height: "55vh"}}>
+                  <div style={{height: "60vh"}}>
                     <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
                   </div>
                 }

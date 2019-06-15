@@ -76,18 +76,10 @@ class ModalUser extends React.Component {
                 modalUser: this.props.modal,
                 loading:'hide',
                 email: this.props.emailUserSelect,
-                listSucursales: this.props.usersRoles.userIdView.sucursal,                
+                nombres: this.props.namesSelect,
+                apellidos: this.props.surnamesSelect,                
             })   
-        }
-        /*else if(this.props.option === 5){
-            
-            this.setState({
-                modalUser: this.props.modal,
-                loading:'hide',
-                email: this.props.usersRoles.userIdView.email,
-                listSucursales: this.props.usersRoles.userIdView.sucursal,                           
-            })              
-        }*/
+        }        
     }
 
     testWama = () => {}
@@ -218,8 +210,7 @@ class ModalUser extends React.Component {
         let divSelectSucursal = "";
         let rolSelectError = "";
         let divSelectRol = "";     
-        let valueActualSucursal = "";        
-        
+        let valueActualSucursal = "";                
         if (this.state.selectedSucursalOption){
             let arraySuc = Object.values(this.state.selectedSucursalOption);
             arraySuc.forEach(function (elemento, indice, array) {
@@ -497,9 +488,9 @@ class ModalUser extends React.Component {
                 modalUser: props.modal,
                 loading:'hide',
                 email: props.emailUserSelect,
-                nombres: '',
-                apellidos: '',
-                nombreUsuario: '',
+                nombres: props.usersRoles.userIdView.names,
+                apellidos: props.usersRoles.userIdView.surnames,
+                nombreUsuario: props.usersRoles.userIdView.username,
                 listSucursales: props.usersRoles.userIdView.sucursal,                
             })   
         }                   
@@ -719,13 +710,13 @@ class ModalUser extends React.Component {
                             </form>                                                                    
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveUser}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeUser}>Cancelar</Button>                                                                                                                                                                                                              
+                                <Button className="" color="danger" onClick={this.closeUser}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveUser}>{this.props.modalFooter}</Button>                                                                                                                                                                                                                                                                              
                             </ModalFooter>
                             </div>
                         :
                         <div style={{height: "55vh"}}>
-                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
                         </div>
                     }
                 </Modal>                    

@@ -10,7 +10,8 @@ import { number_format } from "../../core/utils";
 import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { LoadProductPriceFunction } from "../../actions/ShopActions";
+import { LoadProductPriceFunction, editSupplieLotAction } from "../../actions/ShopActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalProductLote extends React.Component {
     constructor(props) {
@@ -32,9 +33,10 @@ class ModalProductLote extends React.Component {
     }    
 
     componentWillReceiveProps=(props)=>{
-    	if(props.productoId){
+        if(props.loteId){
     		this.setState({
     			productoId: props.productoId,
+                loteId: props.loteId,
 	            nroLote: props.nroLote,
 	            cantidadAvailable: props.cantidadAvailable,
 	            cantidad: props.cantidad,
@@ -181,18 +183,106 @@ class ModalProductLote extends React.Component {
     togglePopover = () => {
         this.setState({popoverOpen: !this.state.popoverOpen})
         this.props.LoadProductPriceFunction(this.props.productoId)        
-    }    
+    } 
+
+    validate = () => {
+        let divPrecio= '';        
+        let divPrecioError= '';        
+        let divDescuento= '';        
+        let divDescuentoError= '';        
+        let divPrecioVenta= '';        
+        let divPrecioVentaError= '';        
+        let divLimiteStock= '';        
+        let divLimiteStockError= '';        
+        let divExento= '';        
+        let divExentoError= '';   
+        let labelExento = "";
+
+        if (this.state.arrayExentoSelect) {                           
+            let arrayExento = Object.values(this.state.arrayExentoSelect);
+            arrayExento.forEach(function (elemento, indice, array) {
+                if(indice === 0){
+                    labelExento = elemento;
+                }            
+            });                         
+        }     
+        
+        if (this.state.precio === "" || this.state.precio === "0.00") {            
+            divPrecioError = "¡Ingrese el precio de compra!";
+            divPrecio = "borderColor";
+        }
+        if (this.state.precioVenta === "" || this.state.precioVenta === "0.00") {            
+            divPrecioVentaError = "¡Ingrese el precio de venta!";
+            divPrecioVenta = "borderColor";
+        }
+        if (this.state.limiteStock === "" || this.state.limiteStock === "0") {            
+            divLimiteStockError = "¡Ingrese el limite de stock!";
+            divLimiteStock = "borderColor";
+        }
+        if (!this.state.arrayExentoSelect) {                    
+            divExentoError = "¡Seleccione si es exento!";
+            divExento  = "borderColor";
+        }        
+        if (divPrecioError || divPrecioVentaError || divLimiteStockError || divExentoError) {            
+            this.setState({ 
+                divPrecioError,
+                divPrecio,
+                divPrecioVentaError,
+                divPrecioVenta,
+                divLimiteStockError,
+                divLimiteStock,                
+                divExentoError,
+                divExento,                
+            });  
+            return false;
+        }
+        return true;        
+    };
+
+    handleAction = event => {
+        event.preventDefault();
+        const isValid = this.validate();   
+        if (isValid) {             
+            let labelExento = "";
+            if (this.state.arrayExentoSelect) {                           
+                let arrayExento = Object.values(this.state.arrayExentoSelect);
+                arrayExento.forEach(function (elemento, indice, array) {
+                    if(indice === 0){
+                        labelExento = elemento;
+                    }            
+                });                         
+            }                 
+            if(this.props.option === 2)
+            {
+                this.setState({loading:'show'})                                    
+                this.props.editSupplieLotAction(
+                  {
+                    id: this.props.productoId,
+                    lote_id: this.props.loteId,
+                    limit_stock: this.state.limiteStock,
+                    price: this.state.precio,
+                    price_sale: this.state.precioVenta,
+                    discount: this.state.descuento,
+                    exempt: labelExento
+                  },
+                  () => {
+                    this.closeModal();                    
+                  }
+                )
+            }             
+        }
+    }   
 
     render() {         
         return (
             <span>
-            	 <Modal isOpen={this.props.modal} className="ModalShop">
+            	 <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalShop">
             	 	{
                     	this.props.shop.loading === "hide" ?
                     	<div className={this.state.divContainer}>
                             <ModalHeader toggle={this.closeModal}>{this.props.modalHeader}</ModalHeader>
                             <ModalBody className="Scroll">      
-	                            <form className="formCodeConfirm" onSubmit=""> 
+	                            <form className="formCodeConfirm" onSubmit={this.handleAction.bind(this)}> 
 	                                <div className="row"> 
 	                                	<FormGroup className="top form-group col-sm-6">                                                                 
 			                                <Label for="codigo">Nro Lote:</Label> 
@@ -286,7 +376,9 @@ class ModalProductLote extends React.Component {
 			                                            </tbody>
 			                                        </Table>
 			                                        :
-			                                        <div align="center" className="" style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="40%"  /></div>
+			                                        <div style={{height: "10vh", "width": "20vh"}}>
+                                                      <CircularProgress style={{position: " absolute", width: 20, height: 10, top: "50%", right: "45%",zIndex: 2}} />
+                                                    </div>
 			                                    }
 			                                       
 			                                    </div>                                    
@@ -296,12 +388,14 @@ class ModalProductLote extends React.Component {
 	                            </form>
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCompras}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleAction}>{this.props.modalFooter}</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                             </ModalFooter>
                         </div>  
                         :
-                        <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="30%" /></div>  
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
+                        </div>
                     }
             	 </Modal>             	
             </span> 
@@ -318,6 +412,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({  
 	LoadProductPriceFunction: (productoId) =>dispatch(LoadProductPriceFunction(productoId)),
     alert: (type, message) => dispatch(openSnackbars(type, message)), 
+    editSupplieLotAction: (data, callback) =>dispatch(editSupplieLotAction(data, callback)),    
 });
 
 export default connect(

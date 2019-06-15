@@ -267,8 +267,8 @@ class RolesPermisos extends React.Component {
                                 </FormGroup>  
                                 <FormGroup className="top form-group col-sm-12">  
                                     <div align="right">
-                                        <Button className="" color="primary" onClick={this.handleSaveRoles}>Guardar</Button>&nbsp;&nbsp; 
                                         <Button className="" color="danger" onClick={this.cleanNewRol}>Cancelar</Button> 
+                                        <Button className="" color="primary" onClick={this.handleSaveRoles}>Guardar</Button>&nbsp;&nbsp;                                         
                                     </div>
                                 </FormGroup>                              
                             </CardBody>

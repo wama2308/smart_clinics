@@ -84,10 +84,10 @@ class ModalStore extends React.Component {
             let valueSucursales = "";
             let arraySucursales = Object.values(this.state.arraySucursalesSelect);
             arraySucursales.forEach(function (elemento, indice) {
-                if(indice === 1){
+                if(indice === 0){
                     valueSucursales = elemento;
                 }            
-            });            
+            });   
             if(this.props.option === 1)
             {
                 if(this.props.store.shelfs.length === 0){
@@ -178,7 +178,7 @@ class ModalStore extends React.Component {
     handlekeyAlmacen = event =>{
         this.setState({
             almacenError: "",
-            almacenInvalid: false,         
+            almacenInvalid: "",         
         })
     }    
 
@@ -236,7 +236,7 @@ class ModalStore extends React.Component {
 	render() {         
         return (
             <span>                            
-        		<Modal isOpen={this.props.modal} className="ModalStore">
+        		<Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalStore">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -277,8 +277,8 @@ class ModalStore extends React.Component {
                             </form>                                                                    
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveAlmacen}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveAlmacen}>{this.props.modalFooter}</Button>                                
                             </ModalFooter>
                             </div>
                         :

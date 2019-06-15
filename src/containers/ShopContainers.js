@@ -17,6 +17,7 @@ import ListProduct from "../views/Shop/ListProduct";
 import { LoadShopFunction, LoadShopIdFunction, disableShopAction, queryOneSupplieWithLotFunction } from "../actions/ShopActions";
 import { openConfirmDialog } from "../actions/aplicantionActions";
 import classnames from "classnames";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ShopContainers extends Component {
   constructor(props) {
@@ -82,7 +83,9 @@ class ShopContainers extends Component {
                       </TabContent>
                   </div>
                 :
-                <div align="center" className="" style={{padding:"1%"}}><img alt="loading" src="assets/loader.gif" width="25%"  /></div>
+                <div style={{height: "60vh"}}>
+                  <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
+                </div>
               }
               </CardBody>
             </Card>
