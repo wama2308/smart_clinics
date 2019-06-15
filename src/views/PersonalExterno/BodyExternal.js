@@ -55,7 +55,11 @@ class BodyExternal extends React.Component {
     ];
 
     return (
-      <div>
+      <div
+        style={{
+          height: "90%"
+        }}
+      >
         {this.state.openModal && (
           <PreRegistro
             open={this.state.openModal}
@@ -113,7 +117,7 @@ class BodyExternal extends React.Component {
             style={{
               flex: 1,
               flexDirection: "row",
-              height: "100px",
+              height: "100%",
               display: "flex",
               justifyContent: "center",
               alignItems: "center"

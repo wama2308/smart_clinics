@@ -66,6 +66,7 @@ class Sucursales extends React.Component {
   };
 
   render() {
+    console.log("sucursales", this.props.sucursales);
     const data = [
       { label: "Sucursal" },
       { label: "Codigo" },
@@ -107,7 +108,7 @@ class Sucursales extends React.Component {
             <tbody>
               {this.props.sucursales
                 ? this.props.sucursales.map((item, i) => {
-                    if (item.status) {
+                    if (item.active) {
                       return (
                         <tr key={i}>
                           <td>{item.name}</td>

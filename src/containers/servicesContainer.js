@@ -21,7 +21,7 @@ import {
   loadOriginalService,
   deletePlantillas
 } from "../actions/ServicesAction";
-
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { openConfirmDialog } from "../actions/aplicantionActions";
 import Plantillas from "../views/Servicios/plantilla";
 
@@ -59,7 +59,11 @@ class ServicesContainer extends React.Component {
       <div className="animated fadeIn">
         <Row>
           <Col>
-            <Card>
+            <Card
+              style={{
+                height: "83vh"
+              }}
+            >
               <CardHeader>Servicios</CardHeader>
               <CardBody>
                 <div>
@@ -93,7 +97,12 @@ class ServicesContainer extends React.Component {
                 </div>
                 {this.state.loading && (
                   <TabContent activeTab={this.state.activeTab}>
-                    <TabPane tabId={1}>
+                    <TabPane
+                      tabId={1}
+                      style={{
+                        height: "70vh"
+                      }}
+                    >
                       <TabService
                         data={dataService}
                         getdataModal={this.props.getDataModalService}
@@ -101,7 +110,12 @@ class ServicesContainer extends React.Component {
                         plantilla={this.props.plantilla}
                       />
                     </TabPane>
-                    <TabPane tabId={2}>
+                    <TabPane
+                      tabId={2}
+                      style={{
+                        height: "70vh"
+                      }}
+                    >
                       <Plantillas
                         template={dataPlantilla}
                         alert={this.props.alert}
@@ -111,10 +125,18 @@ class ServicesContainer extends React.Component {
                   </TabContent>
                 )}
                 {!this.state.loading && (
-                  <TabContent activeTab={this.state.activeTab}>
+                  <TabContent
+                    activeTab={this.state.activeTab}
+                    style={{
+                      height: "70vh",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
                     <br />
                     <div align="center" className={this.state.divLoadingTable}>
-                      <img src="assets/loader.gif" width="20%" height="5%" />
+                      <CircularProgress />
                     </div>
                   </TabContent>
                 )}
@@ -139,7 +161,7 @@ const mapDispatchToProps = dispatch => ({
   getData: () => dispatch(getDataServices()),
   getDataModalService: obj => dispatch(loadOriginalService(obj)),
   alert: (obj, callback) => dispatch(openConfirmDialog(obj, callback)),
-  delete:(obj)=> dispatch(deletePlantillas(obj))
+  delete: obj => dispatch(deletePlantillas(obj))
 });
 
 export default connect(

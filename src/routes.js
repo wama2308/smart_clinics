@@ -12,6 +12,7 @@ import PersonalInternoContainers from './containers/PersonalInternoContainers'
 import ventasContainer from './containers/ventasContainer'
 import StoreContainer from './containers/StoreContainer'
 import ShopContainers from './containers/ShopContainers'
+import Dashboard from './views/Dashboard'
 
 function Loading() {
   return <div>Loading...</div>;
@@ -127,10 +128,6 @@ const Charts = Loadable({
   loading: Loading,
 });
 
-const Dashboard = Loadable({
-  loader: () => import('./views/Dashboard'),
-  loading: Loading,
-});
 
 const CoreUIIcons = Loadable({
   loader: () => import('./views/Icons/CoreUIIcons'),
@@ -183,13 +180,10 @@ const Widgets = Loadable({
 });
 
 
-
-
-
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Inicio', component: DefaultLayout },
-  { path: '/dashboard', name: 'Panel', component: withAuth(Dashboard, DefaultHeader) },
+  { path: '/dashboard', name: 'Panel', component: Dashboard },
   { path: '/configuration', exact: true, name: 'Configuracion', component: configContainer },
   { path: '/configuration/Medical-center', name: 'Centro Medico', component: configContainer },
   { path: '/configuration/personalExterno', name: 'Personal Externo', component: ExternalContainer },
@@ -198,8 +192,8 @@ const routes = [
   { path: '/configuration/Personal', name: 'Personal', component: PersonalInternoContainers },
   { path: '/configuration/Services', name: 'Servicios', component: servicesContainer },
   { path: '/configuration/store', name: 'Almacen', component: StoreContainer },
-  { path: '/administrative/sales', name: 'Ventas', component: ventasContainer },  
-  { path: '/administrative/shops', name: 'Compras', component: ShopContainers },  
+  { path: '/administrative/sales', name: 'Ventas', component: ventasContainer },
+  { path: '/administrative/shops', name: 'Compras', component: ShopContainers },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },

@@ -16,12 +16,12 @@ import Notifications, { notify } from "react-notify-toast";
 import HeaderLogo from "../../../components/HeaderLogo";
 import { connect } from "react-redux";
 import { register } from "../../../actions/authActions";
+import { withRouter } from "react-router-dom";
 import jstz from "jstz";
 
 class RegisterEmail extends Component {
   constructor(props) {
     super(props);
-
     const timezone = jstz.determine();
     this.state = {
       email: "",
@@ -32,10 +32,11 @@ class RegisterEmail extends Component {
 
   sendEmail = event => {
     event.preventDefault();
-    this.props.register(this.state.email, this.state.timeZ);
+    this.props.register(this.props.email, this.state.timeZ);
   };
 
   render() {
+    const { email, step } = this.props;
     const top = {
       position: "absolute",
       top: "20px",
@@ -43,8 +44,7 @@ class RegisterEmail extends Component {
       left: "2%",
       textAlign: "center"
     };
-    console.log("data", this.props.step);
-    const disabled = this.state.email.length <= 1 ? true : false;
+    const disabled = !email ? true : false;
     return (
       <div className="app flex-row align-items-center background">
         <Container>
@@ -72,9 +72,9 @@ class RegisterEmail extends Component {
                       <Input
                         type="email"
                         placeholder="E-mail"
-                        value={this.state.email}
+                        value={this.props.email}
                         onChange={event =>
-                          this.setState({ email: event.target.value })
+                          this.props.setEmail(event.target.value)
                         }
                       />
                     </InputGroup>
@@ -82,12 +82,14 @@ class RegisterEmail extends Component {
                     <Row style={{ align: "center" }}>
                       <div style={{ width: "7.5%" }} />
                       <Col xs="5" className="text-right">
-                        <Link to="/login">
-                          <Button style={{ width: "100%" }} color="danger">
-                            <i className="icon-arrow-left" />
-                            Volver
-                          </Button>
-                        </Link>
+                        <Button
+                          style={{ width: "100%" }}
+                          onClick={() => this.props.backStep(undefined)}
+                          color="danger"
+                        >
+                          <i className="icon-arrow-left" />
+                          Volver
+                        </Button>
                       </Col>
                       <Col xs="5">
                         <Button
@@ -116,10 +118,12 @@ class RegisterEmail extends Component {
 }
 
 const mapStateToProps = state => ({
-  step: state.auth.toJS()
+  step: state.auth.get("authStep")
 });
 
-export default connect(
-  mapStateToProps,
-  { register }
-)(RegisterEmail);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { register }
+  )(RegisterEmail)
+);
