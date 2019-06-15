@@ -1,5 +1,4 @@
 import React from "react";
-import Register from "../views/Pages/Register";
 import Login from "../views/Pages/Login";
 import RegisterEmail from "../views/Pages/RegisterEmail";
 import ConfirmCode from "../views/Pages/ConfirmCode";

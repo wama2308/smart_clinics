@@ -27,6 +27,7 @@ import {
 } from "../actions/aplicantionActions";
 import Sucursales from "../views/Configurations/Sucursal";
 import Licencias from "../views/Configurations/Licencias";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class configContainer extends Component {
   constructor(props) {
@@ -39,7 +40,7 @@ class configContainer extends Component {
 
   componentDidMount = () => {
     this.props.medicalCenter.get("active")
-      ? null
+      ? this.setState({ loading: "hide" })
       : this.props.loadMedicalCenter();
   };
 
@@ -51,10 +52,8 @@ class configContainer extends Component {
     }
   }
 
-  //  Verification of the license to be able to add another branch
-
   componentWillReceiveProps = props => {
-  (  props.medicalCenter.get("loading") && props.aplication)
+    props.medicalCenter.get("loading") && props.aplication
       ? this.setState({ loading: "hide" })
       : null;
   };
@@ -82,53 +81,11 @@ class configContainer extends Component {
     return true;
     // trueBranches > countSucursals;
   };
-
-  // Array of data to send to the branches component
-
-  // getCurrencyName = data => {
-  //   if (!data.countryid) {
-  //     return;
-  //   }
-  //   const result = data.country.find(item => {
-  //     return item.id === data.countryid;
-  //   });
-
-  //   return result.currencySymbol;
-  // };
-
-  // filterDataForSucursal(data) {
-  //   const array = [];
-  //   data = data.toJS();
-
-  //   data.branchoffices
-  //     ? data.branchoffices.map(branchOfficesData => {
-  //         let dataCountryAndPRovince = data.country.filter(country => {
-  //           return country.id.includes(branchOfficesData.countryId);
-  //         });
-  //         dataCountryAndPRovince = dataCountryAndPRovince[0];
-
-  //         const id =
-  //           dataCountryAndPRovince.name === "Argentina"
-  //             ? 0
-  //             : branchOfficesData.provinceId;
-  //         array.push({
-  //           country: dataCountryAndPRovince.name,
-  //           province: dataCountryAndPRovince.provinces[id].name,
-  //           ...branchOfficesData
-  //         });
-  //       })
-  //     : [];
-
-  //   return array;
-  // }
-
   render() {
-    // const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
     const permits = this.numberSucursales(this.props.medicalCenter.toJS());
     const symbol = "$";
 
-    //this.getCurrencyName(this.props.medicalCenter.toJS());
-
+    console.log(this.props.medicalCenter.toJS());
     return (
       <div className="animated fadeIn">
         <Row>
@@ -177,7 +134,13 @@ class configContainer extends Component {
                   </Nav>
                 </div>
                 {this.state.loading === "hide" && (
-                  <TabContent activeTab={this.state.activeTab}>
+                  <TabContent
+                    activeTab={this.state.activeTab}
+                    style={{
+                      flex: 1,
+                      height: "68vh"
+                    }}
+                  >
                     <TabPane tabId={1}>
                       <MedicalCenter
                         editAction={this.props.medicalCenterAction}
@@ -189,7 +152,9 @@ class configContainer extends Component {
                       <Sucursales
                         openSnackbars={this.props.openSnackbars}
                         permits={permits}
-                        sucursales={[]}
+                        sucursales={this.props.medicalCenter.get(
+                          "branchoffices"
+                        )}
                         deleteSucursal={this.props.deleteSucursal}
                         confirm={this.props.confirm}
                       />
@@ -205,9 +170,18 @@ class configContainer extends Component {
                 )}
 
                 {this.state.loading === "show" && (
-                  <TabContent activeTab={this.state.activeTab}>
+                  <TabContent
+                    activeTab={this.state.activeTab}
+                    style={{
+                      justifyContent: "center",
+                      display: "flex",
+                      alignItems: "center",
+                      flex: 1,
+                      height: "68vh"
+                    }}
+                  >
                     <div className={"show"} style={{ textAlign: "center" }}>
-                      <img src="assets/loader.gif" width="20%" height="5%" />
+                      <CircularProgress />
                     </div>
                   </TabContent>
                 )}

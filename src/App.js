@@ -48,7 +48,7 @@ class App extends Component {
   };
   render() {
     if (this.props.logged && this.props.location.pathname === "/auth") {
-      return <Redirect to="/dasboard" />;
+      return <Redirect to="/dashboard" />;
     } else if (
       this.props.logged === false &&
       this.props.location.pathname !== "/auth"
