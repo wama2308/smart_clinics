@@ -8,8 +8,6 @@ import {
   AppHeader,
   AppSidebar,
   AppSidebarFooter,
-  AppSidebarForm,
-  AppSidebarHeader,
   AppSidebarMinimizer,
   AppSidebarNav
 } from "@coreui/react";
@@ -38,7 +36,15 @@ class DefaultLayout extends Component {
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
-            <Container fluid style={{ height: "100%", padding: 20 }}>
+            <Container
+              fluid
+              style={{
+                height: "100%",
+                padding: 20,
+                display: "flex",
+                flexDirection: " column"
+              }}
+            >
               <Switch>
                 {routes.map((route, idx) => {
                   return route.component ? (
