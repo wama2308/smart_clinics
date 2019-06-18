@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
+import { Favorite } from "@material-ui/icons";
 export default class PerfilPatient extends React.Component {
   render() {
     return (
@@ -22,7 +22,9 @@ export default class PerfilPatient extends React.Component {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-around"
+              justifyContent: "space-around",
+              flex: 1,
+              alignItems: "center"
             }}
           >
             <span>
@@ -36,12 +38,10 @@ export default class PerfilPatient extends React.Component {
               <strom> O+</strom>
             </span>
             <span>
-              <img
-                src="assets/frecuencia.svg"
-                alt="Smiley face"
-                height="40"
-                width="30"
-                color="red"
+              <Favorite
+                style={{
+                  color: "#757575"
+                }}
               />
               <strom> 123 ppm</strom>
             </span>
@@ -55,6 +55,35 @@ export default class PerfilPatient extends React.Component {
                 color="red"
               />
               <strom> 65 KL</strom>
+            </span>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              flex: 1,
+              alignItems: "center"
+            }}
+          >
+            <span style={{ marginLeft: 10 }}>
+              <img
+                src="assets/altura.svg"
+                alt="Smiley face"
+                height="40"
+                width="30"
+                color="red"
+              />
+              <strom> 134 cm</strom>
+            </span>
+            <span style={{ width: "48%" }}>
+              <img
+                src="assets/imc.svg"
+                alt="Smiley face"
+                height="40"
+                width="30"
+                color="red"
+              />
+              <strom> 123 IMC</strom>
             </span>
           </div>
         </div>
@@ -75,6 +104,8 @@ const Container = styled.div`
   .perfilData {
     flex: 1;
     border-left: 1px solid #c8ced3;
+    display: flex;
+    flex-direction: column;
   }
   .perfilImg {
     border-radius: 100%;

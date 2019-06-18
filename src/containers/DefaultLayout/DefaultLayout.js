@@ -12,15 +12,18 @@ import {
   AppSidebarNav
 } from "@coreui/react";
 // sidebar nav config
-import navigation from "../../_nav";
+import { getMenu } from "../../_nav";
 // routes config
 import routes from "../../routes";
 import DefaultAside from "./DefaultAside";
 import DefaultFooter from "./DefaultFooter";
 import DefaultHeader from "./DefaultHeader";
-
+import { connect } from "react-redux";
 class DefaultLayout extends Component {
   render() {
+    const navigation = getMenu(this.props.permits);
+
+    console.log(navigation);
     return (
       <div className="app">
         <AppHeader fixed>
@@ -71,5 +74,11 @@ class DefaultLayout extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  permits: state.auth.get("userPermiss")
+});
 
-export default DefaultLayout;
+export default connect(
+  mapStateToProps,
+  null
+)(DefaultLayout);

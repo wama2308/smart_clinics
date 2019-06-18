@@ -38,6 +38,7 @@ import {
 } from "./views/Pages";
 import Snackbars from "./components/Snackbars";
 import { Alert } from "./components/Modals";
+import { getTokenInfo } from "./actions/authActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class App extends Component {
@@ -46,6 +47,16 @@ class App extends Component {
       this.props.ConfigGeneralFunction();
     }
   };
+  componentDidUpdate = prevProps => {
+    if (
+      !prevProps.logged &&
+      this.props.logged &&
+      this.props.aplication === null
+    ) {
+      this.props.getTokenInfo();
+    }
+  };
+
   render() {
     if (this.props.logged && this.props.location.pathname === "/auth") {
       return <Redirect to="/dashboard" />;
@@ -59,17 +70,19 @@ class App extends Component {
       <div>
         <Snackbars />
         <Alert {...this.props.alert} close={this.props.closeDialog} />
-        {this.props.aplication === null && this.props.logged && (
-          <CircularProgress
-            style={{
-              position: " absolute",
-              height: 40,
-              top: "45%",
-              right: "50%",
-              zIndex: 2
-            }}
-          />
-        )}
+        {this.props.aplication === null &&
+          this.props.logged &&
+          this.props.permits && (
+            <CircularProgress
+              style={{
+                position: " absolute",
+                height: 40,
+                top: "45%",
+                right: "50%",
+                zIndex: 2
+              }}
+            />
+          )}
         <Switch>
           <Route
             exact
@@ -110,12 +123,14 @@ class App extends Component {
 const mapStateToProps = state => ({
   logged: state.auth.get("logged"),
   alert: state.global.confirm,
-  aplication: state.global.dataGeneral
+  aplication: state.global.dataGeneral,
+  permits: state.auth.get("userPermiss")
 });
 
 const mapDispatchToProps = dispatch => ({
   closeDialog: () => dispatch(closeDialog()),
-  ConfigGeneralFunction: () => dispatch(ConfigGeneralFunction())
+  ConfigGeneralFunction: () => dispatch(ConfigGeneralFunction()),
+  getTokenInfo: () => dispatch(getTokenInfo())
 });
 
 // <Route path="/" name="Home" component={DefaultLayout} />

@@ -13,7 +13,7 @@ const setData = (state, node, payload) => state.set(node, payload);
 const authReducer = (state = Map(), action) => {
   switch (action.type) {
     case "SESION_OFF": {
-      return setState(state, { logged: false });
+      return Map();
     }
     case "GET_DATA_USER": {
       return setState(state, action.payload);
@@ -30,10 +30,13 @@ const authReducer = (state = Map(), action) => {
       return setData(state, "secretQuestion", action.payload);
     }
 
-    case "SET_TYPE_USER":{
+    case "SET_TYPE_USER": {
       return setData(state, "typeUser", action.payload);
     }
 
+    case "USERS_PERMISS": {
+      return setData(state, "userPermiss", action.payload);
+    }
     default:
       return state;
   }

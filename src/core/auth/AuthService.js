@@ -24,6 +24,8 @@ export default class AuthService {
         await this.setTokenInTheLocalStorage(res.data.token);
 
         callback({
+          userPermiss:
+            result.profile[0].medical_center[0].branch_office[0].permission,
           logged: true,
           ...result
         });
@@ -36,15 +38,23 @@ export default class AuthService {
       });
   }
 
-  async verify(callback) {
-    const token = await this.getToken();
-    if (token) {
-      const result = await this.isTokenExpired(token);
-      return callback({
-        ...result
+  async verify(url, token, callback) {
+    axios({
+      url: `${url}/api/tokenValidate`,
+      method: "POST",
+      data: {},
+      ...token
+    })
+      .then(res => {
+        return callback({
+          logged: true
+        });
+      })
+      .catch(res => {
+        return callback({
+          logged: false
+        });
       });
-    }
-    return callback({ logged: false });
   }
 
   async loggedIn(callback) {
@@ -68,6 +78,7 @@ export default class AuthService {
       return { logged: false, result: null };
     }
   }
+
   setEmail(idemail) {
     return localStorage.setItem("email", idemail);
   }

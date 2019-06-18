@@ -1,6 +1,7 @@
 import React from "react";
 import { Card } from "reactstrap";
 import PerfilPatient from "../views/patients/PerfilPatient";
+import InfoPatient from "../views/patients/InfoPatient";
 import styled from "styled-components";
 
 class PatientContainer extends React.Component {
@@ -14,7 +15,9 @@ class PatientContainer extends React.Component {
         <div className="patient-info">
           <PerfilPatient />
         </div>
-        <div className="patient-result">Result information</div>
+        <div className="patient-result">
+          <InfoPatient />
+        </div>
       </Container>
     );
   }
@@ -30,14 +33,15 @@ const Container = styled(Card)`
 
   .patient {
     &-info {
-      flex: 0.7;
+      flex: 0.5;
       background: #f0f3f5;
       display: flex;
-      padding:20px
+      padding: 20px;
     }
 
     &-result {
       flex: 2;
+      display: flex;
     }
   }
 `;
