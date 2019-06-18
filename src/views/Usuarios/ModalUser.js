@@ -423,9 +423,7 @@ class ModalUser extends React.Component {
     handleSubmitTable = event => {
         event.preventDefault();
         const isValid = this.validateUsers();
-        if (isValid) {
-            console.log(this.state.listSucursales);
-        }
+        if (isValid) {}
     }
 
     componentWillReceiveProps=(props)=>{

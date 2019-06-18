@@ -46,6 +46,7 @@ const setStoreCleanProducts = (state, payload) => {
 	estado.searchProduct = 0;		
 	estado.dataProductPrice = [];		
 	estado.ProductLoteId = {};		
+	estado.dataShopId = {};		
 	estado.action = 0;	
 	return Map(estado);
 }
