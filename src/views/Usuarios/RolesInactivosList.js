@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalRoles from './ModalRoles.js';
 import IconButton from "@material-ui/core/IconButton";
-import { HowToReg } from "@material-ui/icons";
+import { DoneOutlineOutlined } from "@material-ui/icons";
 
 class RolesInactivosList extends React.Component {
   constructor(props) {
@@ -59,7 +59,7 @@ class RolesInactivosList extends React.Component {
                   <td>{ rol.rol }</td>
                   <td>
                     <div className="float-left" >                        
-                      <IconButton aria-label="Delete" title="Activar Rol" className="iconButtons" onClick={() => { this.activateRoles(rol._id); }}><HowToReg className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Activar Rol" className="iconButtons" onClick={() => { this.activateRoles(rol._id); }}><DoneOutlineOutlined className="iconTable" /></IconButton>
                     </div>
                   </td>
                 </tr>

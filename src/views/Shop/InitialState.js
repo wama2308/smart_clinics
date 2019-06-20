@@ -106,6 +106,13 @@ export const InitalState = {
     especifique: '',
     divEspecifiqueError: '',
     disabledEspecifique: true,
+    divSucursalEnvia: '',
+    arraySucursalEnviaSelect: null,
+    divSucursalEnviaError: '',
+    divSucursalRecibe: '',
+    arraySucursalRecibeSelect: null,
+    divSucursalRecibeError: '',
+    checked: false,
     option:0,
     loading:'show',       
 }

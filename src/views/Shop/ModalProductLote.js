@@ -460,9 +460,7 @@ class ModalProductLote extends React.Component {
                                                 /> 
 			                                </div>
 			                                <div className="errorSelect">{this.state.divCantidadError}</div>                                                                                                                                                                                         
-			                            </FormGroup> 
-
-                                        
+			                            </FormGroup>
                                         <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>                                                                 
                                             <Label for="nuevaCantidad">Cantidad de Salida</Label> 
                                             <div className={this.state.divNuevaCantidad}>                               
@@ -526,8 +524,6 @@ class ModalProductLote extends React.Component {
                                             </div>
                                             <div className="errorSelect">{this.state.divEspecifiqueError}</div>
                                         </FormGroup>
-
-
 			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>                                                                 
 			                                <Label for="precio">Precio de Compra:</Label> 
 			                                <div className={this.state.divPrecio}>                               

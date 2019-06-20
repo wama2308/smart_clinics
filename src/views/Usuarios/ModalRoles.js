@@ -51,7 +51,7 @@ class ModalRoles extends React.Component {
   };
 
   testOnclick = () => {
-    this.props.LoadRolNew();
+    //this.props.LoadRolNew();
   };
 
   closeRoles = () => {

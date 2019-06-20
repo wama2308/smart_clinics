@@ -3,6 +3,7 @@ import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility, SwapHoriz } from "@material-ui/icons";
 import ModalShop from './ModalShop.js';
+import ModalTransferencias from './ModalTransferencias.js';
 import { number_format } from "../../core/utils";
 
 class ListShop extends React.Component {
@@ -57,6 +58,18 @@ class ListShop extends React.Component {
         position: pos,        
         shop_id:id       
       })
+    }else if(option === 4){
+      this.props.LoadShopIdFunction(id);
+      this.setState({
+        modal:true,
+        option:option,
+        modalHeader:'Transferir Compras-Productos',
+        modalFooter:'Guardar',
+        disabled: false,
+        showHide: 'show',
+        position: pos,        
+        shop_id:id       
+      })
     }  
   }  
 
@@ -82,18 +95,37 @@ class ListShop extends React.Component {
   render() {
      return (
       <div>
-        <ModalShop 
-          option = {this.state.option}
-          modal = {this.state.modal}
-          modalHeader = {this.state.modalHeader}
-          modalFooter = {this.state.modalFooter}
-          disabled = {this.state.disabled}
-          showHide = {this.state.showHide}             
-          isClearable = {this.state.isClearable}             
-          shop_id = {this.state.shop_id}             
-          branchOfficces={this.props.branchOfficces}                       
-          valorCloseModal = {this.valorCloseModal}          
-        />
+        {
+          (this.state.option === 1 || this.state.option === 2 || this.state.option === 3) &&
+          <ModalShop 
+            option = {this.state.option}
+            modal = {this.state.modal}
+            modalHeader = {this.state.modalHeader}
+            modalFooter = {this.state.modalFooter}
+            disabled = {this.state.disabled}
+            showHide = {this.state.showHide}             
+            isClearable = {this.state.isClearable}             
+            shop_id = {this.state.shop_id}             
+            branchOfficces={this.props.branchOfficces}                       
+            valorCloseModal = {this.valorCloseModal}          
+          />
+        }
+        {
+          (this.state.option === 4) &&
+          <ModalTransferencias 
+            option = {this.state.option}
+            modal = {this.state.modal}
+            modalHeader = {this.state.modalHeader}
+            modalFooter = {this.state.modalFooter}
+            disabled = {this.state.disabled}
+            showHide = {this.state.showHide}             
+            isClearable = {this.state.isClearable}             
+            shop_id = {this.state.shop_id}             
+            branchOfficces={this.props.branchOfficces}                       
+            valorCloseModal = {this.valorCloseModal}          
+          />
+        }
+        
         <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
         <br />
         <br />      
@@ -126,7 +158,7 @@ class ListShop extends React.Component {
                       <IconButton aria-label="Delete" title="Ver Compra" className="iconButtons" onClick={() => { this.openModal(2, i, shop._id); }}><Visibility className="iconTable" /></IconButton>
                       <IconButton aria-label="Delete" title="Editar Compra" className="iconButtons" onClick={() => { this.openModal(3, i, shop._id); }}><Edit className="iconTable" /></IconButton>                        
                       <IconButton aria-label="Delete" title="Eliminar Compra" className="iconButtons" onClick={() => { this.deleteRegister(shop._id); }}><Delete className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Transferir Compra" className="iconButtons" ><SwapHoriz className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Transferir Compra" className="iconButtons" onClick={() => { this.openModal(4, i, shop._id); }}><SwapHoriz className="iconTable" /></IconButton>
                     </div>
                   </td>                    
                 </tr>
