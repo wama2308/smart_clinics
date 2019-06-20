@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
-import { HowToReg } from "@material-ui/icons";
+import { DoneOutlineOutlined } from "@material-ui/icons";
 
 class ListCargosInactivos extends React.Component {
   constructor(props) {
@@ -57,7 +57,7 @@ class ListCargosInactivos extends React.Component {
                   <td>{ cargo.label }</td>
                   <td>
                     <div className="float-left" >
-                      <IconButton aria-label="Delete" title="Activar Cargo" className="iconButtons" onClick={() => { this.activarCargo(cargo.value); }}><HowToReg className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Activar Cargo" className="iconButtons" onClick={() => { this.activarCargo(cargo.value); }}><DoneOutlineOutlined className="iconTable" /></IconButton>                        
                     </div>
                   </td>                    
                 </tr>

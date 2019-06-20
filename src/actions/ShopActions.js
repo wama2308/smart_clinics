@@ -211,7 +211,8 @@ export const LoadShopIdFunction = (shopId) => dispatch => {
             type: "LOAD_SHOP_ID",
             payload: {
               dataShopId: res.data,
-              loading: "hide"
+              loading: "hide",
+              confirm: true,              
             }
           });
         })
@@ -496,6 +497,51 @@ export const LoadProductPriceFunction = (productId) => dispatch => {
             error.toString()
           );
         });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const setCantidadTableTransferencias = (pos, value) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "SET_CANTIDAD_TRANSFERENCIAS",
+        payload: {
+          pos: pos,
+          value: value
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const setSwitchTableTransferencias = (pos, value) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "SET_SWITCH_TRANSFERENCIAS",
+        payload: {
+          pos: pos,
+          value: value
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const setSelectAllSwitchTransferencias = value => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "SET_SELECT_ALL_SWITCH_TRANSFERENCIAS",
+        payload: value        
+      });
     })
     .catch(() => {
       console.log("Problemas con el token");

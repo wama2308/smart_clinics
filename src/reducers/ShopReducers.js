@@ -46,6 +46,7 @@ const setStoreCleanProducts = (state, payload) => {
 	estado.searchProduct = 0;		
 	estado.dataProductPrice = [];		
 	estado.ProductLoteId = {};		
+	estado.dataShopId = {};		
 	estado.action = 0;	
 	return Map(estado);
 }
@@ -89,6 +90,29 @@ const setStoreProductoLote = (state, payload) => {
 	return Map(estado);
 }
 
+const setCantidadTableTransferencias = (state, payload) => {
+	let estado = state.toJS();
+	estado.products[payload.pos].quantity = payload.value;	
+	
+	return Map(estado);
+}
+
+const setSwitchTableTransferencias = (state, payload) => {
+	let estado = state.toJS();
+	estado.products[payload.pos].confirm = payload.value;	
+	
+	return Map(estado);
+}
+
+const setSelectAllSwitchTransferencias = (state, payload) => {
+	let estado = state.toJS();
+	estado.products.map((product, i) => {
+		product.confirm = payload;
+	})
+	
+	return Map(estado);
+}
+
 const ShopReducer = (state = Map(), action) => {
   	switch (action.type) {
 
@@ -127,8 +151,16 @@ const ShopReducer = (state = Map(), action) => {
 	  	case "LOAD_PRODUCT_LOTE_ID":
 	  		return setDataProductLoteId(state, action.payload);			
 
-  		case "LOAD_LOTE_PRODUCTO":
-	  		return setStoreProductoLote(state, action.payload);			
+  		case "SET_CANTIDAD_TRANSFERENCIAS":
+	  		return setCantidadTableTransferencias(state, action.payload);			
+
+  		case "SET_SWITCH_TRANSFERENCIAS":
+	  		return setSwitchTableTransferencias(state, action.payload);			
+
+  		case "SET_SELECT_ALL_SWITCH_TRANSFERENCIAS":
+	  		return setSelectAllSwitchTransferencias(state, action.payload);			
+
+
 
 		default:
 			return state;

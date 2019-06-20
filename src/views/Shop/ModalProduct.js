@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { InitalState } from './InitialState.js';
 import { number_format } from "../../core/utils";
 import { enterDecimal } from "../../core/utils";
-import { Edit, Visibility } from "@material-ui/icons";
+import { Edit, Visibility, Delete } from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import { openConfirmDialog } from "../../actions/aplicantionActions";
 import { cleanProducts, editSupplieAction } from "../../actions/ShopActions";
@@ -143,7 +143,8 @@ class ModalProduct extends React.Component {
             modalHeader:'Ver Lote',
             modalFooter:'Guardar',
             disabled: true,
-            showHide: 'hide',    
+            showHide: 'hide',       
+            showHideEditar: 'hide',    
             keyProduct: pos,    
             loteId: lote_id,
             nroLote: number,
@@ -162,7 +163,28 @@ class ModalProduct extends React.Component {
             modalHeader:'Editar Lote',
             modalFooter:'Editar',
             disabled: false,
-            showHide: 'show',               
+            showHide: 'show',       
+            showHideEditar: 'hide',                       
+            loteId: lote_id,
+            keyProduct: pos, 
+            nroLote: number,
+            cantidadAvailable: quantity_stock,
+            cantidad: quantity,
+            precio: price,
+            descuento: discount,
+            precioVenta: price_sale,
+            limiteStock: limit_stock,
+            arrayExentoSelect: exento
+          })
+        }else if(option === 3){
+          this.setState({
+            modal:true,
+            option:option,
+            modalHeader:'Editar Cantidad Lote',
+            modalFooter:'Guardar',
+            disabled: false,
+            showHide: 'hide',               
+            showHideEditar: 'show',               
             loteId: lote_id,
             keyProduct: pos, 
             nroLote: number,
@@ -175,6 +197,7 @@ class ModalProduct extends React.Component {
             arrayExentoSelect: exento
           })
         }  
+
     }  
 
     closeModalProductLote = (valor) => {            
@@ -261,6 +284,7 @@ class ModalProduct extends React.Component {
                     modalFooter = {this.state.modalFooter}
                     disabled = {this.state.disabled}
                     showHide = {this.state.showHide}     
+                    showHideEditar = {this.state.showHideEditar}     
                     productoId = {this.props.productoId}
                     loteId = {this.state.loteId}
                     keyProduct = {this.state.keyProduct}
@@ -340,12 +364,12 @@ class ModalProduct extends React.Component {
                                                             <th className="text-left ">Compra</th>                                                        
                                                             <th className="text-left">Cantidad</th>                                                        
                                                             <th className="text-left">Stock</th>                                                        
-                                                            <th className="text-left">Limite Stock</th>                                                        
+                                                            <th className="text-left" style={{'minWidth':"108px"}}>Limite Stock</th>                                                        
                                                             <th className="text-left">Precio/Compra</th>                                                        
-                                                            <th className="text-left">Precio/venta</th>                                                        
-                                                            <th className="text-left">Desc %</th>                                                                                                                    
+                                                            <th className="text-left" style={{'minWidth':"115px"}}>Precio/venta</th>                                                        
+                                                            <th className="text-left" style={{'minWidth':"75px"}}>Desc %</th>                                                                                                                    
                                                             <th className="text-left">Exento</th>                                                        
-                                                            <th className="text-left">Acciones</th>                                                        
+                                                            <th className="text-left" style={{'minWidth':"155px"}}>Acciones</th>                                                        
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -358,15 +382,16 @@ class ModalProduct extends React.Component {
                                                                         <td>{product.number_invoice}</td>                                                                                                                                                                                                            
                                                                         <td>{product.quantity}</td>                                                                                                                                                    
                                                                         <td>{product.quantity_stock}</td>                                                                                                                                                    
-                                                                        <td>{product.limit_stock}</td>                                                                                                                                                    
+                                                                        <td style={{'minWidth':"108px"}}>{product.limit_stock}</td>                                                                                                                                                    
                                                                         <td>{number_format(product.price, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
-                                                                        <td>{number_format(product.price_sale, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
-                                                                        <td>{product.discount}</td>                                                                       
+                                                                        <td style={{'minWidth':"115px"}}>{number_format(product.price_sale, 2)} {this.props.aplication.dataGeneral.dataCountries.current_simbol}</td>                                                                                                                                                                                                            
+                                                                        <td style={{'minWidth':"75px"}}>{product.discount}</td>                                                                       
                                                                         <td>{product.exempt}</td>
-                                                                        <td>
+                                                                        <td style={{'minWidth':"155px"}}>
                                                                             <div  className="float-left" >
                                                                                 <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Ver lote" className="iconButtons" onClick={() => { this.openModal(1, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Visibility className="iconTable" /></IconButton>
                                                                                 <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Editar lote" className="iconButtons" onClick={() => { this.openModal(2, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Edit className="iconTable" /></IconButton>                                                                                
+                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Salida de lote" className="iconButtons" onClick={() => { this.openModal(3, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Delete className="iconTable" /></IconButton>                                                                                
                                                                             </div>
                                                                         </td>
                                                                     </tr>

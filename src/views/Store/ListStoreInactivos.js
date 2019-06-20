@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
-import { HowToReg } from "@material-ui/icons";
+import { DoneOutlineOutlined } from "@material-ui/icons";
 import ModalStore from './ModalStore.js';
 
 class ListStoreInactivos extends React.Component {
@@ -59,7 +59,7 @@ class ListStoreInactivos extends React.Component {
                   <td>{ data.description }</td>
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >                      
-                      <IconButton aria-label="Delete" title="Activar Almacen" className="iconButtons" onClick={() => { this.ActivateStore(data._id, data.branchoffice.value); }}><HowToReg className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Activar Almacen" className="iconButtons" onClick={() => { this.ActivateStore(data._id, data.branchoffice.value); }}><DoneOutlineOutlined className="iconTable" /></IconButton>
                     </div>
                   </td>                    
                 </tr>
