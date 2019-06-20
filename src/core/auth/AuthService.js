@@ -39,12 +39,8 @@ export default class AuthService {
   }
 
   async verify(url, token, callback) {
-    axios({
-      url: `${url}/api/tokenValidate`,
-      method: "POST",
-      data: {},
-      ...token
-    })
+    axios
+      .get(`${url}/api/tokenValidate`, token)
       .then(res => {
         return callback({
           logged: true

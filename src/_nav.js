@@ -76,7 +76,7 @@ const administrativo = {
 };
 
 export const getMenu = obj => {
-  console.log("aca", obj);
+
   const items = [];
 
   if (obj[0].name === "MASTER") {
@@ -103,7 +103,6 @@ export const getMenu = obj => {
         }
       }
     });
-    console.log(items);
     return { items };
   }
 };

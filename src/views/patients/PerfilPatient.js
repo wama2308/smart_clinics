@@ -1,19 +1,40 @@
 import React from "react";
 import styled from "styled-components";
+import { Button, Nav, NavItem, NavLink } from "reactstrap";
 import { Favorite } from "@material-ui/icons";
+
 export default class PerfilPatient extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeTab: 1
+    };
+  }
   render() {
     return (
       <Container>
         <div className="perfilContainer">
           <img src="assets/rendon.jpg" className="perfilImg" />
-          <div>
+          <div style={{ flex: 1 }}>
             <h1>Greeicy Rendon</h1>
             <div style={{ display: "flex" }}>
               <h6 style={{ paddingRight: 10 }}>Dni: V-21492475</h6>
               <h6>Edad: 24 Años</h6>
             </div>
             <h6>Sexo: Femenino</h6>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                paddingRight: 20
+              }}
+            >
+              <Button color="success" onClick={this.props.open}>
+                Nueva Consulta
+              </Button>
+              &nbsp;
+              <Button color="success">Ver Historia Medica</Button>
+            </div>
           </div>
         </div>
         <div />
@@ -35,7 +56,7 @@ export default class PerfilPatient extends React.Component {
                 width="30"
                 color="red"
               />
-              <strom> O+</strom>
+              <strong> O+</strong>
             </span>
             <span>
               <Favorite
@@ -43,7 +64,7 @@ export default class PerfilPatient extends React.Component {
                   color: "#757575"
                 }}
               />
-              <strom> 123 ppm</strom>
+              <strong> 123 ppm</strong>
             </span>
 
             <span>
@@ -54,7 +75,7 @@ export default class PerfilPatient extends React.Component {
                 width="30"
                 color="red"
               />
-              <strom> 65 KL</strom>
+              <strong> 65 KL</strong>
             </span>
           </div>
           <div
@@ -73,7 +94,7 @@ export default class PerfilPatient extends React.Component {
                 width="30"
                 color="red"
               />
-              <strom> 134 cm</strom>
+              <strong> 134 cm</strong>
             </span>
             <span style={{ width: "48%" }}>
               <img
@@ -83,7 +104,7 @@ export default class PerfilPatient extends React.Component {
                 width="30"
                 color="red"
               />
-              <strom> 123 IMC</strom>
+              <strong> 123 IMC</strong>
             </span>
           </div>
         </div>

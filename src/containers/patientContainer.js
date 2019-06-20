@@ -2,18 +2,33 @@ import React from "react";
 import { Card } from "reactstrap";
 import PerfilPatient from "../views/patients/PerfilPatient";
 import InfoPatient from "../views/patients/InfoPatient";
+import NewConsultation from "../views/patients/NewConsultation";
 import styled from "styled-components";
 
 class PatientContainer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      open: false
+    };
   }
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  handleOpen = () => {
+    this.setState({ open: true });
+  };
 
   render() {
     return (
       <Container>
+        {this.state.open && (
+          <NewConsultation close={this.handleClose} open={this.state.open} />
+        )}
         <div className="patient-info">
-          <PerfilPatient />
+          <PerfilPatient open={this.handleOpen} />
         </div>
         <div className="patient-result">
           <InfoPatient />
