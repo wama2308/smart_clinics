@@ -79,16 +79,16 @@ class configContainer extends Component {
     });
 
     return true;
-    // trueBranches > countSucursals;
   };
   render() {
     const permits = this.numberSucursales(this.props.medicalCenter.toJS());
     const symbol = "$";
+    console.log("configuration", this.props.permission);
     return (
       <div className="animated fadeIn">
         <Row>
           <Col>
-            <Card>
+            <Card style={{ margin: 0 }}>
               <CardHeader>Configuracion del Centro Medico</CardHeader>
               <CardBody>
                 <div>
@@ -197,7 +197,8 @@ class configContainer extends Component {
 const mapStateToProps = state => ({
   medicalCenter: state.config,
   authData: state.auth,
-  aplication: state.global.dataGeneral
+  aplication: state.global.dataGeneral,
+  permission: state.auth.get("permission")
 });
 
 const mapDispatchToProps = dispatch => ({

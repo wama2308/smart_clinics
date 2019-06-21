@@ -110,8 +110,6 @@ export default class MedicalCenter extends React.Component {
     );
 
     const disabled = this.state.loading === false ? true : false;
-
-    console.log(disabled);
     return (
       <div>
         <div>

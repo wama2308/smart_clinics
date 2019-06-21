@@ -76,33 +76,5 @@ const administrativo = {
 };
 
 export const getMenu = obj => {
-
-  const items = [];
-
-  if (obj[0].name === "MASTER") {
-    console.log("entro aca");
-    items.push(dashboard, configuration, administrativo);
-    return { items };
-  } else {
-    console.log("entro en este otro ");
-    obj[0].modules.map(config => {
-      console.log(items);
-      switch (config.name) {
-        case "Dashboard":
-          {
-            items.push(dashboard);
-          }
-          break;
-        case "Configuracion":
-          {
-            items.push(configuration);
-          }
-          break;
-        case "Administrativo": {
-          items.push(administrativo);
-        }
-      }
-    });
-    return { items };
-  }
+  return { items: obj };
 };

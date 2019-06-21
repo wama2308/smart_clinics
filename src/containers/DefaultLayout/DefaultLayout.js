@@ -21,9 +21,7 @@ import DefaultHeader from "./DefaultHeader";
 import { connect } from "react-redux";
 class DefaultLayout extends Component {
   render() {
-    const navigation = getMenu(this.props.permits);
-
-    console.log(navigation);
+    const navigation = getMenu(this.props.menu);
     return (
       <div className="app">
         <AppHeader fixed>
@@ -75,7 +73,8 @@ class DefaultLayout extends Component {
   }
 }
 const mapStateToProps = state => ({
-  permits: state.auth.get("userPermiss")
+  permits: state.auth.get("permission"),
+  menu: state.auth.get("menu")
 });
 
 export default connect(
