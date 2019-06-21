@@ -57,7 +57,7 @@ const AplicationReducers = (state = InitalState, action) => {
     }
     case "SEARCH_LOADED":
       return {...state , searchloading:action.payload}
-    default:
+      default:
       return state;
   }
 };
