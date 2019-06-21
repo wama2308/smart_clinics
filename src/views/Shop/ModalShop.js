@@ -25,7 +25,11 @@ class ModalShop extends React.Component {
     }
 
     componentDidMount(){
-
+        if(this.props.option === 1){
+            this.setState({
+                loading: 'hide',
+            })
+        }
     }
 
     handleChange = (e) => {
@@ -35,9 +39,7 @@ class ModalShop extends React.Component {
         });
     }
 
-    testOnclick = () => {
-        console.log(this.props.shop.products)
-    }
+    testOnclick = () => {}
 
     toggle = () => {
         this.setState({

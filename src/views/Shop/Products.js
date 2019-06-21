@@ -230,11 +230,11 @@ class Products extends React.Component {
             divCantidadError = "¡Ingrese la cantidad!";
             divCantidad = "borderColor";
         }
-        if (this.state.precio === "" || this.state.precio === "0.00") {            
+        if (this.state.precio === "" || this.state.precio === "0.00" || this.state.precio === "0.0") {            
             divPrecioError = "¡Ingrese el precio de compra!";
             divPrecio = "borderColor";
         }
-        if (this.state.precioVenta === "" || this.state.precioVenta === "0.00") {            
+        if (this.state.precioVenta === "" || this.state.precioVenta === "0.00" || this.state.precioVenta === "0.0") {            
             divPrecioVentaError = "¡Ingrese el precio de venta!";
             divPrecioVenta = "borderColor";
         }
@@ -342,7 +342,7 @@ class Products extends React.Component {
     } 
 
     eventoBlur = (e) => {
-        if(this.state.precio === ''){
+        if(this.state.precio === '' || this.state.precio === '0.0'){
             this.setState({
                 precio: '0.00'                      
             }); 
@@ -358,7 +358,7 @@ class Products extends React.Component {
     }    
 
     eventoBlurPrecioVenta = (e) => {
-        if(this.state.precioVenta === ''){
+        if(this.state.precioVenta === '' || this.state.precioVenta === '0.0'){
             this.setState({
                 precioVenta: '0.00'                      
             }); 
