@@ -1,5 +1,7 @@
 import React from "react";
-import { Warning } from "@material-ui/icons";
+import { Card } from "reactstrap";
+import { Warning, Delete } from "@material-ui/icons";
+import { IconButton } from "@material-ui/core";
 import styled from "styled-components";
 
 class MedicalHistory extends React.Component {
@@ -26,9 +28,9 @@ class MedicalHistory extends React.Component {
                 <strong className="title titleAlergias">
                   <Warning /> Alergias a medicamentos
                 </strong>
-                <span>- el webo de judas</span>
+                <span>- LOTRONEX</span>
                 <span>- Acetaminofen</span>
-                <span>- las bolas de barrabas</span>
+                <span>- Ambrisentan</span>
               </div>
               <div
                 className="antecedentes alergiaspane"
@@ -92,6 +94,28 @@ class MedicalHistory extends React.Component {
           <h5 style={{ color: "#007bff", padding: 20, textAlign: "center" }}>
             MEDICINAS ACTIVAS
           </h5>
+          <Card className="medicalInsideContainer">
+            <div className="medicineInfo">
+              <span>TRAPAZOL</span>
+              <IconButton className="deleteIcon">
+                <Delete />
+              </IconButton>
+            </div>
+            <div className="medicineInfo">
+              <span>{`Ruxolitinib Phosphate`.toLocaleUpperCase()}</span>
+              <IconButton className="deleteIcon">
+                <Delete />
+              </IconButton>
+            </div>
+            <div className="medicineInfo">
+              <span>
+                {`Cerubidine (Daunorubicin Hydrochloride)`.toLocaleUpperCase()}
+              </span>
+              <IconButton className="deleteIcon">
+                <Delete />
+              </IconButton>
+            </div>
+          </Card>
         </div>
       </Container>
     );
@@ -105,8 +129,33 @@ const Container = styled.div`
   .antecedentesContainer {
     flex: 1.3;
   }
+  .medicalInsideContainer {
+    flex: 1;
+    margin: 0px;
+  }
+
+  .medicineInfo {
+    display: flex;
+    align-items: center;
+    padding: 5px 20px;
+    justify-content: space-between;
+
+    &:first-child {
+      padding-top: 20px;
+    }
+    &:hover {
+      background: #f0f3f5;
+      .deleteIcon {
+        color: rgb(183, 28, 28);
+      }
+    }
+  }
+
   .medicamentos {
     flex: 0.7;
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
   }
 
   .alergiaspane {

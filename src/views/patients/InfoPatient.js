@@ -75,7 +75,7 @@ export default class InfoPatient extends React.Component {
           }}
         >
           <TabPane
-            tabId={1}
+            tabId={3}
             style={{
               height: "100%"
             }}

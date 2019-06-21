@@ -22,19 +22,6 @@ export default class PerfilPatient extends React.Component {
               <h6>Edad: 24 Años</h6>
             </div>
             <h6>Sexo: Femenino</h6>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingRight: 20
-              }}
-            >
-              <Button color="success" onClick={this.props.open}>
-                Nueva Consulta
-              </Button>
-              &nbsp;
-              <Button color="success">Ver Historia Medica</Button>
-            </div>
           </div>
         </div>
         <div />
