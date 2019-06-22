@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { InitalState } from './InitialState.js';
 import { number_format } from "../../core/utils";
 import { enterDecimal } from "../../core/utils";
-import { Edit, Visibility, Delete } from "@material-ui/icons";
+import { Edit, Visibility, Delete, ExitToApp } from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import { openConfirmDialog } from "../../actions/aplicantionActions";
 import { cleanProducts, editSupplieAction } from "../../actions/ShopActions";
@@ -33,6 +33,7 @@ class ModalProduct extends React.Component {
     }    
 
     componentWillReceiveProps=(props)=>{
+        console.log("props.shop.ProductLoteId.lote ", props.shop.ProductLoteId.lote)
         if(props.option === 1 || props.option === 2){ 
             if(props.shop.ProductLoteId){                
                 if(props.shop.ProductLoteId.name){
@@ -143,7 +144,7 @@ class ModalProduct extends React.Component {
             modalHeader:'Ver Lote',
             modalFooter:'Guardar',
             disabled: true,
-            showHide: 'hide',       
+            showHide: 'show',       
             showHideEditar: 'hide',    
             keyProduct: pos,    
             loteId: lote_id,
@@ -391,7 +392,7 @@ class ModalProduct extends React.Component {
                                                                             <div  className="float-left" >
                                                                                 <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Ver lote" className="iconButtons" onClick={() => { this.openModal(1, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Visibility className="iconTable" /></IconButton>
                                                                                 <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Editar lote" className="iconButtons" onClick={() => { this.openModal(2, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Edit className="iconTable" /></IconButton>                                                                                
-                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Salida de lote" className="iconButtons" onClick={() => { this.openModal(3, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><Delete className="iconTable" /></IconButton>                                                                                
+                                                                                <IconButton aria-label="Delete" disabled={this.props.option === 1 ? true : false} title="Salida de lote" className="iconButtons" onClick={() => { this.openModal(3, i, product._id, product.number, product.quantity_stock, product.quantity, product.price, product.discount, product.price_sale, product.limit_stock, product.exempt); }}><ExitToApp className="iconTable" /></IconButton>                                                                                
                                                                             </div>
                                                                         </td>
                                                                     </tr>

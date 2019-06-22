@@ -92,8 +92,8 @@ class ListProduct extends React.Component {
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete" title="Ver Producto" className="iconButtons" onClick={() => { this.openModal(1, i, product._id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Producto" className="iconButtons" onClick={() => { this.openModal(2, i, product._id); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Producto Defectuoso/vencido" className="iconButtons" ><Delete className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Producto/Lote" className="iconButtons" onClick={() => { this.openModal(2, i, product._id); }}><Edit className="iconTable" /></IconButton>                        
+                      {/*<IconButton aria-label="Delete" title="Producto Defectuoso/vencido" className="iconButtons" ><Delete className="iconTable" /></IconButton>*/}
                     </div>
                   </td>                    
                 </tr>

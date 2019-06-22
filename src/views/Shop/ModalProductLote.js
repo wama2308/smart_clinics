@@ -10,7 +10,7 @@ import { number_format } from "../../core/utils";
 import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { LoadProductPriceFunction, editSupplieLotAction } from "../../actions/ShopActions";
+import { LoadProductPriceFunction, editSupplieLotAction, defectiveSupplieAction } from "../../actions/ShopActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalProductLote extends React.Component {
@@ -90,10 +90,9 @@ class ModalProductLote extends React.Component {
         this.setState({
             divNuevaCantidad: "",
             divNuevaCantidadError: "",         
-        })
-        console.log("value ", value)
+        })        
         let cantidadNueva = parseFloat(value);
-        let cantidad = parseFloat(this.state.cantidad);
+        let cantidad = parseFloat(this.state.cantidadAvailable);
         let cantidadRestante = cantidad - cantidadNueva;
         if(value){
             if(cantidadNueva > cantidad){
@@ -255,7 +254,8 @@ class ModalProductLote extends React.Component {
     }
 
    	closeModal = () => {
-        this.setState({                        
+        this.setState({        
+            ...InitalState,
             loading: 'show'
         });   
         this.props.closeModalProductLote(false);       
@@ -367,11 +367,20 @@ class ModalProductLote extends React.Component {
         const isValid = this.validate();   
         if (isValid) {             
             let labelExento = "";
+            let valueMotivo = "";
             if (this.state.arrayExentoSelect) {                           
                 let arrayExento = Object.values(this.state.arrayExentoSelect);
                 arrayExento.forEach(function (elemento, indice, array) {
                     if(indice === 0){
                         labelExento = elemento;
+                    }            
+                });                         
+            }   
+            if (this.state.arrayMotivoSalidaSelect) {                           
+                let arrayMotivo = Object.values(this.state.arrayMotivoSalidaSelect);
+                arrayMotivo.forEach(function (elemento, indice, array) {
+                    if(indice === 1){
+                        valueMotivo = elemento;
                     }            
                 });                         
             }                 
@@ -394,7 +403,20 @@ class ModalProductLote extends React.Component {
                 )
             }
             if(this.props.option === 3){
-                alert("guayaaaaa")
+                this.setState({loading:'show'})                                    
+                this.props.defectiveSupplieAction(
+                  {
+                    id: this.props.productoId,
+                    lote_id: this.props.loteId,
+                    quantity: this.state.nuevaCantidad,
+                    quantity_rest: this.state.cantidadRestante,
+                    reason: valueMotivo,
+                    description: this.state.especifique,                    
+                  },
+                  () => {
+                    this.closeModal();                    
+                  }
+                )
             }             
         }
     }   
@@ -427,6 +449,24 @@ class ModalProductLote extends React.Component {
 			                                </div>
 			                                <div className="errorSelect">{this.state.divCodigoError}</div>                                                                                                                                                                                         
 			                            </FormGroup> 
+                                        <FormGroup className="top form-group col-sm-6">                                                                 
+                                            <Label for="cantidad">Cantidad</Label> 
+                                            <div className={this.state.divCantidad}>                               
+                                                <Input 
+                                                    disabled={true} 
+                                                    name="cantidad" 
+                                                    id="cantidad" 
+                                                    onKeyUp={this.handlekeyCantidad} 
+                                                    onChange={this.handleChange} 
+                                                    value={this.state.cantidad} 
+                                                    type="number" 
+                                                    placeholder="Cantidad" 
+                                                    onBlur ={this.eventoBlurCantidad} 
+                                                    onFocus = {this.eventoFocusCantidad}
+                                                /> 
+                                            </div>
+                                            <div className="errorSelect">{this.state.divCantidadError}</div>                                                                                                                                                                                         
+                                        </FormGroup>
 			                            <FormGroup className="top form-group col-sm-6">                                                                 
 			                                <Label for="cantidadAvailable">Stock Disponible:</Label> 
 			                                <div className={this.state.divCantidadAvailable}>                               
@@ -442,25 +482,7 @@ class ModalProductLote extends React.Component {
                                                 />
 			                                </div>
 			                                <div className="errorSelect">{this.state.divCantidadAvailableError}</div>                                                                                                                                                                                         
-			                            </FormGroup> 
-			                            <FormGroup className="top form-group col-sm-6">                                                                 
-			                                <Label for="cantidad">Cantidad</Label> 
-			                                <div className={this.state.divCantidad}>                               
-			                                    <Input 
-                                                    disabled={true} 
-                                                    name="cantidad" 
-                                                    id="cantidad" 
-                                                    onKeyUp={this.handlekeyCantidad} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.cantidad} 
-                                                    type="number" 
-                                                    placeholder="Cantidad" 
-                                                    onBlur ={this.eventoBlurCantidad} 
-                                                    onFocus = {this.eventoFocusCantidad}
-                                                /> 
-			                                </div>
-			                                <div className="errorSelect">{this.state.divCantidadError}</div>                                                                                                                                                                                         
-			                            </FormGroup>
+			                            </FormGroup> 			                            
                                         <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>                                                                 
                                             <Label for="nuevaCantidad">Cantidad de Salida</Label> 
                                             <div className={this.state.divNuevaCantidad}>                               
@@ -681,7 +703,7 @@ class ModalProductLote extends React.Component {
                             </ModalBody>
                             <ModalFooter>
                                 <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
-                                <Button className={this.props.option !== 3 ? this.props.showHide : this.props.showHideEditar} color="primary" onClick={this.handleAction}>{this.props.modalFooter}</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                <Button className={this.props.option === 1 ? `hide` : `show` } color="primary" onClick={this.handleAction}>{this.props.modalFooter}</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                             </ModalFooter>
                         </div>  
                         :
@@ -706,6 +728,7 @@ const mapDispatchToProps = dispatch => ({
 	LoadProductPriceFunction: (productoId) =>dispatch(LoadProductPriceFunction(productoId)),
     alert: (type, message) => dispatch(openSnackbars(type, message)), 
     editSupplieLotAction: (data, callback) =>dispatch(editSupplieLotAction(data, callback)),    
+    defectiveSupplieAction: (data, callback) =>dispatch(defectiveSupplieAction(data, callback)),    
 });
 
 export default connect(
