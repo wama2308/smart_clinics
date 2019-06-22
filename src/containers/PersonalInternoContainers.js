@@ -18,13 +18,33 @@ class PersonalInterno extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: "1"
+      activeTab: "1",
+      permitsPersonal:[],
+      permitsCargos:[]
     };
   }
 
   componentDidMount = () => {
     this.props.LoadPersonalCargosFunction();
     this.props.loadUsersRoles();
+
+
+    
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Personal") {
+        this.setState({
+          permitsPersonal: permisos.permits
+        });
+      }
+    });
+
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Cargos") {
+        this.setState({
+          permitsCargos: permisos.permits
+        });
+      }
+    });
   };
 
   toggleTab(tab) {
@@ -36,11 +56,6 @@ class PersonalInterno extends Component {
   }
 
   render() {
-    // console.log(this.props.usersRoles.get("permits"));
-    // console.log(this.props.usersRoles.get("users"));
-    // const DataSucursal = this.filterDataForSucursal(this.props.medicalCenter);
-    // console.log("loading", this.props.usersRoles.get("loading"));
-    //console.log(this.props)
     return (
       <div className="animated fadeIn">
         <Row>
@@ -76,6 +91,7 @@ class PersonalInterno extends Component {
                       <TabContent activeTab={this.state.activeTab}>
                           <TabPane tabId="1">
                             <ListPersonal
+                              permitsPersonal={this.state.permitsPersonal}
                             	personal={this.props.personaInterno.get('personal')}
                             	DeletePersonalInternoAction={this.props.DeletePersonalInternoAction}
                             	confirm={this.props.confirm}
@@ -91,6 +107,7 @@ class PersonalInterno extends Component {
                           </TabPane>
                           <TabPane tabId="2">
                             <ListCargos 
+                              permitsCargos={this.state.permitsCargos}
                               cargos={this.props.personaInterno.get('cargos')}                              
                               disabledPositionAction={this.props.disabledPositionAction}                              
                               confirm={this.props.confirm}
@@ -98,6 +115,7 @@ class PersonalInterno extends Component {
                           </TabPane>
                           <TabPane tabId="3">                            
                             <ListPersonalInactivo 
+                              permitsPersonal={this.state.permitsPersonal}
                               personalInactivo={this.props.personaInterno.get('personalInactivo')}                              
                               enabledInternalStaffAction={this.props.enabledInternalStaffAction}   
                               confirm={this.props.confirm}                           
@@ -105,6 +123,7 @@ class PersonalInterno extends Component {
                           </TabPane>
                           <TabPane tabId="4">
                             <ListCargosInactivos 
+                              permitsCargos={this.state.permitsCargos}
                               cargosInactivos={this.props.personaInterno.get('cargosInactivos')}                              
                               enabledPositionAction={this.props.enabledPositionAction}                              
                               confirm={this.props.confirm}

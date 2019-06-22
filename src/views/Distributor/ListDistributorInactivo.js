@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { HowToReg } from "@material-ui/icons";
+import {GetDisabledPermits} from '../../core/utils';
 import ModalDistributor from './ModalDistributor.js';
 
 class ListDistributorInactivo extends React.Component {
@@ -41,6 +42,7 @@ class ListDistributorInactivo extends React.Component {
   } 
 
   render() {
+    const activeDisabled = GetDisabledPermits(this.props.distributorPermits, "Active");
      return (
       <div>        
         <br />        
@@ -66,7 +68,7 @@ class ListDistributorInactivo extends React.Component {
                   <td>{ distributor.phone[0] }</td>
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >                      
-                      <IconButton aria-label="Delete" title="Activar Proveedor" className="iconButtons" onClick={() => { this.activarProveedor(distributor.id); }}><HowToReg className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" disabled={activeDisabled} title="Activar Proveedor" className="iconButtons" onClick={() => { this.activarProveedor(distributor.id); }}><HowToReg className="iconTable" /></IconButton>                        
                     </div>
                   </td>                    
                 </tr>

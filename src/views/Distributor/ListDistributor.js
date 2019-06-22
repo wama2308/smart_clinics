@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
+import { GetDisabledPermits } from "../../core/utils";
 import ModalDistributor from './ModalDistributor.js';
 
 class ListDistributor extends React.Component {
@@ -20,7 +21,6 @@ class ListDistributor extends React.Component {
     };    
   }
 
-  componentDidMount(){}
 
   openModal = (option, pos, id) => {  
     if(option === 1){
@@ -77,7 +77,11 @@ class ListDistributor extends React.Component {
   } 
 
   render() {
-     return (
+      const updateDisabled = GetDisabledPermits(this.props.distributorPermits, "Update");
+      const deleteDisabled = GetDisabledPermits(this.props.distributorPermits, "Delete");
+      const createDisabled = GetDisabledPermits(this.props.distributorPermits, "Create");
+    
+    return (
       <div>
         <ModalDistributor 
           option = {this.state.option}
@@ -90,7 +94,7 @@ class ListDistributor extends React.Component {
                        
           valorCloseModal = {this.valorCloseModal}          
         />
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar Proveedor</Button>
+        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar Proveedor</Button>
         <br />
         <br />        
           <Table hover responsive borderless>
@@ -116,8 +120,8 @@ class ListDistributor extends React.Component {
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, distributor.id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Editar Rol" disabled={updateDisabled} className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Editar Rol"  disabled={deleteDisabled} className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>                        
                     </div>
                   </td>                    
                 </tr>

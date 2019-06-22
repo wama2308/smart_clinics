@@ -3,6 +3,7 @@ import { url, getDataToken } from "../core/connection";
 const loadCountriesArray = `${url}/api/loadCountriesArray`;
 const queryNationalPayments = `${url}/api/queryNationalPayments`;
 const queryGeneral = `${url}/api/queryGeneral`;
+const createMenuUrl = `${url}/api/createMenu`;
 
 export const ConfigGeneralFunction = () => dispatch => {
   getDataToken()
@@ -12,13 +13,16 @@ export const ConfigGeneralFunction = () => dispatch => {
         .then(res => {
           queryNationalPaymentsFunction(datos, dataCountries => {
             queryGeneralFunction(datos, dataGeneral => {
-              dispatch({
-                type: "CONFIG_GENERAl",
-                payload: {
-                  countries: res.data,
-                  dataCountries: dataCountries,
-                  dataGeneral: dataGeneral
-                }
+              getMenu(datos, MenuAndPermits => {
+                dispatch({
+                  type: "CONFIG_GENERAl",
+                  payload: {
+                    countries: res.data,
+                    dataCountries: dataCountries,
+                    dataGeneral: dataGeneral,
+                    ...MenuAndPermits
+                  }
+                });
               });
             });
           });
@@ -33,6 +37,15 @@ export const ConfigGeneralFunction = () => dispatch => {
     .catch(() => {
       console.log("Problemas con el token");
     });
+};
+
+const getMenu = (token, cb) => {
+  axios.get(createMenuUrl, token).then(res => {
+    cb({
+      menu: res.data.menu,
+      permission: res.data.permission
+    });
+  });
 };
 
 const queryNationalPaymentsFunction = (datos, execute) => {

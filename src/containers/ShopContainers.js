@@ -23,13 +23,22 @@ class ShopContainers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: "1"
+      activeTab: "1",
+      permitsShop:[]
     };
   }
 
   componentDidMount = () => {
     this.props.LoadShopFunction();
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Almacen") {
+        this.setState({
+          permitsMedical: permisos.permits
+        });
+      }
+    });
   };  
+    
 
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -66,6 +75,7 @@ class ShopContainers extends Component {
                       <TabContent activeTab={this.state.activeTab}>
                           <TabPane tabId="1">
                             <ListShop 
+                              permitsShop={this.state.permitsShop}
                               confirm={this.props.confirm}
                               data={this.props.shop.data}
                               allProducts={this.props.shop.allProducts}
@@ -75,6 +85,7 @@ class ShopContainers extends Component {
                           </TabPane>
                           <TabPane tabId="2">
                             <ListProduct 
+                              permitsShop={this.state.permitsShop}
                               confirm={this.props.confirm}
                               allProducts={this.props.shop.allProducts}                                                             
                               queryOneSupplieWithLotFunction={this.props.queryOneSupplieWithLotFunction}                                                             

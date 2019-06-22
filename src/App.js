@@ -26,18 +26,13 @@ import {
 import {
   Page404,
   Page500,
-  Register,
-  RegisterEmail,
-  TestPage,
-  ConfirmCode,
-  FormData,
-  EnterPassword,
   ResetPassword,
   ConfirmCodeResetPassword,
   EnterResetPassword
 } from "./views/Pages";
 import Snackbars from "./components/Snackbars";
 import { Alert } from "./components/Modals";
+import { getTokenInfo } from "./actions/authActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class App extends Component {
@@ -46,6 +41,16 @@ class App extends Component {
       this.props.ConfigGeneralFunction();
     }
   };
+  componentDidUpdate = prevProps => {
+    if (
+      !prevProps.logged &&
+      this.props.logged &&
+      this.props.aplication === null
+    ) {
+      this.props.getTokenInfo();
+    }
+  };
+
   render() {
     if (this.props.logged && this.props.location.pathname === "/auth") {
       return <Redirect to="/dashboard" />;
@@ -115,7 +120,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   closeDialog: () => dispatch(closeDialog()),
-  ConfigGeneralFunction: () => dispatch(ConfigGeneralFunction())
+  ConfigGeneralFunction: () => dispatch(ConfigGeneralFunction()),
+  getTokenInfo: () => dispatch(getTokenInfo())
 });
 
 // <Route path="/" name="Home" component={DefaultLayout} />

@@ -16,6 +16,7 @@ import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
 import { deleteRequest } from "../actions/externalAction";
 import { openConfirmDialog } from "../actions/aplicantionActions";
+import { GetDisabledPermits } from "../core/utils";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { allExternalStaff } from "../actions/externalAction";
 
@@ -26,7 +27,8 @@ class EnternalContainer extends React.Component {
     this.state = {
       loading: false,
       activeTab: 1,
-      openModal: false
+      openModal: false,
+      externalPermits:[]
     };
   }
 
@@ -40,6 +42,15 @@ class EnternalContainer extends React.Component {
 
   componentDidMount = () => {
     this.props.allExternalStaff();
+
+
+    this.props.aplication.permission[0].modules.map(permisos => {
+      if (permisos.name === "Personal Externo") {
+        this.setState({
+          serviciosPermits: permisos.permits
+        });
+      }
+    });
   };
 
   close = () => {
@@ -74,6 +85,8 @@ class EnternalContainer extends React.Component {
   render() {
     const value = this.props.externalStaff;
     const result = this.filterData(value);
+    
+    const createDisabled = GetDisabledPermits(this.state.externalPermits, "Create")
     return (
       <Container>
         {this.state.openModal && (
@@ -88,6 +101,7 @@ class EnternalContainer extends React.Component {
           <CardBody>
             <Button
               color="success"
+              disabled={createDisabled}
               style={{ marginBottom: 10 }}
               disabled={!this.state.loading}
               onClick={() => this.setState({ openModal: true })}
@@ -147,6 +161,7 @@ class EnternalContainer extends React.Component {
                   }}
                 >
                   <BodyExternal
+                    externalPermits={this.state.externalPermits}
                     deleteData={this.props.deleteData}
                     data={result.approved}
                     delete={this.props.delete}
@@ -160,6 +175,7 @@ class EnternalContainer extends React.Component {
                   }}
                 >
                   <BodyExternal
+                    externalPermits={this.state.externalPermits}
                     type={"Rechazado"}
                     data={result.cancelled}
                     delete={this.props.delete}
@@ -173,6 +189,7 @@ class EnternalContainer extends React.Component {
                   }}
                 >
                   <BodyExternal
+                    externalPermits={this.state.externalPermits}
                     deleteData={this.props.deleteData}
                     data={result.pending}
                     delete={this.props.delete}
@@ -205,7 +222,8 @@ class EnternalContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  externalStaff: state.external.get("allExternalStaff")
+  externalStaff: state.external.get("allExternalStaff"),
+  aplication: state.global.dataGeneral
 });
 
 const mapDispatchToProps = dispatch => ({

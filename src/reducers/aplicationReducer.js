@@ -15,7 +15,7 @@ const InitalState = {
   search: "",
   outside: true,
   dataGeneral: null,
-  searchloading:true
+  searchloading: true
 };
 
 const AplicationReducers = (state = InitalState, action) => {
@@ -52,11 +52,16 @@ const AplicationReducers = (state = InitalState, action) => {
     case "CONFIG_GENERAl": {
       return { ...state, dataGeneral: action.payload };
     }
-    case "CLEAN":{
-      return {...state , search:""}
+    case "CLEAN": {
+      return { ...state, search: "" };
     }
     case "SEARCH_LOADED":
-      return {...state , searchloading:action.payload}
+      return { ...state, searchloading: action.payload };
+
+    case "SESION_OFF": {
+      return InitalState;
+    }
+
     default:
       return state;
   }

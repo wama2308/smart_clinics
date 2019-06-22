@@ -8,21 +8,20 @@ import {
   AppHeader,
   AppSidebar,
   AppSidebarFooter,
-  AppSidebarForm,
-  AppSidebarHeader,
   AppSidebarMinimizer,
   AppSidebarNav
 } from "@coreui/react";
 // sidebar nav config
-import navigation from "../../_nav";
+import { getMenu } from "../../_nav";
 // routes config
 import routes from "../../routes";
 import DefaultAside from "./DefaultAside";
 import DefaultFooter from "./DefaultFooter";
 import DefaultHeader from "./DefaultHeader";
-
+import { connect } from "react-redux";
 class DefaultLayout extends Component {
   render() {
+    const navigation = getMenu(this.props.menu);
     return (
       <div className="app">
         <AppHeader fixed>
@@ -38,7 +37,15 @@ class DefaultLayout extends Component {
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
-            <Container fluid style={{ height: "100%", padding: 20 }}>
+            <Container
+              fluid
+              style={{
+                height: "100%",
+                padding: 20,
+                display: "flex",
+                flexDirection: " column"
+              }}
+            >
               <Switch>
                 {routes.map((route, idx) => {
                   return route.component ? (
@@ -65,5 +72,12 @@ class DefaultLayout extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  permits: state.auth.get("permission"),
+  menu: state.global.dataGeneral.menu
+});
 
-export default DefaultLayout;
+export default connect(
+  mapStateToProps,
+  null
+)(DefaultLayout);

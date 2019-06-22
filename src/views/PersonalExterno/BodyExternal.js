@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
+import { GetDisabledPermits } from "../../core/utils";
 import PreRegistro from "./PreRegistro/PreRegistro";
 
 class BodyExternal extends React.Component {
@@ -54,6 +55,7 @@ class BodyExternal extends React.Component {
       { label: "Acciones" }
     ];
 
+    const deleteDisabled = GetDisabledPermits(this.props.externalPermits, "Delete")
     return (
       <div
         style={{
@@ -98,6 +100,7 @@ class BodyExternal extends React.Component {
                           </IconButton>
                           <IconButton
                             className="iconButtons"
+                            disabled={deleteDisabled}
                             onClick={() => {
                               this.delete(item);
                             }}
