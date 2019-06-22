@@ -256,3 +256,14 @@ export const formatNumber = x => {
   const result = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return result;
 };
+
+
+export const GetDisabledPermits =( permits, type)=>{
+  let disabled = true
+  permits.map( permit => {
+    if(permit.name === type){
+      disabled = false
+    }
+  })
+  return disabled
+}

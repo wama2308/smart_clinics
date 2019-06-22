@@ -26,12 +26,6 @@ import {
 import {
   Page404,
   Page500,
-  Register,
-  RegisterEmail,
-  TestPage,
-  ConfirmCode,
-  FormData,
-  EnterPassword,
   ResetPassword,
   ConfirmCodeResetPassword,
   EnterResetPassword

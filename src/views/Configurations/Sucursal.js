@@ -6,6 +6,7 @@ import { Table } from "reactstrap";
 import { FaSearch, FaUserEdit, FaMinusCircle } from "react-icons/fa";
 import jstz from "jstz";
 import IconButton from "@material-ui/core/IconButton";
+import {GetDisabledPermits} from '../../core/utils'
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 
 class Sucursales extends React.Component {
@@ -67,6 +68,9 @@ class Sucursales extends React.Component {
 
   render() {
     console.log("sucursales", this.props.sucursales);
+    const disabled = GetDisabledPermits(this.props.medicalPermits, "Create")
+    const updateDisabled = GetDisabledPermits(this.props.medicalPermits, "Update")
+    const deleteDisabled = GetDisabledPermits(this.props.medicalPermits, "Delete")
     const data = [
       { label: "Sucursal" },
       { label: "Codigo" },
@@ -91,7 +95,7 @@ class Sucursales extends React.Component {
             </p>
           </div>
           <div className="App">
-            <Button color="success" onClick={() => this.add()}>
+            <Button color="success" disabled={disabled} onClick={() => this.add()}>
               Agregar Sucursal
             </Button>
             {}
@@ -129,6 +133,7 @@ class Sucursales extends React.Component {
 
                               <IconButton
                                 aria-label="Delete"
+                                disabled={updateDisabled}
                                 className="iconButtons"
                                 onClick={() => {
                                   this.modaledit(item, i);
@@ -140,6 +145,7 @@ class Sucursales extends React.Component {
                               <IconButton
                                 className="iconButtons"
                                 aria-label="Delete"
+                                disabled={deleteDisabled}
                                 onClick={() => {
                                   this.delete(i);
                                 }}

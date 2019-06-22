@@ -34,7 +34,8 @@ class configContainer extends Component {
     super(props);
     this.state = {
       activeTab: 1,
-      loading: "show"
+      loading: "show",
+      permitsMedical:[]
     };
   }
 
@@ -42,6 +43,17 @@ class configContainer extends Component {
     this.props.medicalCenter.get("active")
       ? this.setState({ loading: "hide" })
       : this.props.loadMedicalCenter();
+
+    this.props.permission[0].modules.map( permisos =>{
+       console.log(permisos) 
+      if(permisos.name === "Centro Medico"){
+
+         this.setState({
+           permitsMedical: permisos.permits
+         })
+       }
+    })
+
   };
 
   toggleTab(tab) {
@@ -80,10 +92,10 @@ class configContainer extends Component {
 
     return true;
   };
+
   render() {
     const permits = this.numberSucursales(this.props.medicalCenter.toJS());
     const symbol = "$";
-    console.log("configuration", this.props.permission);
     return (
       <div className="animated fadeIn">
         <Row>
@@ -144,6 +156,7 @@ class configContainer extends Component {
                         editAction={this.props.medicalCenterAction}
                         data={this.props.medicalCenter.toJS()}
                         info={this.props.aplication}
+                        medicalPermits={this.state.permitsMedical}
                       />
                     </TabPane>
                     <TabPane tabId={2}>
@@ -155,6 +168,7 @@ class configContainer extends Component {
                         )}
                         deleteSucursal={this.props.deleteSucursal}
                         confirm={this.props.confirm}
+                        medicalPermits={this.state.permitsMedical}
                       />
                     </TabPane>
 
