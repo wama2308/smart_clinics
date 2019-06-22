@@ -30,12 +30,22 @@ class ServicesContainer extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      activeTab: 1
+      activeTab: 1,
+      serviciosPermits:[]
     };
   }
 
   componentDidMount = () => {
     this.props.getData();
+
+    
+    this.props.aplication.permission[0].modules.map(permisos => {
+      if (permisos.name === "Servicios") {
+        this.setState({
+          serviciosPermits: permisos.permits
+        });
+      }
+    });
   };
 
   componentWillReceiveProps = props => {
@@ -104,6 +114,7 @@ class ServicesContainer extends React.Component {
                       }}
                     >
                       <TabService
+                        serviciosPermits={this.state.serviciosPermits}
                         data={dataService}
                         getdataModal={this.props.getDataModalService}
                         serviceModalData={this.props.serviceModalData}
@@ -117,6 +128,7 @@ class ServicesContainer extends React.Component {
                       }}
                     >
                       <Plantillas
+                        serviciosPermits={this.state.serviciosPermits}
                         template={dataPlantilla}
                         alert={this.props.alert}
                         delete={this.props.delete}
@@ -155,7 +167,8 @@ const mapStateToProps = state => ({
   loading: state.service.get("loading"),
   service: state.service.get("servicios"),
   plantilla: state.service.get("plantillas"),
-  serviceModalData: state.service.get("ModalService")
+  serviceModalData: state.service.get("ModalService"),
+  aplication: state.global.dataGeneral
 });
 const mapDispatchToProps = dispatch => ({
   getData: () => dispatch(getDataServices()),

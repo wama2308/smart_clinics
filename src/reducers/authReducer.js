@@ -10,6 +10,11 @@ const setData = (state, node, payload) => state.set(node, payload);
 //    return  state.set(node ,  state.get(node).push(payload))
 // }
 
+const setObject = (state, payload) => {
+  const result = state.toJS();
+  return Map({ ...result, ...payload });
+};
+
 const authReducer = (state = Map(), action) => {
   switch (action.type) {
     case "SESION_OFF": {
@@ -35,8 +40,9 @@ const authReducer = (state = Map(), action) => {
     }
 
     case "USERS_PERMISS": {
-      return setData(state, "userPermiss", action.payload);
+      return setObject(state, action.payload);
     }
+
     default:
       return state;
   }

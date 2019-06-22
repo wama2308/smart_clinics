@@ -3,6 +3,7 @@ import { Table, Button } from "reactstrap";
 import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
+import { GetDisabledPermits } from "../../core/utils";
 
 class ListCargos extends React.Component {
   constructor(props) {
@@ -81,7 +82,10 @@ class ListCargos extends React.Component {
     });                    
   } 
 
-  render() {
+  render() { 
+     const createDisabled = GetDisabledPermits(this.props.permitsCargos, "Create")
+     const updateDisabled = GetDisabledPermits(this.props.permitsCargos, "Update")
+     const deleteDisabled = GetDisabledPermits(this.props.permitsCargos, "Delete")
      return (
       <div>
        <ModalCargos 
@@ -96,7 +100,7 @@ class ListCargos extends React.Component {
           cargoId={this.state.cargoId}
           valorCloseModal={this.valorCloseModal}  
         />        
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar Cargos</Button>
+        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar Cargos</Button>
         <br />
         <br />        
           <Table hover responsive borderless>
@@ -116,8 +120,8 @@ class ListCargos extends React.Component {
                   <td>
                     <div className="float-left" >
                       <IconButton aria-label="Delete" title="Ver Cargo" className="iconButtons" onClick={() => { this.openModal(2, i, cargo.value, cargo.label, cargo.description); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Cargo" className="iconButtons" onClick={() => { this.openModal(3, i, cargo.value, cargo.label, cargo.description); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Eliminar Cargo" className="iconButtons" onClick={() => { this.deleteCargo(cargo.value); }}><Delete className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" disabled={updateDisabled} title="Editar Cargo" className="iconButtons" onClick={() => { this.openModal(3, i, cargo.value, cargo.label, cargo.description); }}><Edit className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" disabled={deleteDisabled} title="Eliminar Cargo" className="iconButtons" onClick={() => { this.deleteCargo(cargo.value); }}><Delete className="iconTable" /></IconButton>                        
                     </div>
                   </td>                    
                 </tr>

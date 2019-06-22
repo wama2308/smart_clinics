@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalPersonal from './ModalPersonal.js';
 import IconButton from "@material-ui/core/IconButton";
+import { GetDisabledPermits } from "../../core/utils";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 
 class ListPersonal extends React.Component {
@@ -80,6 +81,9 @@ class ListPersonal extends React.Component {
   } 
 
   render() {
+     const disabledCreate =  GetDisabledPermits(this.props.permitsPersonal, "Create")
+     const disabledUpdate =  GetDisabledPermits(this.props.permitsPersonal, "Update")
+     const disabledDelete =  GetDisabledPermits(this.props.permitsPersonal, "Delete")
      return (
       <div>
        <ModalPersonal 
@@ -100,7 +104,7 @@ class ListPersonal extends React.Component {
           roles = {this.props.roles}                                 
           valorCloseModal={this.valorCloseModal}  
         />
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar Personal</Button>
+        <Button color="success" disabled={disabledCreate} onClick={() => { this.openModal(1); }}>Agregar Personal</Button>
         <br />
         <br />
           <Table hover responsive borderless>
@@ -127,9 +131,9 @@ class ListPersonal extends React.Component {
                   <td>{personal.phone[0]}</td>
                   <td style={{'minWidth':"155px"}}>
                     <div className="float-left" >
-                      <IconButton aria-label="Delete" title="Ver Personal" className="iconButtons" onClick={() => { this.openModal(2, i, personal._id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Personal" className="iconButtons" onClick={() => { this.openModal(3, i, personal._id); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Eliminar Personal" className="iconButtons" onClick={() => { this.deletePersonal(personal._id); }}><Delete className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Ver Personal"  className="iconButtons" onClick={() => { this.openModal(2, i, personal._id); }}><Visibility className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Personal" disabled={disabledUpdate} className="iconButtons" onClick={() => { this.openModal(3, i, personal._id); }}><Edit className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Eliminar Personal" disabled={disabledDelete} className="iconButtons" onClick={() => { this.deletePersonal(personal._id); }}><Delete className="iconTable" /></IconButton>                        
                     </div>
                   </td>                    
                 </tr>
