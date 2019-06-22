@@ -42,6 +42,7 @@ const authReducer = (state = Map(), action) => {
     case "USERS_PERMISS": {
       return setObject(state, action.payload);
     }
+
     default:
       return state;
   }

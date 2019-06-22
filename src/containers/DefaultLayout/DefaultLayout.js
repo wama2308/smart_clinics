@@ -74,7 +74,7 @@ class DefaultLayout extends Component {
 }
 const mapStateToProps = state => ({
   permits: state.auth.get("permission"),
-  menu: state.auth.get("menu")
+  menu: state.global.dataGeneral.menu
 });
 
 export default connect(

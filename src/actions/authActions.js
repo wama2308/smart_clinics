@@ -21,7 +21,7 @@ export const logout = route => dispatch => {
   auth.logout(route, () =>
     dispatch({
       type: "SESION_OFF"
-    })
+    }),
   );
 };
 

@@ -257,13 +257,14 @@ export const formatNumber = x => {
   return result;
 };
 
+export const GetDisabledPermits = (permits, type) => {
+  let disabled = true;
 
-export const GetDisabledPermits =( permits, type)=>{
-  let disabled = true
-  permits.map( permit => {
-    if(permit.name === type){
-      disabled = false
+  permits.map(permit => {
+    if (permit === type) {
+      disabled = false;
     }
-  })
-  return disabled
-}
+  });
+
+  return disabled;
+};

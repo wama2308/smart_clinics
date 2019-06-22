@@ -64,19 +64,17 @@ class App extends Component {
       <div>
         <Snackbars />
         <Alert {...this.props.alert} close={this.props.closeDialog} />
-        {this.props.aplication === null &&
-          this.props.logged &&
-          this.props.permits && (
-            <CircularProgress
-              style={{
-                position: " absolute",
-                height: 40,
-                top: "45%",
-                right: "50%",
-                zIndex: 2
-              }}
-            />
-          )}
+        {this.props.aplication === null && this.props.logged && (
+          <CircularProgress
+            style={{
+              position: " absolute",
+              height: 40,
+              top: "45%",
+              right: "50%",
+              zIndex: 2
+            }}
+          />
+        )}
         <Switch>
           <Route
             exact
@@ -117,8 +115,7 @@ class App extends Component {
 const mapStateToProps = state => ({
   logged: state.auth.get("logged"),
   alert: state.global.confirm,
-  aplication: state.global.dataGeneral,
-  permits: state.auth.get("userPermiss")
+  aplication: state.global.dataGeneral
 });
 
 const mapDispatchToProps = dispatch => ({

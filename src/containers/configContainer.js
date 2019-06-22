@@ -35,7 +35,7 @@ class configContainer extends Component {
     this.state = {
       activeTab: 1,
       loading: "show",
-      permitsMedical:[]
+      permitsMedical: []
     };
   }
 
@@ -43,17 +43,15 @@ class configContainer extends Component {
     this.props.medicalCenter.get("active")
       ? this.setState({ loading: "hide" })
       : this.props.loadMedicalCenter();
+    console.log("aca", this.props.permission);
 
-    this.props.permission[0].modules.map( permisos =>{
-       console.log(permisos) 
-      if(permisos.name === "Centro Medico"){
-
-         this.setState({
-           permitsMedical: permisos.permits
-         })
-       }
-    })
-
+    this.props.aplication.permission[0].modules.map(permisos => {
+      if (permisos.name === "Centro Medico") {
+        this.setState({
+          permitsMedical: permisos.permits
+        });
+      }
+    });
   };
 
   toggleTab(tab) {
@@ -211,8 +209,7 @@ class configContainer extends Component {
 const mapStateToProps = state => ({
   medicalCenter: state.config,
   authData: state.auth,
-  aplication: state.global.dataGeneral,
-  permission: state.auth.get("permission")
+  aplication: state.global.dataGeneral
 });
 
 const mapDispatchToProps = dispatch => ({
