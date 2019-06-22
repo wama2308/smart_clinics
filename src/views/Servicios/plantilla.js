@@ -4,6 +4,7 @@ import { Button, Table } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
 import ModalPlantilla from "./modalsServicio/ModalPlantilla";
+import { GetDisabledPermits } from "../../core/utils";
 import jstz from "jstz";
 
 import "./Services.css";
@@ -59,6 +60,10 @@ class Plantillas extends React.Component {
 
   render() {
     let count = [];
+
+    const createDisabled = GetDisabledPermits(this.props.serviciosPermits, "Create")
+    const updateDisabled = GetDisabledPermits(this.props.serviciosPermits, "Update")
+    const deleteDisabled = GetDisabledPermits(this.props.serviciosPermits, "Delete")
     return (
       <div>
         {this.state.openModal && (
@@ -76,6 +81,7 @@ class Plantillas extends React.Component {
         >
           <Button
             color="success"
+            disabled={createDisabled}
             onClick={() => this.setState({ openModal: true })}
           >
             Agregar
@@ -122,6 +128,7 @@ class Plantillas extends React.Component {
                               <IconButton
                                 aria-label="Delete"
                                 className="iconButtons"
+                                disabled={updateDisabled}
                                 onClick={() => {
                                   this.edit(template, i);
                                 }}
@@ -133,6 +140,7 @@ class Plantillas extends React.Component {
                               <IconButton
                                 className="iconButtons"
                                 aria-label="Delete"
+                                delete={deleteDisabled}
                                 onClick={() => {
                                   this.delete(i);
                                 }}

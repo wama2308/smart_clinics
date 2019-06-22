@@ -67,7 +67,6 @@ class Sucursales extends React.Component {
   };
 
   render() {
-    console.log("sucursales", this.props.sucursales);
     const disabled = GetDisabledPermits(this.props.medicalPermits, "Create")
     const updateDisabled = GetDisabledPermits(this.props.medicalPermits, "Update")
     const deleteDisabled = GetDisabledPermits(this.props.medicalPermits, "Delete")

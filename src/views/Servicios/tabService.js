@@ -3,6 +3,7 @@ import { Table } from "reactstrap";
 import { FaFileAlt } from "react-icons/fa";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility } from "@material-ui/icons";
+import { GetDisabledPermits } from "../../core/utils";
 import ModalServicio from "./modalsServicio/ModalServicio";
 export default class tabService extends React.Component {
   constructor(props) {
@@ -39,7 +40,9 @@ export default class tabService extends React.Component {
   };
 
   render() {
-    return (
+    const updateDisabled =  GetDisabledPermits(this.props.serviciosPermits, "Update")
+    console.log(this.props.serviciosPermits)
+     return (
       <div >
         {this.state.modal && (
           <ModalServicio
@@ -118,6 +121,7 @@ export default class tabService extends React.Component {
                             <IconButton
                               className="iconButtons"
                               aria-label="Delete"
+                              disabled={updateDisabled}
                               onClick={() => {
                                 this.openModal(
                                   service.licenseId,

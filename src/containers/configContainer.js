@@ -43,7 +43,6 @@ class configContainer extends Component {
     this.props.medicalCenter.get("active")
       ? this.setState({ loading: "hide" })
       : this.props.loadMedicalCenter();
-    console.log("aca", this.props.permission);
 
     this.props.aplication.permission[0].modules.map(permisos => {
       if (permisos.name === "Centro Medico") {
