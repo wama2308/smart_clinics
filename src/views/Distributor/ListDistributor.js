@@ -16,13 +16,13 @@ class ListDistributor extends React.Component {
       disabled: '',
       showHide: '',
       option:0,
-      position: 0,  
-      userId: '',      
-    };    
+      position: 0,
+      userId: '',
+    };
   }
 
 
-  openModal = (option, pos, id) => {  
+  openModal = (option, pos, id) => {
     if(option === 1){
       this.setState({
         modal:true,
@@ -30,7 +30,7 @@ class ListDistributor extends React.Component {
         modalHeader:'Registrar Proveedor',
         modalFooter:'Guardar',
         disabled: false,
-        showHide: 'show',         
+        showHide: 'show',
       })
     }else if(option === 2){
       this.props.LoadDistributorIdFunction(id);
@@ -40,7 +40,7 @@ class ListDistributor extends React.Component {
         modalHeader:'Ver Proveedor',
         modalFooter:'Guardar',
         disabled: true,
-        showHide: 'hide',                
+        showHide: 'hide',
       })
     }else if(option === 3){
       this.props.LoadDistributorIdFunction(id);
@@ -51,13 +51,13 @@ class ListDistributor extends React.Component {
         modalFooter:'Editar',
         disabled: false,
         showHide: 'show',
-        position: pos,        
-        userId:id       
+        position: pos,
+        userId:id
       })
-    }  
-  }  
+    }
+  }
 
-  deleteProveedor = (proveedorId) => {  
+  deleteProveedor = (proveedorId) => {
     const message = {
       title: "Eliminar Proveedor",
       info: "¿Esta seguro que desea eliminar este Proveedor?"
@@ -66,37 +66,38 @@ class ListDistributor extends React.Component {
       if (res) {
         this.props.DeleteDistributorAction(proveedorId);
       }
-    });    
-  } 
+    });
+  }
 
-  valorCloseModal = (valor) => {            
+  valorCloseModal = (valor) => {
     this.setState({
-        modal: valor,          
-        option: 0,  
-    });                    
-  } 
+        modal: valor,
+        option: 0,
+    });
+  }
 
   render() {
+     console.log(this.props.distributorPermits)
       const updateDisabled = GetDisabledPermits(this.props.distributorPermits, "Update");
       const deleteDisabled = GetDisabledPermits(this.props.distributorPermits, "Delete");
       const createDisabled = GetDisabledPermits(this.props.distributorPermits, "Create");
-    
+
     return (
       <div>
-        <ModalDistributor 
+        <ModalDistributor
           option = {this.state.option}
           modal = {this.state.modal}
           modalHeader = {this.state.modalHeader}
           modalFooter = {this.state.modalFooter}
           disabled = {this.state.disabled}
-          showHide = {this.state.showHide}   
-          userId = {this.state.userId}        
-                       
-          valorCloseModal = {this.valorCloseModal}          
+          showHide = {this.state.showHide}
+          userId = {this.state.userId}
+
+          valorCloseModal = {this.valorCloseModal}
         />
         <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar Proveedor</Button>
         <br />
-        <br />        
+        <br />
           <Table hover responsive borderless>
             <thead className="thead-light">
               <tr>
@@ -104,8 +105,8 @@ class ListDistributor extends React.Component {
                 <th className="text-left" style={{'minWidth':"105px"}}>DNI</th>
                 <th className="text-left">Proveedor</th>
                 <th className="text-left">Email</th>
-                <th className="text-left">Telefono</th>                                    
-                <th className="text-left" style={{'minWidth':"205px"}}>Acciones</th>                  
+                <th className="text-left">Telefono</th>
+                <th className="text-left" style={{'minWidth':"205px"}}>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -120,10 +121,10 @@ class ListDistributor extends React.Component {
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, distributor.id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Rol" disabled={updateDisabled} className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Editar Rol"  disabled={deleteDisabled} className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Editar Rol" disabled={updateDisabled} className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Rol"  disabled={deleteDisabled} className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>
                     </div>
-                  </td>                    
+                  </td>
                 </tr>
               );
              })
@@ -132,7 +133,7 @@ class ListDistributor extends React.Component {
               }
             </tbody>
           </Table>
-          
+
       </div>
     );
   }
