@@ -61,9 +61,18 @@ class Plantillas extends React.Component {
   render() {
     let count = [];
 
-    const createDisabled = GetDisabledPermits(this.props.serviciosPermits, "Create")
-    const updateDisabled = GetDisabledPermits(this.props.serviciosPermits, "Update")
-    const deleteDisabled = GetDisabledPermits(this.props.serviciosPermits, "Delete")
+    const createDisabled = GetDisabledPermits(
+      this.props.serviciosPermits,
+      "Create"
+    );
+    const updateDisabled = GetDisabledPermits(
+      this.props.serviciosPermits,
+      "Update"
+    );
+    const deleteDisabled = GetDisabledPermits(
+      this.props.serviciosPermits,
+      "Delete"
+    );
     return (
       <div>
         {this.state.openModal && (
@@ -140,7 +149,7 @@ class Plantillas extends React.Component {
                               <IconButton
                                 className="iconButtons"
                                 aria-label="Delete"
-                                delete={deleteDisabled}
+                                disabled={deleteDisabled}
                                 onClick={() => {
                                   this.delete(i);
                                 }}

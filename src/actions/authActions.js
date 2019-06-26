@@ -167,15 +167,18 @@ export const getTokenInfo = () => dispatch => {
   });
 };
 
-export const changeSucursal = obj => dispatch => {
+export const changeSucursal = (obj, cb) => dispatch => {
   getDataToken().then(token => {
     axios({
       method: "POST",
       url: `${url}/api/changeSession`,
       data: obj,
       ...token
-    }).then(data => {
-      console.log(data);
+    }).then(res => {
+      cb(res.data);
+      dispatch({
+        type:"CLEAN_DATA_GENERAL"
+      })
     });
   });
 };

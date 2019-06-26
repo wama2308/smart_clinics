@@ -10,7 +10,8 @@ import {
   ModalFooter,
   FormGroup,
   Label,
-  FormFeedback
+  FormFeedback,
+  Card
 } from "reactstrap";
 import "../Services.css";
 import "../loading.css";
@@ -26,6 +27,7 @@ import {
 import Cleave from "cleave.js/react";
 import jstz from "jstz";
 import * as yup from "yup";
+import styled from "styled-components";
 
 class ModalServicio extends React.Component {
   constructor(props) {
@@ -116,6 +118,7 @@ class ModalServicio extends React.Component {
       service: yup.string().required("Este Campo es Requerido")
     });
 
+    console.log("1234", this.props);
     return (
       <Modal isOpen={open} toggle={close} className="Modal">
         {this.state.loading === "show" && (
@@ -187,7 +190,7 @@ class ModalServicio extends React.Component {
                       }
                     >
                       <Label for="monto">Monto</Label>
-                      <InputGroup>
+                      <InputGroup style={{ flexWrap: "nowrap" }}>
                         <InputGroupAddon addonType="prepend">
                           {data.currencySymbol}
                         </InputGroupAddon>
@@ -213,6 +216,39 @@ class ModalServicio extends React.Component {
                         {this.state.montoError}
                       </FormFeedback>
                     </FormGroup>
+
+                    <EditableInput>
+                      <h4>Campos Modificables del servicio</h4>
+                      <div className="containerInputs">
+                        {values.fields.map((field, key) => {
+                          console.log("qweqwe", field);
+                          return (
+                            <FormGroup className="top form-group col-sm-6">
+                              <Label for="servicio">Servicio</Label>
+
+                              <Input
+                                name="servicio"
+                                id="servicio"
+                                value={values.service}
+                                disabled={disabled}
+                                type="text"
+                                onBlur={handleBlur}
+                                placeholder="Servicio"
+                                onChange={event => {
+                                  setFieldValue("service", event.target.value);
+                                }}
+                              />
+                              {/* {touched.servicio && errors.service && (
+                        <FormFeedback style={{ display: "block" }} tooltip>
+                          {errors.service}
+                        </FormFeedback>
+                      )} */}
+                            </FormGroup>
+                          );
+                        })}
+                      </div>
+                    </EditableInput>
+
                     <FormGroup className="top form-group col-sm-12">
                       <Label for="categoria">Formato</Label>
                       <div className={this.state.divFormato}>
@@ -281,3 +317,11 @@ export default connect(
   null,
   { loadOriginalService, loadModifiedService, editServices }
 )(ModalServicio);
+
+const EditableInput = styled(Card)`
+  .containerInputs {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+  }
+`;

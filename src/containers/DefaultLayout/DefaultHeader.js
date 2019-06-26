@@ -74,7 +74,6 @@ class DefaultHeader extends Component {
 
     const decoded = jwt_decode(token);
     this.getInitialBranchs(decoded, res => {
-      console.log(decoded.profile[0].medical_center[0]);
       this.setState({
         Sucursal: res.selected.name,
         user: this.props.permission[0].name,
@@ -96,8 +95,18 @@ class DefaultHeader extends Component {
       medical_center_id: this.state.idMedicalCenter,
       branchoffices_id: branchs._id
     };
-    console.log("acaca", obj);
-    this.props.changeSucursal(obj);
+
+    this.props.changeSucursal(obj, res => {
+      localStorage.setItem("id_token", res.token);
+      const decoded = jwt_decode(res.token);
+      this.getInitialBranchs(decoded, result => {
+        this.setState({
+          Sucursal: result.selected.name,
+          branch_offices: result.otherBranchs,
+          MenuOpen: false
+        });
+      });
+    });
   };
 
   render() {
@@ -131,6 +140,7 @@ class DefaultHeader extends Component {
             {this.state.branch_offices.map(branchs => {
               return (
                 <MenuItem
+                  key={branchs._id}
                   variant="selectedMenu"
                   onClick={() => this.handleChange(branchs)}
                 >
@@ -211,7 +221,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   loggout: route => dispatch(logout(route)),
-  changeSucursal: obj => dispatch(changeSucursal(obj))
+  changeSucursal: (obj, cb) => dispatch(changeSucursal(obj, cb))
 });
 
 export default withRouter(
