@@ -14,8 +14,10 @@ import {
 import { connect } from "react-redux";
 import ListShop from "../views/Shop/ListShop";
 import ListProduct from "../views/Shop/ListProduct";
-import { LoadShopFunction, LoadShopIdFunction, disableShopAction, queryOneSupplieWithLotFunction } from "../actions/ShopActions";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import ListTransferencias from "../views/Shop/ListTransferencias";
+import ListTransferenciasRecibidas from "../views/Shop/ListTransferenciasRecibidas";
+import { LoadShopFunction, LoadShopIdFunction, disableShopAction, queryOneSupplieWithLotFunction, queryOneTransferFunction, disableTransferAction, rejectTransferAction, acceptTransferAction } from "../actions/ShopActions";
+import { openConfirmDialog, openSnackbars } from "../actions/aplicantionActions";
 import classnames from "classnames";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -62,6 +64,16 @@ class ShopContainers extends Component {
                                 Productos
                             </NavLink>
                         </NavItem>
+                        <NavItem>
+                            <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
+                                Tranferencias Realizadas
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink className={classnames({ active: this.state.activeTab === '4' })} onClick={() => { this.toggleTab('4'); }} >
+                                Tranferencias Recibidas
+                            </NavLink>
+                        </NavItem>
                       </Nav>
                       <TabContent activeTab={this.state.activeTab}>
                           <TabPane tabId="1">
@@ -78,6 +90,23 @@ class ShopContainers extends Component {
                               confirm={this.props.confirm}
                               allProducts={this.props.shop.allProducts}                                                             
                               queryOneSupplieWithLotFunction={this.props.queryOneSupplieWithLotFunction}                                                             
+                            />
+                          </TabPane>
+                          <TabPane tabId="3">
+                            <ListTransferencias 
+                              confirm={this.props.confirm}
+                              data={this.props.shop.allTransfer}                              
+                              queryOneTransferFunction={this.props.queryOneTransferFunction}                              
+                              disableTransferAction={this.props.disableTransferAction}                              
+                            />
+                          </TabPane>
+                          <TabPane tabId="4">
+                            <ListTransferenciasRecibidas 
+                              confirm={this.props.confirm}
+                              data={this.props.shop.allTransferRecibidas}                              
+                              queryOneTransferFunction={this.props.queryOneTransferFunction}                              
+                              rejectTransferAction={this.props.rejectTransferAction}                              
+                              acceptTransferAction={this.props.acceptTransferAction}                              
                             />
                           </TabPane>
                       </TabContent>
@@ -105,9 +134,14 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({  
   LoadShopFunction: () => dispatch(LoadShopFunction()),  
   LoadShopIdFunction: (shopId) => dispatch(LoadShopIdFunction(shopId)),  
+  queryOneTransferFunction: (transferId) => dispatch(queryOneTransferFunction(transferId)),  
   disableShopAction: (shopId) => dispatch(disableShopAction(shopId)),    
+  disableTransferAction: (id) => dispatch(disableTransferAction(id)),    
+  rejectTransferAction: (id) => dispatch(rejectTransferAction(id)),    
+  acceptTransferAction: (id) => dispatch(acceptTransferAction(id)),    
   queryOneSupplieWithLotFunction: (productId) => dispatch(queryOneSupplieWithLotFunction(productId)),    
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
+  alert: (type, message) => dispatch(openSnackbars(type, message)),     
 });
 
 export default connect(

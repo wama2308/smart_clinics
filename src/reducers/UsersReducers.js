@@ -11,6 +11,7 @@ const setStore = (state, payload) => {
 const setStoreSaveRolPusher = (state, payload) => {
 	let estado = state.toJS();
 	estado.roles.push(payload);
+	estado.loadSelectRoles.push({ label: payload.rol, value: payload._id });
 	return Map(estado);
 }
 
@@ -19,6 +20,8 @@ const setStoreEditRolPusher = (state, payload) => {
 	const key = estado.roles.findIndex(rol => rol._id === payload._id);
 	estado.roles[key].rol = payload.rol;
 	estado.roles[key].modules = payload.modules;	
+	estado.loadSelectRoles[key].label = payload.rol; 
+	estado.loadSelectRoles[key].value = payload._id; 
 	return Map(estado);
 }
 
@@ -53,6 +56,7 @@ const setStoreDeleteUserIdView = (state, payload) => {
   estado.userIdView.surnames = payload.surnames;
   estado.userIdView.username = payload.username;
   estado.userIdView.sucursal = payload.sucursal;
+  estado.saveRol = 0;
   return Map(estado);
 };
 
@@ -140,7 +144,7 @@ const userReducer = (state = Map(), action) => {
 
 	  case 'LOAD_ROL_EDIT_PUSHER': {
 	  	return setStoreEditRolPusher(state, action.payload)
-	  }
+	  }  
 
 	  default:
 	  	return state;

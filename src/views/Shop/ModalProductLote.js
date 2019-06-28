@@ -93,7 +93,7 @@ class ModalProductLote extends React.Component {
         })
         console.log("value ", value)
         let cantidadNueva = parseFloat(value);
-        let cantidad = parseFloat(this.state.cantidad);
+        let cantidad = parseFloat(this.state.cantidadAvailable);
         let cantidadRestante = cantidad - cantidadNueva;
         if(value){
             if(cantidadNueva > cantidad){
@@ -426,23 +426,7 @@ class ModalProductLote extends React.Component {
                                                 />
 			                                </div>
 			                                <div className="errorSelect">{this.state.divCodigoError}</div>                                                                                                                                                                                         
-			                            </FormGroup> 
-			                            <FormGroup className="top form-group col-sm-6">                                                                 
-			                                <Label for="cantidadAvailable">Stock Disponible:</Label> 
-			                                <div className={this.state.divCantidadAvailable}>                               
-			                                    <Input 
-                                                    disabled={true} 
-                                                    name="cantidadAvailable" 
-                                                    id="cantidadAvailable" 
-                                                    onKeyUp={this.handlekeyCantidadDisponible} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.cantidadAvailable} 
-                                                    type="text" 
-                                                    placeholder="Stock Disponible" 
-                                                />
-			                                </div>
-			                                <div className="errorSelect">{this.state.divCantidadAvailableError}</div>                                                                                                                                                                                         
-			                            </FormGroup> 
+			                            </FormGroup> 			                            
 			                            <FormGroup className="top form-group col-sm-6">                                                                 
 			                                <Label for="cantidad">Cantidad</Label> 
 			                                <div className={this.state.divCantidad}>                               
@@ -461,6 +445,22 @@ class ModalProductLote extends React.Component {
 			                                </div>
 			                                <div className="errorSelect">{this.state.divCantidadError}</div>                                                                                                                                                                                         
 			                            </FormGroup>
+                                        <FormGroup className="top form-group col-sm-6">                                                                 
+                                            <Label for="cantidadAvailable">Stock Disponible:</Label> 
+                                            <div className={this.state.divCantidadAvailable}>                               
+                                                <Input 
+                                                    disabled={true} 
+                                                    name="cantidadAvailable" 
+                                                    id="cantidadAvailable" 
+                                                    onKeyUp={this.handlekeyCantidadDisponible} 
+                                                    onChange={this.handleChange} 
+                                                    value={this.state.cantidadAvailable} 
+                                                    type="text" 
+                                                    placeholder="Stock Disponible" 
+                                                />
+                                            </div>
+                                            <div className="errorSelect">{this.state.divCantidadAvailableError}</div>                                                                                                                                                                                         
+                                        </FormGroup> 
                                         <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>                                                                 
                                             <Label for="nuevaCantidad">Cantidad de Salida</Label> 
                                             <div className={this.state.divNuevaCantidad}>                               

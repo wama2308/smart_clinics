@@ -17,6 +17,14 @@ const queryAllSupplies = `${url}/api/queryAllSupplies`;
 const queryOneSupplieWithLot = `${url}/api/queryOneSupplieWithLot`;
 const editSupplie = `${url}/api/editSupplie`;
 const editSupplieLot = `${url}/api/editSupplieLot`;
+const productTransfer = `${url}/api/productTransfer`;
+const queryAllTransfer = `${url}/api/queryAllTransfer`;
+const queryOneTransfer = `${url}/api/queryOneTransfer`;
+const editTransfer = `${url}/api/editTransfer`;
+const disableTransfer = `${url}/api/disableTransfer`;
+const queryAllTransferReceived = `${url}/api/queryAllTransferReceived`;
+const rejectTransfer = `${url}/api/rejectTransfer`;
+const acceptTransfer = `${url}/api/acceptTransfer`;
 
 export const LoadShopFunction = () => dispatch => {
   getDataToken()
@@ -25,26 +33,33 @@ export const LoadShopFunction = () => dispatch => {
     	.then(res => {		 
         LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {   
           queryAllSuppliesFunction(datos, allProducts => {
-            dispatch({
-              type: "LOAD_COMPRAS",
-              payload: {
-                loading: "hide",
-                data: res.data,                                          
-                //dataProducts: arrayProducts,
-                products: [],
-                subTotal: 0,
-                impuesto: 0,
-                total: 0,
-                dataProductId: {},
-                searchProduct: 0,
-                dataProductPrice: [],
-                branchOfficces: arrayBranchOffices,
-                dataShopId: {},
-                allProducts: allProducts,
-                ProductLoteId: {},
-                action: 0
-              }
-            });          		
+            queryAllTransferFunction(datos, allTransfer => {
+              queryAllTransferReceivedFunction(datos, allTransferRecibidas => {
+                dispatch({
+                  type: "LOAD_COMPRAS",
+                  payload: {
+                    loading: "hide",
+                    data: res.data,  
+                    allTransfer:allTransfer,                                        
+                    allTransferRecibidas:allTransferRecibidas,                                        
+                    transferId:{},
+                    //dataProducts: arrayProducts,
+                    products: [],                  
+                    subTotal: 0,
+                    impuesto: 0,
+                    total: 0,
+                    dataProductId: {},
+                    searchProduct: 0,
+                    dataProductPrice: [],
+                    branchOfficces: arrayBranchOffices,
+                    dataShopId: {},
+                    allProducts: allProducts,
+                    ProductLoteId: {},
+                    action: 0
+                  }
+                });          		
+              });
+            });             
           });
         });
   	   })
@@ -67,6 +82,34 @@ const queryAllSuppliesFunction = (datos, execute) => {
     .catch(error => {
       console.log(
         "Error consultando la api para consultar los productos",
+        error.toString()
+      );
+    });
+};
+
+const queryAllTransferFunction = (datos, execute) => {
+  axios
+    .get(queryAllTransfer, datos)
+    .then(res => {      
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log(
+        "Error consultando la api para consultar las transferencias",
+        error.toString()
+      );
+    });
+};
+
+const queryAllTransferReceivedFunction = (datos, execute) => {
+  axios
+    .get(queryAllTransferReceived, datos)
+    .then(res => {      
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log(
+        "Error consultando la api para consultar las transferencias recibidas",
         error.toString()
       );
     });
@@ -228,6 +271,39 @@ export const LoadShopIdFunction = (shopId) => dispatch => {
     });
 };
 
+export const queryOneTransferFunction = (transferId) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: queryOneTransfer,
+        data: {
+          id: transferId          
+        },
+        headers: datos.headers
+      })
+        .then(res => {
+          dispatch({
+            type: "LOAD_TRANSFER_ID",
+            payload: {
+              dataTransferId: res.data,
+              loading: "hide",
+              confirm: true,              
+            }
+          });
+        })
+        .catch(error => {
+          console.log(
+            "Error consultando la api para consultar los detalles del proveedor por id",
+            error.toString()
+          );
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 export const queryOneSupplieWithLotFunction = (supplie_id) => dispatch => {
   getDataToken()
     .then(datos => {
@@ -279,6 +355,28 @@ export const saveShopAction = (data, callback) => dispatch => {
     });
 };
 
+export const productTransferAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: productTransfer,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {          
+          dispatch(openSnackbars("error", "Error guardando la transferencia"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 export const editShopAction = (data, callback) => dispatch => {
   getDataToken()
     .then(datos => {
@@ -294,6 +392,28 @@ export const editShopAction = (data, callback) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error editando la compra"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const editTransferAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: editTransfer,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error editando la transferencia"));
         });
     })
     .catch(() => {
@@ -374,6 +494,29 @@ export const DeleteShopAction = (storeId, sucursalId) => dispatch => {
     });
 };
 
+export const disableTransferAction = (id) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: disableTransfer,
+        data: {
+          id: id          
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Transferencia eliminada con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error eliminando la transferencia"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 export const disableShopAction = (shopId) => dispatch => {
   getDataToken()
     .then(datos => {
@@ -390,6 +533,52 @@ export const disableShopAction = (shopId) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error eliminando la compra"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const rejectTransferAction = (id) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: rejectTransfer,
+        data: {
+          id: id          
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Transferencia rechazada con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error rechazando la transferencia"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const acceptTransferAction = (id) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: acceptTransfer,
+        data: {
+          id: id          
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Transferencia aceptada con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error aceptando la transferencia"));
         });
     })
     .catch(() => {
@@ -503,14 +692,15 @@ export const LoadProductPriceFunction = (productId) => dispatch => {
     });
 };
 
-export const setCantidadTableTransferencias = (pos, value) => dispatch => {
+export const setCantidadTableTransferencias = (pos, value, option) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_CANTIDAD_TRANSFERENCIAS",
         payload: {
           pos: pos,
-          value: value
+          value: value,
+          option: option
         }
       });
     })
@@ -519,14 +709,15 @@ export const setCantidadTableTransferencias = (pos, value) => dispatch => {
     });
 };
 
-export const setSwitchTableTransferencias = (pos, value) => dispatch => {
+export const setSwitchTableTransferencias = (pos, value, option) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_SWITCH_TRANSFERENCIAS",
         payload: {
           pos: pos,
-          value: value
+          value: value,
+          option: option
         }
       });
     })
@@ -535,12 +726,15 @@ export const setSwitchTableTransferencias = (pos, value) => dispatch => {
     });
 };
 
-export const setSelectAllSwitchTransferencias = value => dispatch => {
+export const setSelectAllSwitchTransferencias = (value, option) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_SELECT_ALL_SWITCH_TRANSFERENCIAS",
-        payload: value        
+        payload: {
+          value: value,
+          option: option
+        }
       });
     })
     .catch(() => {

@@ -24,6 +24,7 @@ const enabledUser = `${url}/api/enabledUser`;
 const consultRolesDisabled = `${url}/api/consultRolesDisabled`;
 const disabledRol = `${url}/api/disabledRol`;
 const enabledRol = `${url}/api/enabledRol`;
+const LoadSelectRoles = `${url}/api/LoadSelectRoles`;
 
 const rolNew = {
   _id: {
@@ -79,29 +80,32 @@ export const LoadAllUsersNoMasterFunction = () => dispatch => {
                 LoadModulesMedicalCenterFunction(datos, modules => {
                   loadAllUsersNoMasterDisableFunction(datos, usersInactivos => {
                     consultRolesDisabledFunction(datos, rolesInactivos => {
-                        dispatch({
-                          type: "LOAD_USERS_ROLES",
-                          payload: {
-                            loading: "hide",
-                            ...roles,
-                            users:res.data,
-                            usersInactivos:usersInactivos,
-                            rolesInactivos:rolesInactivos,
-                            totalBranchOffices,
-                            arrayBranchOffices,
-                            permits,
-                            modules,
-                            userIdView: {
+                      LoadSelectRolesFunction(datos, loadSelectRoles => {
+                          dispatch({
+                            type: "LOAD_USERS_ROLES",
+                            payload: {
                               loading: "hide",
-                              email: "",
-                              names: "",
-                              surnames: "",
-                              username: "",
-                              sucursal: []
-                            },
-                            userId:'',
-                            userEmail:'',
-                        }
+                              ...roles,
+                              loadSelectRoles: loadSelectRoles,
+                              users:res.data,
+                              usersInactivos:usersInactivos,
+                              rolesInactivos:rolesInactivos,
+                              totalBranchOffices,
+                              arrayBranchOffices,
+                              permits,
+                              modules,
+                              userIdView: {
+                                loading: "hide",
+                                email: "",
+                                names: "",
+                                surnames: "",
+                                username: "",
+                                sucursal: []
+                              },
+                              userId:'',
+                              userEmail:'',                            
+                          }
+                        });
                       });
                     });
                   });
@@ -130,6 +134,17 @@ const LoadRolesFunction = (datos, execute) => {
     })
     .catch(error => {
       console.log("Error consultando la api de roles", error.toString());
+    });
+};
+
+const LoadSelectRolesFunction = (datos, execute) => {
+  axios
+    .get(LoadSelectRoles, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de roles para cargar el select", error.toString());
     });
 };
 
@@ -210,7 +225,7 @@ export const saveRolAction = (data, callback) => dispatch => {
       })
         .then(() => {
           callback();
-          dispatch(openSnackbars("success", "Operacion Exitosa"));
+          dispatch(openSnackbars("success", "Operacion Exitosa"));          
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error guardando el rol"));

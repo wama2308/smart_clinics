@@ -25,6 +25,7 @@ class ModalShop extends React.Component {
     }
 
     componentDidMount(){
+        console.log("componentDidMount")
         if(this.props.option === 1){
             this.setState({
                 loading: 'hide',
@@ -314,6 +315,7 @@ class ModalShop extends React.Component {
     };
 
     componentWillReceiveProps=(props)=>{
+        console.log("componentWillReceiveProps")
         if(this.props.shop.products.length > 0){
             this.setState({divTableProductos:''})
         }
