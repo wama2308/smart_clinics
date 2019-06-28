@@ -28,6 +28,7 @@ import Cleave from "cleave.js/react";
 import jstz from "jstz";
 import * as yup from "yup";
 import styled from "styled-components";
+import { array } from "prop-types";
 
 class ModalServicio extends React.Component {
   constructor(props) {
@@ -105,6 +106,14 @@ class ModalServicio extends React.Component {
     return fields_replace;
   };
 
+  getGroup=(fields)=>{
+    let arrayGroups=[]
+    fields.map(field=>{
+      arrayGroups.map(data=>{
+        console.log(field.group , data)
+      })
+    })
+  }
   render() {
     const { open, close, serviceModalData, plantilla, disabled } = this.props;
     const data = !serviceModalData
@@ -114,11 +123,11 @@ class ModalServicio extends React.Component {
 
     const contextMenu = this.contextMenu(Initialvalue.fields);
 
+
     const validationSchema = yup.object().shape({
       service: yup.string().required("Este Campo es Requerido")
     });
 
-    console.log("1234", this.props);
     return (
       <Modal isOpen={open} toggle={close} className="Modal">
         {this.state.loading === "show" && (
@@ -140,6 +149,8 @@ class ModalServicio extends React.Component {
               handleBlur,
               resetForm
             }) => {
+
+             const group = this.getGroup(values.fields)
               return (
                 <div>
                   <ModalHeader toggle={this.props.close}>
@@ -217,34 +228,104 @@ class ModalServicio extends React.Component {
                       </FormFeedback>
                     </FormGroup>
 
+                    <h4>Campos Modificables del servicio</h4>
                     <EditableInput>
-                      <h4>Campos Modificables del servicio</h4>
                       <div className="containerInputs">
                         {values.fields.map((field, key) => {
-                          console.log("qweqwe", field);
-                          return (
-                            <FormGroup className="top form-group col-sm-6">
-                              <Label for="servicio">Servicio</Label>
 
-                              <Input
-                                name="servicio"
-                                id="servicio"
-                                value={values.service}
-                                disabled={disabled}
-                                type="text"
-                                onBlur={handleBlur}
-                                placeholder="Servicio"
-                                onChange={event => {
-                                  setFieldValue("service", event.target.value);
-                                }}
-                              />
-                              {/* {touched.servicio && errors.service && (
-                        <FormFeedback style={{ display: "block" }} tooltip>
-                          {errors.service}
-                        </FormFeedback>
-                      )} */}
-                            </FormGroup>
-                          );
+                          if (field.type === "input") {
+                            return (
+                              <FormGroup
+                                key={key}
+                                className={`top "form-group col-sm-${
+                                  field.size
+                                }`}
+                              >
+                                <Label for="servicio">{field.label}</Label>
+
+                                <Input
+                                  value={field.values}
+                                  disabled={disabled}
+                                  type="text"
+                                  onBlur={handleBlur}
+                                  placeholder={field.placeholder}
+                                  onChange={event => {
+                                    setFieldValue(
+                                      field.name,
+                                      event.target.value
+                                    );
+                                  }}
+                                />
+                                {/* {touched.servicio && errors.service && (
+                          <FormFeedback style={{ display: "block" }} tooltip>
+                            {errors.service}
+                          </FormFeedback>
+                        )} */}
+                              </FormGroup>
+                            );
+                          } else if (field.type === "select") {
+                            return (
+                              <FormGroup
+                                key={key}
+                                className={`top form-group col-sm-${
+                                  field.size
+                                }`}
+                              >
+                                <Label for="categoria">{field.label}</Label>
+                                <div>
+                                  <Select
+                                    isSearchable="true"
+                                    name="categoria"
+                                    value={values.category}
+                                    isDisabled={disabled}
+                                    onChange={event => {
+                                      setFieldValue(field.name, event);
+                                    }}
+                                    options={serviceModalData.categoria}
+                                  />
+                                </div>
+                                <div className="errorSelect">
+                                  {this.state.categoriaError}
+                                </div>
+                              </FormGroup>
+                            );
+                          } else if (field.type === "textArea") {
+                            return (
+                              <FormGroup
+                                key={key}
+                                className={`top form-group col-sm-${
+                                  field.size
+                                }`}
+                              >
+                                <Label for="codigo" className="mr-sm-2">
+                                  {field.label}
+                                </Label>
+                                <Input
+                                  type="textarea"
+                                  name="code"
+                                  rows={5}
+                                  style={{ backgroundColor: "white" }}
+                                  id="codigo"
+                                />
+                              </FormGroup>
+                            );
+                          } else if (field.type === "checkBox") {
+                            return (
+                              <FormGroup
+                                key={key}
+                                className={`top form-group col-sm-${
+                                  field.size
+                                }`}
+                              >
+                                <Label>{field.label}</Label>
+                                <Input
+                                  style={{ width: "10%" }}
+                                  type="checkbox"
+                                  name="code"
+                                />
+                              </FormGroup>
+                            );
+                          }
                         })}
                       </div>
                     </EditableInput>

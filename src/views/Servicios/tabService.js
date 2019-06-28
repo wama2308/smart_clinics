@@ -41,7 +41,6 @@ export default class tabService extends React.Component {
 
   render() {
     const updateDisabled =  GetDisabledPermits(this.props.serviciosPermits, "Update")
-    console.log(this.props.serviciosPermits)
      return (
       <div >
         {this.state.modal && (
