@@ -81,7 +81,7 @@ class Pagination extends Component {
           <TablePagination
             count={this.props.contador.length}
             page={this.props.page}
-            rowsPerPageOptions={[10, 25, 50]}
+            rowsPerPageOptions={[10, 15, 20]}
             rowsPerPage={this.props.rowsPerPage}
             onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
             onChangePage={this.props.handleChangePage}
