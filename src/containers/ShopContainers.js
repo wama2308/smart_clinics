@@ -35,12 +35,12 @@ class ShopContainers extends Component {
     this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
       if (permisos.name === "Almacen") {
         this.setState({
-          permitsMedical: permisos.permits
+          permitsShop: permisos.permits
         });
       }
     });
-  };  
-    
+  };
+
 
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -50,7 +50,7 @@ class ShopContainers extends Component {
     }
   }
 
-  render() {   
+  render() {
     //console.log("props shop container", this.props.shop);
     return (
       <div className="animated fadeIn">
@@ -58,7 +58,7 @@ class ShopContainers extends Component {
           <Col>
             <Card>
               <CardHeader>Compras - Productos</CardHeader>
-              <CardBody>                  
+              <CardBody>
               {
                 this.props.shop.loading === 'hide' ?
                   <div>
@@ -86,38 +86,38 @@ class ShopContainers extends Component {
                       </Nav>
                       <TabContent activeTab={this.state.activeTab}>
                           <TabPane tabId="1">
-                            <ListShop 
+                            <ListShop
                               permitsShop={this.state.permitsShop}
                               confirm={this.props.confirm}
                               data={this.props.shop.data}
                               allProducts={this.props.shop.allProducts}
                               LoadShopIdFunction={this.props.LoadShopIdFunction}
-                              disableShopAction={this.props.disableShopAction}                              
-                            />                            
+                              disableShopAction={this.props.disableShopAction}
+                            />
                           </TabPane>
                           <TabPane tabId="2">
-                            <ListProduct 
+                            <ListProduct
                               permitsShop={this.state.permitsShop}
                               confirm={this.props.confirm}
-                              allProducts={this.props.shop.allProducts}                                                             
-                              queryOneSupplieWithLotFunction={this.props.queryOneSupplieWithLotFunction}                                                             
+                              allProducts={this.props.shop.allProducts}
+                              queryOneSupplieWithLotFunction={this.props.queryOneSupplieWithLotFunction}
                             />
                           </TabPane>
                           <TabPane tabId="3">
-                            <ListTransferencias 
+                            <ListTransferencias
                               confirm={this.props.confirm}
-                              data={this.props.shop.allTransfer}                              
-                              queryOneTransferFunction={this.props.queryOneTransferFunction}                              
-                              disableTransferAction={this.props.disableTransferAction}                              
+                              data={this.props.shop.allTransfer}
+                              queryOneTransferFunction={this.props.queryOneTransferFunction}
+                              disableTransferAction={this.props.disableTransferAction}
                             />
                           </TabPane>
                           <TabPane tabId="4">
-                            <ListTransferenciasRecibidas 
+                            <ListTransferenciasRecibidas
                               confirm={this.props.confirm}
-                              data={this.props.shop.allTransferRecibidas}                              
-                              queryOneTransferFunction={this.props.queryOneTransferFunction}                              
-                              rejectTransferAction={this.props.rejectTransferAction}                              
-                              acceptTransferAction={this.props.acceptTransferAction}                              
+                              data={this.props.shop.allTransferRecibidas}
+                              queryOneTransferFunction={this.props.queryOneTransferFunction}
+                              rejectTransferAction={this.props.rejectTransferAction}
+                              acceptTransferAction={this.props.acceptTransferAction}
                             />
                           </TabPane>
                       </TabContent>
@@ -142,17 +142,17 @@ const mapStateToProps = state => ({
   aplication: state.global
 });
 
-const mapDispatchToProps = dispatch => ({  
-  LoadShopFunction: () => dispatch(LoadShopFunction()),  
-  LoadShopIdFunction: (shopId) => dispatch(LoadShopIdFunction(shopId)),  
-  queryOneTransferFunction: (transferId) => dispatch(queryOneTransferFunction(transferId)),  
-  disableShopAction: (shopId) => dispatch(disableShopAction(shopId)),    
-  disableTransferAction: (id) => dispatch(disableTransferAction(id)),    
-  rejectTransferAction: (id) => dispatch(rejectTransferAction(id)),    
-  acceptTransferAction: (id) => dispatch(acceptTransferAction(id)),    
-  queryOneSupplieWithLotFunction: (productId) => dispatch(queryOneSupplieWithLotFunction(productId)),    
+const mapDispatchToProps = dispatch => ({
+  LoadShopFunction: () => dispatch(LoadShopFunction()),
+  LoadShopIdFunction: (shopId) => dispatch(LoadShopIdFunction(shopId)),
+  queryOneTransferFunction: (transferId) => dispatch(queryOneTransferFunction(transferId)),
+  disableShopAction: (shopId) => dispatch(disableShopAction(shopId)),
+  disableTransferAction: (id) => dispatch(disableTransferAction(id)),
+  rejectTransferAction: (id) => dispatch(rejectTransferAction(id)),
+  acceptTransferAction: (id) => dispatch(acceptTransferAction(id)),
+  queryOneSupplieWithLotFunction: (productId) => dispatch(queryOneSupplieWithLotFunction(productId)),
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
-  alert: (type, message) => dispatch(openSnackbars(type, message)),     
+  alert: (type, message) => dispatch(openSnackbars(type, message)),
 });
 
 export default connect(
