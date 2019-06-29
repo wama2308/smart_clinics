@@ -17,7 +17,7 @@ class Plantillas extends React.Component {
     this.state = {
       openModal: false,
       disabled: false,
-      editTemplate: "", 
+      editTemplate: "",
       page: 0,
       rowsPerPage: 10,
     };
@@ -81,7 +81,7 @@ class Plantillas extends React.Component {
 
     this.props.template.map((template, key) => {
       ArrayTemplate.push({
-        ...template, number: key 
+        ...template, number: key
       })
     })
 
@@ -161,7 +161,7 @@ class Plantillas extends React.Component {
                               <IconButton
                                 className="iconButtons"
                                 aria-label="Delete"
-                                delete={deleteDisabled}
+                                disabled={deleteDisabled}
                                 onClick={() => {
                                   this.delete(template.number);
                                 }}

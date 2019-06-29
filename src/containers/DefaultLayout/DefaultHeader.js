@@ -18,10 +18,11 @@ import logosc from "../../assets/img/brand/logosc.png";
 import Untitled from "../../assets/img/brand/Untitled.png";
 import jwt_decode from "jwt-decode";
 import { withRouter } from "react-router";
+import { Button, Menu, MenuItem } from "@material-ui/core";
 import PropTypes from "prop-types";
 import AuthService from "../../core/auth/AuthService";
 import { connect } from "react-redux";
-import { logout } from "../../actions/authActions";
+import { logout, changeSucursal } from "../../actions/authActions";
 
 const Auth = new AuthService();
 
@@ -37,7 +38,10 @@ class DefaultHeader extends Component {
     this.state = {
       Sucursal: "",
       valorProvince: "",
-      MASTER: ""
+      user: "",
+      branch_offices: [],
+      MenuOpen: false,
+      anchorEl: null
     };
   }
 
@@ -52,19 +56,59 @@ class DefaultHeader extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
   };
-  componentDidMount() {
+
+  getInitialBranchs = (decode, cb) => {
+    const is_default = decode.other_profiles[0].branch_office.find(
+      branch => branch.is_default === 1
+    );
+
+    const branchs = decode.other_profiles[0].branch_office.filter(
+      branch => branch.is_default !== 1
+    );
+
+    cb({ selected: is_default, otherBranchs: branchs });
+  };
+
+  componentDidMount = () => {
     const token = window.localStorage.getItem("id_token");
 
-    var decoded = jwt_decode(token);
-    Object.keys(decoded.profile[0].medical_center).map(i => {
-      if (decoded.profile[0].medical_center[i].is_default === 1) {
-        this.setState({
-          MASTER: "MASTER",
-          Sucursal: decoded.profile[0].medical_center[i].name
-        });
-      }
+    const decoded = jwt_decode(token);
+    this.getInitialBranchs(decoded, res => {
+      this.setState({
+        Sucursal: res.selected.name,
+        user: this.props.permission[0].name,
+        branch_offices: res.otherBranchs,
+        idMedicalCenter: decoded.profile[0].medical_center[0]._id
+      });
     });
-  }
+  };
+
+  handleOpen = event => {
+    this.setState({
+      anchorEl: event.currentTarget,
+      MenuOpen: true
+    });
+  };
+
+  handleChange = branchs => {
+    const obj = {
+      medical_center_id: this.state.idMedicalCenter,
+      branchoffices_id: branchs._id
+    };
+
+    this.props.changeSucursal(obj, res => {
+      localStorage.setItem("id_token", res.token);
+      const decoded = jwt_decode(res.token);
+      this.getInitialBranchs(decoded, result => {
+        this.setState({
+          Sucursal: result.selected.name,
+          branch_offices: result.otherBranchs,
+          MenuOpen: false
+        });
+      });
+    });
+  };
+
   render() {
     const { math, location, history, children, ...attributes } = this.props;
     return (
@@ -80,13 +124,32 @@ class DefaultHeader extends Component {
           }}
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
-        <Nav className="d-md-down-none" navbar>
-          <NavItem className="px-3">
-            <NavLink href="#/users">
-              {this.state.Sucursal} ({this.state.MASTER}){" "}
-            </NavLink>
-          </NavItem>
-        </Nav>
+        <div>
+          <Button onClick={this.handleOpen}>
+            {this.state.Sucursal} ({this.state.user}){" "}
+          </Button>
+          <Menu
+            open={Boolean(this.state.MenuOpen)}
+            className="MenuStyle"
+            variant={"selectedMenu"}
+            anchorEl={this.state.anchorEl}
+            keepMounted
+            open={this.state.MenuOpen}
+            onClose={() => this.setState({ MenuOpen: false })}
+          >
+            {this.state.branch_offices.map(branchs => {
+              return (
+                <MenuItem
+                  key={branchs._id}
+                  variant="selectedMenu"
+                  onClick={() => this.handleChange(branchs)}
+                >
+                  {branchs.name}
+                </MenuItem>
+              );
+            })}
+          </Menu>
+        </div>
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">
             <NavLink href="#">
@@ -152,13 +215,18 @@ class DefaultHeader extends Component {
 DefaultHeader.propTypes = propTypes;
 DefaultHeader.defaultProps = defaultProps;
 
+const mapStateToProps = state => ({
+  permission: state.global.dataGeneral.permission
+});
+
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  loggout: route => dispatch(logout(route))
+  loggout: route => dispatch(logout(route)),
+  changeSucursal: (obj, cb) => dispatch(changeSucursal(obj, cb))
 });
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(DefaultHeader)
 );

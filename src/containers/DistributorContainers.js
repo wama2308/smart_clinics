@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {  
+import {
   Nav,
   NavItem,
   NavLink,
@@ -7,7 +7,7 @@ import {
   CardBody,
   CardHeader,
   Col,
-  Row,  
+  Row,
   TabContent,
   TabPane
 } from "reactstrap";
@@ -35,11 +35,11 @@ class DistributorContainers extends Component {
     this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
       if (permisos.name === "Proveedor") {
         this.setState({
-          permitsMedical: permisos.permits
+          distributorPermits: permisos.permits
         });
       }
     });
-  };  
+  };
 
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -49,8 +49,8 @@ class DistributorContainers extends Component {
     }
   }
 
-  render() {   
-    //console.log("props ", this.props.distributor.toJS());     
+  render() {
+    //console.log("props ", this.props.distributor.toJS());
     return (
       <div className="animated fadeIn">
         <Row>
@@ -71,7 +71,7 @@ class DistributorContainers extends Component {
                           <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
                               Proveedores Inactivos
                           </NavLink>
-                      </NavItem>                      
+                      </NavItem>
                     </Nav>
                     <TabContent activeTab={this.state.activeTab}>
                       <TabPane tabId="1">
@@ -80,22 +80,22 @@ class DistributorContainers extends Component {
                           confirm={this.props.confirm}
                           listDistributor={this.props.distributor.get("data")}
                           LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
-                          DeleteDistributorAction={this.props.DeleteDistributorAction}                      
+                          DeleteDistributorAction={this.props.DeleteDistributorAction}
                         />
                       </TabPane>
                       <TabPane tabId="2">
-                        <ListDistributorInactivo 
+                        <ListDistributorInactivo
                          distributorPermits={this.state.distributorPermits}
                           confirm={this.props.confirm}
-                          listDistributor={this.props.distributor.get("proveedoresInactivos")}                          
-                          enableProviderFunction={this.props.enableProviderFunction}                      
+                          listDistributor={this.props.distributor.get("proveedoresInactivos")}
+                          enableProviderFunction={this.props.enableProviderFunction}
                         />
                       </TabPane>
                     </TabContent>
                   </div>
                 :
                 <div style={{height: "60vh"}}>
-                  <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />                        
+                  <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
                 </div>
               }
               </CardBody>
@@ -114,10 +114,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  LoadDistributorFunction: () => dispatch(LoadDistributorFunction()),  
-  LoadDistributorIdFunction: (distrbutorId) => dispatch(LoadDistributorIdFunction(distrbutorId)),  
-  DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),  
-  enableProviderFunction: (distrbutorId) => dispatch(enableProviderFunction(distrbutorId)),  
+  LoadDistributorFunction: () => dispatch(LoadDistributorFunction()),
+  LoadDistributorIdFunction: (distrbutorId) => dispatch(LoadDistributorIdFunction(distrbutorId)),
+  DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),
+  enableProviderFunction: (distrbutorId) => dispatch(enableProviderFunction(distrbutorId)),
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
 });
 
