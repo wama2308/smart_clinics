@@ -10,7 +10,7 @@ import { number_format } from "../../core/utils";
 import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { LoadProductPriceFunction, editSupplieLotAction } from "../../actions/ShopActions";
+import { LoadProductPriceFunction, editSupplieLotAction, defectiveSupplieAction } from "../../actions/ShopActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalProductLote extends React.Component {
@@ -394,7 +394,20 @@ class ModalProductLote extends React.Component {
                 )
             }
             if(this.props.option === 3){
-                alert("guayaaaaa")
+                this.setState({loading:'show'})                                    
+                this.props.defectiveSupplieAction(
+                  {
+                    id: this.props.productoId,
+                    lote_id: this.props.loteId,
+                    quantity: this.state.nuevaCantidad,
+                    quantity_rest: this.state.cantidadRestante,
+                    reason: valueMotivo,
+                    description: this.state.especifique,                    
+                  },
+                  () => {
+                    this.closeModal();                    
+                  }
+                )
             }             
         }
     }   
@@ -706,6 +719,7 @@ const mapDispatchToProps = dispatch => ({
 	LoadProductPriceFunction: (productoId) =>dispatch(LoadProductPriceFunction(productoId)),
     alert: (type, message) => dispatch(openSnackbars(type, message)), 
     editSupplieLotAction: (data, callback) =>dispatch(editSupplieLotAction(data, callback)),    
+    defectiveSupplieAction: (data, callback) =>dispatch(defectiveSupplieAction(data, callback)),    
 });
 
 export default connect(

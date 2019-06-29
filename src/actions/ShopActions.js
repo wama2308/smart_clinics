@@ -25,6 +25,7 @@ const disableTransfer = `${url}/api/disableTransfer`;
 const queryAllTransferReceived = `${url}/api/queryAllTransferReceived`;
 const rejectTransfer = `${url}/api/rejectTransfer`;
 const acceptTransfer = `${url}/api/acceptTransfer`;
+const defectiveSupplie = `${url}/api/defectiveSupplie`;
 
 export const LoadShopFunction = () => dispatch => {
   getDataToken()
@@ -685,6 +686,32 @@ export const LoadProductPriceFunction = (productId) => dispatch => {
             "Error consultando la api para consultar los precios del producto por id",
             error.toString()
           );
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const defectiveSupplieAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: defectiveSupplie,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch({
+            type: "LOAD_LOTE_PRODUCTO_DEFECTUOSO",
+            payload: data,
+          });
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error editando el producto defectuoso"));
         });
     })
     .catch(() => {
