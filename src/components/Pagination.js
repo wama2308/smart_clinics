@@ -34,7 +34,6 @@ class TablePaginationActions extends Component {
 
   render() {
     const { classes, count, page, rowsPerPage, theme } = this.props;
-    console.log("aqui",count);
 
     return (
       <div className={classes.root}>
@@ -76,14 +75,13 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: tru
 
 class Pagination extends Component {
   render() {
-    console.log(this.props.contador.length);
     return (
       <TableFooter>
         <TableRow>
           <TablePagination
             count={this.props.contador.length}
             page={this.props.page}
-            rowsPerPageOptions={[5, 20, 50]}
+            rowsPerPageOptions={[10, 15, 20]}
             rowsPerPage={this.props.rowsPerPage}
             onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
             onChangePage={this.props.handleChangePage}

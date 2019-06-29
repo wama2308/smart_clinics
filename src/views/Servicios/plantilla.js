@@ -9,6 +9,7 @@ import jstz from "jstz";
 
 import "./Services.css";
 import "./loading.css";
+import Pagination from '../../components/Pagination';
 
 class Plantillas extends React.Component {
   constructor(props) {
@@ -16,7 +17,9 @@ class Plantillas extends React.Component {
     this.state = {
       openModal: false,
       disabled: false,
-      editTemplate: ""
+      editTemplate: "", 
+      page: 0,
+      rowsPerPage: 10,
     };
   }
 
@@ -58,12 +61,30 @@ class Plantillas extends React.Component {
     });
   };
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
   render() {
     let count = [];
 
     const createDisabled = GetDisabledPermits(this.props.serviciosPermits, "Create")
     const updateDisabled = GetDisabledPermits(this.props.serviciosPermits, "Update")
     const deleteDisabled = GetDisabledPermits(this.props.serviciosPermits, "Delete")
+
+    const { rowsPerPage, page } = this.state;
+    const ArrayTemplate = [];
+
+    this.props.template.map((template, key) => {
+      ArrayTemplate.push({
+        ...template, number: key 
+      })
+    })
+
     return (
       <div>
         {this.state.openModal && (
@@ -100,11 +121,11 @@ class Plantillas extends React.Component {
             </thead>
             <tbody>
               {this.props.template.length > 0 &&
-                this.props.template.map((template, i) => {
+               ArrayTemplate.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((template) => {
                   if (template.status === true) {
-                    count.push(i);
+                    count.push(template.number);
                     return (
-                      <tr key={i}>
+                      <tr key={template.number}>
                         <td scope="row" style={{ width: "30%" }}>
                           {count.length}
                         </td>
@@ -130,7 +151,7 @@ class Plantillas extends React.Component {
                                 className="iconButtons"
                                 disabled={updateDisabled}
                                 onClick={() => {
-                                  this.edit(template, i);
+                                  this.edit(template, template.number);
                                 }}
                               >
                                 <Edit className="iconTable" />
@@ -142,7 +163,7 @@ class Plantillas extends React.Component {
                                 aria-label="Delete"
                                 delete={deleteDisabled}
                                 onClick={() => {
-                                  this.delete(i);
+                                  this.delete(template.number);
                                 }}
                               >
                                 <Delete className="iconTable" />
@@ -156,6 +177,13 @@ class Plantillas extends React.Component {
                 })}
             </tbody>
           </Table>
+          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+            <Pagination contador={this.props.template}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          </div>
         </div>
       </div>
     );
