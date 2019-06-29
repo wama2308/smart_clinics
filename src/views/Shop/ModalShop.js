@@ -25,9 +25,10 @@ class ModalShop extends React.Component {
     }
 
     componentDidMount(){
-        console.log("componentDidMount")
+        const branchOfficces = this.props.shop.branchOfficces.find(branchData => branchData.is_default === 1);
         if(this.props.option === 1){
             this.setState({
+                arraySucursalesSelect:branchOfficces,
                 loading: 'hide',
             })
         }
@@ -315,7 +316,6 @@ class ModalShop extends React.Component {
     };
 
     componentWillReceiveProps=(props)=>{
-        console.log("componentWillReceiveProps")
         if(this.props.shop.products.length > 0){
             this.setState({divTableProductos:''})
         }
@@ -383,7 +383,7 @@ class ModalShop extends React.Component {
                                     <FormGroup className="top form-group col-sm-6">
                                         <Label for="sucursales">Sucursales</Label>
                                         <div className={this.state.divSucursalesSelect}>
-                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="sucursales" value={this.state.arraySucursalesSelect} onChange={this.handleChangeSucursalesSelect} options={this.props.shop.branchOfficces} />
+                                            <Select isSearchable="true" isDisabled={true} name="sucursales" value={this.state.arraySucursalesSelect} onChange={this.handleChangeSucursalesSelect} options={this.props.shop.branchOfficces} />
                                         </div>
                                         <div className="errorSelect">{this.state.divSucursalesSelectError}</div>
                                     </FormGroup>
