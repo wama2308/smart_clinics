@@ -4,13 +4,16 @@ import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import { GetDisabledPermits } from "../../core/utils";
 import PreRegistro from "./PreRegistro/PreRegistro";
+import Pagination from '../../components/Pagination';
 
 class BodyExternal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       openModal: false,
-      ids: null
+      ids: null,
+      page: 0,
+      rowsPerPage: 10,
     };
   }
   ViewModal = data => {
@@ -41,6 +44,13 @@ class BodyExternal extends React.Component {
     });
   };
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
   render() {
     const data = [
       {
@@ -56,6 +66,14 @@ class BodyExternal extends React.Component {
     ];
 
     const deleteDisabled = GetDisabledPermits(this.props.externalPermits, "Delete")
+    const { rowsPerPage, page } = this.state;
+    const ArrayData = [];
+
+    this.props.data.map((data, key) => {
+      ArrayData.push({
+        ...data, number: key + 1
+      })
+    })
     return (
       <div
         style={{
@@ -79,43 +97,44 @@ class BodyExternal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.data && this.props.data.length > 0
-              ? this.props.data.map((item, i) => {
-                  return (
-                    <tr key={i}>
-                      <td>{item.name_branchoffices}</td>
-                      <td>{this.props.type}</td>
-                      <td>{item.name_medical_center}</td>
-                      <td>{item.country}</td>
-                      <td>{item.province}</td>
-                      <td>
-                        <div className="float-left">
-                          <IconButton
-                            className="iconButtons"
-                            onClick={() => {
-                              this.ViewModal(item);
-                            }}
-                          >
-                            <Visibility className="iconTable" />
-                          </IconButton>
-                          <IconButton
-                            className="iconButtons"
-                            disabled={deleteDisabled}
-                            onClick={() => {
-                              this.delete(item);
-                            }}
-                          >
-                            <Delete className="iconTable" />
-                          </IconButton>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
+            {ArrayData && ArrayData.length > 0
+              ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+                return (
+                  <tr key={data.number}>
+                    <td>{item.name_branchoffices}</td>
+                    <td>{this.props.type}</td>
+                    <td>{item.name_medical_center}</td>
+                    <td>{item.country}</td>
+                    <td>{item.province}</td>
+                    <td>
+                      <div className="float-left">
+                        <IconButton
+                          className="iconButtons"
+                          onClick={() => {
+                            this.ViewModal(item);
+                          }}
+                        >
+                          <Visibility className="iconTable" />
+                        </IconButton>
+                        <IconButton
+                          className="iconButtons"
+                          disabled={deleteDisabled}
+                          onClick={() => {
+                            this.delete(item);
+                          }}
+                        >
+                          <Delete className="iconTable" />
+                        </IconButton>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
               : null}
           </tbody>
         </Table>
-        {this.props.data.length === 0 && (
+
+        {/* {this.props.data.length === 0 && (
           <div
             style={{
               flex: 1,
@@ -126,10 +145,18 @@ class BodyExternal extends React.Component {
               alignItems: "center"
             }}
           >
-            No tienes solitudes {this.props.type}s
+            No tienes solitudes {this.props.type}
           </div>
-        )}
+        )} */}
+        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+          <Pagination contador={this.props.data}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+            handleChangePage={this.handleChangePage} />
+        </div>
       </div>
+
     );
   }
 }

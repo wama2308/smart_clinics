@@ -20,7 +20,7 @@ class ListDistributor extends React.Component {
       position: 0,
       userId: '',
       page: 0,
-      rowsPerPage: 5,
+      rowsPerPage: 10,
       cont: 0
     };
   }
@@ -112,7 +112,11 @@ class ListDistributor extends React.Component {
           userId={this.state.userId}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar Proveedor</Button>
+        <Button color="success"
+          disabled={createDisabled}
+          onClick={() => { this.openModal(1); }}>
+          Agregar Proveedor
+          </Button>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -164,7 +168,7 @@ class ListDistributor extends React.Component {
             }
           </tbody>
         </Table>
-        <div style={{'display': "flex", 'justify-content': "flex-end"}}>
+        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
           <Pagination contador={this.props.listDistributor}
             page={page}
             rowsPerPage={rowsPerPage}
