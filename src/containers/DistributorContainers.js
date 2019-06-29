@@ -23,13 +23,22 @@ class DistributorContainers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: "1"
+      activeTab: "1",
+      distributorPermits:[]
     };
 
   }
 
   componentDidMount = () => {
     this.props.LoadDistributorFunction();
+
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Proveedor") {
+        this.setState({
+          permitsMedical: permisos.permits
+        });
+      }
+    });
   };  
 
   toggleTab(tab) {
@@ -66,7 +75,8 @@ class DistributorContainers extends Component {
                     </Nav>
                     <TabContent activeTab={this.state.activeTab}>
                       <TabPane tabId="1">
-                        <ListDistributor 
+                        <ListDistributor
+                          distributorPermits={this.state.distributorPermits}
                           confirm={this.props.confirm}
                           listDistributor={this.props.distributor.get("data")}
                           LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
@@ -75,6 +85,7 @@ class DistributorContainers extends Component {
                       </TabPane>
                       <TabPane tabId="2">
                         <ListDistributorInactivo 
+                         distributorPermits={this.state.distributorPermits}
                           confirm={this.props.confirm}
                           listDistributor={this.props.distributor.get("proveedoresInactivos")}                          
                           enableProviderFunction={this.props.enableProviderFunction}                      

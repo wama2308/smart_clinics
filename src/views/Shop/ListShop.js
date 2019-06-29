@@ -4,6 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility, SwapHoriz } from "@material-ui/icons";
 import ModalShop from './ModalShop.js';
 import ModalTransferencias from './ModalTransferencias.js';
+import { GetDisabledPermits } from "../../core/utils";
 import { number_format } from "../../core/utils";
 
 class ListShop extends React.Component {
@@ -93,6 +94,10 @@ class ListShop extends React.Component {
   } 
 
   render() {
+      const createDisabled = GetDisabledPermits(this.props.permitsShop , "Create")
+      const updateDisabled = GetDisabledPermits(this.props.permitsShop , "Update")
+      const deleteDisabled = GetDisabledPermits(this.props.permitsShop , "Delete")
+      console.log(this.props.permitsSho)
      return (
       <div>
         {
@@ -126,7 +131,7 @@ class ListShop extends React.Component {
           />
         }
         
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar</Button>
         <br />
         <br />      
           <Table hover responsive borderless>
@@ -156,8 +161,8 @@ class ListShop extends React.Component {
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete" title="Ver Compra" className="iconButtons" onClick={() => { this.openModal(2, i, shop._id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Compra" className="iconButtons" onClick={() => { this.openModal(3, i, shop._id); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Eliminar Compra" className="iconButtons" onClick={() => { this.deleteRegister(shop._id); }}><Delete className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Compra" disabled={updateDisabled} className="iconButtons" onClick={() => { this.openModal(3, i, shop._id); }}><Edit className="iconTable" /></IconButton>                        
+                      <IconButton aria-label="Delete" title="Eliminar Compra" disabled={deleteDisabled} className="iconButtons" onClick={() => { this.deleteRegister(shop._id); }}><Delete className="iconTable" /></IconButton>
                       <IconButton aria-label="Delete" title="Transferir Compra" className="iconButtons" onClick={() => { this.openModal(4, i, shop._id); }}><SwapHoriz className="iconTable" /></IconButton>
                     </div>
                   </td>                    

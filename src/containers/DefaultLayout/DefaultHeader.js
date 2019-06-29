@@ -66,9 +66,7 @@ class DefaultHeader extends Component {
     });
   }
   render() {
-    // eslint-disable-next-line
     const { math, location, history, children, ...attributes } = this.props;
-
     return (
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="lg" mobile />
@@ -121,7 +119,7 @@ class DefaultHeader extends Component {
                 <strong>Configuracion</strong>
               </DropdownItem>
               <DropdownItem>
-                <i className="fa fa-home" /> Perfil CM
+                <i className="fa fa-home" /> Perfil CM                
               </DropdownItem>
               <DropdownItem>
                 <i className="fa fa-wrench" /> Empleados

@@ -11,7 +11,7 @@ import "./loading.css";
 import "./modal.css";
 import jstz from "jstz";
 import Validator from "./utils";
-import { filterProvinces } from "../../core/utils";
+import { filterProvinces, GetDisabledPermits } from "../../core/utils";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const validator = new Validator();
@@ -108,10 +108,10 @@ export default class MedicalCenter extends React.Component {
       this.props.info.countries,
       this.state.selectedCountry
     );
+    const disabled2 = GetDisabledPermits(this.props.medicalPermits, "Update");
 
-    const disabled = this.state.loading === false ? true : false;
-
-    console.log(disabled);
+    console.log("permisos", this.props.medicalPermits);
+    const disabled = this.state.loading === false || disabled2 ? true : false;
     return (
       <div>
         <div>

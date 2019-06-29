@@ -2,8 +2,8 @@ import authState from "../state/authState";
 import AuthService from "../core/auth/AuthService";
 import { openSnackbars } from "./aplicantionActions";
 import axios from "axios";
-import { url } from "../core/connection";
-
+import { url, getDataToken } from "../core/connection";
+import decode from "jwt-decode";
 const auth = new AuthService(url);
 
 const type = {
@@ -21,7 +21,7 @@ export const logout = route => dispatch => {
   auth.logout(route, () =>
     dispatch({
       type: "SESION_OFF"
-    })
+    }),
   );
 };
 
@@ -35,10 +35,12 @@ export const loginAction = (data, notify) => dispatch => {
 };
 
 export const verify = () => dispatch => {
-  auth.verify(data => {
-    dispatch({
-      type: "GET_DATA_USER",
-      payload: data
+  getDataToken().then(token => {
+    auth.verify(url, token, data => {
+      dispatch({
+        type: "GET_DATA_USER",
+        payload: data
+      });
     });
   });
 };
@@ -148,5 +150,19 @@ export const saveUser = obj => dispatch => {
       payload: undefined
     });
     dispatch(openSnackbars("success", "Registro exitoso!"));
+  });
+};
+
+export const getTokenInfo = () => dispatch => {
+  const token = localStorage.getItem("id_token");
+  const result = decode(token);
+
+  console.log("aca", result);
+  dispatch({
+    type: "USERS_PERMISS",
+    payload: {
+      menu: result.menu,
+      permission: result.permission
+    }
   });
 };

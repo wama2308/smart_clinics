@@ -31,8 +31,8 @@ export const LoadShopFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
     	axios.get(queryAllShop, datos)
-    	.then(res => {		 
-        LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {   
+    	.then(res => {
+        LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {
           queryAllSuppliesFunction(datos, allProducts => {
             queryAllTransferFunction(datos, allTransfer => {
               queryAllTransferReceivedFunction(datos, allTransferRecibidas => {
@@ -40,12 +40,12 @@ export const LoadShopFunction = () => dispatch => {
                   type: "LOAD_COMPRAS",
                   payload: {
                     loading: "hide",
-                    data: res.data,  
-                    allTransfer:allTransfer,                                        
-                    allTransferRecibidas:allTransferRecibidas,                                        
+                    data: res.data,
+                    allTransfer:allTransfer,
+                    allTransferRecibidas:allTransferRecibidas,
                     transferId:{},
                     //dataProducts: arrayProducts,
-                    products: [],                  
+                    products: [],
                     subTotal: 0,
                     impuesto: 0,
                     total: 0,
@@ -58,16 +58,16 @@ export const LoadShopFunction = () => dispatch => {
                     ProductLoteId: {},
                     action: 0
                   }
-                });          		
+                });
               });
-            });             
+            });
           });
         });
   	   })
       .catch(error => {
 			console.log("Error consultando la api de compras",error.toString());
       });
-      
+
     })
     .catch(() => {
       console.log("Problemas con el token");
@@ -77,7 +77,7 @@ export const LoadShopFunction = () => dispatch => {
 const queryAllSuppliesFunction = (datos, execute) => {
   axios
     .get(queryAllSupplies, datos)
-    .then(res => {      
+    .then(res => {
       execute(res.data);
     })
     .catch(error => {
@@ -91,7 +91,7 @@ const queryAllSuppliesFunction = (datos, execute) => {
 const queryAllTransferFunction = (datos, execute) => {
   axios
     .get(queryAllTransfer, datos)
-    .then(res => {      
+    .then(res => {
       execute(res.data);
     })
     .catch(error => {
@@ -105,7 +105,7 @@ const queryAllTransferFunction = (datos, execute) => {
 const queryAllTransferReceivedFunction = (datos, execute) => {
   axios
     .get(queryAllTransferReceived, datos)
-    .then(res => {      
+    .then(res => {
       execute(res.data);
     })
     .catch(error => {
@@ -177,7 +177,7 @@ export const searchOneSuppplie = data => dispatch => {
         dispatch({
           type: "SEARCH_ONE_PRODUCTS_SHOP",
           payload: {
-            ...res.data            
+            ...res.data
           }
         });
       })
@@ -190,7 +190,7 @@ export const searchOneSuppplie = data => dispatch => {
 
 export const addProductsFunction = (obj, subtotal, impuesto, total) => dispatch => {
   getDataToken()
-    .then(datos => {      
+    .then(datos => {
       dispatch({
         type: "ADD_PRODUCTS",
         payload: {
@@ -215,7 +215,7 @@ export const deleteProductsFunction = (key, subtotal, impuesto, total) => dispat
           key: key,
           subTotal: subtotal,
           impuesto: impuesto,
-          total: total  
+          total: total
         }
       });
     })
@@ -229,7 +229,7 @@ export const cleanProducts = () => dispatch => {
     .then(datos => {
       dispatch({
         type: "CLEAN_PRODUCTS",
-        payload: {          
+        payload: {
           products: []
         }
       });
@@ -246,7 +246,7 @@ export const LoadShopIdFunction = (shopId) => dispatch => {
         method: "post",
         url: queryOneShop,
         data: {
-          shop_id: shopId          
+          shop_id: shopId
         },
         headers: datos.headers
       })
@@ -256,7 +256,7 @@ export const LoadShopIdFunction = (shopId) => dispatch => {
             payload: {
               dataShopId: res.data,
               loading: "hide",
-              confirm: true,              
+              confirm: true,
             }
           });
         })
@@ -279,7 +279,7 @@ export const queryOneTransferFunction = (transferId) => dispatch => {
         method: "post",
         url: queryOneTransfer,
         data: {
-          id: transferId          
+          id: transferId
         },
         headers: datos.headers
       })
@@ -289,7 +289,7 @@ export const queryOneTransferFunction = (transferId) => dispatch => {
             payload: {
               dataTransferId: res.data,
               loading: "hide",
-              confirm: true,              
+              confirm: true,
             }
           });
         })
@@ -312,7 +312,7 @@ export const queryOneSupplieWithLotFunction = (supplie_id) => dispatch => {
         method: "post",
         url: queryOneSupplieWithLot,
         data: {
-          supplie_id: supplie_id          
+          supplie_id: supplie_id
         },
         headers: datos.headers
       })
@@ -347,7 +347,7 @@ export const saveShopAction = (data, callback) => dispatch => {
           callback();
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
-        .catch(error => {          
+        .catch(error => {
           dispatch(openSnackbars("error", "Error guardando la compra"));
         });
     })
@@ -369,7 +369,7 @@ export const productTransferAction = (data, callback) => dispatch => {
           callback();
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
-        .catch(error => {          
+        .catch(error => {
           dispatch(openSnackbars("error", "Error guardando la transferencia"));
         });
     })
@@ -445,7 +445,6 @@ export const editSupplieAction = (data, callback) => dispatch => {
 };
 
 export const editSupplieLotAction = (data, callback) => dispatch => {
-  console.log("data ", data)
   getDataToken()
     .then(datos => {
       axios({
@@ -464,6 +463,32 @@ export const editSupplieLotAction = (data, callback) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error editando el lote del producto"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const defectiveSupplieAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: defectiveSupplie,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch({
+            type: "LOAD_LOTE_PRODUCTO_DEFECTUOSO",
+            payload: data,
+          });
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error editando el producto defectuoso"));
         });
     })
     .catch(() => {
@@ -502,7 +527,7 @@ export const disableTransferAction = (id) => dispatch => {
         method: "post",
         url: disableTransfer,
         data: {
-          id: id          
+          id: id
         },
         headers: datos.headers
       })
@@ -525,7 +550,7 @@ export const disableShopAction = (shopId) => dispatch => {
         method: "post",
         url: disableShop,
         data: {
-          shop_id: shopId          
+          shop_id: shopId
         },
         headers: datos.headers
       })
@@ -548,7 +573,7 @@ export const rejectTransferAction = (id) => dispatch => {
         method: "post",
         url: rejectTransfer,
         data: {
-          id: id          
+          id: id
         },
         headers: datos.headers
       })
@@ -571,7 +596,7 @@ export const acceptTransferAction = (id) => dispatch => {
         method: "post",
         url: acceptTransfer,
         data: {
-          id: id          
+          id: id
         },
         headers: datos.headers
       })
@@ -606,7 +631,7 @@ export const removeProductAction = (shopId, productId, loteId) => dispatch => {
           }else{
             dispatch(openSnackbars("success", "¡Producto eliminado con exito!"));
           }
-          
+
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error eliminando el almacen"));
@@ -626,14 +651,14 @@ export const verificationSuppliesAction = (data, callback) => dispatch => {
         data: data,
         headers: datos.headers
       })
-        .then((res) => {          
+        .then((res) => {
           if(res.data === 1){
             dispatch(openSnackbars("warning", "¡Este producto ya se encuentra registrado!"));
-            callback();      
+            callback();
           }
-              
+
         })
-        .catch(error => {          
+        .catch(error => {
           dispatch(openSnackbars("error", "Error consultando el producto"));
         });
     })
@@ -677,7 +702,7 @@ export const LoadProductPriceFunction = (productId) => dispatch => {
             type: "LOAD_PRODUCT_PRICE",
             payload: {
               data: res.data,
-              loading: 'hide'              
+              loading: 'hide'
             }
           });
         })

@@ -3,7 +3,7 @@ import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import ModalProduct from './ModalProduct.js';
-import { number_format } from "../../core/utils";
+import { number_format, GetDisabledPermits } from "../../core/utils";
 
 class ListProduct extends React.Component {
   constructor(props) {
@@ -16,15 +16,15 @@ class ListProduct extends React.Component {
       disabled: '',
       showHide: '',
       option:0,
-      position: 0,  
+      position: 0,
       isClearable: false,
-      productoId: '',      
-    };    
+      productoId: '',
+    };
   }
 
-  componentDidMount(){}  
+  componentDidMount(){}
 
-  openModal = (option, pos, id) => {  
+  openModal = (option, pos, id) => {
     if(option === 1){
       this.props.queryOneSupplieWithLotFunction(id);
       this.setState({
@@ -33,7 +33,7 @@ class ListProduct extends React.Component {
         modalHeader:'Ver Producto',
         modalFooter:'Guardar',
         disabled: true,
-        showHide: 'hide',                
+        showHide: 'hide',
       })
     }else if(option === 2){
       this.props.queryOneSupplieWithLotFunction(id);
@@ -44,20 +44,22 @@ class ListProduct extends React.Component {
         modalFooter:'Editar',
         disabled: false,
         showHide: 'show',
-        position: pos,        
-        productoId:id       
+        position: pos,
+        productoId:id
       })
-    }  
-  }  
+    }
+  }
 
-  valorCloseModal = (valor) => {            
+  valorCloseModal = (valor) => {
     this.setState({
-        modal: valor,   
-        option: 0,       
-    });                    
-  } 
+        modal: valor,
+        option: 0,
+    });
+  }
 
   render() {
+     const updateDisabled = GetDisabledPermits(this.props.permitsShop, "Update")
+     const deleteDisabled = GetDisabledPermits(this.props.permitsShop, "Delete")
      return (
       <div>
         <ModalProduct
@@ -66,19 +68,19 @@ class ListProduct extends React.Component {
           modalHeader = {this.state.modalHeader}
           modalFooter = {this.state.modalFooter}
           disabled = {this.state.disabled}
-          showHide = {this.state.showHide}             
-          productoId = {this.state.productoId}             
-          valorCloseModal = {this.valorCloseModal}          
-        />        
-        <br />         
+          showHide = {this.state.showHide}
+          productoId = {this.state.productoId}
+          valorCloseModal = {this.valorCloseModal}
+        />
+        <br />
           <Table hover responsive borderless>
             <thead className="thead-light">
               <tr>
                 <th className="text-left">Nro</th>
                 <th className="text-left">Producto</th>
                 <th className="text-left">Codigo</th>
-                <th className="text-left">Tipo</th>                                    
-                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>                  
+                <th className="text-left">Tipo</th>
+                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -92,10 +94,11 @@ class ListProduct extends React.Component {
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete" title="Ver Producto" className="iconButtons" onClick={() => { this.openModal(1, i, product._id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Producto" className="iconButtons" onClick={() => { this.openModal(2, i, product._id); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Producto Defectuoso/vencido" className="iconButtons" ><Delete className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete" title="Editar Producto/Lote" className="iconButtons" onClick={() => { this.openModal(2, i, product._id); }}><Edit className="iconTable" /></IconButton>
+                      {/*<IconButton aria-label="Delete" title="Producto Defectuoso/vencido" className="iconButtons" ><Delete className="iconTable" /></IconButton>*/}
+
                     </div>
-                  </td>                    
+                  </td>
                 </tr>
               );
              })
@@ -103,7 +106,7 @@ class ListProduct extends React.Component {
                 null
               }
             </tbody>
-          </Table>          
+          </Table>
       </div>
     );
   }

@@ -97,6 +97,14 @@ const setStoreProductoLote = (state, payload) => {
 	return Map(estado);
 }
 
+const setStoreProductoDefectuosoLote = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.ProductLoteId.lote.findIndex(lote => lote._id === payload.lote_id);
+	estado.ProductLoteId.lote[key].quantity_stock = payload.quantity_rest;	
+	
+	return Map(estado);
+}
+
 const setCantidadTableTransferencias = (state, payload) => {
 	let estado = state.toJS();	
 	if(payload.option === 4){
@@ -177,7 +185,13 @@ const ShopReducer = (state = Map(), action) => {
 	  		return setProductIdPrice(state, action.payload);		
 
 	  	case "LOAD_PRODUCT_LOTE_ID":
-	  		return setDataProductLoteId(state, action.payload);			
+	  		return setDataProductLoteId(state, action.payload);		
+
+		case "LOAD_LOTE_PRODUCTO":
+	  		return setStoreProductoLote(state, action.payload);				
+
+  		case "LOAD_LOTE_PRODUCTO_DEFECTUOSO":
+	  		return setStoreProductoDefectuosoLote(state, action.payload);				
 
   		case "SET_CANTIDAD_TRANSFERENCIAS":
 	  		return setCantidadTableTransferencias(state, action.payload);			
