@@ -6,8 +6,9 @@ import { Table } from "reactstrap";
 import { FaSearch, FaUserEdit, FaMinusCircle } from "react-icons/fa";
 import jstz from "jstz";
 import IconButton from "@material-ui/core/IconButton";
-import {GetDisabledPermits} from '../../core/utils'
+import { GetDisabledPermits } from '../../core/utils'
 import { Delete, Edit, Visibility } from "@material-ui/icons";
+import Pagination from '../../components/Pagination';
 
 class Sucursales extends React.Component {
   constructor(props) {
@@ -15,7 +16,9 @@ class Sucursales extends React.Component {
     this.state = {
       openModal: false,
       dataEdit: null,
-      disabled: false
+      disabled: false,
+      page: 0,
+      rowsPerPage: 10,
     };
   }
 
@@ -23,9 +26,9 @@ class Sucursales extends React.Component {
     this.props.permits
       ? this.setState({ openModal: true })
       : this.props.openSnackbars(
-          "error",
-          "¡Esta licencia no permite agregar mas sucursales!"
-        );
+        "error",
+        "¡Esta licencia no permite agregar mas sucursales!"
+      );
   };
 
   closeModal = () => {
@@ -66,6 +69,14 @@ class Sucursales extends React.Component {
     });
   };
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
   render() {
     const disabled = GetDisabledPermits(this.props.medicalPermits, "Create")
     const updateDisabled = GetDisabledPermits(this.props.medicalPermits, "Update")
@@ -77,6 +88,15 @@ class Sucursales extends React.Component {
       { label: "Provincia" },
       { label: "Acciones" }
     ];
+
+    const { rowsPerPage, page } = this.state;
+    const ArraySucursales = [];
+
+    this.props.sucursales.map((item, key) => {
+      ArraySucursales.push({
+        ...item, number: key
+      })
+    })
     return (
       <div>
         {this.state.openModal && (
@@ -110,56 +130,63 @@ class Sucursales extends React.Component {
             </thead>
             <tbody>
               {this.props.sucursales
-                ? this.props.sucursales.map((item, i) => {
-                    if (item.active) {
-                      return (
-                        <tr key={i}>
-                          <td>{item.name}</td>
-                          <td>{item.code}</td>
-                          <td>{item.country}</td>
-                          <td>{item.province}</td>
-                          <td>
-                            <div className="float-left">
-                              <IconButton
-                                aria-label="Delete"
-                                className="iconButtons"
-                                onClick={() => {
-                                  this.view(item);
-                                }}
-                              >
-                                <Visibility className="iconTable" />
-                              </IconButton>
+                ? ArraySucursales.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+                  if (item.active) {
+                    return (
+                      <tr key={item.number}>
+                        <td>{item.name}</td>
+                        <td>{item.code}</td>
+                        <td>{item.country}</td>
+                        <td>{item.province}</td>
+                        <td>
+                          <div className="float-left">
+                            <IconButton
+                              aria-label="Delete"
+                              className="iconButtons"
+                              onClick={() => {
+                                this.view(item);
+                              }}
+                            >
+                              <Visibility className="iconTable" />
+                            </IconButton>
 
-                              <IconButton
-                                aria-label="Delete"
-                                disabled={updateDisabled}
-                                className="iconButtons"
-                                onClick={() => {
-                                  this.modaledit(item, i);
-                                }}
-                              >
-                                <Edit className="iconTable" />
-                              </IconButton>
+                            <IconButton
+                              aria-label="Delete"
+                              disabled={updateDisabled}
+                              className="iconButtons"
+                              onClick={() => {
+                                this.modaledit(item, item.number);
+                              }}
+                            >
+                              <Edit className="iconTable" />
+                            </IconButton>
 
-                              <IconButton
-                                className="iconButtons"
-                                aria-label="Delete"
-                                disabled={deleteDisabled}
-                                onClick={() => {
-                                  this.delete(i);
-                                }}
-                              >
-                                <Delete className="iconTable" />
-                              </IconButton>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    }
-                  })
+                            <IconButton
+                              className="iconButtons"
+                              aria-label="Delete"
+                              disabled={deleteDisabled}
+                              onClick={() => {
+                                this.delete(item.number);
+                              }}
+                            >
+                              <Delete className="iconTable" />
+                            </IconButton>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+                })
                 : null}
             </tbody>
           </Table>
+          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+            <Pagination contador={this.props.sucursales}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          </div>
         </div>
       </div>
     );

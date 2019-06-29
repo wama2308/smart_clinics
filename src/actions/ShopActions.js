@@ -17,6 +17,7 @@ const queryAllSupplies = `${url}/api/queryAllSupplies`;
 const queryOneSupplieWithLot = `${url}/api/queryOneSupplieWithLot`;
 const editSupplie = `${url}/api/editSupplie`;
 const editSupplieLot = `${url}/api/editSupplieLot`;
+const defectiveSupplie = `${url}/api/defectiveSupplie`;
 
 export const LoadShopFunction = () => dispatch => {
   getDataToken()
@@ -324,7 +325,6 @@ export const editSupplieAction = (data, callback) => dispatch => {
 };
 
 export const editSupplieLotAction = (data, callback) => dispatch => {
-  console.log("data ", data)
   getDataToken()
     .then(datos => {
       axios({
@@ -343,6 +343,32 @@ export const editSupplieLotAction = (data, callback) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error editando el lote del producto"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const defectiveSupplieAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: defectiveSupplie,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch({
+            type: "LOAD_LOTE_PRODUCTO_DEFECTUOSO",
+            payload: data,
+          });
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error editando el producto defectuoso"));
         });
     })
     .catch(() => {

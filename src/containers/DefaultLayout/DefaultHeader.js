@@ -182,7 +182,7 @@ class DefaultHeader extends Component {
                 <strong>Configuracion</strong>
               </DropdownItem>
               <DropdownItem>
-                <i className="fa fa-home" /> Perfil CM
+                <i className="fa fa-home" /> Perfil CM                
               </DropdownItem>
               <DropdownItem>
                 <i className="fa fa-wrench" /> Empleados

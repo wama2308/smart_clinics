@@ -4,6 +4,7 @@ import ModalRoles from "./ModalRoles.js";
 import IconButton from "@material-ui/core/IconButton";
 import { GetDisabledPermits } from "../../core/utils";
 import { DoneOutlineOutlined } from "@material-ui/icons";
+import Pagination from '../../components/Pagination';
 
 class RolesInactivosList extends React.Component {
   constructor(props) {
@@ -16,11 +17,13 @@ class RolesInactivosList extends React.Component {
       disabled: "",
       showHide: "",
       option: 0,
-      position: 0
+      position: 0,
+      page: 0,
+      rowsPerPage: 10,
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   activateRoles = rolId => {
     const message = {
@@ -40,11 +43,29 @@ class RolesInactivosList extends React.Component {
     });
   };
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
   render() {
     const disabledActive = GetDisabledPermits(
       this.props.permitsUsers,
       "Active"
     );
+
+    const { rowsPerPage, page } = this.state;
+    const ArrayRoles = [];
+
+    this.props.roles.map((rol, key) => {
+      ArrayRoles.push({
+        ...rol, number: key + 1
+      })
+    })
+
     return (
       <div>
         <br />
@@ -58,32 +79,39 @@ class RolesInactivosList extends React.Component {
           </thead>
           <tbody>
             {this.props.roles
-              ? this.props.roles.map((rol, i) => {
-                  return (
-                    <tr key={i} className="text-left">
-                      <td>{i + 1}</td>
-                      <td>{rol.rol}</td>
-                      <td>
-                        <div className="float-left">
-                          <IconButton
-                            aria-label="Delete"
-                            title="Activar Rol"
-                            disabled={disabledActive}
-                            className="iconButtons"
-                            onClick={() => {
-                              this.activateRoles(rol._id);
-                            }}
-                          >
-                            <DoneOutlineOutlined className="iconTable" />
-                          </IconButton>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
+              ? ArrayRoles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rol) => {
+                return (
+                  <tr key={rol.number} className="text-left">
+                    <td>{rol.number}</td>
+                    <td>{rol.rol}</td>
+                    <td>
+                      <div className="float-left">
+                        <IconButton
+                          aria-label="Delete"
+                          title="Activar Rol"
+                          disabled={disabledActive}
+                          className="iconButtons"
+                          onClick={() => {
+                            this.activateRoles(rol._id);
+                          }}
+                        >
+                          <DoneOutlineOutlined className="iconTable" />
+                        </IconButton>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
               : null}
           </tbody>
         </Table>
+        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+          <Pagination contador={this.props.roles}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+            handleChangePage={this.handleChangePage} />
+        </div>
       </div>
     );
   }
