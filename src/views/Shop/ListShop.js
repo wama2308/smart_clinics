@@ -27,7 +27,10 @@ class ListShop extends React.Component {
   componentDidMount(){}  
 
   openModal = (option, pos, id) => {  
-    if(option === 1){
+    if(!this.props.provider){
+      this.props.alert("warning", "¡Antes de agregar una compra, debe agregar un proveedor!");
+    }else{
+      if(option === 1){
       this.setState({
         modal:true,
         option:option,
@@ -71,7 +74,8 @@ class ListShop extends React.Component {
         position: pos,        
         shop_id:id       
       })
-    }  
+    }
+    }      
   }  
 
   deleteRegister = (id) => {  
