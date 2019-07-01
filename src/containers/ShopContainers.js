@@ -93,6 +93,8 @@ class ShopContainers extends Component {
                               allProducts={this.props.shop.allProducts}
                               LoadShopIdFunction={this.props.LoadShopIdFunction}
                               disableShopAction={this.props.disableShopAction}
+                              provider={this.props.aplication.dataGeneral.dataCountries.provider}
+                              alert={this.props.alert}
                             />
                           </TabPane>
                           <TabPane tabId="2">
