@@ -470,32 +470,6 @@ export const editSupplieLotAction = (data, callback) => dispatch => {
     });
 };
 
-export const defectiveSupplieAction = (data, callback) => dispatch => {
-  getDataToken()
-    .then(datos => {
-      axios({
-        method: "post",
-        url: defectiveSupplie,
-        data: data,
-        headers: datos.headers
-      })
-        .then(() => {
-          dispatch({
-            type: "LOAD_LOTE_PRODUCTO_DEFECTUOSO",
-            payload: data,
-          });
-          callback();
-          dispatch(openSnackbars("success", "Operacion Exitosa"));
-        })
-        .catch(error => {
-          dispatch(openSnackbars("error", "Error editando el producto defectuoso"));
-        });
-    })
-    .catch(() => {
-      console.log("Problemas con el token");
-    });
-};
-
 export const DeleteShopAction = (storeId, sucursalId) => dispatch => {
   getDataToken()
     .then(datos => {
