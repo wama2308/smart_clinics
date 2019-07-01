@@ -4,6 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import ModalStore from './ModalStore.js';
 import Pagination from '../../components/Pagination';
+import { getArray, GetDisabledPermits } from '../../core/utils'
 
 class ListStore extends React.Component {
   constructor(props) {
@@ -91,13 +92,11 @@ class ListStore extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
+    const ArrayData = getArray(this.props.data)
 
-    this.props.data.map((data, key) => {
-      ArrayData.push({
-        ...data, number: key + 1
-      })
-    })
+    const createDisabled = GetDisabledPermits(this.props.permitsStore, "Create")
+    const updateDisabled = GetDisabledPermits(this.props.permitsStore, "Update")
+    const deleteDisabled = GetDisabledPermits(this.props.permitsStore, "Delete")
 
     return (
       <div>
@@ -113,7 +112,7 @@ class ListStore extends React.Component {
           branchOfficces={this.props.branchOfficces}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar</Button>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -146,14 +145,17 @@ class ListStore extends React.Component {
                       <IconButton aria-label="Delete"
                         title="Editar Almacen"
                         className="iconButtons"
-                        onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}>
+                        onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}
+                        disabled={updateDisabled}
+                        >
                         <Edit className="iconTable" />
                       </IconButton>
 
                       <IconButton aria-label="Delete"
-                        title="Editar Almacen"
+                        title="Eliminar Almacen"
                         className="iconButtons"
-                        onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}>
+                        onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}
+                        disabled={deleteDisabled}>
                         <Delete className="iconTable" />
                       </IconButton>
                     </div>
@@ -166,13 +168,16 @@ class ListStore extends React.Component {
             }
           </tbody>
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.data}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
+        {
+          this.props.data.lenght > 10 &&
+          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+            <Pagination contador={this.props.data}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          </div>
+        }
       </div>
     );
   }

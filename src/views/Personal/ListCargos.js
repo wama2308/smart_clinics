@@ -3,7 +3,7 @@ import { Table, Button } from "reactstrap";
 import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import Pagination from '../../components/Pagination';
 
 class ListCargos extends React.Component {
@@ -98,14 +98,8 @@ class ListCargos extends React.Component {
     const updateDisabled = GetDisabledPermits(this.props.permitsCargos, "Update")
     const deleteDisabled = GetDisabledPermits(this.props.permitsCargos, "Delete")
     const { rowsPerPage, page } = this.state;
-    const ArrayCargo = [];
+    const ArrayCargo = getArray(this.props.cargos)
 
-    this.props.cargos.map((cargo, key) => {
-      ArrayCargo.push({
-        ...cargo, number: key + 1
-      })
-    })
-    
     return (
       <div>
         <ModalCargos
@@ -170,14 +164,18 @@ class ListCargos extends React.Component {
             }
           </tbody>
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.cargos}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
+        {
+          this.props.cargos.length > 10 &&
+          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+            <Pagination contador={this.props.cargos}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          </div>
+        }
       </div >
+
     );
   }
 }

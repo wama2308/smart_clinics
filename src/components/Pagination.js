@@ -76,6 +76,7 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: tru
 class Pagination extends Component {
   render() {
     return (
+      <div>
       <TableFooter>
         <TableRow>
           <TablePagination
@@ -91,6 +92,7 @@ class Pagination extends Component {
           </TablePagination>
         </TableRow>
       </TableFooter>
+      </div>
     );
   }
 }

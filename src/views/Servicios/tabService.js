@@ -55,11 +55,6 @@ export default class tabService extends React.Component {
     const { rowsPerPage, page } = this.state;
     const ArrayData = [];
 
-    this.props.data.map((template, key) => {
-      ArrayData.push({
-        ...template, number: key + 1
-      })
-    })
     return (
       <div >
         {this.state.modal && (
@@ -158,18 +153,21 @@ export default class tabService extends React.Component {
                 })}
               </tbody>
             </Table>
-            <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-              <Pagination
-                contador={this.props.data}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
-            </div>
+            {
+              this.props.data.length > 10 &&
+              < div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+                <Pagination
+                  contador={this.props.data}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  handleChangePage={this.handleChangePage} />
+              </div>
+            }
           </div>
           <div />
         </form>
-      </div>
+      </div >
     );
   }
 }

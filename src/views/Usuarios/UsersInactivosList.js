@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalUser from "./ModalUser.js";
 import IconButton from "@material-ui/core/IconButton";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import { HowToReg } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
 
@@ -58,13 +58,8 @@ class UsersInactivosList extends React.Component {
     );
 
     const { rowsPerPage, page } = this.state;
-    const ArrayUser = [];
+    const ArrayUser = getArray(this.props.users)
 
-    this.props.users.map((user, key) => {
-      ArrayUser.push({
-        ...user, number: key + 1
-      })
-    })
     return (
       <div>
         <br />
@@ -117,13 +112,16 @@ class UsersInactivosList extends React.Component {
                   : null}
               </tbody>
             </Table>
-            <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-              <Pagination contador={this.props.users}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
-            </div>
+            {
+              this.props.users.length > 10 &&
+              <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+                <Pagination contador={this.props.users}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  handleChangePage={this.handleChangePage} />
+              </div>
+            }
           </div>
         </div>
       </div>
