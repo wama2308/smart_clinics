@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
-import { DoneOutlineOutlined } from "@material-ui/icons";
+import { CheckCircle } from "@material-ui/icons";
 import ModalStore from './ModalStore.js';
 import Pagination from '../../components/Pagination';
 
@@ -82,7 +82,7 @@ class ListStoreInactivos extends React.Component {
                         title="Activar Almacen"
                         className="iconButtons"
                         onClick={() => { this.ActivateStore(data._id, data.branchoffice.value); }}>
-                        <DoneOutlineOutlined className="iconTable" />
+                        <CheckCircle className="iconTable" />
                       </IconButton>
                     </div>
                   </td>

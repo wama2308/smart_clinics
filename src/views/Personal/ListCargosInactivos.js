@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
-import { DoneOutlineOutlined } from "@material-ui/icons";
+import { CheckCircle } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
 
 class ListCargosInactivos extends React.Component {
@@ -81,7 +81,7 @@ class ListCargosInactivos extends React.Component {
                           title="Activar Cargo"
                           className="iconButtons"
                           onClick={() => { this.activarCargo(cargo.value); }}>
-                          <DoneOutlineOutlined className="iconTable" />
+                          <CheckCircle className="iconTable" />
                         </IconButton>
                       </div>
                     </td>

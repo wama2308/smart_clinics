@@ -317,7 +317,7 @@ class ModalDistributor extends React.Component {
         })
     }
 
-    componentWillReceiveProps=(props)=>{        
+    componentWillReceiveProps=(props)=>{       
         this.setState({
             modal: props.modal            
         });   
@@ -383,8 +383,9 @@ class ModalDistributor extends React.Component {
                 const selectDistrict = { 
                     label: props.distributor.distributorId.address.name_district,
                     value: props.distributor.distributorId.address.id_district
-                };                
-                if(props.distributor.action === 0 && props.aplication.confirm.message === ""){                    
+                };     
+                
+                if(props.distributor.action === 0 && ((props.aplication.confirm.message === "") || (!props.aplication.confirm.message))){    
                     this.setState({
                         arrayTypeIdentitySelect: props.distributor.distributorId.type_identity,
                         dni: props.distributor.distributorId.tin,
@@ -396,7 +397,7 @@ class ModalDistributor extends React.Component {
                         arrayDistrictSelect: selectDistrict,
                         direccion: props.distributor.distributorId.address.address,   
                         collapse:true,                                  
-                        loading:props.distributor.loading,                         
+                        loading:'hide',                         
                     })
                 }                    
                 

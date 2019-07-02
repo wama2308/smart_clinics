@@ -3,7 +3,7 @@ import { Table, Button } from "reactstrap";
 import ModalRoles from "./ModalRoles.js";
 import IconButton from "@material-ui/core/IconButton";
 import { GetDisabledPermits } from "../../core/utils";
-import { DoneOutlineOutlined } from "@material-ui/icons";
+import { CheckCircle } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
 
 class RolesInactivosList extends React.Component {
@@ -95,7 +95,7 @@ class RolesInactivosList extends React.Component {
                             this.activateRoles(rol._id);
                           }}
                         >
-                          <DoneOutlineOutlined className="iconTable" />
+                          <CheckCircle className="iconTable" />
                         </IconButton>
                       </div>
                     </td>

@@ -100,8 +100,7 @@ class ListShop extends React.Component {
   render() {
       const createDisabled = GetDisabledPermits(this.props.permitsShop , "Create")
       const updateDisabled = GetDisabledPermits(this.props.permitsShop , "Update")
-      const deleteDisabled = GetDisabledPermits(this.props.permitsShop , "Delete")
-      console.log(this.props.permitsSho)
+      const deleteDisabled = GetDisabledPermits(this.props.permitsShop , "Delete")      
      return (
       <div>
         {

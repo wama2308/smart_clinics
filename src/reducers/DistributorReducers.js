@@ -34,6 +34,41 @@ const setStoreCleanConstacs = (state, payload) => {
 	return Map(estado);
 }
 
+const setStoreSaveProviderPusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.data.push(payload);	
+	return Map(estado);
+}
+
+const setStoreEditProviderPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.data.findIndex(provider => provider.id === payload.id);
+	estado.data[key].address = payload.address;
+	estado.data[key].email = payload.email;	
+	estado.data[key].name = payload.name;	
+	estado.data[key].phone = payload.phone;	
+	estado.data[key].tin = payload.tin;	
+	estado.data[key].typeIdentity = payload.typeIdentity;		
+	
+	return Map(estado);
+}
+
+const setStoreDisabledProviderPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.data.findIndex(provider => provider.id === payload.id);
+	estado.data.splice(key, 1);	
+	estado.proveedoresInactivos.push(payload);		
+	return Map(estado);
+}
+
+const setStoreEnabledProviderPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.proveedoresInactivos.findIndex(provider => provider.id === payload.id);
+	estado.proveedoresInactivos.splice(key, 1);
+	estado.data.push(payload);	
+	return Map(estado);
+}
+
 const distributorReducer = (state = Map(), action) => {
   switch (action.type) {
 
@@ -55,6 +90,22 @@ const distributorReducer = (state = Map(), action) => {
 
 	  case 'CLEAN_CONTACS': {
 	  	return setStoreCleanConstacs(state, action.payload)
+	  }
+
+	  case 'LOAD_PROVIDER_NEW_PUSHER': {
+	  	return setStoreSaveProviderPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_PROVIDER_EDIT_PUSHER': {
+	  	return setStoreEditProviderPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_PROVIDER_DISABLED_PUSHER': {
+	  	return setStoreDisabledProviderPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_PROVIDER_ENABLED_PUSHER': {
+	  	return setStoreEnabledProviderPusher(state, action.payload)
 	  }
 
 	  default:
