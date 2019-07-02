@@ -24,11 +24,12 @@ import {
   loadModifiedService,
   editServices
 } from "../../../actions/ServicesAction";
+import {Delete , Edit} from '@material-ui/icons'
+import {IconButton} from '@material-ui/core'
 import Cleave from "cleave.js/react";
 import jstz from "jstz";
 import * as yup from "yup";
 import styled from "styled-components";
-import { array } from "prop-types";
 
 class ModalServicio extends React.Component {
   constructor(props) {
@@ -152,7 +153,7 @@ class ModalServicio extends React.Component {
               resetForm
             }) => {
               const group = this.getGroup(values.fields);
-
+              console.log("asdasd",values)
               return (
                 <div>
                   <ModalHeader toggle={this.props.close}>
@@ -244,7 +245,15 @@ class ModalServicio extends React.Component {
                                       field.size
                                     }`}
                                   >
+                                    <div>
                                     <Label for="servicio">{field.label}</Label>
+                                    <IconButton>
+                                      <Delete/>
+                                    </IconButton>
+                                    <IconButton>
+                                      <Edit/>
+                                    </IconButton>
+                                    </div>
 
                                     <Input
                                       value={field.values}
@@ -279,10 +288,10 @@ class ModalServicio extends React.Component {
                                       <Select
                                         isSearchable="true"
                                         name="categoria"
-                                        value={values.category}
+                                        value={field.value}
                                         isDisabled={disabled}
                                         onChange={event => {
-                                          setFieldValue(field.name, event);
+                                          setFieldValue(`fields[${key}].value`, event);
                                         }}
                                         options={field.options}
                                       />
@@ -330,7 +339,9 @@ class ModalServicio extends React.Component {
                                     <Label>{field.label}</Label>
                                     <Input
                                       style={{ width: "10%" }}
+                                      value={field.value}
                                       type="checkbox"
+                                      onClick={()=> setFieldValue(`fields[${key}].value`, !field.value)}
                                       name="code"
                                     />
                                   </FormGroup>
