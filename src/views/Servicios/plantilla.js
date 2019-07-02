@@ -119,7 +119,7 @@ class Plantillas extends React.Component {
                   if (template.status === true) {
                     count.push(template.number);
                     return (
-                      <tr key={template.number}>
+                      <tr key={template.number - 1}>
                         <td scope="row" style={{ width: "30%" }}>
                           {count.length}
                         </td>
@@ -170,16 +170,15 @@ class Plantillas extends React.Component {
                   }
                 })}
             </tbody>
+            {
+              this.props.template.length > 10 &&
+                <Pagination contador={this.props.template}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  handleChangePage={this.handleChangePage} />
+            }
           </Table>
-        {  this.props.template.length > 10 &&
-          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-            <Pagination contador={this.props.template}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-              handleChangePage={this.handleChangePage} />
-          </div>
-        }
         </div>
       </div>
     );

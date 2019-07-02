@@ -174,18 +174,16 @@ class ListPersonal extends React.Component {
               null
             }
           </tbody>
+          {
+            this.props.personal.length > 10 &&
+              <Pagination
+                contador={this.props.personal}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-      { 
-        this.props.personal.length > 10 &&
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination
-            contador={this.props.personal}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
-      }
       </div>
     );
   }

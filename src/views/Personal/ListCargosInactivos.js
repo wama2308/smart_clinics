@@ -87,19 +87,18 @@ class ListCargosInactivos extends React.Component {
                 null
             }
           </tbody>
+          {
+            this.props.cargosInactivos.length > 10 &&
+              <Pagination contador={this.props.cargosInactivos}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+            }
         </Table>
-        {this.props.cargosInactivos.length > 10 &&
-          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-            <Pagination contador={this.props.cargosInactivos}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-              handleChangePage={this.handleChangePage} />
-          </div>}
       </div>
 
     );
   }
 }
 export default ListCargosInactivos;
-

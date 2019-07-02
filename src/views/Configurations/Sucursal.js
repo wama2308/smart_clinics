@@ -127,7 +127,7 @@ class Sucursales extends React.Component {
                 ? ArraySucursales.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
                   if (item.active) {
                     return (
-                      <tr key={item.number}>
+                      <tr key={item.number - 1}>
                         <td>{item.name}</td>
                         <td>{item.code}</td>
                         <td>{item.country}</td>
@@ -173,16 +173,15 @@ class Sucursales extends React.Component {
                 })
                 : null}
             </tbody>
+            {
+              this.props.sucursales.length > 10 &&
+              <Pagination contador={this.props.sucursales}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+            }
           </Table>
-          {
-            this.props.sucursales.length > 10 &&
-          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-            <Pagination contador={this.props.sucursales}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-              handleChangePage={this.handleChangePage} />
-          </div>}
         </div>
       </div>
     );

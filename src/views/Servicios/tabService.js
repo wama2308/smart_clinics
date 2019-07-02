@@ -152,18 +152,16 @@ export default class tabService extends React.Component {
                   );
                 })}
               </tbody>
+              {
+                this.props.data.length > 10 &&
+                  <Pagination
+                    contador={this.props.data}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage} />
+              }
             </Table>
-            {
-              this.props.data.length > 10 &&
-              < div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-                <Pagination
-                  contador={this.props.data}
-                  page={page}
-                  rowsPerPage={rowsPerPage}
-                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                  handleChangePage={this.handleChangePage} />
-              </div>
-            }
           </div>
           <div />
         </form>

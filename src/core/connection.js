@@ -1,4 +1,4 @@
-export const url = `http://192.168.0.112:8000`;
+export const url = `http://192.168.0.2:8000`;
 // export const url = `http://192.168.0.112:8000`;
 
 export const getDataToken = () => {

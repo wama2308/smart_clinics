@@ -173,32 +173,32 @@ class ListShop extends React.Component {
                   <td>{number_format(shop.total, 2)}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
-                      <IconButton aria-label="Delete" 
-                      title="Ver Compra" 
-                      className="iconButtons" 
+                      <IconButton aria-label="Delete"
+                      title="Ver Compra"
+                      className="iconButtons"
                       onClick={() => { this.openModal(2, shop.number, shop._id); }}>
                         <Visibility className="iconTable" />
                       </IconButton>
 
-                      <IconButton 
-                      aria-label="Delete" 
-                      title="Editar Compra" 
-                      disabled={updateDisabled} 
+                      <IconButton
+                      aria-label="Delete"
+                      title="Editar Compra"
+                      disabled={updateDisabled}
                       className="iconButtons" onClick={() => { this.openModal(3, shop.number, shop._id); }}>
                       <Edit className="iconTable" />
                       </IconButton>
-                      
-                      <IconButton 
-                      aria-label="Delete" 
-                      title="Eliminar Compra" 
-                      disabled={deleteDisabled} 
+
+                      <IconButton
+                      aria-label="Delete"
+                      title="Eliminar Compra"
+                      disabled={deleteDisabled}
                       className="iconButtons" onClick={() => { this.deleteRegister(shop._id); }}>
                       <Delete className="iconTable" />
                       </IconButton>
 
-                      <IconButton aria-label="Delete" 
-                      title="Transferir Compra" 
-                      className="iconButtons" 
+                      <IconButton aria-label="Delete"
+                      title="Transferir Compra"
+                      className="iconButtons"
                       onClick={() => { this.openModal(4, shop.number, shop._id); }}>
                         <SwapHoriz className="iconTable" />
                       </IconButton>
@@ -211,17 +211,15 @@ class ListShop extends React.Component {
               null
             }
           </tbody>
+          {
+            this.props.data.length > 10 &&
+              <Pagination contador={this.props.data}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-        {
-          this.props.data.length > 10 &&
-          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-            <Pagination contador={this.props.data}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-              handleChangePage={this.handleChangePage} />
-          </div>
-        }
       </div>
     );
   }

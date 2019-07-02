@@ -67,7 +67,7 @@ class BodyExternal extends React.Component {
 
     const deleteDisabled = GetDisabledPermits(this.props.externalPermits, "Delete")
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray( this.props.data)
+    const ArrayData = getArray(this.props.data)
 
     return (
       <div
@@ -95,7 +95,7 @@ class BodyExternal extends React.Component {
             {ArrayData && ArrayData.length > 0
               ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
                 return (
-                  <tr key={data.number - 1}>
+                  <tr key={item.number - 1}>
                     <td>{item.name_branchoffices}</td>
                     <td>{this.props.type}</td>
                     <td>{item.name_medical_center}</td>
@@ -127,31 +127,15 @@ class BodyExternal extends React.Component {
               })
               : null}
           </tbody>
+          {
+            this.props.data.length > 10 &&
+              <Pagination contador={this.props.data}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-
-        {/* {this.props.data.length === 0 && (
-          <div
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            No tienes solitudes {this.props.type}
-          </div>
-        )} */}
-        { this.props.data.length > 10 &&
-          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-            <Pagination contador={this.props.data}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-              handleChangePage={this.handleChangePage} />
-          </div>
-        }
       </div>
 
     );

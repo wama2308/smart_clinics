@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import ModalDistributor from './ModalDistributor.js';
 import Pagination from '../../components/Pagination';
 
@@ -92,13 +92,7 @@ class ListDistributor extends React.Component {
     const deleteDisabled = GetDisabledPermits(this.props.distributorPermits, "Delete");
     const createDisabled = GetDisabledPermits(this.props.distributorPermits, "Create");
     const { rowsPerPage, page } = this.state;
-    const ArrayDistributor = [];
-
-    this.props.listDistributor.map((distributor, key) => {
-      ArrayDistributor.push({
-        ...distributor, number: key + 1
-      })
-    })
+    const ArrayDistributor = getArray(this.props.listDistributor)
 
     return (
       <div>
@@ -133,7 +127,7 @@ class ListDistributor extends React.Component {
           <tbody>
             {ArrayDistributor ? ArrayDistributor.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
               return (
-                <tr key={distributor.number + 1} className="text-left">
+                <tr key={distributor.number} className="text-left">
                   <td>{distributor.number}</td>
                   <td style={{ 'minWidth': "105px" }}>{distributor.typeIdentity}-{distributor.tin}</td>
                   <td>{distributor.name}</td>
@@ -167,14 +161,15 @@ class ListDistributor extends React.Component {
               null
             }
           </tbody>
+          {
+            ArrayDistributor > 10 &&
+            <Pagination contador={this.props.listDistributor}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.listDistributor}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
     );
   }

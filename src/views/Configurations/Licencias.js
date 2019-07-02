@@ -57,17 +57,15 @@ class Licencias extends React.Component {
                   );
                 }) : null}
               </tbody>
+              {
+                this.props.licenses.length > 10 &&
+                  <Pagination contador={this.props.licenses}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage} />
+              }
             </Table>
-            {
-              this.props.licenses.length > 10 &&
-              <div className={{ 'Display': "flex", 'JustifyContent': "flex-end" }}>
-                <Pagination contador={this.props.licenses}
-                  page={page}
-                  rowsPerPage={rowsPerPage}
-                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                  handleChangePage={this.handleChangePage} />
-              </div>
-            }
           </div>
         </div>
       </div>

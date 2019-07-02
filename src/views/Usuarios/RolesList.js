@@ -189,17 +189,15 @@ class RolesList extends React.Component {
               })
               : null}
           </tbody>
+          {
+            this.props.roles.length > 10 &&
+              <Pagination contador={this.props.roles}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-        {
-          this.props.roles.length > 10 &&
-          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-            <Pagination contador={this.props.roles}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-              handleChangePage={this.handleChangePage} />
-          </div>
-        }
       </div>
     );
   }
