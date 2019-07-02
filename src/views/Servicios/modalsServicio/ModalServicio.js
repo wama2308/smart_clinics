@@ -24,8 +24,8 @@ import {
   loadModifiedService,
   editServices
 } from "../../../actions/ServicesAction";
-import {Delete , Edit} from '@material-ui/icons'
-import {IconButton} from '@material-ui/core'
+import { Delete, Edit } from "@material-ui/icons";
+import { IconButton } from "@material-ui/core";
 import Cleave from "cleave.js/react";
 import jstz from "jstz";
 import * as yup from "yup";
@@ -153,7 +153,7 @@ class ModalServicio extends React.Component {
               resetForm
             }) => {
               const group = this.getGroup(values.fields);
-              console.log("asdasd",values)
+              console.log("asdasd", values);
               return (
                 <div>
                   <ModalHeader toggle={this.props.close}>
@@ -243,16 +243,26 @@ class ModalServicio extends React.Component {
                                     key={key}
                                     className={`top "form-group col-sm-${
                                       field.size
-                                    }`}
+                                    } groupContainer `}
                                   >
-                                    <div>
-                                    <Label for="servicio">{field.label}</Label>
-                                    <IconButton>
-                                      <Delete/>
-                                    </IconButton>
-                                    <IconButton>
-                                      <Edit/>
-                                    </IconButton>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        height: 40
+                                      }}
+                                    >
+                                      <Label for="servicio">
+                                        {field.label}
+                                      </Label>
+                                      <div className="buttonSEdit">
+                                        <IconButton>
+                                          <Edit style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                        <IconButton>
+                                          <Delete style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                      </div>
                                     </div>
 
                                     <Input
@@ -281,9 +291,27 @@ class ModalServicio extends React.Component {
                                     key={key}
                                     className={`top form-group col-sm-${
                                       field.size
-                                    }`}
+                                    } groupContainer`}
                                   >
-                                    <Label for="categoria">{field.label}</Label>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        height: 40
+                                      }}
+                                    >
+                                      <Label for="servicio">
+                                        {field.label}
+                                      </Label>
+                                      <div className="buttonSEdit">
+                                        <IconButton>
+                                          <Edit style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                        <IconButton>
+                                          <Delete style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                      </div>
+                                    </div>
                                     <div>
                                       <Select
                                         isSearchable="true"
@@ -291,7 +319,10 @@ class ModalServicio extends React.Component {
                                         value={field.value}
                                         isDisabled={disabled}
                                         onChange={event => {
-                                          setFieldValue(`fields[${key}].value`, event);
+                                          setFieldValue(
+                                            `fields[${key}].value`,
+                                            event
+                                          );
                                         }}
                                         options={field.options}
                                       />
@@ -307,11 +338,27 @@ class ModalServicio extends React.Component {
                                     key={key}
                                     className={`top form-group col-sm-${
                                       field.size
-                                    }`}
+                                    } groupContainer`}
                                   >
-                                    <Label for="codigo" className="mr-sm-2">
-                                      {field.label}
-                                    </Label>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        height: 40
+                                      }}
+                                    >
+                                      <Label for="servicio">
+                                        {field.label}
+                                      </Label>
+                                      <div className="buttonSEdit">
+                                        <IconButton>
+                                          <Edit style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                        <IconButton>
+                                          <Delete style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                      </div>
+                                    </div>
                                     <Input
                                       type="textarea"
                                       name="code"
@@ -334,14 +381,37 @@ class ModalServicio extends React.Component {
                                     key={key}
                                     className={`top form-group col-sm-${
                                       field.size
-                                    }`}
+                                    } groupContainer`}
                                   >
-                                    <Label>{field.label}</Label>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        height: 40
+                                      }}
+                                    >
+                                      <Label for="servicio">
+                                        {field.label}
+                                      </Label>
+                                      <div className="buttonSEdit">
+                                        <IconButton>
+                                          <Edit style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                        <IconButton>
+                                          <Delete style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                      </div>
+                                    </div>
                                     <Input
                                       style={{ width: "10%" }}
                                       value={field.value}
                                       type="checkbox"
-                                      onClick={()=> setFieldValue(`fields[${key}].value`, !field.value)}
+                                      onClick={() =>
+                                        setFieldValue(
+                                          `fields[${key}].value`,
+                                          !field.value
+                                        )
+                                      }
                                       name="code"
                                     />
                                   </FormGroup>
@@ -427,5 +497,17 @@ const EditableInput = styled(Card)`
     display: flex;
     flex: 1;
     flex-wrap: wrap;
+  }
+
+  .groupContainer {
+    .buttonSEdit {
+      display: none;
+    }
+
+    &:hover {
+      .buttonSEdit {
+        display: block;
+      }
+    }
   }
 `;
