@@ -26,7 +26,8 @@ class ShopContainers extends Component {
     super(props);
     this.state = {
       activeTab: "1",
-      permitsShop:[]
+      permitsShop: [],
+      permitsTransfer: []
     };
   }
 
@@ -36,6 +37,14 @@ class ShopContainers extends Component {
       if (permisos.name === "Almacen") {
         this.setState({
           permitsShop: permisos.permits
+        });
+      }
+    });
+
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Transferencias") {
+        this.setState({
+          permitsTransfer: permisos.permits
         });
       }
     });
@@ -111,6 +120,7 @@ class ShopContainers extends Component {
                               data={this.props.shop.allTransfer}
                               queryOneTransferFunction={this.props.queryOneTransferFunction}
                               disableTransferAction={this.props.disableTransferAction}
+                              permitsTransfer={this.state.permitsTransfer}
                             />
                           </TabPane>
                           <TabPane tabId="4">
@@ -120,6 +130,7 @@ class ShopContainers extends Component {
                               queryOneTransferFunction={this.props.queryOneTransferFunction}
                               rejectTransferAction={this.props.rejectTransferAction}
                               acceptTransferAction={this.props.acceptTransferAction}
+                              permitsTransfer={this.state.permitsTransfer}
                             />
                           </TabPane>
                       </TabContent>

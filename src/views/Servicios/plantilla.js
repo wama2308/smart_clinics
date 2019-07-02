@@ -4,12 +4,11 @@ import { Button, Table } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
 import ModalPlantilla from "./modalsServicio/ModalPlantilla";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import jstz from "jstz";
-
 import "./Services.css";
 import "./loading.css";
-import Pagination from '../../components/Pagination';
+import { Pagination } from '../../components/Pagination';
 
 class Plantillas extends React.Component {
   constructor(props) {
@@ -77,13 +76,7 @@ class Plantillas extends React.Component {
     const deleteDisabled = GetDisabledPermits(this.props.serviciosPermits, "Delete")
 
     const { rowsPerPage, page } = this.state;
-    const ArrayTemplate = [];
-
-    this.props.template.map((template, key) => {
-      ArrayTemplate.push({
-        ...template, number: key
-      })
-    })
+    const ArrayTemplate = getArray(this.props.template)
 
     return (
       <div>
@@ -125,7 +118,7 @@ class Plantillas extends React.Component {
                   if (template.status === true) {
                     count.push(template.number);
                     return (
-                      <tr key={template.number}>
+                      <tr key={template.number - 1}>
                         <td scope="row" style={{ width: "30%" }}>
                           {count.length}
                         </td>
@@ -176,14 +169,15 @@ class Plantillas extends React.Component {
                   }
                 })}
             </tbody>
-          </Table>
-          <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
+          {
+            ArrayTemplate > 10 && 
             <Pagination contador={this.props.template}
               page={page}
               rowsPerPage={rowsPerPage}
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage} />
-          </div>
+          }
+          </Table>
         </div>
       </div>
     );

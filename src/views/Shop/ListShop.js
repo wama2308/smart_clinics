@@ -18,15 +18,15 @@ class ListShop extends React.Component {
       disabled: '',
       showHide: '',
       option:0,
-      position: 0,  
+      position: 0,
       isClearable: false,
-      shop_id: '0',      
-    };    
+      shop_id: '0',
+    };
   }
 
-  componentDidMount(){}  
+  componentDidMount(){}
 
-  openModal = (option, pos, id) => {  
+  openModal = (option, pos, id) => {
     if(!this.props.provider){
       this.props.alert("warning", "¡Antes de agregar una compra, debe agregar un proveedor!");
     }else{
@@ -37,8 +37,8 @@ class ListShop extends React.Component {
         modalHeader:'Registrar Compras-Productos',
         modalFooter:'Guardar',
         disabled: false,
-        showHide: 'show',       
-        isClearable: true,  
+        showHide: 'show',
+        isClearable: true,
       })
     }else if(option === 2){
       this.props.LoadShopIdFunction(id);
@@ -48,7 +48,7 @@ class ListShop extends React.Component {
         modalHeader:'Ver Compras-Productos',
         modalFooter:'Guardar',
         disabled: true,
-        showHide: 'hide',                
+        showHide: 'hide',
       })
     }else if(option === 3){
       this.props.LoadShopIdFunction(id);
@@ -59,8 +59,8 @@ class ListShop extends React.Component {
         modalFooter:'Editar',
         disabled: false,
         showHide: 'show',
-        position: pos,        
-        shop_id:id       
+        position: pos,
+        shop_id:id
       })
     }else if(option === 4){
       this.props.LoadShopIdFunction(id);
@@ -71,14 +71,14 @@ class ListShop extends React.Component {
         modalFooter:'Guardar',
         disabled: false,
         showHide: 'show',
-        position: pos,        
-        shop_id:id       
+        position: pos,
+        shop_id:id
       })
     }
-    }      
-  }  
+    }
+  }
 
-  deleteRegister = (id) => {  
+  deleteRegister = (id) => {
     const message = {
       title: "Eliminar Registro",
       info: "¿Esta seguro que desea eliminar este registro?"
@@ -87,68 +87,68 @@ class ListShop extends React.Component {
       if (res) {
         this.props.disableShopAction(id);
       }
-    });    
-  } 
+    });
+  }
 
-  valorCloseModal = (valor) => {            
+  valorCloseModal = (valor) => {
     this.setState({
-        modal: valor,   
-        option: 0,       
-    });                    
-  } 
+        modal: valor,
+        option: 0,
+    });
+  }
 
   render() {
       const createDisabled = GetDisabledPermits(this.props.permitsShop , "Create")
       const updateDisabled = GetDisabledPermits(this.props.permitsShop , "Update")
       const deleteDisabled = GetDisabledPermits(this.props.permitsShop , "Delete")
-      console.log(this.props.permitsSho)
+
      return (
       <div>
         {
           (this.state.option === 1 || this.state.option === 2 || this.state.option === 3) &&
-          <ModalShop 
+          <ModalShop
             option = {this.state.option}
             modal = {this.state.modal}
             modalHeader = {this.state.modalHeader}
             modalFooter = {this.state.modalFooter}
             disabled = {this.state.disabled}
-            showHide = {this.state.showHide}             
-            isClearable = {this.state.isClearable}             
-            shop_id = {this.state.shop_id}             
-            branchOfficces={this.props.branchOfficces}                       
-            valorCloseModal = {this.valorCloseModal}          
+            showHide = {this.state.showHide}
+            isClearable = {this.state.isClearable}
+            shop_id = {this.state.shop_id}
+            branchOfficces={this.props.branchOfficces}
+            valorCloseModal = {this.valorCloseModal}
           />
         }
         {
           (this.state.option === 4) &&
-          <ModalTransferencias 
+          <ModalTransferencias
             option = {this.state.option}
             modal = {this.state.modal}
             modalHeader = {this.state.modalHeader}
             modalFooter = {this.state.modalFooter}
             disabled = {this.state.disabled}
-            showHide = {this.state.showHide}             
-            isClearable = {this.state.isClearable}             
-            shop_id = {this.state.shop_id}             
-            branchOfficces={this.props.branchOfficces}                       
-            valorCloseModal = {this.valorCloseModal}          
+            showHide = {this.state.showHide}
+            isClearable = {this.state.isClearable}
+            shop_id = {this.state.shop_id}
+            branchOfficces={this.props.branchOfficces}
+            valorCloseModal = {this.valorCloseModal}
           />
         }
-        
+
         <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar</Button>
         <br />
-        <br />      
+        <br />
           <Table hover responsive borderless>
             <thead className="thead-light">
               <tr>
                 <th className="text-left">Nro</th>
                 <th className="text-left">Compra</th>
                 <th className="text-left">Control</th>
-                <th className="text-left">Tipo</th>                  
-                <th className="text-left">SubTotal</th>                  
-                <th className="text-left">IGV</th>                  
-                <th className="text-left">Total</th>                  
-                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>                  
+                <th className="text-left">Tipo</th>
+                <th className="text-left">SubTotal</th>
+                <th className="text-left">IGV</th>
+                <th className="text-left">Total</th>
+                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -164,12 +164,36 @@ class ListShop extends React.Component {
                   <td>{ number_format(shop.total, 2) }</td>
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >
-                      <IconButton aria-label="Delete" title="Ver Compra" className="iconButtons" onClick={() => { this.openModal(2, i, shop._id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Compra" disabled={updateDisabled} className="iconButtons" onClick={() => { this.openModal(3, i, shop._id); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Eliminar Compra" disabled={deleteDisabled} className="iconButtons" onClick={() => { this.deleteRegister(shop._id); }}><Delete className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Transferir Compra" className="iconButtons" onClick={() => { this.openModal(4, i, shop._id); }}><SwapHoriz className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete"
+                        title="Ver Compra"
+                        className="iconButtons" onClick={() => { this.openModal(2, i, shop._id); }}>
+                        <Visibility className="iconTable" />
+                      </IconButton>
+
+                      <IconButton aria-label="Delete"
+                         title="Editar Compra"
+                         disabled={updateDisabled}
+                         className="iconButtons"
+                         onClick={() => { this.openModal(3, i, shop._id); }}>
+                         <Edit className="iconTable" />
+                       </IconButton>
+
+                      <IconButton aria-label="Delete"
+                        title="Eliminar Compra"
+                        disabled={deleteDisabled}
+                        className="iconButtons"
+                        onClick={() => { this.deleteRegister(shop._id); }}>
+                        <Delete className="iconTable" />
+                      </IconButton>
+                      
+                      <IconButton aria-label="Delete"
+                        title="Transferir Compra"
+                        className="iconButtons"
+                        onClick={() => { this.openModal(4, i, shop._id); }}>
+                        <SwapHoriz className="iconTable" />
+                      </IconButton>
                     </div>
-                  </td>                    
+                  </td>
                 </tr>
               );
              })
@@ -177,7 +201,7 @@ class ListShop extends React.Component {
                 null
               }
             </tbody>
-          </Table>          
+          </Table>
       </div>
     );
   }

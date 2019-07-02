@@ -4,7 +4,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility, SwapHoriz } from "@material-ui/icons";
 import ModalShop from './ModalShop.js';
 import ModalTransferencias from './ModalTransferencias.js';
-import { number_format } from "../../core/utils";
+import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
+import { Pagination } from '../../components/Pagination';
 
 class ListTransferencias extends React.Component {
   constructor(props) {
@@ -17,16 +18,18 @@ class ListTransferencias extends React.Component {
       disabled: '',
       showHide: '',
       option:0,
-      position: 0,  
+      position: 0,
       isClearable: false,
-      transfer_id: '0', 
-      status: ''    
-    };    
+      transfer_id: '0',
+      status: '',
+      page: 0,
+      rowsPerPage: 10,
+    };
   }
 
-  componentDidMount(){}  
+  componentDidMount(){}
 
-  openModal = (option, pos, id, status) => {  
+  openModal = (option, pos, id, status) => {
     if(option === 5){
       this.props.queryOneTransferFunction(id);
       this.setState({
@@ -35,7 +38,7 @@ class ListTransferencias extends React.Component {
         modalHeader:'Ver Transferencia',
         modalFooter:'Guardar',
         disabled: true,
-        showHide: 'hide',                
+        showHide: 'hide',
       })
     }else if(option === 6){
       this.props.queryOneTransferFunction(id);
@@ -46,14 +49,16 @@ class ListTransferencias extends React.Component {
         modalFooter:'Editar',
         disabled: false,
         showHide: 'show',
-        position: pos,        
+        position: pos,
         transfer_id:id,
-        status: status       
+        status: status,
+        page: 0,
+        rowsPerPage: 10,
       })
-    }  
-  }  
+    }
+  }
 
-  deleteRegister = (id, status) => {      
+  deleteRegister = (id, status) => {
     const message = {
       title: "Eliminar Registro",
       info: "¿Esta seguro que desea eliminar este registro?"
@@ -64,37 +69,53 @@ class ListTransferencias extends React.Component {
           this.props.disableTransferAction(id);
         }else{
           this.props.alert("warning", "¡La transferencia no puede ser eliminada porque ya fue aceptada!");
-        }        
+        }
       }
-    });    
-  } 
+    });
+  }
 
-  valorCloseModal = (valor) => {            
+  valorCloseModal = (valor) => {
     this.setState({
-        modal: valor,   
-        option: 0,       
-    });                    
-  } 
+        modal: valor,
+        option: 0,
+    });
+  }
+
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
 
   render() {
+    const createDisabled = GetDisabledPermits(this.props.permitsTransfer , "Create")
+    const updateDisabled = GetDisabledPermits(this.props.permitsTransfer , "Update")
+    const deleteDisabled = GetDisabledPermits(this.props.permitsTransfer , "Delete")
+    const detailsDisabled = GetDisabledPermits(this.props.permitsTransfer , "Details")
+
+    const { rowsPerPage, page } = this.state;
+    const ArrayData = getArray(this.props.data)
      return (
       <div>
         {
           (this.state.option === 5 || this.state.option === 6) &&
-          <ModalTransferencias 
+          <ModalTransferencias
             option = {this.state.option}
             modal = {this.state.modal}
             modalHeader = {this.state.modalHeader}
             modalFooter = {this.state.modalFooter}
             disabled = {this.state.disabled}
-            showHide = {this.state.showHide}             
-            isClearable = {this.state.isClearable}             
-            transfer_id = {this.state.transfer_id}       
-            status = {this.state.status}      
-            branchOfficces={this.props.branchOfficces}                       
-            valorCloseModal = {this.valorCloseModal}          
+            showHide = {this.state.showHide}
+            isClearable = {this.state.isClearable}
+            transfer_id = {this.state.transfer_id}
+            status = {this.state.status}
+            branchOfficces={this.props.branchOfficces}
+            valorCloseModal = {this.valorCloseModal}
           />
         }
+
         <br />
           <Table hover responsive borderless>
             <thead className="thead-light">
@@ -102,19 +123,19 @@ class ListTransferencias extends React.Component {
                 <th className="text-left">Nro</th>
                 <th className="text-left">Transferencia</th>
                 <th className="text-left">Control</th>
-                <th className="text-left">SubTotal</th>                  
-                <th className="text-left">IGV</th>                  
-                <th className="text-left">Total</th>                  
-                <th className="text-left">Receptor</th>                  
-                <th className="text-left">Estatus</th>                  
-                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>                  
+                <th className="text-left">SubTotal</th>
+                <th className="text-left">IGV</th>
+                <th className="text-left">Total</th>
+                <th className="text-left">Receptor</th>
+                <th className="text-left">Estatus</th>
+                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>
               </tr>
             </thead>
             <tbody>
-             {this.props.data? this.props.data.map((data, i) => {
+             {this.props.data ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
-                <tr key={i} className="text-left">
-                  <td>{ i + 1 }</td>
+                <tr key={ data.number } className="text-left">
+                  <td>{ data.number }</td>
                   <td>{ data.number_invoice }</td>
                   <td>{ data.number_controll }</td>
                   <td>{ number_format(data.subtotal, 2) }</td>
@@ -124,11 +145,30 @@ class ListTransferencias extends React.Component {
                   <td>{ data.status }</td>
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >
-                      <IconButton aria-label="Delete" title="Ver Transferencia" className="iconButtons" onClick={() => { this.openModal(5, i, data._id, data.status); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Transferencia" className="iconButtons" onClick={() => { this.openModal(6, i, data._id, data.status); }}><Edit className="iconTable" /></IconButton>                        
-                      <IconButton aria-label="Delete" title="Eliminar Transferencia" className="iconButtons" onClick={() => { this.deleteRegister(data._id, data.status); }}><Delete className="iconTable" /></IconButton>                      
+                      <IconButton aria-label="Delete"
+                        title="Ver Transferencia"
+                        className="iconButtons"
+                        onClick={() => { this.openModal(5, data.number, data._id, data.status); }}
+                        disabled={detailsDisabled}>
+                        <Visibility className="iconTable" />
+                      </IconButton>
+
+                      <IconButton aria-label="Delete"
+                        title="Editar Transferencia"
+                        className="iconButtons"
+                        onClick={() => { this.openModal(6, data.number, data._id, data.status); }}
+                        disabled={updateDisabled}>
+                        <Edit className="iconTable" />
+                      </IconButton>
+
+                      <IconButton aria-label="Delete"
+                        title="Eliminar Transferencia"
+                        className="iconButtons" onClick={() => { this.deleteRegister(data._id, data.status); }}>
+                        <Delete className="iconTable"
+                          disabled={deleteDisabled}/>
+                      </IconButton>
                     </div>
-                  </td>                    
+                  </td>
                 </tr>
               );
              })
@@ -136,7 +176,12 @@ class ListTransferencias extends React.Component {
                 null
               }
             </tbody>
-          </Table>          
+            <Pagination contador={this.props.data}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          </Table>
       </div>
     );
   }

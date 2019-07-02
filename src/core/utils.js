@@ -268,3 +268,13 @@ export const GetDisabledPermits = (permits, type) => {
 
   return disabled;
 };
+
+export const getArray = (array) =>{
+  const arrayClean = [];
+
+  array.map((data, key)=>{
+    arrayClean.push({
+      ...data, number: key + 1
+    })
+  })
+}
