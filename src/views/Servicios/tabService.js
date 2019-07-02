@@ -3,7 +3,7 @@ import { Table } from "reactstrap";
 import { FaFileAlt } from "react-icons/fa";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility } from "@material-ui/icons";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import ModalServicio from "./modalsServicio/ModalServicio";
 import Pagination from '../../components/Pagination';
 export default class tabService extends React.Component {
@@ -53,7 +53,7 @@ export default class tabService extends React.Component {
   render() {
     const updateDisabled = GetDisabledPermits(this.props.serviciosPermits, "Update")
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
+    const ArrayData = getArray(this.props.data);
 
     return (
       <div >

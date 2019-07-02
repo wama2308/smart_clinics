@@ -111,17 +111,15 @@ class UsersInactivosList extends React.Component {
                   })
                   : null}
               </tbody>
+              {
+                this.props.users.length > 10 &&
+                  <Pagination contador={this.props.users}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage} />
+              }
             </Table>
-            {
-              this.props.users.length > 10 &&
-              <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-                <Pagination contador={this.props.users}
-                  page={page}
-                  rowsPerPage={rowsPerPage}
-                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                  handleChangePage={this.handleChangePage} />
-              </div>
-            }
           </div>
         </div>
       </div>

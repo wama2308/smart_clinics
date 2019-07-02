@@ -94,10 +94,6 @@ class ListStore extends React.Component {
     const { rowsPerPage, page } = this.state;
     const ArrayData = getArray(this.props.data)
 
-    const createDisabled = GetDisabledPermits(this.props.permitsStore, "Create")
-    const updateDisabled = GetDisabledPermits(this.props.permitsStore, "Update")
-    const deleteDisabled = GetDisabledPermits(this.props.permitsStore, "Delete")
-
     return (
       <div>
         <ModalStore
@@ -112,7 +108,7 @@ class ListStore extends React.Component {
           branchOfficces={this.props.branchOfficces}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success"  onClick={() => { this.openModal(1); }}>Agregar</Button>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -146,7 +142,6 @@ class ListStore extends React.Component {
                         title="Editar Almacen"
                         className="iconButtons"
                         onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}
-                        disabled={updateDisabled}
                         >
                         <Edit className="iconTable" />
                       </IconButton>
@@ -155,7 +150,7 @@ class ListStore extends React.Component {
                         title="Eliminar Almacen"
                         className="iconButtons"
                         onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}
-                        disabled={deleteDisabled}>
+                        >
                         <Delete className="iconTable" />
                       </IconButton>
                     </div>
