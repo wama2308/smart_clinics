@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import PreRegistro from "./PreRegistro/PreRegistro";
 import Pagination from '../../components/Pagination';
 
@@ -67,13 +67,8 @@ class BodyExternal extends React.Component {
 
     const deleteDisabled = GetDisabledPermits(this.props.externalPermits, "Delete")
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
+    const ArrayData = getArray(this.props.data)
 
-    this.props.data.map((data, key) => {
-      ArrayData.push({
-        ...data, number: key + 1
-      })
-    })
     return (
       <div
         style={{
@@ -100,7 +95,7 @@ class BodyExternal extends React.Component {
             {ArrayData && ArrayData.length > 0
               ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
                 return (
-                  <tr key={data.number}>
+                  <tr key={item.number - 1}>
                     <td>{item.name_branchoffices}</td>
                     <td>{this.props.type}</td>
                     <td>{item.name_medical_center}</td>
@@ -132,29 +127,15 @@ class BodyExternal extends React.Component {
               })
               : null}
           </tbody>
+          {
+            this.props.data.length > 10 &&
+              <Pagination contador={this.props.data}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-
-        {/* {this.props.data.length === 0 && (
-          <div
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            No tienes solitudes {this.props.type}
-          </div>
-        )} */}
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.data}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
 
     );

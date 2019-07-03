@@ -4,17 +4,17 @@ export const filterDirectionExact = (data, callback) => {
   const payload = {};
   data[0].address_components
     ? data[0].address_components.map(ubication => {
-        ubication.types.map(type => {
-          switch (type) {
-            case "administrative_area_level_1": {
-              payload.province = ubication.long_name;
-            }
-            case "country": {
-              payload.country = ubication.long_name;
-            }
+      ubication.types.map(type => {
+        switch (type) {
+          case "administrative_area_level_1": {
+            payload.province = ubication.long_name;
           }
-        });
-      })
+          case "country": {
+            payload.country = ubication.long_name;
+          }
+        }
+      });
+    })
     : [];
 
   callback(payload);
@@ -268,3 +268,13 @@ export const GetDisabledPermits = (permits, type) => {
 
   return disabled;
 };
+
+export const getArray = (props) => {
+  const ArrayData = []
+  props.map((data, key) => {
+    ArrayData.push({
+      ...data, number: key + 1
+    })
+  })
+  return ArrayData;
+}
