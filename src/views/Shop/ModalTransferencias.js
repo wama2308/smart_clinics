@@ -10,7 +10,7 @@ import { number_format } from "../../core/utils";
 import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { cleanProducts, setCantidadTableTransferencias, setSwitchTableTransferencias, setSelectAllSwitchTransferencias } from "../../actions/ShopActions";
+import { cleanProducts, setCantidadTableTransferencias, setSwitchTableTransferencias, setSelectAllSwitchTransferencias, productTransferAction, editTransferAction } from "../../actions/ShopActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit } from "@material-ui/icons";
@@ -33,27 +33,62 @@ class ModalTransferencias extends React.Component {
         });                
     }    
 
-    handleChangeInputTable = pos => e => {
+    handleChangeInputTable = (pos, cantidad) => e => {
         const { name, value } = e.target;
         let valor = 0;
-        if(value === ""){
+        if(value === "0"){
             valor = 0;
+            var elemento = document.getElementById("divQuantity_"+pos);
+            elemento.className += " borderColorInputTable";            
+        }
+        else if(value === ""){
+            valor = 0;            
+            var elemento = document.getElementById("divQuantity_"+pos);
+            elemento.className += " borderColorInputTable";            
+        }else if (parseFloat(value) > cantidad){
+            valor = cantidad;
+            var elemento = document.getElementById("divQuantity_"+pos);
+            elemento.className += " borderColorInputTable";            
+            this.props.alert("warning", "¡La cantidad a transferir no puede ser mayor a la cantidad de la compra!");
         }else{
             valor = parseFloat(value);
+            var elemento = document.getElementById("divQuantity_"+pos);
+            elemento.className += " borderColorInputTableWhite";             
         }
-        this.props.setCantidadTableTransferencias(pos, valor)        
+        this.props.setCantidadTableTransferencias(pos, valor, this.props.option)  
+             
     }
 
     componentWillReceiveProps=(props)=>{
-        console.log("modal transferencias ", props.shop)
-        if(props.shop.dataShopId){
-            if(props.shop.dataShopId.sucursal_id){
-                this.setState({
-                    arraySucursalEnviaSelect: props.shop.dataShopId.sucursal_id,                    
-                    loading: props.shop.loading,
-                })                  
-            }
+        //console.log("modal transferencias ", props.shop)        
+        if(props.option === 4){
+            if(props.shop.dataShopId){
+                if(props.shop.dataShopId.sucursal_id){
+                    this.setState({
+                        arraySucursalEnviaSelect: props.shop.dataShopId.sucursal_id,                    
+                        loading: props.shop.loading,
+                    })                  
+                }
+            }    
         }
+        if(props.option === 5 || props.option === 6 || props.option === 7){
+            if(props.shop.transferId){
+                if(props.shop.transferId.distribuidor_id && props.aplication.confirm.message === "" && props.shop.action === 0){
+                    const productConfirm = props.shop.transferId.products.find(product => product.confirm === false);
+                    let selectAll = false;
+                    if(!productConfirm){
+                        selectAll = true;
+                    }
+                    this.setState({
+                        arraySucursalEnviaSelect: props.shop.transferId.distribuidor_id,                    
+                        arraySucursalRecibeSelect: props.shop.transferId.sucursal_id,       
+                        observacion: props.shop.transferId.observation,
+                        checked: selectAll,
+                        loading: 'hide',
+                    })
+                }                                  
+            }
+        }        
     }  
 
     testOnclick=()=>{}
@@ -74,7 +109,8 @@ class ModalTransferencias extends React.Component {
     }  
 
    	closeModal = () => {
-        this.setState({                        
+        this.setState({     
+            ...InitalState,                   
             loading: 'show'
         });   
         this.props.cleanProducts();
@@ -82,147 +118,118 @@ class ModalTransferencias extends React.Component {
     }     
 
     validate = () => {
-        let divPrecio= '';        
-        let divPrecioError= '';        
-        let divDescuento= '';        
-        let divDescuentoError= '';        
-        let divPrecioVenta= '';        
-        let divPrecioVentaError= '';        
-        let divLimiteStock= '';        
-        let divLimiteStockError= '';        
-        let divExento= '';        
-        let divExentoError= '';   
-        let labelExento = "";
-        let divNuevaCantidadError = "";
-        let divNuevaCantidad = "";
-        let divMotivoSalidaError = "";
-        let divMotivoSalida = "";
-        let divEspecifiqueError = "";
-        let divEspecifique = "";
-        let motivoSalida = "";
-        if(this.props.option === 2){
-            if (this.state.arrayExentoSelect) {                           
-                let arrayExento = Object.values(this.state.arrayExentoSelect);
-                arrayExento.forEach(function (elemento, indice, array) {
-                    if(indice === 0){
-                        labelExento = elemento;
-                    }            
-                });                         
-            }     
-            
-            if (this.state.precio === "" || this.state.precio === "0.00" || this.state.precio === "0.0") {            
-                divPrecioError = "¡Ingrese el precio de compra!";
-                divPrecio = "borderColor";
-            }
-            if (this.state.precioVenta === "" || this.state.precioVenta === "0.00" || this.state.precioVenta === "0.0") {            
-                divPrecioVentaError = "¡Ingrese el precio de venta!";
-                divPrecioVenta = "borderColor";
-            }
-            if (this.state.limiteStock === "" || this.state.limiteStock === "0") {            
-                divLimiteStockError = "¡Ingrese el limite de stock!";
-                divLimiteStock = "borderColor";
-            }
-            if (!this.state.arrayExentoSelect) {                    
-                divExentoError = "¡Seleccione si es exento!";
-                divExento  = "borderColor";
-            }        
-            if (divPrecioError || divPrecioVentaError || divLimiteStockError || divExentoError) {            
-                this.setState({ 
-                    divPrecioError,
-                    divPrecio,
-                    divPrecioVentaError,
-                    divPrecioVenta,
-                    divLimiteStockError,
-                    divLimiteStock,                
-                    divExentoError,
-                    divExento,                
-                });  
-                return false;
-            }    
+        let divSucursalRecibe = '';        
+        let divSucursalRecibeError = '';                
+        let acumCantidades = 0;
+        let acumConfirm = 0;
+        let arrayProducts = [];
+        this.props.option === 4 ? arrayProducts = this.props.shop.products : arrayProducts = this.props.shop.transferId.products;
+        const productConfirm = arrayProducts.find(product => product.confirm === true);
+        const productFind = arrayProducts.find(product => product.quantity_edit === 0);     
+        const productFindKey = arrayProducts.findIndex(productKey => productKey.quantity_edit === 0);            
+        
+        if (!this.state.arraySucursalRecibeSelect) {                    
+            divSucursalRecibeError = "¡Seleccione la sucursal que recibe!";
+            divSucursalRecibe  = "borderColor";
+        }else if (this.state.arraySucursalRecibeSelect === this.state.arraySucursalEnviaSelect) {                    
+            divSucursalRecibeError = "¡La sucursal que recibe no puede ser la misma que envia!";
+            divSucursalRecibe  = "borderColor";
+        }else if(!productConfirm){
+            acumConfirm++;
+            this.props.alert("warning", "¡Debe seleccionar al menos un producto para la transferencia!");
+        }else if(productFind){
+            acumCantidades++;            
+            var elemento = document.getElementById("divQuantity_"+productFindKey);
+            elemento.className += " borderColorInputTable";
+            this.props.alert("warning", "¡La cantidad de los productos a transferir no puede ser 0!");
         }
-        if(this.props.option === 3){
-            if (this.state.arrayMotivoSalidaSelect) {                           
-                let arrayMotivoSalida = Object.values(this.state.arrayMotivoSalidaSelect);
-                arrayMotivoSalida.forEach(function (elemento, indice, array) {
-                    if(indice === 1){
-                        motivoSalida = elemento;
-                    }            
-                });                         
-            }  
-            if (this.state.nuevaCantidad === "" || this.state.nuevaCantidad === "0") {            
-                divNuevaCantidadError = "¡Ingrese la cantidad de salida!";
-                divNuevaCantidad = "borderColor";
-            }
-            if (!this.state.arrayMotivoSalidaSelect) {                    
-                divMotivoSalidaError = "¡Seleccione el motivo de salida!";
-                divMotivoSalida  = "borderColor";
 
-            }   
-            if(motivoSalida === "5d07a44fa65dd90b0646af97"){
-                divEspecifiqueError = "¡Especifique el motivo de salida!";
-                divEspecifique = "borderColor";
-            }
-            if (divNuevaCantidadError || divMotivoSalidaError) {            
-                this.setState({ 
-                    divNuevaCantidad,
-                    divNuevaCantidadError,
-                    divMotivoSalida,
-                    divMotivoSalidaError,
-                    divEspecifique,
-                    divEspecifiqueError                                    
-                });  
-                return false;
-            }    
-        }
-        return true;        
+        if (divSucursalRecibeError) {            
+            this.setState({ 
+                divSucursalRecibeError,
+                divSucursalRecibe,                
+            });  
+            return false;
+        }else if(acumCantidades === 1){
+            return false;
+        }else if(acumConfirm === 1){
+            return false;
+        }else{
+            return true;
+        }    
+                
     };
 
     handleAction = event => {
         event.preventDefault();
         const isValid = this.validate();   
         if (isValid) {             
-            let labelExento = "";
-            if (this.state.arrayExentoSelect) {                           
-                let arrayExento = Object.values(this.state.arrayExentoSelect);
-                arrayExento.forEach(function (elemento, indice, array) {
+            let sucursalEnvia = "";
+            let sucursalRecibe = "";
+            if (this.state.arraySucursalEnviaSelect) {                           
+                let arrayEnvia = Object.values(this.state.arraySucursalEnviaSelect);
+                arrayEnvia.forEach(function (elemento, indice, array) {
                     if(indice === 0){
-                        labelExento = elemento;
+                        sucursalEnvia = elemento;
                     }            
                 });                         
             }                 
-            if(this.props.option === 2)
+            if (this.state.arraySucursalRecibeSelect) {                           
+                let arrayRecibe = Object.values(this.state.arraySucursalRecibeSelect);
+                arrayRecibe.forEach(function (elemento, indice, array) {
+                    if(indice === 0){
+                        sucursalRecibe = elemento;
+                    }            
+                });                         
+            }
+            if(this.props.option === 4)
             {
                 this.setState({loading:'show'})                                    
-                this.props.editSupplieLotAction(
+                this.props.productTransferAction(
                   {
-                    id: this.props.productoId,
-                    lote_id: this.props.loteId,
-                    limit_stock: this.state.limiteStock,
-                    price: this.state.precio,
-                    price_sale: this.state.precioVenta,
-                    discount: this.state.descuento,
-                    exempt: labelExento
+                    sucursal_envia: sucursalEnvia,
+                    sucursal_recibe: sucursalRecibe,
+                    observacion: this.state.observacion,
+                    products: this.props.shop.products,                    
                   },
                   () => {
                     this.closeModal();                    
                   }
                 )
+            }            
+            if(this.props.option === 6)
+            {
+                if(this.props.status === "Pendiente"){
+                    this.setState({loading:'show'})                                    
+                    this.props.editTransferAction(
+                      {
+                        id: this.props.transfer_id,
+                        sucursal_envia: sucursalEnvia,
+                        sucursal_recibe: sucursalRecibe,
+                        observacion: this.state.observacion,
+                        products: this.props.shop.transferId.products,                    
+                      },
+                      () => {
+                        this.closeModal();                    
+                      }
+                    )    
+                }else{
+                    this.props.alert("warning", "¡No puede editar la transferencia, su estatus es: "+this.props.status+"!");
+                }
+                
             }
-            if(this.props.option === 3){
-                alert("guayaaaaa")
-            }             
         }
     }   
 
     handleChangeSwitch = pos => event => {
-        this.props.setSwitchTableTransferencias(pos, event.target.checked);        
+        this.props.setSwitchTableTransferencias(pos, event.target.checked, this.props.option);        
     };
 
     handleChangeSwitchAll = name => event => {        
         this.setState({ 
             [name]: event.target.checked 
         });
-        this.props.setSelectAllSwitchTransferencias(event.target.checked);
+        this.props.setSelectAllSwitchTransferencias(event.target.checked, this.props.option);
     };
 
     render() {
@@ -268,7 +275,7 @@ class ModalTransferencias extends React.Component {
                                             <Label for="observacion">Observacion:</Label>
                                             <div className={this.state.divObservacion}>
                                                 <Input 
-                                                    disabled={this.state.disabled} 
+                                                    disabled={this.props.disabled} 
                                                     name="observacion" 
                                                     id="observacion" 
                                                     onKeyUp={this.handlekeyObservacion} 
@@ -298,6 +305,8 @@ class ModalTransferencias extends React.Component {
                                         </thead>
                                         <tbody>
                                             {
+                                                this.props.option === 4 ?
+
                                                 this.props.shop.products ? this.props.shop.products.map((list, i) => {
                                                     return (
                                                         <tr key={i}>
@@ -305,14 +314,17 @@ class ModalTransferencias extends React.Component {
                                                             <td>{list.name}</td>
                                                             <td>{list.code}</td>
                                                             <td style={{width: "17vh"}}>
-                                                                <Input 
-                                                                    name={`inputQuantity_${i}`}
-                                                                    id={`inputQuantity_${i}`}
-                                                                    type="number"                                                                    
-                                                                    value={list.quantity}
-                                                                    onChange={this.handleChangeInputTable(i)}
-                                                                    style={{width: "90%"}}
-                                                                />
+                                                                <div id={`divQuantity_${i}`} className="">
+                                                                    <Input 
+                                                                        name={`inputQuantity_${i}`}
+                                                                        id={`inputQuantity_${i}`}
+                                                                        type="number"                                                                    
+                                                                        value={list.quantity_edit}
+                                                                        onChange={this.handleChangeInputTable(i, list.quantity_stock)}
+                                                                        style={{width: "100%"}}
+                                                                        disabled={this.props.disabled} 
+                                                                    />
+                                                                </div>
                                                             </td>
                                                             <td>{number_format(list.price, 2)} 
                                                                 {this.props.aplication.dataGeneral.dataCountries.current_simbol}
@@ -329,13 +341,59 @@ class ModalTransferencias extends React.Component {
                                                                     name= {`checked_${i}`}
                                                                     color="primary"
                                                                     checked={list.confirm}
+                                                                    disabled={this.props.disabled} 
                                                                 />                                                                 
                                                             </td>                                                           
                                                         </tr>
                                                     )                                                    
                                                 })
-                                            :
-                                              null
+                                                :
+                                                null
+
+                                                :
+
+                                                this.props.shop.transferId.products ? this.props.shop.transferId.products.map((list, i) => {
+                                                    return (
+                                                        <tr key={i}>
+                                                            <td>{i+1}</td>
+                                                            <td>{list.name}</td>
+                                                            <td>{list.code}</td>
+                                                            <td style={{width: "17vh"}}>
+                                                                <div id={`divQuantity_${i}`} className="">
+                                                                    <Input 
+                                                                        name={`inputQuantity_${i}`}
+                                                                        id={`inputQuantity_${i}`}
+                                                                        type="number"                                                                    
+                                                                        value={list.quantity_edit}
+                                                                        onChange={this.handleChangeInputTable(i, list.quantity)}
+                                                                        style={{width: "100%"}}
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>{number_format(list.price, 2)} 
+                                                                {this.props.aplication.dataGeneral.dataCountries.current_simbol}
+                                                            </td>
+                                                            <td>{number_format(list.price_sale, 2)} 
+                                                                {this.props.aplication.dataGeneral.dataCountries.current_simbol}
+                                                            </td>
+                                                            <td>{list.exempt}</td> 
+                                                            <td style={{padding: "1px"}}>
+                                                                <Switch
+                                                                    onChange={this.handleChangeSwitch(i)} 
+                                                                    value= {list.confirm}                                             
+                                                                    id= {`checked_${i}`}
+                                                                    name= {`checked_${i}`}
+                                                                    color="primary"
+                                                                    checked={list.confirm}
+                                                                    disabled={this.props.disabled} 
+                                                                />                                                                 
+                                                            </td>                                                           
+                                                        </tr>
+                                                    )                                                    
+                                                })
+                                                :
+                                                null
+
                                             }
                                         </tbody>
                                     </Table>
@@ -346,6 +404,7 @@ class ModalTransferencias extends React.Component {
                                           onChange={this.handleChangeSwitchAll("checked")}
                                           value={this.state.checked}
                                           color="primary"
+                                          disabled={this.props.disabled} 
                                         />
                                     </div>
 	                            </form>
@@ -383,9 +442,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({  
 	alert: (type, message) => dispatch(openSnackbars(type, message)),     
     cleanProducts: () =>dispatch(cleanProducts()),
-    setCantidadTableTransferencias: (pos, value) =>dispatch(setCantidadTableTransferencias(pos, value)),
-    setSwitchTableTransferencias: (pos, value) =>dispatch(setSwitchTableTransferencias(pos, value)),
-    setSelectAllSwitchTransferencias: (value) =>dispatch(setSelectAllSwitchTransferencias(value)),
+    productTransferAction: (data, callback) =>dispatch(productTransferAction(data, callback)),
+    editTransferAction: (data, callback) =>dispatch(editTransferAction(data, callback)),
+    setCantidadTableTransferencias: (pos, value, option) =>dispatch(setCantidadTableTransferencias(pos, value, option)),
+    setSwitchTableTransferencias: (pos, value, option) =>dispatch(setSwitchTableTransferencias(pos, value, option)),
+    setSelectAllSwitchTransferencias: (value, option) =>dispatch(setSelectAllSwitchTransferencias(value, option)),
 });
 
 export default connect(

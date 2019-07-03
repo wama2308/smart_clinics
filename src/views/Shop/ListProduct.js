@@ -2,30 +2,30 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-import ModalProduct from './ModalProduct.js';
+import ModalProduct from "./ModalProduct.js";
 import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
-import Pagination from '../../components/Pagination';
+import Pagination from "../../components/Pagination";
 
 class ListProduct extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modal: false,
-      modalHeader: '',
-      modalFooter: '',
-      action: '',
-      disabled: '',
-      showHide: '',
+      modalHeader: "",
+      modalFooter: "",
+      action: "",
+      disabled: "",
+      showHide: "",
       option: 0,
       position: 0,
       isClearable: false,
-      productoId: '',
+      productoId: "",
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 10
     };
   }
 
-  componentDidMount() { }
+  componentDidMount() {}
 
   openModal = (option, pos, id) => {
     if (option === 1) {
@@ -33,32 +33,32 @@ class ListProduct extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Producto',
-        modalFooter: 'Guardar',
+        modalHeader: "Ver Producto",
+        modalFooter: "Guardar",
         disabled: true,
-        showHide: 'hide',
-      })
+        showHide: "hide"
+      });
     } else if (option === 2) {
       this.props.queryOneSupplieWithLotFunction(id);
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Producto',
-        modalFooter: 'Editar',
+        modalHeader: "Editar Producto",
+        modalFooter: "Editar",
         disabled: false,
-        showHide: 'show',
+        showHide: "show",
         position: pos,
         productoId: id
-      })
+      });
     }
-  }
+  };
 
-  valorCloseModal = (valor) => {
+  valorCloseModal = valor => {
     this.setState({
       modal: valor,
-      option: 0,
+      option: 0
     });
-  }
+  };
 
   handleChangeRowsPerPage = event => {
     this.setState({ page: 0, rowsPerPage: event.target.value });
@@ -69,8 +69,8 @@ class ListProduct extends React.Component {
   };
 
   render() {
-    const updateDisabled = GetDisabledPermits(this.props.permitsShop, "Update")
-    const deleteDisabled = GetDisabledPermits(this.props.permitsShop, "Delete")
+    const updateDisabled = GetDisabledPermits(this.props.permitsShop, "Update");
+    const deleteDisabled = GetDisabledPermits(this.props.permitsShop, "Delete");
     const { rowsPerPage, page } = this.state;
     const ArrayProductos = getArray(this.props.allProducts);
     return (
@@ -93,40 +93,62 @@ class ListProduct extends React.Component {
               <th className="text-left">Producto</th>
               <th className="text-left">Codigo</th>
               <th className="text-left">Tipo</th>
-              <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
+              <th className="text-left" style={{ minWidth: "105px" }}>
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody>
-            {this.props.allProducts ? ArrayProductos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => {
-              return (
-                <tr key={product.number} className="text-left">
-                  <td>{product.number}</td>
-                  <td>{product.name}</td>
-                  <td>{product.code}</td>
-                  <td>{product.type}</td>
-                  <td style={{ 'minWidth': "205px" }}>
-                    <div className="float-left" >
-                      <IconButton aria-label="Delete" title="Ver Producto" className="iconButtons" onClick={() => { this.openModal(1, product.number, product._id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Producto/Lote" className="iconButtons" onClick={() => { this.openModal(2, product.number, product._id); }}><Edit className="iconTable" /></IconButton>
-                      {/*<IconButton aria-label="Delete" title="Producto Defectuoso/vencido" className="iconButtons" ><Delete className="iconTable" /></IconButton>*/}
-
-                    </div>
-                  </td>
-                </tr>
-              );
-            })
-              :
-              null
-            }
+            {this.props.allProducts
+              ? ArrayProductos.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                ).map(product => {
+                  return (
+                    <tr key={product.number} className="text-left">
+                      <td>{product.number}</td>
+                      <td>{product.name}</td>
+                      <td>{product.code}</td>
+                      <td>{product.type}</td>
+                      <td style={{ minWidth: "205px" }}>
+                        <div className="float-left">
+                          <IconButton
+                            aria-label="Delete"
+                            title="Ver Producto"
+                            className="iconButtons"
+                            onClick={() => {
+                              this.openModal(1, product.number, product._id);
+                            }}
+                          >
+                            <Visibility className="iconTable" />
+                          </IconButton>
+                          <IconButton
+                            aria-label="Delete"
+                            title="Editar Producto/Lote"
+                            className="iconButtons"
+                            onClick={() => {
+                              this.openModal(2, product.number, product._id);
+                            }}
+                          >
+                            <Edit className="iconTable" />
+                          </IconButton>
+                          {/*<IconButton aria-label="Delete" title="Producto Defectuoso/vencido" className="iconButtons" ><Delete className="iconTable" /></IconButton>*/}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              : null}
           </tbody>
-          {
-            this.props.allProducts.length > 10 &&
-              <Pagination contador={this.props.allProducts}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
-          }
+          {this.props.allProducts.length > 10 && (
+            <Pagination
+              contador={this.props.allProducts}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage}
+            />
+          )}
         </Table>
       </div>
     );

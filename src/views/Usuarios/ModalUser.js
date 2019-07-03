@@ -53,7 +53,7 @@ class ModalUser extends React.Component {
             onlyModules: [],
             collapseNuevoRol: false,
             activeTab: "1",
-            loading:'show',
+            loading:'show',            
 		};
 	}
 
@@ -62,7 +62,7 @@ class ModalUser extends React.Component {
             totalBranchOffices: this.props.totalBranchOffices,
             sucursal: this.props.arrayBranchOffices,
         })
-        this.props.roles != null &&
+        /*this.props.roles != null &&
         this.props.roles.map((list, i) => {
             this.state.rolSelect.push(
                 {
@@ -70,7 +70,7 @@ class ModalUser extends React.Component {
                     value: list._id,
                 }
             )
-        })
+        })*/
         if (this.props.option === 4){
             this.setState({
                 modalUser: this.props.modal,
@@ -427,8 +427,21 @@ class ModalUser extends React.Component {
     }
 
     componentWillReceiveProps=(props)=>{
+        /*if(props.usersRoles.saveRol === 1){
+            let lastRolPos = props.roles.length - 1;            
+            let lastRol  = { label: props.roles[lastRolPos].rol, value: props.roles[lastRolPos]._id };
+            const rolNew = props.roles.find(rol => rol._id === props.roles[lastRolPos]._id);
+            console.log("rolNew ", rolNew)
+            console.log("props roles ", props.roles)
+            //this.state.rolSelect.push(lastRol)            
+            this.setState({
+                selectedRolOption: lastRol,                    
+            });    
+        }*/        
+
         this.setState({
             modalUser: props.modal,
+            rolSelect: props.usersRoles.loadSelectRoles,
             loading:'show'
         });
         if(props.aplication.snackBars){

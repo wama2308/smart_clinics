@@ -376,6 +376,7 @@ export default class MakeSale extends React.Component {
                                 type="select"
                                 value={values[pay.label].receivingbank}
                                 onChange={event => {
+                                  console.log("dios mio",pay.label)
                                   setFieldValue(pay.label, {
                                     ...values[pay.label],
                                     receivingbank: event.target.value

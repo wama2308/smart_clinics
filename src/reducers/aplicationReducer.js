@@ -62,6 +62,10 @@ const AplicationReducers = (state = InitalState, action) => {
       return InitalState;
     }
 
+    case "CLEAN_DATA_GENERAL": {
+      return InitalState;
+    }
+
     default:
       return state;
   }

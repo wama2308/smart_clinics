@@ -21,7 +21,7 @@ export const logout = route => dispatch => {
   auth.logout(route, () =>
     dispatch({
       type: "SESION_OFF"
-    }),
+    })
   );
 };
 
@@ -164,5 +164,21 @@ export const getTokenInfo = () => dispatch => {
       menu: result.menu,
       permission: result.permission
     }
+  });
+};
+
+export const changeSucursal = (obj, cb) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: `${url}/api/changeSession`,
+      data: obj,
+      ...token
+    }).then(res => {
+      cb(res.data);
+      dispatch({
+        type:"CLEAN_DATA_GENERAL"
+      })
+    });
   });
 };

@@ -12,6 +12,12 @@ const setDataShopId = (state, payload) => {
 	return Map(estado);
 }
 
+const setStoreTransferId = (state, payload) => {
+	let estado = state.toJS();
+	estado.transferId = payload.dataTransferId;		
+	return Map(estado);
+}
+
 const setStoreAddProducts = (state, payload) => {
 	let estado = state.toJS();	
 	estado.products.push(payload.objProducts);		
@@ -39,6 +45,7 @@ const setStoreDeleteProducts = (state, payload) => {
 const setStoreCleanProducts = (state, payload) => {
 	let estado = state.toJS();
 	estado.products = payload.products;		
+	estado.transferId.products = payload.products;		
 	estado.subTotal = 0;		
 	estado.impuesto = 0;		
 	estado.total = 0;	
@@ -99,24 +106,45 @@ const setStoreProductoDefectuosoLote = (state, payload) => {
 }
 
 const setCantidadTableTransferencias = (state, payload) => {
-	let estado = state.toJS();
-	estado.products[payload.pos].quantity = payload.value;	
+	let estado = state.toJS();	
+	if(payload.option === 4){
+		estado.products[payload.pos].quantity_edit = payload.value;	
+		estado.action = 1;
+	}else{
+		estado.transferId.products[payload.pos].quantity_edit = payload.value;	
+		estado.action = 1;
+	}	
 	
 	return Map(estado);
 }
 
 const setSwitchTableTransferencias = (state, payload) => {
 	let estado = state.toJS();
-	estado.products[payload.pos].confirm = payload.value;	
+	if(payload.option === 4){
+		estado.products[payload.pos].confirm = payload.value;		
+		estado.action = 1;
+	}else{
+		estado.transferId.products[payload.pos].confirm = payload.value;	
+		estado.action = 1;
+	}
 	
 	return Map(estado);
 }
 
 const setSelectAllSwitchTransferencias = (state, payload) => {
 	let estado = state.toJS();
-	estado.products.map((product, i) => {
-		product.confirm = payload;
-	})
+	if(payload.option === 4){
+		estado.products.map((product, i) => {
+			product.confirm = payload.value;
+			estado.action = 1;
+		})	
+	}else{
+		estado.transferId.products.map((product, i) => {
+			product.confirm = payload.value;
+			estado.action = 1;
+		})	
+	}
+	
 	
 	return Map(estado);
 }
@@ -173,6 +201,9 @@ const ShopReducer = (state = Map(), action) => {
 
   		case "SET_SELECT_ALL_SWITCH_TRANSFERENCIAS":
 	  		return setSelectAllSwitchTransferencias(state, action.payload);			
+
+  		case "LOAD_TRANSFER_ID":
+	  		return setStoreTransferId(state, action.payload);			
 
 
 

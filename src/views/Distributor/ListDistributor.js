@@ -55,7 +55,7 @@ class ListDistributor extends React.Component {
         disabled: false,
         showHide: 'show',
         position: pos,
-        userId: id
+        userId:id
       })
     }
   }

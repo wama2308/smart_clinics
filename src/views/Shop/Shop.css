@@ -33,10 +33,26 @@
 }
 
 .borderColor{
-    border-top: 1px solid #f86c6b;
+  border-top: 1px solid #f86c6b;
 	border-right: 1px solid #f86c6b;
 	border-bottom: 1px solid #f86c6b;
 	border-left: 1px solid #f86c6b;
+}
+
+.borderColorInputTable{
+  border-top: 2px solid #f86c6b;
+  border-right: 2px solid #f86c6b;
+  border-bottom: 2px solid #f86c6b;
+  border-left: 2px solid #f86c6b;
+  
+}
+
+.borderColorInputTableWhite{
+  border-top: 0px solid #ffffff;
+  border-right: 0px solid #ffffff;
+  border-bottom:0px solid #ffffff;
+  border-left: 0px solid #ffffff;
+  
 }
 
 .sizeDivGroup{

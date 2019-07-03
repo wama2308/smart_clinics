@@ -125,7 +125,7 @@ class ModalRoles extends React.Component {
             rol: this.state.rol,
             selected: this.state.selected,
             onlyModules: this.state.onlyModules,
-            timeZ: jstz.determine().name()
+            timeZ: jstz.determine().name(),            
           },
           () => {
             this.closeRoles();

@@ -33,7 +33,6 @@ class ModalProduct extends React.Component {
     }    
 
     componentWillReceiveProps=(props)=>{
-        console.log("props.shop.ProductLoteId.lote ", props.shop.ProductLoteId.lote)
         if(props.option === 1 || props.option === 2){ 
             if(props.shop.ProductLoteId){                
                 if(props.shop.ProductLoteId.name){

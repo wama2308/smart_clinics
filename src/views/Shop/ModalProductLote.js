@@ -15,22 +15,22 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalProductLote extends React.Component {
     constructor(props) {
-        super(props);               
+        super(props);
         this.state = {
-            ...InitalState                              
+            ...InitalState
         };
     }
 
     componentDidMount(){
-        
+
     }
 
     handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
             [name]: value
-        });                
-    }    
+        });
+    }
 
     componentWillReceiveProps=(props)=>{
         if(props.loteId){
@@ -46,42 +46,42 @@ class ModalProductLote extends React.Component {
 	            limiteStock: props.limiteStock,
 	            arrayExentoSelect: props.arrayExentoSelect
     		})
-    	}   	
+    	}
 
-    }  
+    }
 
     handlekeyCantidad= event =>{
         this.setState({
             divCantidad: "",
-            divCantidadError: "",         
+            divCantidadError: "",
         })
     }
 
     handlekeyPrecio= event =>{
         this.setState({
             divPrecio: "",
-            divPrecioError: "",         
+            divPrecioError: "",
         })
     }
 
     handlekeyDescuento = event =>{
         this.setState({
             divDescuento: "",
-            divDescuentoError: "",         
+            divDescuentoError: "",
         })
     }
 
     handlekeyPrecioVenta = event =>{
         this.setState({
             divPrecioVenta: "",
-            divPrecioVentaError: "",         
+            divPrecioVentaError: "",
         })
     }
 
     handlekeyLimiteStock = event =>{
         this.setState({
             divLimiteStock: "",
-            divLimiteStockError: "",         
+            divLimiteStockError: "",
         })
     }
 
@@ -89,8 +89,8 @@ class ModalProductLote extends React.Component {
         const { name, value } = event.target;
         this.setState({
             divNuevaCantidad: "",
-            divNuevaCantidadError: "",         
-        })        
+            divNuevaCantidadError: "",
+        })
         let cantidadNueva = parseFloat(value);
         let cantidad = parseFloat(this.state.cantidadAvailable);
         let cantidadRestante = cantidad - cantidadNueva;
@@ -105,124 +105,124 @@ class ModalProductLote extends React.Component {
                 this.setState({
                     cantidadRestante: cantidadRestante
                 })
-            }    
+            }
         }else{
             this.setState({
                 cantidadRestante: '0'
             })
         }
-        
+
     }
 
     handlekeyEspecifique = event =>{
         this.setState({
             divEspecifique: "",
-            divEspecifiqueError: "",         
+            divEspecifiqueError: "",
         })
     }
 
     eventoBlur = (e) => {
         if(this.state.precio === '' || this.state.precio === '0.0'){
             this.setState({
-                precio: '0.00'                      
-            }); 
-        }        
+                precio: '0.00'
+            });
+        }
     }
 
-    eventoFocus = (e) => {        
+    eventoFocus = (e) => {
         if(this.state.precio === '0.00'){
             this.setState({
-                precio: ''                      
-            }); 
-        }        
-    }    
+                precio: ''
+            });
+        }
+    }
 
     eventoBlurPrecioVenta = (e) => {
         if(this.state.precioVenta === '' || this.state.precioVenta === '0.0'){
             this.setState({
-                precioVenta: '0.00'                      
-            }); 
-        }        
+                precioVenta: '0.00'
+            });
+        }
     }
 
-    eventoFocusPrecioVenta = (e) => {        
+    eventoFocusPrecioVenta = (e) => {
         if(this.state.precioVenta === '0.00'){
             this.setState({
-                precioVenta: ''                      
-            }); 
-        }        
-    }        
+                precioVenta: ''
+            });
+        }
+    }
 
     eventoBlurDescuento = (e) => {
         if(this.state.descuento === ''){
             this.setState({
-                descuento: '0'                      
-            }); 
-        }        
+                descuento: '0'
+            });
+        }
     }
 
-    eventoFocusDescuento = (e) => {        
+    eventoFocusDescuento = (e) => {
         if(this.state.descuento === '0'){
             this.setState({
-                descuento: ''                      
-            }); 
-        }        
-    }        
+                descuento: ''
+            });
+        }
+    }
 
     eventoBlurCantidad = (e) => {
         if(this.state.cantidad === ''){
             this.setState({
-                cantidad: '0'                      
-            }); 
-        }        
+                cantidad: '0'
+            });
+        }
     }
 
-    eventoFocusCantidad = (e) => {        
+    eventoFocusCantidad = (e) => {
         if(this.state.cantidad === '0'){
             this.setState({
-                cantidad: ''                      
-            }); 
-        }        
-    }        
+                cantidad: ''
+            });
+        }
+    }
 
     eventoBlurNuevaCantidad = (e) => {
         if(this.state.nuevaCantidad === ''){
             this.setState({
-                nuevaCantidad: '0'                      
-            }); 
-        }        
+                nuevaCantidad: '0'
+            });
+        }
     }
 
-    eventoFocusNuevaCantidad = (e) => {        
+    eventoFocusNuevaCantidad = (e) => {
         if(this.state.nuevaCantidad === '0'){
             this.setState({
-                nuevaCantidad: ''                      
-            }); 
-        }        
-    }        
+                nuevaCantidad: ''
+            });
+        }
+    }
 
     eventoBlurLimiteStock = (e) => {
         if(this.state.limiteStock === ''){
             this.setState({
-                limiteStock: '0'                      
-            }); 
-        }        
+                limiteStock: '0'
+            });
+        }
     }
 
-    eventoFocusLimiteStock = (e) => {        
+    eventoFocusLimiteStock = (e) => {
         if(this.state.limiteStock === '0'){
             this.setState({
-                limiteStock: ''                      
-            }); 
-        }        
+                limiteStock: ''
+            });
+        }
     }
 
     handleChangeExento = (arrayExentoSelect) => {
-        this.setState({ 
+        this.setState({
             arrayExentoSelect,
             divExento: '',
-            divExentoError: ''                                
-        });  
+            divExentoError: ''
+        });
     }
 
     handleChangeMotivoSalida = (arrayMotivoSalidaSelect) => {
@@ -232,51 +232,51 @@ class ModalProductLote extends React.Component {
             if(indice === 1){
                 valueMotivoSalida = elemento;
             }
-        });        
+        });
         if(valueMotivoSalida === "5d07a44fa65dd90b0646af97"){
-            this.setState({ 
+            this.setState({
                 arrayMotivoSalidaSelect,
                 divMotivoSalida: '',
-                divMotivoSalidaError: '',  
-                disabledEspecifique: false                              
+                divMotivoSalidaError: '',
+                disabledEspecifique: false
             });
         }else{
-            this.setState({ 
+            this.setState({
                 arrayMotivoSalidaSelect,
                 divMotivoSalida: '',
-                divMotivoSalidaError: '',  
+                divMotivoSalidaError: '',
                 disabledEspecifique: true,
-                especifique: '',     
+                especifique: '',
                 divEspecifique:'',
-                divEspecifiqueError:''                         
+                divEspecifiqueError:''
             });
         }
     }
 
    	closeModal = () => {
-        this.setState({        
+        this.setState({
             ...InitalState,
             loading: 'show'
-        });   
-        this.props.closeModalProductLote(false);       
-    } 
+        });
+        this.props.closeModalProductLote(false);
+    }
 
     togglePopover = () => {
         this.setState({popoverOpen: !this.state.popoverOpen})
-        this.props.LoadProductPriceFunction(this.props.productoId)        
-    } 
+        this.props.LoadProductPriceFunction(this.props.productoId)
+    }
 
     validate = () => {
-        let divPrecio= '';        
-        let divPrecioError= '';        
-        let divDescuento= '';        
-        let divDescuentoError= '';        
-        let divPrecioVenta= '';        
-        let divPrecioVentaError= '';        
-        let divLimiteStock= '';        
-        let divLimiteStockError= '';        
-        let divExento= '';        
-        let divExentoError= '';   
+        let divPrecio= '';
+        let divPrecioError= '';
+        let divDescuento= '';
+        let divDescuentoError= '';
+        let divPrecioVenta= '';
+        let divPrecioVentaError= '';
+        let divLimiteStock= '';
+        let divLimiteStockError= '';
+        let divExento= '';
+        let divExentoError= '';
         let labelExento = "";
         let divNuevaCantidadError = "";
         let divNuevaCantidad = "";
@@ -286,107 +286,107 @@ class ModalProductLote extends React.Component {
         let divEspecifique = "";
         let motivoSalida = "";
         if(this.props.option === 2){
-            if (this.state.arrayExentoSelect) {                           
+            if (this.state.arrayExentoSelect) {
                 let arrayExento = Object.values(this.state.arrayExentoSelect);
                 arrayExento.forEach(function (elemento, indice, array) {
                     if(indice === 0){
                         labelExento = elemento;
-                    }            
-                });                         
-            }     
-            
-            if (this.state.precio === "" || this.state.precio === "0.00" || this.state.precio === "0.0") {            
+                    }
+                });
+            }
+
+            if (this.state.precio === "" || this.state.precio === "0.00" || this.state.precio === "0.0") {
                 divPrecioError = "¡Ingrese el precio de compra!";
                 divPrecio = "borderColor";
             }
-            if (this.state.precioVenta === "" || this.state.precioVenta === "0.00" || this.state.precioVenta === "0.0") {            
+            if (this.state.precioVenta === "" || this.state.precioVenta === "0.00" || this.state.precioVenta === "0.0") {
                 divPrecioVentaError = "¡Ingrese el precio de venta!";
                 divPrecioVenta = "borderColor";
             }
-            if (this.state.limiteStock === "" || this.state.limiteStock === "0") {            
+            if (this.state.limiteStock === "" || this.state.limiteStock === "0") {
                 divLimiteStockError = "¡Ingrese el limite de stock!";
                 divLimiteStock = "borderColor";
             }
-            if (!this.state.arrayExentoSelect) {                    
+            if (!this.state.arrayExentoSelect) {
                 divExentoError = "¡Seleccione si es exento!";
                 divExento  = "borderColor";
-            }        
-            if (divPrecioError || divPrecioVentaError || divLimiteStockError || divExentoError) {            
-                this.setState({ 
+            }
+            if (divPrecioError || divPrecioVentaError || divLimiteStockError || divExentoError) {
+                this.setState({
                     divPrecioError,
                     divPrecio,
                     divPrecioVentaError,
                     divPrecioVenta,
                     divLimiteStockError,
-                    divLimiteStock,                
+                    divLimiteStock,
                     divExentoError,
-                    divExento,                
-                });  
+                    divExento,
+                });
                 return false;
-            }    
+            }
         }
         if(this.props.option === 3){
-            if (this.state.arrayMotivoSalidaSelect) {                           
+            if (this.state.arrayMotivoSalidaSelect) {
                 let arrayMotivoSalida = Object.values(this.state.arrayMotivoSalidaSelect);
                 arrayMotivoSalida.forEach(function (elemento, indice, array) {
                     if(indice === 1){
                         motivoSalida = elemento;
-                    }            
-                });                         
-            }  
-            if (this.state.nuevaCantidad === "" || this.state.nuevaCantidad === "0") {            
+                    }
+                });
+            }
+            if (this.state.nuevaCantidad === "" || this.state.nuevaCantidad === "0") {
                 divNuevaCantidadError = "¡Ingrese la cantidad de salida!";
                 divNuevaCantidad = "borderColor";
             }
-            if (!this.state.arrayMotivoSalidaSelect) {                    
+            if (!this.state.arrayMotivoSalidaSelect) {
                 divMotivoSalidaError = "¡Seleccione el motivo de salida!";
                 divMotivoSalida  = "borderColor";
 
-            }   
+            }
             if(motivoSalida === "5d07a44fa65dd90b0646af97"){
                 divEspecifiqueError = "¡Especifique el motivo de salida!";
                 divEspecifique = "borderColor";
             }
-            if (divNuevaCantidadError || divMotivoSalidaError) {            
-                this.setState({ 
+            if (divNuevaCantidadError || divMotivoSalidaError) {
+                this.setState({
                     divNuevaCantidad,
                     divNuevaCantidadError,
                     divMotivoSalida,
                     divMotivoSalidaError,
                     divEspecifique,
-                    divEspecifiqueError                                    
-                });  
+                    divEspecifiqueError
+                });
                 return false;
-            }    
+            }
         }
-        return true;        
+        return true;
     };
 
     handleAction = event => {
         event.preventDefault();
-        const isValid = this.validate();   
-        if (isValid) {             
+        const isValid = this.validate();
+        if (isValid) {
             let labelExento = "";
             let valueMotivo = "";
-            if (this.state.arrayExentoSelect) {                           
+            if (this.state.arrayExentoSelect) {
                 let arrayExento = Object.values(this.state.arrayExentoSelect);
                 arrayExento.forEach(function (elemento, indice, array) {
                     if(indice === 0){
                         labelExento = elemento;
-                    }            
-                });                         
-            }   
-            if (this.state.arrayMotivoSalidaSelect) {                           
+                    }
+                });
+            }
+            if (this.state.arrayMotivoSalidaSelect) {
                 let arrayMotivo = Object.values(this.state.arrayMotivoSalidaSelect);
                 arrayMotivo.forEach(function (elemento, indice, array) {
                     if(indice === 1){
                         valueMotivo = elemento;
-                    }            
-                });                         
-            }                 
+                    }
+                });
+            }
             if(this.props.option === 2)
             {
-                this.setState({loading:'show'})                                    
+                this.setState({loading:'show'})
                 this.props.editSupplieLotAction(
                   {
                     id: this.props.productoId,
@@ -398,12 +398,12 @@ class ModalProductLote extends React.Component {
                     exempt: labelExento
                   },
                   () => {
-                    this.closeModal();                    
+                    this.closeModal();
                   }
                 )
             }
             if(this.props.option === 3){
-                this.setState({loading:'show'})                                    
+                this.setState({loading:'show'})
                 this.props.defectiveSupplieAction(
                   {
                     id: this.props.productoId,
@@ -411,17 +411,17 @@ class ModalProductLote extends React.Component {
                     quantity: this.state.nuevaCantidad,
                     quantity_rest: this.state.cantidadRestante,
                     reason: valueMotivo,
-                    description: this.state.especifique,                    
+                    description: this.state.especifique,
                   },
                   () => {
-                    this.closeModal();                    
+                    this.closeModal();
                   }
                 )
-            }             
+            }
         }
-    }   
+    }
 
-    render() {         
+    render() {
         return (
             <span>
             	 <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalShop">
@@ -429,182 +429,182 @@ class ModalProductLote extends React.Component {
                     	this.props.shop.loading === "hide" ?
                     	<div className={this.state.divContainer}>
                             <ModalHeader toggle={this.closeModal}>{this.props.modalHeader}</ModalHeader>
-                            <ModalBody className="Scroll">      
-	                            <form className="formCodeConfirm" onSubmit={this.handleAction.bind(this)}> 
-	                                <div className="row"> 
-	                                	<FormGroup className= {`top form-group col-sm-6`}>                                                                 
-			                                <Label for="codigo">Nro Lote:</Label> 
-			                                <div className={this.state.divCodigo}>                               
-			                                    <Input 
-                                                    disabled={true} 
-                                                    name="codigo" 
-                                                    id="codigo" 
-                                                    onKeyUp={this.handlekeyCodigo} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.codigo} 
-                                                    onBlur={this.codigoOnBlur} 
-                                                    type="text" 
-                                                    placeholder="Codigo" 
+                            <ModalBody className="Scroll">
+	                            <form className="formCodeConfirm" onSubmit={this.handleAction.bind(this)}>
+	                                <div className="row">
+	                                	<FormGroup className= {`top form-group col-sm-6`}>
+			                                <Label for="codigo">Nro Lote:</Label>
+			                                <div className={this.state.divCodigo}>
+			                                    <Input
+                                                    disabled={true}
+                                                    name="codigo"
+                                                    id="codigo"
+                                                    onKeyUp={this.handlekeyCodigo}
+                                                    onChange={this.handleChange}
+                                                    value={this.state.codigo}
+                                                    onBlur={this.codigoOnBlur}
+                                                    type="text"
+                                                    placeholder="Codigo"
                                                 />
 			                                </div>
-			                                <div className="errorSelect">{this.state.divCodigoError}</div>                                                                                                                                                                                         
-			                            </FormGroup> 
-                                        <FormGroup className="top form-group col-sm-6">                                                                 
-                                            <Label for="cantidad">Cantidad</Label> 
-                                            <div className={this.state.divCantidad}>                               
-                                                <Input 
-                                                    disabled={true} 
-                                                    name="cantidad" 
-                                                    id="cantidad" 
-                                                    onKeyUp={this.handlekeyCantidad} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.cantidad} 
-                                                    type="number" 
-                                                    placeholder="Cantidad" 
-                                                    onBlur ={this.eventoBlurCantidad} 
+			                                <div className="errorSelect">{this.state.divCodigoError}</div>
+			                            </FormGroup>
+			                            <FormGroup className="top form-group col-sm-6">
+			                                <Label for="cantidad">Cantidad</Label>
+			                                <div className={this.state.divCantidad}>
+			                                    <Input
+                                                    disabled={true}
+                                                    name="cantidad"
+                                                    id="cantidad"
+                                                    onKeyUp={this.handlekeyCantidad}
+                                                    onChange={this.handleChange}
+                                                    value={this.state.cantidad}
+                                                    type="number"
+                                                    placeholder="Cantidad"
+                                                    onBlur ={this.eventoBlurCantidad}
                                                     onFocus = {this.eventoFocusCantidad}
-                                                /> 
-                                            </div>
-                                            <div className="errorSelect">{this.state.divCantidadError}</div>                                                                                                                                                                                         
-                                        </FormGroup>
-			                            <FormGroup className="top form-group col-sm-6">                                                                 
-			                                <Label for="cantidadAvailable">Stock Disponible:</Label> 
-			                                <div className={this.state.divCantidadAvailable}>                               
-			                                    <Input 
-                                                    disabled={true} 
-                                                    name="cantidadAvailable" 
-                                                    id="cantidadAvailable" 
-                                                    onKeyUp={this.handlekeyCantidadDisponible} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.cantidadAvailable} 
-                                                    type="text" 
-                                                    placeholder="Stock Disponible" 
                                                 />
 			                                </div>
-			                                <div className="errorSelect">{this.state.divCantidadAvailableError}</div>                                                                                                                                                                                         
-			                            </FormGroup> 			                            
-                                        <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>                                                                 
-                                            <Label for="nuevaCantidad">Cantidad de Salida</Label> 
-                                            <div className={this.state.divNuevaCantidad}>                               
-                                                <Input 
-                                                    disabled={false} 
-                                                    name="nuevaCantidad" 
-                                                    id="nuevaCantidad" 
-                                                    onKeyUp={this.handlekeyNuevaCantidad} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.nuevaCantidad} 
-                                                    type="number" 
-                                                    placeholder="Nueva Cantidad" 
-                                                    onBlur ={this.eventoBlurNuevaCantidad} 
-                                                    onFocus = {this.eventoFocusNuevaCantidad}
-                                                /> 
+			                                <div className="errorSelect">{this.state.divCantidadError}</div>
+			                            </FormGroup>
+                                        <FormGroup className="top form-group col-sm-6">
+                                            <Label for="cantidadAvailable">Stock Disponible:</Label>
+                                            <div className={this.state.divCantidadAvailable}>
+                                                <Input
+                                                    disabled={true}
+                                                    name="cantidadAvailable"
+                                                    id="cantidadAvailable"
+                                                    onKeyUp={this.handlekeyCantidadDisponible}
+                                                    onChange={this.handleChange}
+                                                    value={this.state.cantidadAvailable}
+                                                    type="text"
+                                                    placeholder="Stock Disponible"
+                                                />
                                             </div>
-                                            <div className="errorSelect">{this.state.divNuevaCantidadError}</div>                                                                                                                                                                                         
+                                            <div className="errorSelect">{this.state.divCantidadAvailableError}</div>
                                         </FormGroup>
-                                        <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>                                                                 
-                                            <Label for="cantidad">Cantidad Restante</Label> 
-                                            <div className={this.state.divCantidadRestante}>                               
-                                                <Input 
-                                                    disabled={true} 
-                                                    name="cantidadRestante" 
-                                                    id="cantidadRestante"                                                     
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.cantidadRestante} 
-                                                    type="number" 
-                                                    placeholder="Cantidad Restante"                                                     
-                                                /> 
+                                        <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>
+                                            <Label for="nuevaCantidad">Cantidad de Salida</Label>
+                                            <div className={this.state.divNuevaCantidad}>
+                                                <Input
+                                                    disabled={false}
+                                                    name="nuevaCantidad"
+                                                    id="nuevaCantidad"
+                                                    onKeyUp={this.handlekeyNuevaCantidad}
+                                                    onChange={this.handleChange}
+                                                    value={this.state.nuevaCantidad}
+                                                    type="number"
+                                                    placeholder="Nueva Cantidad"
+                                                    onBlur ={this.eventoBlurNuevaCantidad}
+                                                    onFocus = {this.eventoFocusNuevaCantidad}
+                                                />
                                             </div>
-                                            <div className="errorSelect">{this.state.divCantidadRestanteError}</div>                                                                                                                                                                                         
-                                        </FormGroup> 
-                                        <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>                                                                 
+                                            <div className="errorSelect">{this.state.divNuevaCantidadError}</div>
+                                        </FormGroup>
+                                        <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>
+                                            <Label for="cantidad">Cantidad Restante</Label>
+                                            <div className={this.state.divCantidadRestante}>
+                                                <Input
+                                                    disabled={true}
+                                                    name="cantidadRestante"
+                                                    id="cantidadRestante"
+                                                    onChange={this.handleChange}
+                                                    value={this.state.cantidadRestante}
+                                                    type="number"
+                                                    placeholder="Cantidad Restante"
+                                                />
+                                            </div>
+                                            <div className="errorSelect">{this.state.divCantidadRestanteError}</div>
+                                        </FormGroup>
+                                        <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>
                                             <Label for="exento">Motivo:</Label>
                                             <div className={this.state.divMotivoSalida}>
-                                                <Select 
-                                                    isSearchable="true" 
-                                                    isDisabled={this.props.disabled} 
-                                                    name="motivoSalida" 
-                                                    value={this.state.arrayMotivoSalidaSelect} 
-                                                    onChange={this.handleChangeMotivoSalida} 
-                                                    options={this.props.output_supplie} 
+                                                <Select
+                                                    isSearchable="true"
+                                                    isDisabled={this.props.disabled}
+                                                    name="motivoSalida"
+                                                    value={this.state.arrayMotivoSalidaSelect}
+                                                    onChange={this.handleChangeMotivoSalida}
+                                                    options={this.props.output_supplie}
                                                 />
-                                            </div>                                            
+                                            </div>
                                             <div className="errorSelect">{this.state.divMotivoSalidaError}</div>
                                         </FormGroup>
                                         <FormGroup className={`top form-group col-sm-6 ${this.props.showHideEditar}`}>
                                             <Label for="especifique">Especifique:</Label>
                                             <div className={this.state.divEspecifique}>
-                                                <Input 
-                                                    disabled={this.state.disabledEspecifique} 
-                                                    name="especifique" 
-                                                    id="especifique" 
-                                                    onKeyUp={this.handlekeyEspecifique} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.especifique} 
-                                                    type="textarea" 
-                                                    placeholder="Especifique" 
+                                                <Input
+                                                    disabled={this.state.disabledEspecifique}
+                                                    name="especifique"
+                                                    id="especifique"
+                                                    onKeyUp={this.handlekeyEspecifique}
+                                                    onChange={this.handleChange}
+                                                    value={this.state.especifique}
+                                                    type="textarea"
+                                                    placeholder="Especifique"
                                                 />
                                             </div>
                                             <div className="errorSelect">{this.state.divEspecifiqueError}</div>
                                         </FormGroup>
-			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>                                                                 
-			                                <Label for="precio">Precio de Compra:</Label> 
-			                                <div className={this.state.divPrecio}>                               
-			                                    <Input 
-                                                    disabled={this.props.disabled} 
-                                                    name="precio" id="precio" 
-                                                    onKeyUp={this.handlekeyPrecio} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.precio} 
-                                                    type="text" 
-                                                    placeholder="Precio de Compra" 
-                                                    onKeyPress={ enterDecimal } 
-                                                    onBlur ={this.eventoBlur} 
-                                                    onFocus = {this.eventoFocus} 
-                                                />                                    
+			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>
+			                                <Label for="precio">Precio de Compra:</Label>
+			                                <div className={this.state.divPrecio}>
+			                                    <Input
+                                                    disabled={this.props.disabled}
+                                                    name="precio" id="precio"
+                                                    onKeyUp={this.handlekeyPrecio}
+                                                    onChange={this.handleChange}
+                                                    value={this.state.precio}
+                                                    type="text"
+                                                    placeholder="Precio de Compra"
+                                                    onKeyPress={ enterDecimal }
+                                                    onBlur ={this.eventoBlur}
+                                                    onFocus = {this.eventoFocus}
+                                                />
 			                                </div>
-			                                <div className="errorSelect">{this.state.divPrecioError}</div>                                                                                                                                                                                         
-			                            </FormGroup> 
-			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>                                                                 
-			                                <Label for="descuento">Descuento %:</Label> 
-			                                <div className={this.state.divDescuento}>                               
-			                                    <Input 
-                                                    disabled={this.props.disabled} 
-                                                    name="descuento" 
-                                                    id="descuento" 
-                                                    onKeyUp={this.handlekeyDescuento} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.descuento} 
-                                                    type="number" 
-                                                    placeholder="Descuento" 
-                                                    onBlur ={this.eventoBlurDescuento} 
-                                                    onFocus = {this.eventoFocusDescuento} 
-                                                />                                    
+			                                <div className="errorSelect">{this.state.divPrecioError}</div>
+			                            </FormGroup>
+			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>
+			                                <Label for="descuento">Descuento %:</Label>
+			                                <div className={this.state.divDescuento}>
+			                                    <Input
+                                                    disabled={this.props.disabled}
+                                                    name="descuento"
+                                                    id="descuento"
+                                                    onKeyUp={this.handlekeyDescuento}
+                                                    onChange={this.handleChange}
+                                                    value={this.state.descuento}
+                                                    type="number"
+                                                    placeholder="Descuento"
+                                                    onBlur ={this.eventoBlurDescuento}
+                                                    onFocus = {this.eventoFocusDescuento}
+                                                />
 			                                </div>
 			                                <div className="errorSelect">{this.state.divDescuentoError}</div>
 			                            </FormGroup>
-			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>                                                                 
-			                                <Label for="precioVenta">Precio de Venta:</Label> 
+			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>
+			                                <Label for="precioVenta">Precio de Venta:</Label>
 			                                <div className={this.state.divPrecioVenta}>
-			                                    <InputGroup>                               
-			                                        <Input 
-                                                        disabled={this.props.disabled} 
-                                                        name="precioVenta" 
-                                                        id="precioVenta" 
-                                                        onKeyUp={this.handlekeyPrecioVenta} 
-                                                        onChange={this.handleChange} 
-                                                        value={this.state.precioVenta} 
-                                                        type="text" 
-                                                        placeholder="Precio de Venta" 
-                                                        onKeyPress={enterDecimal} 
-                                                        onBlur={this.eventoBlurPrecioVenta} 
+			                                    <InputGroup>
+			                                        <Input
+                                                        disabled={this.props.disabled}
+                                                        name="precioVenta"
+                                                        id="precioVenta"
+                                                        onKeyUp={this.handlekeyPrecioVenta}
+                                                        onChange={this.handleChange}
+                                                        value={this.state.precioVenta}
+                                                        type="text"
+                                                        placeholder="Precio de Venta"
+                                                        onKeyPress={enterDecimal}
+                                                        onBlur={this.eventoBlurPrecioVenta}
                                                         onFocus={this.eventoFocusPrecioVenta}
                                                     />
 			                                        <InputGroupAddon addonType="append">
-			                                            <Button 
-                                                            id="popoverPrecios" 
-                                                            disabled={this.props.disabled} 
-                                                            className={this.state.buttonView} 
-                                                            title="Ver Precios" 
+			                                            <Button
+                                                            id="popoverPrecios"
+                                                            disabled={this.props.disabled}
+                                                            className={this.state.buttonView}
+                                                            title="Ver Precios"
                                                             onClick={this.togglePopover}>
                                                             <Visibility className="iconTable" />
                                                         </Button>
@@ -613,46 +613,46 @@ class ModalProductLote extends React.Component {
 			                                </div>
 			                                <div className="errorSelect">{this.state.divPrecioVentaError}</div>
 			                            </FormGroup>
-			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>                                                                 
-			                                <Label for="limiteStock">Limite Stock:</Label> 
-			                                <div className={this.state.divLimiteStock}>                               
-			                                    <Input 
-                                                    disabled={this.props.disabled} 
-                                                    name="limiteStock" 
-                                                    id="limiteStock" 
-                                                    onKeyUp={this.handlekeyLimiteStock} 
-                                                    onChange={this.handleChange} 
-                                                    value={this.state.limiteStock} 
-                                                    type="number" 
-                                                    placeholder="Limite Stock" 
-                                                    onBlur ={this.eventoBlurLimiteStock} 
+			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>
+			                                <Label for="limiteStock">Limite Stock:</Label>
+			                                <div className={this.state.divLimiteStock}>
+			                                    <Input
+                                                    disabled={this.props.disabled}
+                                                    name="limiteStock"
+                                                    id="limiteStock"
+                                                    onKeyUp={this.handlekeyLimiteStock}
+                                                    onChange={this.handleChange}
+                                                    value={this.state.limiteStock}
+                                                    type="number"
+                                                    placeholder="Limite Stock"
+                                                    onBlur ={this.eventoBlurLimiteStock}
                                                     onFocus = {this.eventoFocusLimiteStock}
-                                                />                                    
+                                                />
 			                                </div>
-			                                <div className="errorSelect">{this.state.divLimiteStockError}</div>                                                                                                                                                                                         
-			                            </FormGroup> 
-			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>                                                                 
+			                                <div className="errorSelect">{this.state.divLimiteStockError}</div>
+			                            </FormGroup>
+			                            <FormGroup className={`top form-group col-sm-6 ${this.props.showHide}`}>
 			                                <Label for="exento">Exento:</Label>
 			                                <div className={this.state.divExento}>
-			                                    <Select 
-                                                    isSearchable="true" 
-                                                    isDisabled={this.props.disabled} 
-                                                    name="exento" 
-                                                    value={this.state.arrayExentoSelect} 
-                                                    onChange={this.handleChangeExento} 
-                                                    options={this.state.arrayExento} 
+			                                    <Select
+                                                    isSearchable="true"
+                                                    isDisabled={this.props.disabled}
+                                                    name="exento"
+                                                    value={this.state.arrayExentoSelect}
+                                                    onChange={this.handleChangeExento}
+                                                    options={this.state.arrayExento}
                                                 />
-			                                </div>                                            
+			                                </div>
 			                                <div className="errorSelect">{this.state.divExentoError}</div>
 			                            </FormGroup>
-			                            <Popover 
-                                            placement="bottom" 
-                                            isOpen={this.state.popoverOpen} 
-                                            target="popoverPrecios" 
+			                            <Popover
+                                            placement="bottom"
+                                            isOpen={this.state.popoverOpen}
+                                            target="popoverPrecios"
                                             toggle={this.togglePopover}
                                         >
 			                                <PopoverHeader>Precios por Lote</PopoverHeader>
-			                                <PopoverBody>                                    
+			                                <PopoverBody>
 			                                    <div className="form-group col-sm-12">
 			                                    {
 			                                        this.props.shop.dataProductPrice.length > 0 ?
@@ -660,8 +660,8 @@ class ModalProductLote extends React.Component {
 			                                            <thead className="thead-light">
 			                                                <tr>
 			                                                    <th className="text-left">Nro</th>
-			                                                    <th className="text-left">Lote</th>                  
-			                                                    <th className="text-left">Precio</th>                  
+			                                                    <th className="text-left">Lote</th>
+			                                                    <th className="text-left">Precio</th>
 			                                                </tr>
 			                                            </thead>
 			                                            <tbody>
@@ -670,32 +670,32 @@ class ModalProductLote extends React.Component {
 			                                                    return (
 			                                                      <tr key={i} className="text-left">
 			                                                        <td>{ i + 1 }</td>
-			                                                        <td>{ data.lote }</td>                                                        
-			                                                        <td>{ number_format(data.price, 2) }</td>                                                        
+			                                                        <td>{ data.lote }</td>
+			                                                        <td>{ number_format(data.price, 2) }</td>
 			                                                      </tr>
 			                                                    );
-			                                                })  
+			                                                })
 			                                                :
-			                                                null                                              
+			                                                null
 			                                            }
 			                                            </tbody>
 			                                        </Table>
 			                                        :
 			                                        <div style={{height: "10vh", "width": "20vh"}}>
-                                                      <CircularProgress 
+                                                      <CircularProgress
                                                         style={{
-                                                            position: 
-                                                            "absolute", 
-                                                            width: 20, 
-                                                            height: 10, 
-                                                            top: "50%", 
+                                                            position:
+                                                            "absolute",
+                                                            width: 20,
+                                                            height: 10,
+                                                            top: "50%",
                                                             right: "45%",
                                                             zIndex: 2
                                                         }} />
                                                     </div>
 			                                    }
-			                                       
-			                                    </div>                                    
+
+			                                    </div>
 			                                </PopoverBody>
 			                            </Popover>
 	                                </div>
@@ -703,32 +703,32 @@ class ModalProductLote extends React.Component {
                             </ModalBody>
                             <ModalFooter>
                                 <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
-                                <Button className={this.props.option === 1 ? `hide` : `show` } color="primary" onClick={this.handleAction}>{this.props.modalFooter}</Button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                <Button className={this.props.option === 1 ? `hide` : `show` } color="primary" onClick={this.handleAction}>{this.props.modalFooter}</Button>
                             </ModalFooter>
-                        </div>  
+                        </div>
                         :
                         <div style={{height: "55vh"}}>
                             <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
                         </div>
                     }
-            	 </Modal>             	
-            </span> 
+            	 </Modal>
+            </span>
         );
     }
-}    
+}
 
 const mapStateToProps = state => ({
   shop: state.shop.toJS(),
   authData: state.auth,
   output_supplie: state.global.dataGeneral.dataGeneral.output_supplie
-  
+
 });
 
-const mapDispatchToProps = dispatch => ({  
+const mapDispatchToProps = dispatch => ({
 	LoadProductPriceFunction: (productoId) =>dispatch(LoadProductPriceFunction(productoId)),
-    alert: (type, message) => dispatch(openSnackbars(type, message)), 
-    editSupplieLotAction: (data, callback) =>dispatch(editSupplieLotAction(data, callback)),    
-    defectiveSupplieAction: (data, callback) =>dispatch(defectiveSupplieAction(data, callback)),    
+    alert: (type, message) => dispatch(openSnackbars(type, message)),
+    editSupplieLotAction: (data, callback) =>dispatch(editSupplieLotAction(data, callback)),
+    defectiveSupplieAction: (data, callback) =>dispatch(defectiveSupplieAction(data, callback)),
 });
 
 export default connect(
