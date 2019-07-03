@@ -702,3 +702,33 @@ export const loadRolEditPusher = rolEdit => dispatch => {
       console.log("Problemas con el token");
     });
 }
+
+export const loadRolDisabledPusher = rolDisabled => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_DISABLED_PUSHER",
+        payload: {
+          ...rolDisabled
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadRolEnabledPusher = rolEnabled => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_ENABLED_PUSHER",
+        payload: {
+          ...rolEnabled
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}

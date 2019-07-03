@@ -117,7 +117,6 @@ class ListShop extends React.Component {
     const deleteDisabled = GetDisabledPermits(this.props.permitsShop, "Delete");
     const { rowsPerPage, page } = this.state;
     const ArrayData = getArray(this.props.data);
-
     return (
       <div>
         {(this.state.option === 1 ||
