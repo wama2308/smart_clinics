@@ -5,7 +5,7 @@ import { Delete, Edit, Visibility, SwapHoriz } from "@material-ui/icons";
 import ModalShop from './ModalShop.js';
 import ModalTransferencias from './ModalTransferencias.js';
 import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
-import { Pagination } from '../../components/Pagination';
+import Pagination from '../../components/Pagination';
 
 class ListTransferencias extends React.Component {
   constructor(props) {
@@ -90,13 +90,12 @@ class ListTransferencias extends React.Component {
   };
 
   render() {
-    const createDisabled = GetDisabledPermits(this.props.permitsTransfer , "Create")
     const updateDisabled = GetDisabledPermits(this.props.permitsTransfer , "Update")
     const deleteDisabled = GetDisabledPermits(this.props.permitsTransfer , "Delete")
     const detailsDisabled = GetDisabledPermits(this.props.permitsTransfer , "Details")
-
     const { rowsPerPage, page } = this.state;
     const ArrayData = getArray(this.props.data)
+    
      return (
       <div>
         {
@@ -132,7 +131,8 @@ class ListTransferencias extends React.Component {
               </tr>
             </thead>
             <tbody>
-             {this.props.data ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+             {
+               this.props.data ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
                 <tr key={ data.number } className="text-left">
                   <td>{ data.number }</td>
@@ -163,9 +163,10 @@ class ListTransferencias extends React.Component {
 
                       <IconButton aria-label="Delete"
                         title="Eliminar Transferencia"
-                        className="iconButtons" onClick={() => { this.deleteRegister(data._id, data.status); }}>
-                        <Delete className="iconTable"
-                          disabled={deleteDisabled}/>
+                        className="iconButtons"
+                        onClick={() => { this.deleteRegister(data._id, data.status); }}
+                        disabled={deleteDisabled}>
+                        <Delete className="iconTable"/>
                       </IconButton>
                     </div>
                   </td>
@@ -176,11 +177,13 @@ class ListTransferencias extends React.Component {
                 null
               }
             </tbody>
-            <Pagination contador={this.props.data}
+            {this.props.length > 10 &&
+              <Pagination contador={this.props.data}
               page={page}
               rowsPerPage={rowsPerPage}
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage} />
+            }
           </Table>
       </div>
     );

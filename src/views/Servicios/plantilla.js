@@ -8,7 +8,7 @@ import { GetDisabledPermits, getArray } from "../../core/utils";
 import jstz from "jstz";
 import "./Services.css";
 import "./loading.css";
-import { Pagination } from '../../components/Pagination';
+import Pagination from '../../components/Pagination';
 
 class Plantillas extends React.Component {
   constructor(props) {
@@ -170,7 +170,7 @@ class Plantillas extends React.Component {
                 })}
             </tbody>
           {
-            ArrayTemplate > 10 && 
+            ArrayTemplate > 10 &&
             <Pagination contador={this.props.template}
               page={page}
               rowsPerPage={rowsPerPage}

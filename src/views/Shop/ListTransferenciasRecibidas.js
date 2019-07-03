@@ -5,7 +5,7 @@ import { Delete, Edit, Visibility, SwapHoriz, Done, Clear } from "@material-ui/i
 import ModalShop from './ModalShop.js';
 import ModalTransferencias from './ModalTransferencias.js';
 import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
-import { Pagination } from '../../components/Pagination';
+import Pagination from '../../components/Pagination';
 
 class ListTransferenciasRecibidas extends React.Component {
   constructor(props) {
@@ -86,8 +86,8 @@ class ListTransferenciasRecibidas extends React.Component {
   render() {
     const createDisabled = GetDisabledPermits(this.props.permitsTransfer , "Create")
     const updateDisabled = GetDisabledPermits(this.props.permitsTransfer , "Update")
-    const deleteDisabled = GetDisabledPermits(this.props.permitsTransfer , "Delete")
-    const detailsDisabled = GetDisabledPermits(this.props.permitsTransfer , "Details")
+    const detailsDisabled = GetDisabledPermits(this.props.permitsTransfer, "Details")
+
     const ArrayData = getArray(this.props.data)
 
     const { rowsPerPage, page } = this.state;
@@ -150,13 +150,15 @@ class ListTransferenciasRecibidas extends React.Component {
                         <span>
                           <IconButton aria-label="Delete"
                              title="Aceptar Transferencia"
-                             className="iconButtons" onClick={() => { this.aceptarRegister(data._id, data.status); }}>
+                             className="iconButtons" onClick={() => { this.aceptarRegister(data._id, data.status); }}
+                             disabled={createDisabled}>
                              <Done className="iconTable" />
                            </IconButton>
 
                           <IconButton aria-label="Delete"
                             title="Rechazar Transferencia"
-                             className="iconButtons" onClick={() => { this.deleteRegister(data._id, data.status); }}>
+                             className="iconButtons" onClick={() => { this.deleteRegister(data._id, data.status); }}
+                             disabled={updateDisabled}>
                              <Clear className="iconTable" />
                            </IconButton>
                         </span>
@@ -171,11 +173,13 @@ class ListTransferenciasRecibidas extends React.Component {
                 null
               }
             </tbody>
-            <Pagination contador={this.props.data}
+            {this.props.data.length > 10 &&
+              <Pagination contador={this.props.data}
               page={page}
               rowsPerPage={rowsPerPage}
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage} />
+            }
           </Table>
       </div>
     );

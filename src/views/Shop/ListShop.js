@@ -4,8 +4,9 @@ import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility, SwapHoriz } from "@material-ui/icons";
 import ModalShop from './ModalShop.js';
 import ModalTransferencias from './ModalTransferencias.js';
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import { number_format } from "../../core/utils";
+import Pagination from '../../components/Pagination';
 
 class ListShop extends React.Component {
   constructor(props) {
@@ -21,6 +22,8 @@ class ListShop extends React.Component {
       position: 0,
       isClearable: false,
       shop_id: '0',
+      page: 0,
+      rowsPerPage: 10,
     };
   }
 
@@ -97,10 +100,22 @@ class ListShop extends React.Component {
     });
   }
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
   render() {
-      const createDisabled = GetDisabledPermits(this.props.permitsShop , "Create")
-      const updateDisabled = GetDisabledPermits(this.props.permitsShop , "Update")
-      const deleteDisabled = GetDisabledPermits(this.props.permitsShop , "Delete")
+      const createDisabled = GetDisabledPermits(this.props.permitsBuy , "Create")
+      const updateDisabled = GetDisabledPermits(this.props.permitsBuy , "Update")
+      const deleteDisabled = GetDisabledPermits(this.props.permitsBuy , "Delete")
+      const detailsDisabled = GetDisabledPermits(this.props.permitsBuy , "Details")
+
+      const { rowsPerPage, page } = this.state;
+      const ArrayData = getArray(this.props.data)
 
      return (
       <div>
@@ -135,7 +150,11 @@ class ListShop extends React.Component {
           />
         }
 
-        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <Button color="success"
+          disabled={createDisabled}
+          onClick={() => { this.openModal(1); }}>
+          Agregar
+        </Button>
         <br />
         <br />
           <Table hover responsive borderless>
@@ -152,10 +171,10 @@ class ListShop extends React.Component {
               </tr>
             </thead>
             <tbody>
-             {this.props.data? this.props.data.map((shop, i) => {
+             {this.props.data ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((shop) => {
               return (
-                <tr key={i} className="text-left">
-                  <td>{ i + 1 }</td>
+                <tr key={ shop.number } className="text-left">
+                  <td>{ shop.number }</td>
                   <td>{ shop.number_invoice }</td>
                   <td>{ shop.number_controll }</td>
                   <td>{ shop.type_shop }</td>
@@ -166,7 +185,8 @@ class ListShop extends React.Component {
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
                         title="Ver Compra"
-                        className="iconButtons" onClick={() => { this.openModal(2, i, shop._id); }}>
+                        className="iconButtons" onClick={() => { this.openModal(2, shop.number, shop._id); }}
+                        disabled={detailsDisabled}>
                         <Visibility className="iconTable" />
                       </IconButton>
 
@@ -174,7 +194,7 @@ class ListShop extends React.Component {
                          title="Editar Compra"
                          disabled={updateDisabled}
                          className="iconButtons"
-                         onClick={() => { this.openModal(3, i, shop._id); }}>
+                         onClick={() => { this.openModal(3, shop.number, shop._id); }}>
                          <Edit className="iconTable" />
                        </IconButton>
 
@@ -185,11 +205,12 @@ class ListShop extends React.Component {
                         onClick={() => { this.deleteRegister(shop._id); }}>
                         <Delete className="iconTable" />
                       </IconButton>
-                      
+
                       <IconButton aria-label="Delete"
                         title="Transferir Compra"
                         className="iconButtons"
-                        onClick={() => { this.openModal(4, i, shop._id); }}>
+                        onClick={() => { this.openModal(4, shop.number, shop._id); }}
+                        disabled={createDisabled}>
                         <SwapHoriz className="iconTable" />
                       </IconButton>
                     </div>
@@ -201,6 +222,14 @@ class ListShop extends React.Component {
                 null
               }
             </tbody>
+            {
+              this.props.length > 10 &&
+              <Pagination contador={this.props.data}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+            }
           </Table>
       </div>
     );

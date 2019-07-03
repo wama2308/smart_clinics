@@ -106,4 +106,3 @@ class ListCargosInactivos extends React.Component {
   }
 }
 export default ListCargosInactivos;
-

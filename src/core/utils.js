@@ -269,12 +269,12 @@ export const GetDisabledPermits = (permits, type) => {
   return disabled;
 };
 
-export const getArray = (array) =>{
-  const arrayClean = [];
-
-  array.map((data, key)=>{
-    arrayClean.push({
+export const getArray = (props) => {
+  const ArrayData = []
+  props.map((data, key) => {
+    ArrayData.push({
       ...data, number: key + 1
     })
   })
+  return ArrayData;
 }

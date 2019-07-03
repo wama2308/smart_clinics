@@ -3,7 +3,8 @@ import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import ModalProduct from './ModalProduct.js';
-import { number_format, GetDisabledPermits } from "../../core/utils";
+import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
+import Pagination from '../../components/Pagination';
 
 class ListProduct extends React.Component {
   constructor(props) {
@@ -19,6 +20,8 @@ class ListProduct extends React.Component {
       position: 0,
       isClearable: false,
       productoId: '',
+      page: 0,
+      rowsPerPage: 10,
     };
   }
 
@@ -57,9 +60,20 @@ class ListProduct extends React.Component {
     });
   }
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
   render() {
-     const updateDisabled = GetDisabledPermits(this.props.permitsShop, "Update")
-     const deleteDisabled = GetDisabledPermits(this.props.permitsShop, "Delete")
+    const detailsDisabled = GetDisabledPermits(this.props.permitsProducts , "Details")
+    const updateDisabled = GetDisabledPermits(this.props.permitsProducts , "Update")
+
+    const { rowsPerPage, page } = this.state;
+    const ArrayProduct = getArray(this.props.allProducts)
      return (
       <div>
         <ModalProduct
@@ -84,17 +98,30 @@ class ListProduct extends React.Component {
               </tr>
             </thead>
             <tbody>
-             {this.props.allProducts? this.props.allProducts.map((product, i) => {
+             {this.props.allProducts? ArrayProduct.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => {
               return (
-                <tr key={i} className="text-left">
-                  <td>{ i + 1 }</td>
+                <tr key={ product.number } className="text-left">
+                  <td>{ product.number }</td>
                   <td>{ product.name }</td>
                   <td>{ product.code }</td>
                   <td>{ product.type }</td>
                   <td style={{'minWidth':"205px"}}>
                     <div className="float-left" >
-                      <IconButton aria-label="Delete" title="Ver Producto" className="iconButtons" onClick={() => { this.openModal(1, i, product._id); }}><Visibility className="iconTable" /></IconButton>
-                      <IconButton aria-label="Delete" title="Editar Producto/Lote" className="iconButtons" onClick={() => { this.openModal(2, i, product._id); }}><Edit className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete"
+                        title="Ver Producto"
+                        className="iconButtons"
+                        onClick={() => { this.openModal(1, product.number, product._id); }}
+                        disabled={detailsDisabled}>
+                        <Visibility className="iconTable" />
+                      </IconButton>
+
+                      <IconButton aria-label="Delete"
+                        title="Editar Producto/Lote"
+                        className="iconButtons"
+                        onClick={() => { this.openModal(2, product.number, product._id); }}
+                        disabled={updateDisabled}>
+                        <Edit className="iconTable" />
+                      </IconButton>
                       {/*<IconButton aria-label="Delete" title="Producto Defectuoso/vencido" className="iconButtons" ><Delete className="iconTable" /></IconButton>*/}
 
                     </div>
@@ -106,6 +133,13 @@ class ListProduct extends React.Component {
                 null
               }
             </tbody>
+            {this.props.length > 10 &&
+              <Pagination contador={this.props.allProducts}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+            }
           </Table>
       </div>
     );
