@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalPersonal from './ModalPersonal.js';
 import IconButton from "@material-ui/core/IconButton";
+import { getArray } from '../../core/utils';
 import { HowToReg } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
 
@@ -48,13 +49,7 @@ class ListPersonalInactivo extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayCargo = [];
-
-   this.props.personalInactivo.map((personal, key) => {
-     ArrayCargo.push({
-       ...personal, number: key + 1
-     })
-   })
+    const ArrayCargo = getArray(this.props.personalInactivo);
 
     return (
       <div>
@@ -98,14 +93,15 @@ class ListPersonalInactivo extends React.Component {
               null
             }
           </tbody>
+          {
+            this.props.personalInactivo.length > 10 &&
+              <Pagination contador={this.props.personalInactivo}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+           }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.personalInactivo}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
     );
   }

@@ -4,6 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { DoneOutlineOutlined } from "@material-ui/icons";
 import ModalStore from './ModalStore.js';
 import Pagination from '../../components/Pagination';
+import { getArray } from '../../core/utils'
 
 class ListStoreInactivos extends React.Component {
   constructor(props) {
@@ -47,14 +48,8 @@ class ListStoreInactivos extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
+    const ArrayData = getArray(this.props.data);
 
-    this.props.data.map((data, key) => {
-      ArrayData.push({
-        ...data, number: key + 1
-      })
-    })
-    
     return (
       <div>
         <br />
@@ -93,14 +88,15 @@ class ListStoreInactivos extends React.Component {
               null
             }
           </tbody>
+          {
+            this.props.data.length > 10 &&
+              <Pagination contador={this.props.data}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.data}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
     );
   }

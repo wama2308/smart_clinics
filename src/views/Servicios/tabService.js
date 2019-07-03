@@ -3,7 +3,7 @@ import { Table } from "reactstrap";
 import { FaFileAlt } from "react-icons/fa";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility } from "@material-ui/icons";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import ModalServicio from "./modalsServicio/ModalServicio";
 import Pagination from '../../components/Pagination';
 export default class tabService extends React.Component {
@@ -53,13 +53,8 @@ export default class tabService extends React.Component {
   render() {
     const updateDisabled = GetDisabledPermits(this.props.serviciosPermits, "Update")
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
+    const ArrayData = getArray(this.props.data);
 
-    this.props.data.map((template, key) => {
-      ArrayData.push({
-        ...template, number: key + 1
-      })
-    })
     return (
       <div >
         {this.state.modal && (
@@ -157,19 +152,20 @@ export default class tabService extends React.Component {
                   );
                 })}
               </tbody>
+              {
+                this.props.data.length > 10 &&
+                  <Pagination
+                    contador={this.props.data}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage} />
+              }
             </Table>
-            <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-              <Pagination
-                contador={this.props.data}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
-            </div>
           </div>
           <div />
         </form>
-      </div>
+      </div >
     );
   }
 }

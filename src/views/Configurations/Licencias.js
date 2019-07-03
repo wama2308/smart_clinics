@@ -1,6 +1,7 @@
 import React from "react";
 import { Table } from "reactstrap";
 import Pagination from '../../components/Pagination';
+import { getArray } from "../../core/utils";
 
 class Licencias extends React.Component {
   constructor(props) {
@@ -21,13 +22,7 @@ class Licencias extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayLicences = [];
-
-    this.props.licenses.map((item, key) => {
-      ArrayLicences.push({
-        ...item, number: key
-      })
-    })
+    const ArrayLicences = getArray(this.props.licenses)
     return (
       <div>
         <p className="text-muted">Licencias de su Centro Medico</p>
@@ -50,7 +45,7 @@ class Licencias extends React.Component {
                     "en-GB"
                   ).format(date);
                   return (
-                    <tr key={item.number} className="text-center">
+                    <tr key={item.number - 1} className="text-center">
                       <td>{item.license}</td>
                       <td>{item.numberclients}</td>
                       <td>{item.numberexams}</td>
@@ -62,14 +57,15 @@ class Licencias extends React.Component {
                   );
                 }) : null}
               </tbody>
+              {
+                this.props.licenses.length > 10 &&
+                  <Pagination contador={this.props.licenses}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage} />
+              }
             </Table>
-            <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-              <Pagination contador={this.props.licenses}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
-            </div>
           </div>
         </div>
       </div>
