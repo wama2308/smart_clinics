@@ -108,6 +108,39 @@ const setStoreDeleteInfoUserId = (state, payload) => {
   return Map(estado);
 };
 
+const setStoreSaveUserPusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.users.push(payload);	
+	return Map(estado);
+}
+
+const setStoreEditUserPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.users.findIndex(user => user.id === payload.id);
+	estado.users[key].username = payload.username;
+	estado.users[key].names = payload.names;	
+	estado.users[key].surnames = payload.surnames;			
+	estado.users[key].email = payload.email;			
+	estado.users[key].estado = payload.estado;			
+	return Map(estado);
+}
+
+const setStoreDisabledUserPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.users.findIndex(user => user.id === payload.id);
+	estado.users.splice(key, 1);	
+	estado.usersInactivos.push(payload);		
+	return Map(estado);
+}
+
+const setStoreEnabledUserPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.usersInactivos.findIndex(user => user.id === payload.id);
+	estado.usersInactivos.splice(key, 1);
+	estado.users.push(payload);	
+	return Map(estado);
+}
+
 const userReducer = (state = Map(), action) => {
   switch (action.type) {
 
@@ -170,6 +203,22 @@ const userReducer = (state = Map(), action) => {
 
 	  case 'LOAD_ROL_ENABLED_PUSHER': {
 	  	return setStoreEnabledRolPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_USER_NEW_PUSHER': {
+	  	return setStoreSaveUserPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_USER_EDIT_PUSHER': {
+	  	return setStoreEditUserPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_USER_DISABLED_PUSHER': {
+	  	return setStoreDisabledUserPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_USER_ENABLED_PUSHER': {
+	  	return setStoreEnabledUserPusher(state, action.payload)
 	  }
 
 	  default:

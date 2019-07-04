@@ -167,20 +167,10 @@ class ModalTransferencias extends React.Component {
             let sucursalEnvia = "";
             let sucursalRecibe = "";
             if (this.state.arraySucursalEnviaSelect) {                           
-                let arrayEnvia = Object.values(this.state.arraySucursalEnviaSelect);
-                arrayEnvia.forEach(function (elemento, indice, array) {
-                    if(indice === 0){
-                        sucursalEnvia = elemento;
-                    }            
-                });                         
+                sucursalEnvia = this.state.arraySucursalEnviaSelect.value;
             }                 
             if (this.state.arraySucursalRecibeSelect) {                           
-                let arrayRecibe = Object.values(this.state.arraySucursalRecibeSelect);
-                arrayRecibe.forEach(function (elemento, indice, array) {
-                    if(indice === 0){
-                        sucursalRecibe = elemento;
-                    }            
-                });                         
+                sucursalRecibe = this.state.arraySucursalRecibeSelect.value;                
             }
             if(this.props.option === 4)
             {

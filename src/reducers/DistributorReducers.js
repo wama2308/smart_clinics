@@ -34,6 +34,12 @@ const setStoreCleanConstacs = (state, payload) => {
 	return Map(estado);
 }
 
+const setActionProps = (state, payload) => {
+	let estado = state.toJS();
+	estado.action = payload;		
+	return Map(estado);
+}
+
 const setStoreSaveProviderPusher = (state, payload) => {
 	let estado = state.toJS();
 	estado.data.push(payload);	
@@ -106,6 +112,10 @@ const distributorReducer = (state = Map(), action) => {
 
 	  case 'LOAD_PROVIDER_ENABLED_PUSHER': {
 	  	return setStoreEnabledProviderPusher(state, action.payload)
+	  }
+
+	  case 'ACTION_PROPS': {
+	  	return setActionProps(state, action.payload)
 	  }
 
 	  default:

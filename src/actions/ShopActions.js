@@ -768,3 +768,183 @@ export const setSelectAllSwitchTransferencias = (value, option) => dispatch => {
       console.log("Problemas con el token");
     });
 };
+
+export const actionProps = () => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "ACTION_PROPS",
+        payload: 1
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+/***************************PUSHER***************************/
+
+export const loadStoreShopNewPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_SHOP_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreShopEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_SHOP_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreShopDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_SHOP_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferNewPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferReceivedSavePusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_RECEIVED_SAVE_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferReceivedEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_RECEIVED_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferReceivedDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_RECEIVED_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferReceivedAcceptPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_RECEIVED_ACCEPT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferReceivedRejectPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_RECEIVED_REJECT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}

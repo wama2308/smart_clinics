@@ -99,7 +99,7 @@ class UsersInactivosList extends React.Component {
                               disabled={disabledActive}
                               className="iconButtons"
                               onClick={() => {
-                                this.activarUser(user._id);
+                                this.activarUser(user.id);
                               }}
                             >
                               <HowToReg className="iconTable" />

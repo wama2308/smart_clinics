@@ -31,6 +31,44 @@ const setStoreCleanShelfs = (state, payload) => {
 	return Map(estado);
 }
 
+const setActionProps = (state, payload) => {
+	let estado = state.toJS();
+	estado.action = payload;		
+	return Map(estado);
+}
+
+const setStoreSavePusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.data.push(payload);	
+	return Map(estado);
+}
+
+const setStoreEditPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.data.findIndex(store => store._id === payload._id);
+	estado.data[key].name = payload.name;
+	estado.data[key].description = payload.description;	
+	estado.data[key].branchoffices = payload.branchoffices;			
+	estado.data[key].shelf = payload.shelf;				
+	return Map(estado);
+}
+
+const setStoreDisabledPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.data.findIndex(store => store._id === payload._id);
+	estado.data.splice(key, 1);	
+	estado.storeInactivos.push(payload);		
+	return Map(estado);
+}
+
+const setStoreEnabledPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.storeInactivos.findIndex(store => store._id === payload._id);
+	estado.storeInactivos.splice(key, 1);
+	estado.data.push(payload);	
+	return Map(estado);
+}
+
 const StoreReducer = (state = Map(), action) => {
   switch (action.type) {
 
@@ -52,6 +90,26 @@ const StoreReducer = (state = Map(), action) => {
 
 	  case 'CLEAN_SHELFS': {
 	  	return setStoreCleanShelfs(state, action.payload)
+	  }
+
+	  case 'ACTION_PROPS': {
+	  	return setActionProps(state, action.payload)
+	  }
+
+	  case 'LOAD_STORE_NEW_PUSHER': {
+	  	return setStoreSavePusher(state, action.payload)
+	  }
+
+	  case 'LOAD_STORE_EDIT_PUSHER': {
+	  	return setStoreEditPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_STORE_DISABLED_PUSHER': {
+	  	return setStoreDisabledPusher(state, action.payload)
+	  }
+
+	  case 'LOAD_STORE_ENABLED_PUSHER': {
+	  	return setStoreEnabledPusher(state, action.payload)
 	  }
 
 	  default:
