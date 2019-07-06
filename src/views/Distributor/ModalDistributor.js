@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import TagsInput from 'react-tagsinput';
 import ContacDistributor from './ContacDistributor.js';
 import { openConfirmDialog } from "../../actions/aplicantionActions";
-import { cleanContacs, saveDistributorAction, editDistributorAction } from "../../actions/DistributorActions";
+import { cleanContacs, saveDistributorAction, editDistributorAction, actionProps } from "../../actions/DistributorActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 /*import 'react-tagsinput/react-tagsinput.css';*/
 
@@ -385,7 +385,7 @@ class ModalDistributor extends React.Component {
                     value: props.distributor.distributorId.address.id_district
                 };     
                 
-                if(props.distributor.action === 0 && ((props.aplication.confirm.message === "") || (!props.aplication.confirm.message))){    
+                if(props.distributor.action === 0){    
                     this.setState({
                         arrayTypeIdentitySelect: props.distributor.distributorId.type_identity,
                         dni: props.distributor.distributorId.tin,
@@ -399,6 +399,7 @@ class ModalDistributor extends React.Component {
                         collapse:true,                                  
                         loading:'hide',                         
                     })
+                    this.props.actionProps();
                 }                    
                 
                 if((props.distributor.contacs.length !== 0) && (props.distributor.tableContac === 1)){
@@ -610,6 +611,7 @@ const mapDispatchToProps = dispatch => ({
     saveDistributorAction: (data, callback) =>dispatch(saveDistributorAction(data, callback)),
     editDistributorAction: (data, callback) =>dispatch(editDistributorAction(data, callback)),
     cleanContacs: () =>dispatch(cleanContacs()),
+    actionProps: () =>dispatch(actionProps()),
 });
 
 export default connect(

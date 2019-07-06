@@ -215,6 +215,19 @@ export const enableProviderFunction = proveedorId => dispatch => {
     });
 };
 
+export const actionProps = () => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "ACTION_PROPS",
+        payload: 1
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 /***************************PUSHER***************************/
 export const loadProviderNewPusher = data => dispatch => {
   getDataToken()

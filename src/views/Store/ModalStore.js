@@ -20,7 +20,8 @@ import { openConfirmDialog } from "../../actions/aplicantionActions";
 import {
   saveStoreAction,
   editStoreAction,
-  cleanShelfs
+  cleanShelfs,
+  actionProps
 } from "../../actions/StoreActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -221,8 +222,7 @@ class ModalStore extends React.Component {
     }
     if (props.option === 2 || props.option === 3) {
       if (
-        props.store.action === 0 &&
-        props.aplication.confirm.message === "" &&
+        props.store.action === 0 &&        
         props.store.storeId
       ) {
         if (props.store.storeId.storeId) {
@@ -233,6 +233,7 @@ class ModalStore extends React.Component {
               descripcion: props.store.storeId.storeId.description,
               loading: props.store.storeId.loading
             });
+            this.props.actionProps()
           }
         }
       }
@@ -244,7 +245,7 @@ class ModalStore extends React.Component {
         this.setState({
           collapse: false
         });
-      }
+      }      
     }
   };
 
@@ -383,7 +384,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(saveStoreAction(data, callback)),
   editStoreAction: (data, callback) =>
     dispatch(editStoreAction(data, callback)),
-  cleanShelfs: () => dispatch(cleanShelfs())
+  cleanShelfs: () => dispatch(cleanShelfs()),
+  actionProps: () => dispatch(actionProps())
 });
 
 export default connect(
