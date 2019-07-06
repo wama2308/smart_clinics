@@ -874,6 +874,36 @@ export const loadStoreTransferDisabledPusher = data => dispatch => {
     });
 }
 
+export const loadStoreTransferAcceptPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_ACCEPT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreTransferRejectPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_TRANSFER_REJECT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
 export const loadStoreTransferReceivedSavePusher = data => dispatch => {
   getDataToken()
     .then(datos => {

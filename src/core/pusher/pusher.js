@@ -30,6 +30,8 @@ import { loadStoreShopDisabledPusher } from '../../actions/ShopActions'
 import { loadStoreTransferNewPusher } from '../../actions/ShopActions'
 import { loadStoreTransferEditPusher } from '../../actions/ShopActions'
 import { loadStoreTransferDisabledPusher } from '../../actions/ShopActions'
+import { loadStoreTransferAcceptPusher } from '../../actions/ShopActions'
+import { loadStoreTransferRejectPusher } from '../../actions/ShopActions'
 import { loadStoreTransferReceivedSavePusher } from '../../actions/ShopActions'
 import { loadStoreTransferReceivedEditPusher } from '../../actions/ShopActions'
 import { loadStoreTransferReceivedDisabledPusher } from '../../actions/ShopActions'
@@ -182,6 +184,14 @@ export default class PusherApi {
 
     transfer.bind('disabled', data => {
       this.store.dispatch(loadStoreTransferDisabledPusher(data))
+    });
+
+    transfer.bind('accept', data => {
+      this.store.dispatch(loadStoreTransferAcceptPusher(data))
+    });
+
+    transfer.bind('reject', data => {
+      this.store.dispatch(loadStoreTransferRejectPusher(data))
     });
     
     transfer_received.bind('save', data => {
