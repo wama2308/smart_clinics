@@ -29,6 +29,7 @@ import { IconButton } from "@material-ui/core";
 import Cleave from "cleave.js/react";
 import jstz from "jstz";
 import * as yup from "yup";
+import AddField from "./addField";
 import styled from "styled-components";
 
 class ModalServicio extends React.Component {
@@ -36,7 +37,8 @@ class ModalServicio extends React.Component {
     super(props);
     this.state = {
       loading: "show",
-      amount: 0
+      amount: 0,
+      openModal: false
     };
   }
 
@@ -118,6 +120,10 @@ class ModalServicio extends React.Component {
     return arrayGroups;
   };
 
+  closeModal = () => {
+    this.setState({ openModal: false });
+  };
+
   render() {
     const { open, close, serviceModalData, plantilla, disabled } = this.props;
     const data = !serviceModalData
@@ -153,9 +159,14 @@ class ModalServicio extends React.Component {
               resetForm
             }) => {
               const group = this.getGroup(values.fields);
-              console.log("asdasd", values);
+
               return (
                 <div>
+                  <AddField
+                    open={this.state.openModal}
+                    close={this.closeModal}
+                    group={group}
+                  />
                   <ModalHeader toggle={this.props.close}>
                     Servicio Original
                   </ModalHeader>
@@ -260,7 +271,14 @@ class ModalServicio extends React.Component {
                                           <Edit style={{ fontSize: 18 }} />
                                         </IconButton>
                                         <IconButton>
-                                          <Delete style={{ fontSize: 18 }} />
+                                          <Delete
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => {
+                                              this.props.deleteModifyServices(
+                                                field
+                                              );
+                                            }}
+                                          />
                                         </IconButton>
                                       </div>
                                     </div>
@@ -308,7 +326,14 @@ class ModalServicio extends React.Component {
                                           <Edit style={{ fontSize: 18 }} />
                                         </IconButton>
                                         <IconButton>
-                                          <Delete style={{ fontSize: 18 }} />
+                                          <Delete
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => {
+                                              this.props.deleteModifyServices(
+                                                field
+                                              );
+                                            }}
+                                          />
                                         </IconButton>
                                       </div>
                                     </div>
@@ -355,7 +380,14 @@ class ModalServicio extends React.Component {
                                           <Edit style={{ fontSize: 18 }} />
                                         </IconButton>
                                         <IconButton>
-                                          <Delete style={{ fontSize: 18 }} />
+                                          <Delete
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => {
+                                              this.props.deleteModifyServices(
+                                                field
+                                              );
+                                            }}
+                                          />
                                         </IconButton>
                                       </div>
                                     </div>
@@ -398,7 +430,14 @@ class ModalServicio extends React.Component {
                                           <Edit style={{ fontSize: 18 }} />
                                         </IconButton>
                                         <IconButton>
-                                          <Delete style={{ fontSize: 18 }} />
+                                          <Delete
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => {
+                                              this.props.deleteModifyServices(
+                                                field
+                                              );
+                                            }}
+                                          />
                                         </IconButton>
                                       </div>
                                     </div>
@@ -420,6 +459,22 @@ class ModalServicio extends React.Component {
                             }
                           });
                         })}
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end"
+                        }}
+                      >
+                        <Button
+                          style={{
+                            margin: 20
+                          }}
+                          color="success"
+                          onClick={() => this.setState({ openModal: true })}
+                        >
+                          Agregar nuevas plantillas
+                        </Button>
                       </div>
                     </EditableInput>
 
@@ -446,7 +501,7 @@ class ModalServicio extends React.Component {
                                 editor.addMenuItem(valor, {
                                   text: valor,
                                   context: "tools",
-                                  onclick: function() {
+                                  onClick: function() {
                                     editor.insertContent(valor.toString());
                                   }
                                 });
