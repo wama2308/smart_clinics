@@ -10,7 +10,7 @@ import { number_format } from "../../core/utils";
 import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { cleanProducts, setCantidadTableTransferencias, setSwitchTableTransferencias, setSelectAllSwitchTransferencias, productTransferAction, editTransferAction } from "../../actions/ShopActions";
+import { cleanProducts, setCantidadTableTransferencias, setSwitchTableTransferencias, setSelectAllSwitchTransferencias, productTransferAction, editTransferAction, actionProps } from "../../actions/ShopActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit } from "@material-ui/icons";
@@ -73,7 +73,7 @@ class ModalTransferencias extends React.Component {
         }
         if(props.option === 5 || props.option === 6 || props.option === 7){
             if(props.shop.transferId){
-                if(props.shop.transferId.distribuidor_id && props.aplication.confirm.message === "" && props.shop.action === 0){
+                if(props.shop.transferId.distribuidor_id && props.shop.action === 0){
                     const productConfirm = props.shop.transferId.products.find(product => product.confirm === false);
                     let selectAll = false;
                     if(!productConfirm){
@@ -86,6 +86,7 @@ class ModalTransferencias extends React.Component {
                         checked: selectAll,
                         loading: 'hide',
                     })
+                    this.props.actionProps();
                 }                                  
             }
         }        
@@ -437,6 +438,7 @@ const mapDispatchToProps = dispatch => ({
     setCantidadTableTransferencias: (pos, value, option) =>dispatch(setCantidadTableTransferencias(pos, value, option)),
     setSwitchTableTransferencias: (pos, value, option) =>dispatch(setSwitchTableTransferencias(pos, value, option)),
     setSelectAllSwitchTransferencias: (value, option) =>dispatch(setSelectAllSwitchTransferencias(value, option)),
+    actionProps: () =>dispatch(actionProps()),
 });
 
 export default connect(

@@ -513,7 +513,6 @@ class ModalShop extends React.Component {
                             </ModalBody>
                             <ModalFooter>
                                 <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
-                                <Button className="" color="danger" onClick={this.testOnclick}>Cancelar</Button>
                                 <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCompras}>{this.props.modalFooter}</Button>
                             </ModalFooter>
                             </div>

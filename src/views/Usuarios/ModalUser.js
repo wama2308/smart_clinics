@@ -61,6 +61,7 @@ class ModalUser extends React.Component {
         this.setState({
             totalBranchOffices: this.props.totalBranchOffices,
             sucursal: this.props.arrayBranchOffices,
+            rolSelect: this.props.usersRoles.loadSelectRoles,
         })
         /*this.props.roles != null &&
         this.props.roles.map((list, i) => {
