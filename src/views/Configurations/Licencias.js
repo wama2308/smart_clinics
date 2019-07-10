@@ -1,6 +1,8 @@
 import React from "react";
 import { Table } from "reactstrap";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class Licencias extends React.Component {
   constructor(props) {
@@ -28,9 +30,26 @@ class Licencias extends React.Component {
         ...item, number: key
       })
     })
+
+    const result = this.props.search
+      ? ArrayLicences.filter(item => {
+          return (
+            item.license.toLowerCase().includes(this.props.search) 
+          );
+        })
+      : ArrayLicences;
+
     return (
       <div>
-        <p className="text-muted">Licencias de su Centro Medico</p>
+        <div className="containerGeneral">
+          <div className="container-button" >
+            <p className="text-muted">Licencias de su Centro Medico</p>
+         </div>
+          <div className="containerSearch"  style={{"marginBottom": "15px"}}>
+            <Search value={ArrayLicences} />
+          </div>
+        </div>
+
         <div className="row">
           <div className="form-group col-sm-12">
             <Table hover responsive borderless>
@@ -44,7 +63,7 @@ class Licencias extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.props.licenses ? ArrayLicences.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+                {this.props.licenses ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
                   const date = new Date(item.expiration_date.sec)
                   const date2 = new Intl.DateTimeFormat(
                     "en-GB"

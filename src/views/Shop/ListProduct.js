@@ -5,6 +5,8 @@ import { Delete, Edit, Visibility } from "@material-ui/icons";
 import ModalProduct from './ModalProduct.js';
 import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListProduct extends React.Component {
   constructor(props) {
@@ -71,9 +73,19 @@ class ListProduct extends React.Component {
   render() {
     const detailsDisabled = GetDisabledPermits(this.props.permitsProducts , "Details")
     const updateDisabled = GetDisabledPermits(this.props.permitsProducts , "Update")
-
     const { rowsPerPage, page } = this.state;
     const ArrayProduct = getArray(this.props.allProducts)
+
+    const result = this.props.search
+      ? ArrayProduct.filter(product => {
+          return (
+              product.name.toLowerCase().includes(this.props.search) ||
+              product.code.toLowerCase().includes(this.props.search)||
+              product.type.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayProduct;
+
      return (
       <div>
         <ModalProduct
@@ -86,6 +98,11 @@ class ListProduct extends React.Component {
           productoId = {this.state.productoId}
           valorCloseModal = {this.valorCloseModal}
         />
+      <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
+          <div className="containerSearch">
+            <Search value={ArrayProduct} />
+          </div>
+        </div>
         <br />
           <Table hover responsive borderless>
             <thead className="thead-light">
@@ -98,7 +115,7 @@ class ListProduct extends React.Component {
               </tr>
             </thead>
             <tbody>
-             {this.props.allProducts? ArrayProduct.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => {
+             {this.props.allProducts? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => {
               return (
                 <tr key={ product.number } className="text-left">
                   <td>{ product.number }</td>

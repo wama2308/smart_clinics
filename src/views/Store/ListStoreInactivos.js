@@ -4,6 +4,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { DoneOutlineOutlined } from "@material-ui/icons";
 import ModalStore from './ModalStore.js';
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListStoreInactivos extends React.Component {
   constructor(props) {
@@ -37,12 +39,20 @@ class ListStoreInactivos extends React.Component {
       }
     });
   }
+
   handleChangeRowsPerPage = event => {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
 
   handleChangePage = (event, page) => {
     this.setState({ page });
+  };
+
+  getStore = store => {
+    if (!store) {
+      return [];
+    }
+    return store;
   };
 
   render() {
@@ -54,9 +64,25 @@ class ListStoreInactivos extends React.Component {
         ...data, number: key + 1
       })
     })
-    
+
+    const list = this.getStore(this.props.data)
+
+    const result = this.props.search
+      ? ArrayData.filter(data => {
+          return (
+              data.name.toLowerCase().includes(this.props.search) ||
+              data.branchoffice.label.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayData;
+
     return (
       <div>
+        <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
+          <div className="containerSearch">
+            <Search value={ArrayData} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
@@ -69,7 +95,7 @@ class ListStoreInactivos extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayData ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+            {ArrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>

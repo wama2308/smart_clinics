@@ -5,6 +5,8 @@ import { GetDisabledPermits } from "../../core/utils";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class UsersList extends React.Component {
   constructor(props) {
@@ -120,6 +122,17 @@ class UsersList extends React.Component {
       })
     })
 
+    const result = this.props.search
+      ? ArrayUsers.filter(users => {
+          return (
+            users.email.toLowerCase().includes(this.props.search) ||
+            users.names.toLowerCase().includes(this.props.search) ||
+            users.surnames.toLowerCase().includes(this.props.search) ||
+            users.username.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayUsers;
+
     return (
       <div>
         <ModalUser
@@ -145,15 +158,22 @@ class UsersList extends React.Component {
           userIdEdit={this.state.userIdEdit}
         />
 
-        <Button
-          color="success"
-          disabled={disabledCreate}
-          onClick={() => {
-            this.openUser(1);
-          }}
-        >
-          Agregar Usuario
-        </Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+            <Button
+              color="success"
+              disabled={disabledCreate}
+              onClick={() => {
+                this.openUser(1);
+              }}
+            >
+              Agregar Usuario
+            </Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={ArrayUsers} />
+          </div>
+        </div>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -170,7 +190,7 @@ class UsersList extends React.Component {
           </thead>
           <tbody>
             {this.props.users
-              ? ArrayUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => {
+              ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => {
                 return (
                   <tr key={user.number} className="text-left">
                     <td>{user.number}</td>

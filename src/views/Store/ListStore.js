@@ -4,6 +4,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import ModalStore from './ModalStore.js';
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListStore extends React.Component {
   constructor(props) {
@@ -89,6 +91,13 @@ class ListStore extends React.Component {
     this.setState({ page });
   };
 
+  getStore = distribuitor => {
+    if (!distribuitor) {
+      return [];
+    }
+    return distribuitor;
+  };
+
   render() {
     const { rowsPerPage, page } = this.state;
     const ArrayData = [];
@@ -98,6 +107,16 @@ class ListStore extends React.Component {
         ...data, number: key + 1
       })
     })
+    const list = this.getStore(this.props.data)
+
+    const result = this.props.search
+      ? ArrayData.filter(data => {
+          return (
+              data.name.toLowerCase().includes(this.props.search) ||
+              data.branchoffice.label.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayData;
 
     return (
       <div>
@@ -113,7 +132,14 @@ class ListStore extends React.Component {
           branchOfficces={this.props.branchOfficces}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+            <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={ArrayData} />
+          </div>
+        </div>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -127,7 +153,7 @@ class ListStore extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayData ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+            {ArrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>

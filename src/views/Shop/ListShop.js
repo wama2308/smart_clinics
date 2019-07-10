@@ -7,6 +7,8 @@ import ModalTransferencias from './ModalTransferencias.js';
 import { GetDisabledPermits, getArray } from "../../core/utils";
 import { number_format } from "../../core/utils";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListShop extends React.Component {
   constructor(props) {
@@ -117,6 +119,16 @@ class ListShop extends React.Component {
       const { rowsPerPage, page } = this.state;
       const ArrayData = getArray(this.props.data)
 
+      const result = this.props.search
+        ? ArrayData.filter(shop => {
+            return (
+                shop.number_invoice.toLowerCase().includes(this.props.search) ||
+                shop.number_controll.toLowerCase().includes(this.props.search)||
+                shop.type_shop.toLowerCase().includes(this.props.search)
+            );
+          })
+        : ArrayData;
+
      return (
       <div>
         {
@@ -150,11 +162,18 @@ class ListShop extends React.Component {
           />
         }
 
-        <Button color="success"
-          disabled={createDisabled}
-          onClick={() => { this.openModal(1); }}>
-          Agregar
-        </Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+            <Button color="success"
+              disabled={createDisabled}
+              onClick={() => { this.openModal(1); }}>
+              Agregar
+            </Button>
+          </div>
+          <div className="containerSearch">
+            <Search value={ArrayData} />
+          </div>
+        </div>
         <br />
         <br />
           <Table hover responsive borderless>
@@ -171,7 +190,7 @@ class ListShop extends React.Component {
               </tr>
             </thead>
             <tbody>
-             {this.props.data ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((shop) => {
+             {this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((shop) => {
               return (
                 <tr key={ shop.number } className="text-left">
                   <td>{ shop.number }</td>

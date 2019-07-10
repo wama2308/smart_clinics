@@ -4,6 +4,8 @@ import ModalPersonal from './ModalPersonal.js';
 import IconButton from "@material-ui/core/IconButton";
 import { HowToReg } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListPersonalInactivo extends React.Component {
   constructor(props) {
@@ -56,8 +58,26 @@ class ListPersonalInactivo extends React.Component {
      })
    })
 
+   const result = this.props.search
+     ? ArrayCargo.filter(personal => {
+         return (
+             personal.names.toLowerCase().includes(this.props.search) ||
+             personal.surnames.toLowerCase().includes(this.props.search) ||
+             personal.positions.toLowerCase().includes(this.props.search) ||
+             personal.phone[0].includes(this.props.search) ||
+             personal.type_identity.toLowerCase().toString().includes(this.props.search) ||
+             personal.dni.includes(this.props.search)
+         );
+       })
+     : ArrayCargo;
+
     return (
       <div>
+        <div className="containerGeneral" style={{"justifyContent": "flex-end", }}>
+          <div className="containerSearch">
+            <Search value={ArrayCargo} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
@@ -72,7 +92,7 @@ class ListPersonalInactivo extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.personalInactivo ? ArrayCargo.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((personal) => {
+            {this.props.personalInactivo ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((personal) => {
               return (
                 <tr key={personal.number} className="text-left">
                   <td>{personal.number}</td>

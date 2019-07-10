@@ -163,6 +163,7 @@ class UsersContainer extends Component {
                             this.props.deleteSucursalFunction
                           }
                           alert={this.props.alert}
+                          search={this.props.searchData}
                         />
                       </TabPane>
                       <TabPane tabId="2">
@@ -176,6 +177,7 @@ class UsersContainer extends Component {
                           modules={this.props.usersRoles.get("modules")}
                           confirmDeleteUser={this.props.confirmDeleteUser}
                           disabledRolAction={this.props.disabledRolAction}
+                          search={this.props.searchData}
                         />
                       </TabPane>
                       <TabPane tabId="3">
@@ -186,6 +188,7 @@ class UsersContainer extends Component {
                           ActivateUserNoMasterAction={
                             this.props.ActivateUserNoMasterAction
                           }
+                          search={this.props.searchData}
                         />
                       </TabPane>
                       <TabPane tabId="4">
@@ -194,6 +197,7 @@ class UsersContainer extends Component {
                           permitsUsers={this.state.permitsUsers}
                           confirmDeleteUser={this.props.confirmDeleteUser}
                           enabledRolAction={this.props.enabledRolAction}
+                          search={this.props.searchData}
                         />
                       </TabPane>
                     </TabContent>
@@ -225,7 +229,8 @@ class UsersContainer extends Component {
 const mapStateToProps = state => ({
   usersRoles: state.usersRoles,
   authData: state.auth,
-  aplication: state.global
+  aplication: state.global,
+  searchData: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -4,6 +4,8 @@ import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
 import { DoneOutlineOutlined } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListCargosInactivos extends React.Component {
   constructor(props) {
@@ -57,8 +59,21 @@ class ListCargosInactivos extends React.Component {
       })
     })
 
+    const result = this.props.search
+      ? ArrayCargo.filter(cargo => {
+          return (
+              cargo.label.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayCargo;
+
     return (
       <div>
+        <div className="containerGeneral" style={{"justifyContent": "flex-end", }}>
+          <div className="containerSearch">
+            <Search value={ArrayCargo} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
@@ -70,7 +85,7 @@ class ListCargosInactivos extends React.Component {
           </thead>
           <tbody>
             {
-              ArrayCargo ? ArrayCargo.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo) => {
+              ArrayCargo ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo) => {
                 return (
                   <tr key={cargo.number} className="text-left">
                     <td>{cargo.number}</td>

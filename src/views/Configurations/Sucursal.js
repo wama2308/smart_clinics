@@ -9,6 +9,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { GetDisabledPermits } from '../../core/utils'
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class Sucursales extends React.Component {
   constructor(props) {
@@ -97,6 +99,18 @@ class Sucursales extends React.Component {
         ...item, number: key
       })
     })
+
+    const result = this.props.search
+      ? ArraySucursales.filter(item => {
+          return (
+            item.name.toLowerCase().includes(this.props.search)||
+            item.code.toLowerCase().includes(this.props.search) ||
+            item.province.toLowerCase().includes(this.props.search)||
+            item.country.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArraySucursales;
+
     return (
       <div>
         {this.state.openModal && (
@@ -108,10 +122,15 @@ class Sucursales extends React.Component {
           />
         )}
         <div>
-          <div>
-            <p className="text-muted">
-              Ajuste la informacion de las sucursales de su Centro Medico
-            </p>
+          <div className="containerGeneral">
+            <div className="container-button" >
+              <p className="text-muted">
+                Ajuste la informacion de las sucursales de su Centro Medico
+              </p>
+           </div>
+            <div className="containerSearch">
+              <Search value={ArraySucursales} />
+            </div>
           </div>
           <div className="App">
             <Button color="success" disabled={disabled} onClick={() => this.add()}>
@@ -130,7 +149,7 @@ class Sucursales extends React.Component {
             </thead>
             <tbody>
               {this.props.sucursales
-                ? ArraySucursales.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+                ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
                   if (item.active) {
                     return (
                       <tr key={item.number}>

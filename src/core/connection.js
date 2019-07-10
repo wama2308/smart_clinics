@@ -1,5 +1,5 @@
 //export const url = `http://smartclinics.online/sc-admin/web/app.php`;
-export const url = `http://192.168.0.141:8000`;
+export const url = `http://192.168.0.110:8000`;
 
 export const getDataToken = () => {
   return new Promise(resolve => {

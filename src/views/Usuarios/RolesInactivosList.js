@@ -5,6 +5,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { GetDisabledPermits } from "../../core/utils";
 import { DoneOutlineOutlined } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class RolesInactivosList extends React.Component {
   constructor(props) {
@@ -66,8 +68,21 @@ class RolesInactivosList extends React.Component {
       })
     })
 
+    const result = this.props.search
+      ? ArrayRoles.filter(rol => {
+          return (
+            rol.rol.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayRoles;
+
     return (
       <div>
+        <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
+          <div className="containerSearch">
+            <Search value={ArrayRoles} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
@@ -79,7 +94,7 @@ class RolesInactivosList extends React.Component {
           </thead>
           <tbody>
             {this.props.roles
-              ? ArrayRoles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rol) => {
+              ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rol) => {
                 return (
                   <tr key={rol.number} className="text-left">
                     <td>{rol.number}</td>

@@ -6,6 +6,9 @@ import { Edit, Visibility } from "@material-ui/icons";
 import { GetDisabledPermits } from "../../core/utils";
 import ModalServicio from "./modalsServicio/ModalServicio";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
+
 export default class tabService extends React.Component {
   constructor(props) {
     super(props);
@@ -50,6 +53,13 @@ export default class tabService extends React.Component {
     this.setState({ page });
   };
 
+  getService = service => {
+    if (!service) {
+      return [];
+    }
+    return service;
+  };
+
   render() {
     const updateDisabled = GetDisabledPermits(this.props.serviciosPermits, "Update")
     const { rowsPerPage, page } = this.state;
@@ -60,8 +70,25 @@ export default class tabService extends React.Component {
         ...template, number: key + 1
       })
     })
+
+    const list = this.getService(this.props.data)
+
+      const result = this.props.search
+        ? ArrayData.filter(service => {
+            return (
+              service.serviceName.toLowerCase().includes(this.props.search) ||
+              service.category.toLowerCase().includes(this.props.search)
+            );
+          })
+        : ArrayData;
+
     return (
       <div >
+        <div className="containerGeneral" style={{"justifyContent": "flex-end", "marginBottom": "15px"}}>
+          <div className="containerSearch">
+            <Search value={ArrayData} />
+          </div>
+        </div>
         {this.state.modal && (
           <ModalServicio
             open={this.state.modal}
@@ -92,7 +119,7 @@ export default class tabService extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((service) => {
+                {result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((service) => {
                   return (
                     <tr key={service.number}>
                       <td scope="row" style={{ width: "10%" }}>

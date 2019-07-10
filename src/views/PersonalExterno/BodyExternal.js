@@ -5,6 +5,8 @@ import { Delete, Edit, Visibility } from "@material-ui/icons";
 import { GetDisabledPermits } from "../../core/utils";
 import PreRegistro from "./PreRegistro/PreRegistro";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class BodyExternal extends React.Component {
   constructor(props) {
@@ -74,6 +76,18 @@ class BodyExternal extends React.Component {
         ...data, number: key + 1
       })
     })
+
+    const result = this.props.search
+      ? ArrayData.filter(item => {
+          return (
+              item.name_branchoffices.toLowerCase().includes(this.props.search)||
+              item.name_medical_center.toLowerCase().includes(this.props.search)||
+              item.country.toLowerCase().includes(this.props.search)||
+              item.province.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayData;
+
     return (
       <div
         style={{
@@ -88,6 +102,11 @@ class BodyExternal extends React.Component {
             disabled={true}
           />
         )}
+        <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
+          <div className="containerSearch" style={{"margin-bottom": "15px"}}>
+            <Search value={ArrayData} />
+          </div>
+        </div>
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
@@ -98,7 +117,7 @@ class BodyExternal extends React.Component {
           </thead>
           <tbody>
             {ArrayData && ArrayData.length > 0
-              ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+              ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
                 return (
                   <tr key={data.number}>
                     <td>{item.name_branchoffices}</td>

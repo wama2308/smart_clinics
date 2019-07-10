@@ -5,6 +5,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { GetDisabledPermits } from "../../core/utils";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class RolesList extends React.Component {
   constructor(props) {
@@ -111,6 +113,14 @@ class RolesList extends React.Component {
       })
     })
 
+    const result = this.props.search
+      ? ArrayRoles.filter(rol => {
+          return (
+            rol.rol.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayRoles;
+
     return (
       <div>
         <ModalRoles
@@ -127,16 +137,22 @@ class RolesList extends React.Component {
           id={this.state.id}
           valorCloseModalRoles={this.valorCloseModalRoles}
         />
-
-        <Button
-          color="success"
-          disabled={disabledCreate}
-          onClick={() => {
-            this.openRoles(1);
-          }}
-        >
-          Agregar Rol
-        </Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+            <Button
+              color="success"
+              disabled={disabledCreate}
+              onClick={() => {
+                this.openRoles(1);
+              }}
+            >
+              Agregar Rol
+            </Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={ArrayRoles} />
+          </div>
+        </div>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -149,7 +165,7 @@ class RolesList extends React.Component {
           </thead>
           <tbody>
             {this.props.roles
-              ? ArrayRoles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rol) => {
+              ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rol) => {
                 return (
                   <tr key={rol.number} className="text-left">
                     <td>{rol.number}</td>

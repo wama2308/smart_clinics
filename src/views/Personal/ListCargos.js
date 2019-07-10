@@ -5,6 +5,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
 import { GetDisabledPermits } from "../../core/utils";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListCargos extends React.Component {
   constructor(props) {
@@ -105,7 +107,14 @@ class ListCargos extends React.Component {
         ...cargo, number: key + 1
       })
     })
-    
+
+    const result = this.props.search
+      ? ArrayCargo.filter(cargo => {
+          return (
+              cargo.label.toLowerCase().includes(this.props.search)
+          );
+        })
+      : ArrayCargo;
     return (
       <div>
         <ModalCargos
@@ -120,7 +129,19 @@ class ListCargos extends React.Component {
           cargoId={this.state.cargoId}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar Cargos</Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+          <Button color="success"
+             disabled={createDisabled}
+             onClick={() => { this.openModal(1); }}>
+             Agregar Cargos
+           </Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={ArrayCargo} />
+          </div>
+        </div>
+
         <br />
         <br />
         <Table hover responsive borderless>
@@ -132,7 +153,7 @@ class ListCargos extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayCargo ? ArrayCargo.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo, i) => {
+            {ArrayCargo ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo, i) => {
               return (
                 <tr key={cargo.number} className="text-left">
                   <td>{cargo.number}</td>
@@ -182,4 +203,3 @@ class ListCargos extends React.Component {
   }
 }
 export default ListCargos;
-

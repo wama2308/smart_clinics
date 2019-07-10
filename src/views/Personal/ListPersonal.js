@@ -5,6 +5,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { GetDisabledPermits } from "../../core/utils";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListPersonal extends React.Component {
   constructor(props) {
@@ -104,6 +106,19 @@ class ListPersonal extends React.Component {
       })
     })
 
+    const result = this.props.search
+      ? ArrayPersonal.filter(personal => {
+          return (
+              personal.names.toLowerCase().includes(this.props.search) ||
+              personal.surnames.toLowerCase().includes(this.props.search) ||
+              personal.positions.toLowerCase().includes(this.props.search) ||
+              personal.phone[0].includes(this.props.search) ||
+              personal.type_identity.toLowerCase().toString().includes(this.props.search) ||
+              personal.dni.includes(this.props.search)
+          );
+        })
+      : ArrayPersonal;
+
     return (
       <div>
         <ModalPersonal
@@ -124,7 +139,18 @@ class ListPersonal extends React.Component {
           roles={this.props.roles}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" disabled={disabledCreate} onClick={() => { this.openModal(1); }}>Agregar Personal</Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+        <Button color="success"
+          disabled={disabledCreate}
+          onClick={() => { this.openModal(1); }}>
+          Agregar Personal
+        </Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={ArrayPersonal} />
+          </div>
+        </div>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -140,7 +166,7 @@ class ListPersonal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayPersonal ? ArrayPersonal.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((personal) => {
+            {ArrayPersonal ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((personal) => {
               return (
                 <tr key={personal.number} className="text-left">
                   <td>{personal.number}</td>
