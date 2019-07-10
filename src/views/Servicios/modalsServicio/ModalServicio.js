@@ -11,10 +11,14 @@ import {
   FormGroup,
   Label,
   FormFeedback,
-  Card
+  Card,
+  NavItem,
+  Nav,
+  NavLink
 } from "reactstrap";
 import "../Services.css";
 import "../loading.css";
+import classnames from "classnames";
 import { Formik } from "formik";
 import Select from "react-select";
 import { Editor } from "@tinymce/tinymce-react";
@@ -38,7 +42,9 @@ class ModalServicio extends React.Component {
     this.state = {
       loading: "show",
       amount: 0,
-      openModal: false
+      openModal: false,
+      edit: null,
+      activeTab: 1
     };
   }
 
@@ -121,8 +127,32 @@ class ModalServicio extends React.Component {
   };
 
   closeModal = () => {
-    this.setState({ openModal: false });
+    this.setState({ openModal: false, edit: null });
   };
+
+  confirm = field => {
+    const obj = {
+      title: "Servicios",
+      info: "Esta seguro que desea eliminar este campo?"
+    };
+    this.props.alert(obj, res => {
+      if (res) {
+        this.props.deleteModifyServices({
+          field_id: field._id,
+          licenseId: this.props.licenseID,
+          serviceId: this.props.serviceID
+        });
+      }
+    });
+  };
+
+  toggleTab(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
+  }
 
   render() {
     const { open, close, serviceModalData, plantilla, disabled } = this.props;
@@ -147,6 +177,7 @@ class ModalServicio extends React.Component {
         {this.state.loading === "hide" && (
           <Formik
             onSubmit={this.handleSubmit}
+            enableReinitialize
             initialValues={Initialvalue}
             validationSchema={validationSchema}
             render={({
@@ -159,14 +190,18 @@ class ModalServicio extends React.Component {
               resetForm
             }) => {
               const group = this.getGroup(values.fields);
-
               return (
                 <div>
-                  <AddField
-                    open={this.state.openModal}
-                    close={this.closeModal}
-                    group={group}
-                  />
+                  {this.state.openModal && (
+                    <AddField
+                      open={this.state.openModal}
+                      close={this.closeModal}
+                      group={group}
+                      update={this.state.edit}
+                      licenseID={this.props.licenseID}
+                      serviceID={this.props.serviceID}
+                    />
+                  )}
                   <ModalHeader toggle={this.props.close}>
                     Servicio Original
                   </ModalHeader>
@@ -243,241 +278,282 @@ class ModalServicio extends React.Component {
                     </FormGroup>
 
                     <h4>Campos Modificables del servicio</h4>
-                    <EditableInput>
-                      <div className="containerInputs">
-                        {group.sort().map(group => {
-                          return values.fields.map((field, key) => {
-                            if (group === field.group) {
-                              if (field.type === "input") {
-                                return (
-                                  <FormGroup
-                                    key={key}
-                                    className={`top "form-group col-sm-${
-                                      field.size
-                                    } groupContainer `}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "baseline",
-                                        height: 40
-                                      }}
-                                    >
-                                      <Label for="servicio">
-                                        {field.label}
-                                      </Label>
-                                      <div className="buttonSEdit">
-                                        <IconButton>
-                                          <Edit style={{ fontSize: 18 }} />
-                                        </IconButton>
-                                        <IconButton>
-                                          <Delete
-                                            style={{ fontSize: 18 }}
-                                            onClick={() => {
-                                              this.props.deleteModifyServices(
-                                                field
-                                              );
-                                            }}
-                                          />
-                                        </IconButton>
-                                      </div>
-                                    </div>
+                    <Nav tabs>
+                      <NavItem>
+                        <NavLink
+                          style={{ height: 50 }}
+                          className={classnames({
+                            active: this.state.activeTab === 1
+                          })}
+                          onClick={() => {
+                            this.toggleTab(1);
+                          }}
+                        >
+                          Activos
+                        </NavLink>
+                      </NavItem>
 
-                                    <Input
-                                      value={field.values}
-                                      disabled={disabled}
-                                      type="text"
-                                      onBlur={handleBlur}
-                                      placeholder={field.placeholder}
-                                      onChange={event => {
-                                        setFieldValue(
-                                          `fields[${key}].value`,
-                                          event.target.value
-                                        );
-                                      }}
-                                    />
-                                    {/* {touched.servicio && errors.service && (
-                          <FormFeedback style={{ display: "block" }} tooltip>
-                            {errors.service}
-                          </FormFeedback>
-                        )} */}
-                                  </FormGroup>
-                                );
-                              } else if (field.type === "select") {
-                                return (
-                                  <FormGroup
-                                    key={key}
-                                    className={`top form-group col-sm-${
-                                      field.size
-                                    } groupContainer`}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "baseline",
-                                        height: 40
-                                      }}
+                      <NavItem>
+                        <NavLink
+                          style={{ height: 50 }}
+                          className={classnames({
+                            active: this.state.activeTab === 2
+                          })}
+                          onClick={() => {
+                            this.toggleTab(2);
+                          }}
+                        >
+                          Inactivo
+                        </NavLink>
+                      </NavItem>
+                    </Nav>
+                    {this.state.activeTab === 1 && (
+                      <EditableInput>
+                        <div className="containerInputs">
+                          {group.sort().map(group => {
+                            return values.fields.map((field, key) => {
+                              if (group === field.group) {
+                                if (field.type === "input") {
+                                  return (
+                                    <FormGroup
+                                      key={key}
+                                      className={`top "form-group col-sm-${
+                                        field.size
+                                      } groupContainer `}
                                     >
-                                      <Label for="servicio">
-                                        {field.label}
-                                      </Label>
-                                      <div className="buttonSEdit">
-                                        <IconButton>
-                                          <Edit style={{ fontSize: 18 }} />
-                                        </IconButton>
-                                        <IconButton>
-                                          <Delete
-                                            style={{ fontSize: 18 }}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "baseline",
+                                          height: 40
+                                        }}
+                                      >
+                                        <Label for="servicio">
+                                          {field.label}
+                                        </Label>
+                                        <div className="buttonSEdit">
+                                          <IconButton
                                             onClick={() => {
-                                              this.props.deleteModifyServices(
-                                                field
-                                              );
+                                              this.setState({
+                                                openModal: true,
+                                                edit: field
+                                              });
                                             }}
-                                          />
-                                        </IconButton>
+                                          >
+                                            <Edit style={{ fontSize: 18 }} />
+                                          </IconButton>
+                                          <IconButton
+                                            onClick={() => {
+                                              this.confirm(field);
+                                            }}
+                                          >
+                                            <Delete style={{ fontSize: 18 }} />
+                                          </IconButton>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div>
-                                      <Select
-                                        isSearchable="true"
-                                        name="categoria"
-                                        value={field.value}
-                                        isDisabled={disabled}
+
+                                      <Input
+                                        value={field.values}
+                                        disabled={disabled}
+                                        type="text"
+                                        onBlur={handleBlur}
+                                        placeholder={field.placeholder}
                                         onChange={event => {
                                           setFieldValue(
                                             `fields[${key}].value`,
-                                            event
+                                            event.target.value
                                           );
                                         }}
-                                        options={field.options}
                                       />
-                                    </div>
-                                    <div className="errorSelect">
-                                      {this.state.categoriaError}
-                                    </div>
-                                  </FormGroup>
-                                );
-                              } else if (field.type === "textArea") {
-                                return (
-                                  <FormGroup
-                                    key={key}
-                                    className={`top form-group col-sm-${
-                                      field.size
-                                    } groupContainer`}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "baseline",
-                                        height: 40
-                                      }}
+                                    </FormGroup>
+                                  );
+                                } else if (field.type === "select") {
+                                  return (
+                                    <FormGroup
+                                      key={key}
+                                      className={`top form-group col-sm-${
+                                        field.size
+                                      } groupContainer`}
                                     >
-                                      <Label for="servicio">
-                                        {field.label}
-                                      </Label>
-                                      <div className="buttonSEdit">
-                                        <IconButton>
-                                          <Edit style={{ fontSize: 18 }} />
-                                        </IconButton>
-                                        <IconButton>
-                                          <Delete
-                                            style={{ fontSize: 18 }}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "baseline",
+                                          height: 40
+                                        }}
+                                      >
+                                        <Label for="servicio">
+                                          {field.label}
+                                        </Label>
+                                        <div className="buttonSEdit">
+                                          <IconButton
                                             onClick={() => {
-                                              this.props.deleteModifyServices(
-                                                field
-                                              );
+                                              this.setState({
+                                                openModal: true,
+                                                edit: field
+                                              });
                                             }}
-                                          />
-                                        </IconButton>
+                                          >
+                                            <Edit style={{ fontSize: 18 }} />
+                                          </IconButton>
+                                          <IconButton
+                                            onClick={() => {
+                                              this.confirm(field);
+                                            }}
+                                          >
+                                            <Delete style={{ fontSize: 18 }} />
+                                          </IconButton>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <Input
-                                      type="textarea"
-                                      name="code"
-                                      rows={5}
-                                      value={field.value}
-                                      onChange={event => {
-                                        setFieldValue(
-                                          `fields[${key}].value`,
-                                          event.target.value
-                                        );
-                                      }}
-                                      style={{ backgroundColor: "white" }}
-                                      id="codigo"
-                                    />
-                                  </FormGroup>
-                                );
-                              } else if (field.type === "checkBox") {
-                                return (
-                                  <FormGroup
-                                    key={key}
-                                    className={`top form-group col-sm-${
-                                      field.size
-                                    } groupContainer`}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "baseline",
-                                        height: 40
-                                      }}
+                                      <div>
+                                        <Select
+                                          isSearchable="true"
+                                          name="categoria"
+                                          value={field.value}
+                                          isDisabled={disabled}
+                                          onChange={event => {
+                                            setFieldValue(
+                                              `fields[${key}].value`,
+                                              event
+                                            );
+                                          }}
+                                          options={field.options}
+                                        />
+                                      </div>
+                                      <div className="errorSelect">
+                                        {this.state.categoriaError}
+                                      </div>
+                                    </FormGroup>
+                                  );
+                                } else if (field.type === "textArea") {
+                                  return (
+                                    <FormGroup
+                                      key={key}
+                                      className={`top form-group col-sm-${
+                                        field.size
+                                      } groupContainer`}
                                     >
-                                      <Label for="servicio">
-                                        {field.label}
-                                      </Label>
-                                      <div className="buttonSEdit">
-                                        <IconButton>
-                                          <Edit style={{ fontSize: 18 }} />
-                                        </IconButton>
-                                        <IconButton>
-                                          <Delete
-                                            style={{ fontSize: 18 }}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "baseline",
+                                          height: 40
+                                        }}
+                                      >
+                                        <Label for="servicio">
+                                          {field.label}
+                                        </Label>
+                                        <div className="buttonSEdit">
+                                          <IconButton
                                             onClick={() => {
-                                              this.props.deleteModifyServices(
-                                                field
-                                              );
+                                              this.setState({
+                                                openModal: true,
+                                                edit: field
+                                              });
                                             }}
-                                          />
-                                        </IconButton>
+                                          >
+                                            <Edit style={{ fontSize: 18 }} />
+                                          </IconButton>
+                                          <IconButton
+                                            onClick={() => {
+                                              this.confirm(field);
+                                            }}
+                                          >
+                                            <Delete style={{ fontSize: 18 }} />
+                                          </IconButton>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <Input
-                                      style={{ width: "10%" }}
-                                      value={field.value}
-                                      type="checkbox"
-                                      onClick={() =>
-                                        setFieldValue(
-                                          `fields[${key}].value`,
-                                          !field.value
-                                        )
-                                      }
-                                      name="code"
-                                    />
-                                  </FormGroup>
-                                );
+                                      <Input
+                                        type="textarea"
+                                        name="code"
+                                        rows={5}
+                                        value={field.value}
+                                        onChange={event => {
+                                          setFieldValue(
+                                            `fields[${key}].value`,
+                                            event.target.value
+                                          );
+                                        }}
+                                        style={{ backgroundColor: "white" }}
+                                        id="codigo"
+                                      />
+                                    </FormGroup>
+                                  );
+                                } else if (field.type === "checkBox") {
+                                  return (
+                                    <FormGroup
+                                      key={key}
+                                      className={`top form-group col-sm-${
+                                        field.size
+                                      } groupContainer`}
+                                    >
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "baseline",
+                                          height: 40
+                                        }}
+                                      >
+                                        <Label for="servicio">
+                                          {field.label}
+                                        </Label>
+                                        <div className="buttonSEdit">
+                                          <IconButton
+                                            onClick={() => {
+                                              this.setState({
+                                                openModal: true,
+                                                edit: field
+                                              });
+                                            }}
+                                          >
+                                            <Edit style={{ fontSize: 18 }} />
+                                          </IconButton>
+                                          <IconButton
+                                            onClick={() => {
+                                              this.confirm(field);
+                                            }}
+                                          >
+                                            <Delete style={{ fontSize: 18 }} />
+                                          </IconButton>
+                                        </div>
+                                      </div>
+                                      <Input
+                                        style={{ width: "10%" }}
+                                        value={field.value}
+                                        type="checkbox"
+                                        onClick={() =>
+                                          setFieldValue(
+                                            `fields[${key}].value`,
+                                            !field.value
+                                          )
+                                        }
+                                        name="code"
+                                      />
+                                    </FormGroup>
+                                  );
+                                }
                               }
-                            }
-                          });
-                        })}
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end"
-                        }}
-                      >
-                        <Button
+                            });
+                          })}
+                        </div>
+                        <div
                           style={{
-                            margin: 20
+                            display: "flex",
+                            justifyContent: "flex-end"
                           }}
-                          color="success"
-                          onClick={() => this.setState({ openModal: true })}
                         >
-                          Agregar nuevas plantillas
-                        </Button>
-                      </div>
-                    </EditableInput>
-
+                          <Button
+                            style={{
+                              margin: 20
+                            }}
+                            color="success"
+                            onClick={() => this.setState({ openModal: true })}
+                          >
+                            Agregar nuevas plantillas
+                          </Button>
+                        </div>
+                      </EditableInput>
+                    )}
                     <FormGroup className="top form-group col-sm-12">
                       <Label for="categoria">Formato</Label>
                       <div className={this.state.divFormato}>
@@ -552,6 +628,7 @@ const EditableInput = styled(Card)`
     display: flex;
     flex: 1;
     flex-wrap: wrap;
+    border-top: none;
   }
 
   .groupContainer {

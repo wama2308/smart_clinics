@@ -71,6 +71,7 @@ export default class tabService extends React.Component {
             disabled={this.state.disabled}
             type={this.state.type}
             deleteModifyServices={this.props.deleteModifyServices}
+            alert={this.props.alert}
           />
         )}
         <form

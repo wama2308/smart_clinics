@@ -121,6 +121,7 @@ class ServicesContainer extends React.Component {
                         serviceModalData={this.props.serviceModalData}
                         plantilla={this.props.plantilla}
                         deleteModifyServices = {this.props.deleteModifyServices}
+                        alert={this.props.alert}
                       />
                     </TabPane>
                     <TabPane
