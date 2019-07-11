@@ -245,13 +245,7 @@ class ModalProduct extends React.Component {
         event.preventDefault();
         const isValid = this.validate();   
         if (isValid) {             
-            let valueTipo = "";
-            let arrayTipo = Object.values(this.state.arrayTipoSelect);
-            arrayTipo.forEach(function (elemento, indice) {
-                if(indice === 1){
-                    valueTipo = elemento;
-                }            
-            });
+            let valueTipo = this.state.arrayTipoSelect.value;            
             
             if(this.props.option === 2)
             {

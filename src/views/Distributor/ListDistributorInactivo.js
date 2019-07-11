@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { HowToReg } from "@material-ui/icons";
-import { GetDisabledPermits } from '../../core/utils';
+import { GetDisabledPermits, getArray } from '../../core/utils';
 import ModalDistributor from './ModalDistributor.js';
 import Pagination from "../../components/Pagination";
 import '../../components/style.css'
@@ -65,7 +65,7 @@ class ListDistributorInactivo extends React.Component {
     const activeDisabled = GetDisabledPermits(this.props.distributorPermits, "Active");
     const { rowsPerPage, page } = this.state;
     const ArrayDistributo = [];
-    const list = this.getDistribuitorInactivo(this.props.listDistributor)
+    const ArrayDistributor = getArray(this.props.listDistributor)
 
     const result = this.props.search
       ? ArrayDistributo.filter(distributor => {
@@ -79,11 +79,7 @@ class ListDistributorInactivo extends React.Component {
         })
       : ArrayDistributo;
 
-    this.props.listDistributor.map((distributor, key) => {
-      ArrayDistributo.push({
-        ...distributor, number: key + 1
-      })
-    })
+
 
     return (
       <div>
@@ -125,15 +121,15 @@ class ListDistributorInactivo extends React.Component {
               null
             }
           </tbody>
+            {
+              ArrayDistributor > 10 &&
+              <Pagination contador={this.props.listDistributor}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+            }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.listDistributor}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
-
       </div>
     );
   }

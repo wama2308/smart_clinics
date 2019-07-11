@@ -343,3 +343,124 @@ export const deleteInfoAction = () => dispatch => {
       console.log("Problemas con el token");
     });
 };
+
+/***************************PUSHER***************************/
+export const loadPositionsNewPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_POSITIONS_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadPositionsEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_POSITIONS_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadPositionsDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_POSITIONS_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadPositionsEnabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_POSITIONS_ENABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadInternalStaffNewPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_INTERNAL_STAFF_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadInternalStaffEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_INTERNAL_STAFF_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadInternalStaffDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_INTERNAL_STAFF_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadInternalStaffEnabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_INTERNAL_STAFF_ENABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}

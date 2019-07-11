@@ -3,7 +3,7 @@ import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import ModalProduct from './ModalProduct.js';
-import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import Pagination from '../../components/Pagination';
 import Search from "../../components/Select";
 import '../../components/style.css'
@@ -12,13 +12,13 @@ class ListProduct extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modal:false,
-      modalHeader: '',
-      modalFooter: '',
-      action: '',
-      disabled: '',
-      showHide: '',
-      option:0,
+      modal: false,
+      modalHeader: "",
+      modalFooter: "",
+      action: "",
+      disabled: "",
+      showHide: "",
+      option: 0,
       position: 0,
       isClearable: false,
       productoId: '',
@@ -27,40 +27,48 @@ class ListProduct extends React.Component {
     };
   }
 
-  componentDidMount(){}
+  componentDidMount() {}
 
   openModal = (option, pos, id) => {
-    if(option === 1){
+    if (option === 1) {
       this.props.queryOneSupplieWithLotFunction(id);
       this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Ver Producto',
-        modalFooter:'Guardar',
+        modal: true,
+        option: option,
+        modalHeader: "Ver Producto",
+        modalFooter: "Guardar",
         disabled: true,
-        showHide: 'hide',
-      })
-    }else if(option === 2){
+        showHide: "hide"
+      });
+    } else if (option === 2) {
       this.props.queryOneSupplieWithLotFunction(id);
       this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Editar Producto',
-        modalFooter:'Editar',
+        modal: true,
+        option: option,
+        modalHeader: "Editar Producto",
+        modalFooter: "Editar",
         disabled: false,
-        showHide: 'show',
+        showHide: "show",
         position: pos,
-        productoId:id
-      })
+        productoId: id
+      });
     }
-  }
+  };
 
-  valorCloseModal = (valor) => {
+  valorCloseModal = valor => {
     this.setState({
-        modal: valor,
-        option: 0,
+      modal: valor,
+      option: 0
     });
-  }
+  };
+
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
 
   handleChangeRowsPerPage = event => {
     this.setState({ page: 0, rowsPerPage: event.target.value });
@@ -89,14 +97,14 @@ class ListProduct extends React.Component {
      return (
       <div>
         <ModalProduct
-          option = {this.state.option}
-          modal = {this.state.modal}
-          modalHeader = {this.state.modalHeader}
-          modalFooter = {this.state.modalFooter}
-          disabled = {this.state.disabled}
-          showHide = {this.state.showHide}
-          productoId = {this.state.productoId}
-          valorCloseModal = {this.valorCloseModal}
+          option={this.state.option}
+          modal={this.state.modal}
+          modalHeader={this.state.modalHeader}
+          modalFooter={this.state.modalFooter}
+          disabled={this.state.disabled}
+          showHide={this.state.showHide}
+          productoId={this.state.productoId}
+          valorCloseModal={this.valorCloseModal}
         />
       <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
           <div className="containerSearch">

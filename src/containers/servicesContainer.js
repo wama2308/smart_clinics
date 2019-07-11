@@ -19,7 +19,8 @@ import classnames from "classnames";
 import {
   getDataServices,
   loadOriginalService,
-  deletePlantillas
+  deletePlantillas,
+  editModifyServices
 } from "../actions/ServicesAction";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { openConfirmDialog } from "../actions/aplicantionActions";
@@ -120,6 +121,7 @@ class ServicesContainer extends React.Component {
                         serviceModalData={this.props.serviceModalData}
                         plantilla={this.props.plantilla}
                         search={this.props.searchData}
+                        deleteModifyServices = {this.props.deleteModifyServices}
                       />
                     </TabPane>
                     <TabPane
@@ -177,7 +179,8 @@ const mapDispatchToProps = dispatch => ({
   getData: () => dispatch(getDataServices()),
   getDataModalService: obj => dispatch(loadOriginalService(obj)),
   alert: (obj, callback) => dispatch(openConfirmDialog(obj, callback)),
-  delete: obj => dispatch(deletePlantillas(obj))
+  delete: obj => dispatch(deletePlantillas(obj)),
+  deleteModifyServices: obj => dispatch(editModifyServices(obj))
 });
 
 export default connect(

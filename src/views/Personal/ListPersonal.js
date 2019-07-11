@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalPersonal from './ModalPersonal.js';
 import IconButton from "@material-ui/core/IconButton";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
 import Search from "../../components/Select";
@@ -98,13 +98,7 @@ class ListPersonal extends React.Component {
     const disabledUpdate = GetDisabledPermits(this.props.permitsPersonal, "Update")
     const disabledDelete = GetDisabledPermits(this.props.permitsPersonal, "Delete")
     const { rowsPerPage, page } = this.state;
-    const ArrayPersonal = [];
-
-    this.props.personal.map((personal, key) => {
-      ArrayPersonal.push({
-        ...personal, number: key + 1
-      })
-    })
+    const ArrayPersonal = getArray(this.props.personal)
 
     const result = this.props.search
       ? ArrayPersonal.filter(personal => {
@@ -206,18 +200,17 @@ class ListPersonal extends React.Component {
               null
             }
           </tbody>
+          {
+            this.props.personal.length > 10 &&
+              <Pagination
+                contador={this.props.personal}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination
-            contador={this.props.personal}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
-
-
     );
   }
 }

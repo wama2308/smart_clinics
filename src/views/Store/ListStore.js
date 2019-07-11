@@ -6,6 +6,7 @@ import ModalStore from './ModalStore.js';
 import Pagination from '../../components/Pagination';
 import Search from "../../components/Select";
 import '../../components/style.css'
+import { getArray, GetDisabledPermits } from '../../core/utils'
 
 class ListStore extends React.Component {
   constructor(props) {
@@ -100,14 +101,7 @@ class ListStore extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
-
-    this.props.data.map((data, key) => {
-      ArrayData.push({
-        ...data, number: key + 1
-      })
-    })
-    const list = this.getStore(this.props.data)
+    const ArrayData = getArray(this.props.data)
 
     const result = this.props.search
       ? ArrayData.filter(data => {
@@ -172,14 +166,16 @@ class ListStore extends React.Component {
                       <IconButton aria-label="Delete"
                         title="Editar Almacen"
                         className="iconButtons"
-                        onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}>
+                        onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}
+                        >
                         <Edit className="iconTable" />
                       </IconButton>
 
                       <IconButton aria-label="Delete"
-                        title="Editar Almacen"
+                        title="Eliminar Almacen"
                         className="iconButtons"
-                        onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}>
+                        onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}
+                        >
                         <Delete className="iconTable" />
                       </IconButton>
                     </div>
@@ -191,14 +187,15 @@ class ListStore extends React.Component {
               null
             }
           </tbody>
+          {
+            this.props.data.lenght > 10 &&
+              <Pagination contador={this.props.data}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.data}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
     );
   }

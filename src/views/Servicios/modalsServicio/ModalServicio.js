@@ -24,18 +24,21 @@ import {
   loadModifiedService,
   editServices
 } from "../../../actions/ServicesAction";
+import { Delete, Edit } from "@material-ui/icons";
+import { IconButton } from "@material-ui/core";
 import Cleave from "cleave.js/react";
 import jstz from "jstz";
 import * as yup from "yup";
+import AddField from "./addField";
 import styled from "styled-components";
-import { array } from "prop-types";
 
 class ModalServicio extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: "show",
-      amount: 0
+      amount: 0,
+      openModal: false
     };
   }
 
@@ -117,6 +120,10 @@ class ModalServicio extends React.Component {
     return arrayGroups;
   };
 
+  closeModal = () => {
+    this.setState({ openModal: false });
+  };
+
   render() {
     const { open, close, serviceModalData, plantilla, disabled } = this.props;
     const data = !serviceModalData
@@ -155,6 +162,11 @@ class ModalServicio extends React.Component {
 
               return (
                 <div>
+                  <AddField
+                    open={this.state.openModal}
+                    close={this.closeModal}
+                    group={group}
+                  />
                   <ModalHeader toggle={this.props.close}>
                     Servicio Original
                   </ModalHeader>
@@ -242,9 +254,34 @@ class ModalServicio extends React.Component {
                                     key={key}
                                     className={`top "form-group col-sm-${
                                       field.size
-                                    }`}
+                                    } groupContainer `}
                                   >
-                                    <Label for="servicio">{field.label}</Label>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        height: 40
+                                      }}
+                                    >
+                                      <Label for="servicio">
+                                        {field.label}
+                                      </Label>
+                                      <div className="buttonSEdit">
+                                        <IconButton>
+                                          <Edit style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                        <IconButton>
+                                          <Delete
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => {
+                                              this.props.deleteModifyServices(
+                                                field
+                                              );
+                                            }}
+                                          />
+                                        </IconButton>
+                                      </div>
+                                    </div>
 
                                     <Input
                                       value={field.values}
@@ -272,17 +309,45 @@ class ModalServicio extends React.Component {
                                     key={key}
                                     className={`top form-group col-sm-${
                                       field.size
-                                    }`}
+                                    } groupContainer`}
                                   >
-                                    <Label for="categoria">{field.label}</Label>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        height: 40
+                                      }}
+                                    >
+                                      <Label for="servicio">
+                                        {field.label}
+                                      </Label>
+                                      <div className="buttonSEdit">
+                                        <IconButton>
+                                          <Edit style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                        <IconButton>
+                                          <Delete
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => {
+                                              this.props.deleteModifyServices(
+                                                field
+                                              );
+                                            }}
+                                          />
+                                        </IconButton>
+                                      </div>
+                                    </div>
                                     <div>
                                       <Select
                                         isSearchable="true"
                                         name="categoria"
-                                        value={values.category}
+                                        value={field.value}
                                         isDisabled={disabled}
                                         onChange={event => {
-                                          setFieldValue(field.name, event);
+                                          setFieldValue(
+                                            `fields[${key}].value`,
+                                            event
+                                          );
                                         }}
                                         options={field.options}
                                       />
@@ -298,11 +363,34 @@ class ModalServicio extends React.Component {
                                     key={key}
                                     className={`top form-group col-sm-${
                                       field.size
-                                    }`}
+                                    } groupContainer`}
                                   >
-                                    <Label for="codigo" className="mr-sm-2">
-                                      {field.label}
-                                    </Label>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        height: 40
+                                      }}
+                                    >
+                                      <Label for="servicio">
+                                        {field.label}
+                                      </Label>
+                                      <div className="buttonSEdit">
+                                        <IconButton>
+                                          <Edit style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                        <IconButton>
+                                          <Delete
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => {
+                                              this.props.deleteModifyServices(
+                                                field
+                                              );
+                                            }}
+                                          />
+                                        </IconButton>
+                                      </div>
+                                    </div>
                                     <Input
                                       type="textarea"
                                       name="code"
@@ -325,12 +413,44 @@ class ModalServicio extends React.Component {
                                     key={key}
                                     className={`top form-group col-sm-${
                                       field.size
-                                    }`}
+                                    } groupContainer`}
                                   >
-                                    <Label>{field.label}</Label>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        height: 40
+                                      }}
+                                    >
+                                      <Label for="servicio">
+                                        {field.label}
+                                      </Label>
+                                      <div className="buttonSEdit">
+                                        <IconButton>
+                                          <Edit style={{ fontSize: 18 }} />
+                                        </IconButton>
+                                        <IconButton>
+                                          <Delete
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => {
+                                              this.props.deleteModifyServices(
+                                                field
+                                              );
+                                            }}
+                                          />
+                                        </IconButton>
+                                      </div>
+                                    </div>
                                     <Input
                                       style={{ width: "10%" }}
+                                      value={field.value}
                                       type="checkbox"
+                                      onClick={() =>
+                                        setFieldValue(
+                                          `fields[${key}].value`,
+                                          !field.value
+                                        )
+                                      }
                                       name="code"
                                     />
                                   </FormGroup>
@@ -339,6 +459,22 @@ class ModalServicio extends React.Component {
                             }
                           });
                         })}
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end"
+                        }}
+                      >
+                        <Button
+                          style={{
+                            margin: 20
+                          }}
+                          color="success"
+                          onClick={() => this.setState({ openModal: true })}
+                        >
+                          Agregar nuevas plantillas
+                        </Button>
                       </div>
                     </EditableInput>
 
@@ -365,7 +501,7 @@ class ModalServicio extends React.Component {
                                 editor.addMenuItem(valor, {
                                   text: valor,
                                   context: "tools",
-                                  onclick: function() {
+                                  onClick: function() {
                                     editor.insertContent(valor.toString());
                                   }
                                 });
@@ -416,5 +552,17 @@ const EditableInput = styled(Card)`
     display: flex;
     flex: 1;
     flex-wrap: wrap;
+  }
+
+  .groupContainer {
+    .buttonSEdit {
+      display: none;
+    }
+
+    &:hover {
+      .buttonSEdit {
+        display: block;
+      }
+    }
   }
 `;

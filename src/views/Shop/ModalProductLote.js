@@ -377,12 +377,7 @@ class ModalProductLote extends React.Component {
                 });
             }
             if (this.state.arrayMotivoSalidaSelect) {
-                let arrayMotivo = Object.values(this.state.arrayMotivoSalidaSelect);
-                arrayMotivo.forEach(function (elemento, indice, array) {
-                    if(indice === 1){
-                        valueMotivo = elemento;
-                    }
-                });
+                valueMotivo = this.state.arrayMotivoSalidaSelect.value;                
             }
             if(this.props.option === 2)
             {

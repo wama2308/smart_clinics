@@ -1,12 +1,12 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalUser from "./ModalUser.js";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-import Pagination from '../../components/Pagination';
+import Pagination from "../../components/Pagination";
 import Search from "../../components/Select";
-import '../../components/style.css'
+import "../../components/style.css";
 
 class UsersList extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class UsersList extends React.Component {
       position: 0,
       userIdEdit: 0,
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 10
     };
   }
 
@@ -114,13 +114,7 @@ class UsersList extends React.Component {
     );
 
     const { rowsPerPage, page } = this.state;
-    const ArrayUsers = [];
-
-    this.props.users.map((user, key) => {
-      ArrayUsers.push({
-        ...user, number: key + 1
-      })
-    })
+    const ArrayUsers = getArray(this.props.users);
 
     const result = this.props.search
       ? ArrayUsers.filter(users => {
@@ -159,7 +153,7 @@ class UsersList extends React.Component {
         />
 
         <div className="containerGeneral">
-          <div className="container-button" >
+          <div className="container-button">
             <Button
               color="success"
               disabled={disabledCreate}
@@ -169,7 +163,7 @@ class UsersList extends React.Component {
             >
               Agregar Usuario
             </Button>
-         </div>
+          </div>
           <div className="containerSearch">
             <Search value={ArrayUsers} />
           </div>
@@ -190,64 +184,73 @@ class UsersList extends React.Component {
           </thead>
           <tbody>
             {this.props.users
-              ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => {
-                return (
-                  <tr key={user.number} className="text-left">
-                    <td>{user.number}</td>
-                    <td>{user.email}</td>
-                    <td>
-                      {user.names} {user.surnames}
-                    </td>
-                    <td>{user.username}</td>
-                    <td style={{ minWidth: "155px" }}>
-                      <div style={{ height: "15px" }} className={"text-left"}>
-                        <IconButton
-                          aria-label="Delete"
-                          title="Ver Usuario"
-                          className="iconButtons"
-                          onClick={() => {
-                            this.openUser(2, user.number, user.id);
-                          }}
-                        >
-                          <Visibility className="iconTable" />
-                        </IconButton>
-                        <IconButton
-                          aria-label="Delete"
-                          title="Editar Usuario"
-                          disabled={disabledUpdate}
-                          className="iconButtons"
-                          onClick={() => {
-                            this.openUser(3, user.number, user.id);
-                          }}
-                        >
-                          <Edit className="iconTable" />
-                        </IconButton>
-                        <IconButton
-                          aria-label="Delete"
-                          title="Inactivar Usuario"
-                          className="iconButtons"
-                          disabled={disabledDelete}
-                          onClick={() => {
-                            this.deleteUser(user.id);
-                          }}
-                        >
-                          <Delete className="iconTable" />
-                        </IconButton>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
+              ? result
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(user => {
+                    return (
+                      <tr key={user.number} className="text-left">
+                        <td>{user.number}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          {user.names} {user.surnames}
+                        </td>
+                        <td>{user.username}</td>
+                        <td style={{ minWidth: "155px" }}>
+                          <div
+                            style={{ height: "15px" }}
+                            className={"text-left"}
+                          >
+                            <IconButton
+                              aria-label="Delete"
+                              title="Ver Usuario"
+                              className="iconButtons"
+                              onClick={() => {
+                                this.openUser(2, user.number, user.id);
+                              }}
+                            >
+                              <Visibility className="iconTable" />
+                            </IconButton>
+                            <IconButton
+                              aria-label="Delete"
+                              title="Editar Usuario"
+                              disabled={disabledUpdate}
+                              className="iconButtons"
+                              onClick={() => {
+                                this.openUser(3, user.number, user.id);
+                              }}
+                            >
+                              <Edit className="iconTable" />
+                            </IconButton>
+                            <IconButton
+                              aria-label="Delete"
+                              title="Inactivar Usuario"
+                              className="iconButtons"
+                              disabled={disabledDelete}
+                              onClick={() => {
+                                this.deleteUser(user.id);
+                              }}
+                            >
+                              <Delete className="iconTable" />
+                            </IconButton>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
               : null}
           </tbody>
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.users}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
+        {this.props.users.length > 10 && (
+          <div style={{ display: "flex", "justify-content": "flex-end" }}>
+            <Pagination
+              contador={this.props.users}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage}
+            />
+          </div>
+        )}
       </div>
     );
   }

@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalRoles from "./ModalRoles.js";
 import IconButton from "@material-ui/core/IconButton";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
 import Search from "../../components/Select";
@@ -105,13 +105,7 @@ class RolesList extends React.Component {
     );
 
     const { rowsPerPage, page } = this.state;
-    const ArrayRoles = [];
-
-    this.props.roles.map((rol, key) => {
-      ArrayRoles.push({
-        ...rol, number: key + 1
-      })
-    })
+    const ArrayRoles = getArray(this.props.roles);
 
     const result = this.props.search
       ? ArrayRoles.filter(rol => {
@@ -211,14 +205,15 @@ class RolesList extends React.Component {
               })
               : null}
           </tbody>
+          {
+            this.props.roles.length > 10 &&
+              <Pagination contador={this.props.roles}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.roles}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
     );
   }

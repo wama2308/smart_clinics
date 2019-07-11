@@ -2,11 +2,11 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import PreRegistro from "./PreRegistro/PreRegistro";
-import Pagination from '../../components/Pagination';
+import Pagination from "../../components/Pagination";
 import Search from "../../components/Select";
-import '../../components/style.css'
+import "../../components/style.css";
 
 class BodyExternal extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class BodyExternal extends React.Component {
       openModal: false,
       ids: null,
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 10
     };
   }
   ViewModal = data => {
@@ -67,23 +67,22 @@ class BodyExternal extends React.Component {
       { label: "Acciones" }
     ];
 
-    const deleteDisabled = GetDisabledPermits(this.props.externalPermits, "Delete")
+    const deleteDisabled = GetDisabledPermits(
+      this.props.externalPermits,
+      "Delete"
+    );
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
-
-    this.props.data.map((data, key) => {
-      ArrayData.push({
-        ...data, number: key + 1
-      })
-    })
+    const ArrayData = getArray(this.props.data);
 
     const result = this.props.search
       ? ArrayData.filter(item => {
           return (
-              item.name_branchoffices.toLowerCase().includes(this.props.search)||
-              item.name_medical_center.toLowerCase().includes(this.props.search)||
-              item.country.toLowerCase().includes(this.props.search)||
-              item.province.toLowerCase().includes(this.props.search)
+            item.name_branchoffices.toLowerCase().includes(this.props.search) ||
+            item.name_medical_center
+              .toLowerCase()
+              .includes(this.props.search) ||
+            item.country.toLowerCase().includes(this.props.search) ||
+            item.province.toLowerCase().includes(this.props.search)
           );
         })
       : ArrayData;
@@ -102,8 +101,11 @@ class BodyExternal extends React.Component {
             disabled={true}
           />
         )}
-        <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
-          <div className="containerSearch" style={{"margin-bottom": "15px"}}>
+        <div
+          className="containerGeneral"
+          style={{ justifyContent: "flex-end" }}
+        >
+          <div className="containerSearch" style={{ "margin-bottom": "15px" }}>
             <Search value={ArrayData} />
           </div>
         </div>
@@ -117,65 +119,53 @@ class BodyExternal extends React.Component {
           </thead>
           <tbody>
             {ArrayData && ArrayData.length > 0
-              ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
-                return (
-                  <tr key={data.number}>
-                    <td>{item.name_branchoffices}</td>
-                    <td>{this.props.type}</td>
-                    <td>{item.name_medical_center}</td>
-                    <td>{item.country}</td>
-                    <td>{item.province}</td>
-                    <td>
-                      <div className="float-left">
-                        <IconButton
-                          className="iconButtons"
-                          onClick={() => {
-                            this.ViewModal(item);
-                          }}
-                        >
-                          <Visibility className="iconTable" />
-                        </IconButton>
-                        <IconButton
-                          className="iconButtons"
-                          disabled={deleteDisabled}
-                          onClick={() => {
-                            this.delete(item);
-                          }}
-                        >
-                          <Delete className="iconTable" />
-                        </IconButton>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
+              ? result
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(item => {
+                    return (
+                      <tr key={item.number - 1}>
+                        <td>{item.name_branchoffices}</td>
+                        <td>{this.props.type}</td>
+                        <td>{item.name_medical_center}</td>
+                        <td>{item.country}</td>
+                        <td>{item.province}</td>
+                        <td>
+                          <div className="float-left">
+                            <IconButton
+                              className="iconButtons"
+                              onClick={() => {
+                                this.ViewModal(item);
+                              }}
+                            >
+                              <Visibility className="iconTable" />
+                            </IconButton>
+                            <IconButton
+                              className="iconButtons"
+                              disabled={deleteDisabled}
+                              onClick={() => {
+                                this.delete(item);
+                              }}
+                            >
+                              <Delete className="iconTable" />
+                            </IconButton>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
               : null}
           </tbody>
+          {this.props.data.length > 10 && (
+            <Pagination
+              contador={this.props.data}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage}
+            />
+          )}
         </Table>
-
-        {/* {this.props.data.length === 0 && (
-          <div
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            No tienes solitudes {this.props.type}
-          </div>
-        )} */}
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.data}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
-
     );
   }
 }

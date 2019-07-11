@@ -1,11 +1,12 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
-import { DoneOutlineOutlined } from "@material-ui/icons";
+import { CheckCircle } from "@material-ui/icons";
 import ModalStore from './ModalStore.js';
 import Pagination from '../../components/Pagination';
 import Search from "../../components/Select";
 import '../../components/style.css'
+import { getArray } from '../../core/utils'
 
 class ListStoreInactivos extends React.Component {
   constructor(props) {
@@ -57,15 +58,7 @@ class ListStoreInactivos extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
-
-    this.props.data.map((data, key) => {
-      ArrayData.push({
-        ...data, number: key + 1
-      })
-    })
-
-    const list = this.getStore(this.props.data)
+    const ArrayData = getArray(this.props.data);
 
     const result = this.props.search
       ? ArrayData.filter(data => {
@@ -108,7 +101,7 @@ class ListStoreInactivos extends React.Component {
                         title="Activar Almacen"
                         className="iconButtons"
                         onClick={() => { this.ActivateStore(data._id, data.branchoffice.value); }}>
-                        <DoneOutlineOutlined className="iconTable" />
+                        <CheckCircle className="iconTable" />
                       </IconButton>
                     </div>
                   </td>
@@ -119,14 +112,15 @@ class ListStoreInactivos extends React.Component {
               null
             }
           </tbody>
+          {
+            this.props.data.length > 10 &&
+              <Pagination contador={this.props.data}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+          }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.data}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
     );
   }
