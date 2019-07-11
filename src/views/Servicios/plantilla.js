@@ -6,7 +6,6 @@ import { Edit, Visibility, Delete } from "@material-ui/icons";
 import ModalPlantilla from "./modalsServicio/ModalPlantilla";
 import { GetDisabledPermits, getArray } from "../../core/utils";
 import jstz from "jstz";
-
 import "./Services.css";
 import "./loading.css";
 import Pagination from '../../components/Pagination';
@@ -170,14 +169,14 @@ class Plantillas extends React.Component {
                   }
                 })}
             </tbody>
-            {
-              this.props.template.length > 10 &&
-                <Pagination contador={this.props.template}
-                  page={page}
-                  rowsPerPage={rowsPerPage}
-                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                  handleChangePage={this.handleChangePage} />
-            }
+          {
+            ArrayTemplate > 10 &&
+            <Pagination contador={this.props.template}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          }
           </Table>
         </div>
       </div>
