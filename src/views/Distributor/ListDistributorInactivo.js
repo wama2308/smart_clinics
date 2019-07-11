@@ -64,11 +64,10 @@ class ListDistributorInactivo extends React.Component {
   render() {
     const activeDisabled = GetDisabledPermits(this.props.distributorPermits, "Active");
     const { rowsPerPage, page } = this.state;
-    const ArrayDistributo = [];
-    const ArrayDistributor = getArray(this.props.listDistributor)
+    const arrayDistributor = getArray(this.props.listDistributor)
 
     const result = this.props.search
-      ? ArrayDistributo.filter(distributor => {
+      ? arrayDistributor.filter(distributor => {
           return (
             distributor.name.toLowerCase().includes(this.props.search) ||
               distributor.phone[0].includes(this.props.searchData)||
@@ -77,15 +76,13 @@ class ListDistributorInactivo extends React.Component {
               distributor.email[0].toLowerCase().includes(this.props.searchData)
           );
         })
-      : ArrayDistributo;
-
-
+      : arrayDistributor;
 
     return (
       <div>
         <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
           <div className="containerSearch">
-            <Search value={ArrayDistributo} />
+            <Search value={arrayDistributor} />
           </div>
         </div>
         <br />
@@ -101,7 +98,7 @@ class ListDistributorInactivo extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayDistributo ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
+            {arrayDistributor ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
               return (
                 <tr key={distributor.number} className="text-left">
                   <td>{distributor.number}</td>
@@ -111,7 +108,13 @@ class ListDistributorInactivo extends React.Component {
                   <td>{distributor.phone[0]}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
-                      <IconButton aria-label="Delete" disabled={activeDisabled} title="Activar Proveedor" className="iconButtons" onClick={() => { this.activarProveedor(distributor.id); }}><HowToReg className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete"
+                        disabled={activeDisabled}
+                        title="Activar Proveedor"
+                        className="iconButtons"
+                        onClick={() => { this.activarProveedor(distributor.id); }}>
+                        <HowToReg className="iconTable" />
+                      </IconButton>
                     </div>
                   </td>
                 </tr>
@@ -122,7 +125,7 @@ class ListDistributorInactivo extends React.Component {
             }
           </tbody>
             {
-              ArrayDistributor > 10 &&
+              arrayDistributor > 10 &&
               <Pagination contador={this.props.listDistributor}
               page={page}
               rowsPerPage={rowsPerPage}

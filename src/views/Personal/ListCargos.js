@@ -100,15 +100,15 @@ class ListCargos extends React.Component {
     const updateDisabled = GetDisabledPermits(this.props.permitsCargos, "Update")
     const deleteDisabled = GetDisabledPermits(this.props.permitsCargos, "Delete")
     const { rowsPerPage, page } = this.state;
-    const ArrayCargo = getArray(this.props.cargos)
+    const arrayCargo = getArray(this.props.cargos)
 
     const result = this.props.search
-      ? ArrayCargo.filter(cargo => {
+      ? arrayCargo.filter(cargo => {
           return (
               cargo.label.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayCargo;
+      : arrayCargo;
 
     return (
       <div>
@@ -133,7 +133,7 @@ class ListCargos extends React.Component {
            </Button>
          </div>
           <div className="containerSearch">
-            <Search value={ArrayCargo} />
+            <Search value={arrayCargo} />
           </div>
         </div>
 
@@ -148,7 +148,7 @@ class ListCargos extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayCargo ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo, i) => {
+            {arrayCargo ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo, i) => {
               return (
                 <tr key={cargo.number} className="text-left">
                   <td>{cargo.number}</td>

@@ -98,20 +98,21 @@ class ListPersonal extends React.Component {
     const disabledUpdate = GetDisabledPermits(this.props.permitsPersonal, "Update")
     const disabledDelete = GetDisabledPermits(this.props.permitsPersonal, "Delete")
     const { rowsPerPage, page } = this.state;
-    const ArrayPersonal = getArray(this.props.personal)
+    const arrayPersonal = getArray(this.props.personal)
 
     const result = this.props.search
-      ? ArrayPersonal.filter(personal => {
+      ? arrayPersonal.filter(personal => {
           return (
               personal.names.toLowerCase().includes(this.props.search) ||
               personal.surnames.toLowerCase().includes(this.props.search) ||
               personal.positions.toLowerCase().includes(this.props.search) ||
               personal.phone[0].includes(this.props.search) ||
               personal.type_identity.toLowerCase().toString().includes(this.props.search) ||
-              personal.dni.includes(this.props.search)
+              personal.dni.includes(this.props.search) ||
+              personal.email[0].toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayPersonal;
+      : arrayPersonal;
 
     return (
       <div>
@@ -142,7 +143,7 @@ class ListPersonal extends React.Component {
         </Button>
          </div>
           <div className="containerSearch">
-            <Search value={ArrayPersonal} />
+            <Search value={arrayPersonal} />
           </div>
         </div>
         <br />
@@ -160,7 +161,7 @@ class ListPersonal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayPersonal ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((personal) => {
+            {arrayPersonal ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((personal) => {
               return (
                 <tr key={personal.number} className="text-left">
                   <td>{personal.number}</td>

@@ -66,22 +66,22 @@ export default class tabService extends React.Component {
       "Update"
     );
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray(this.props.data);
+    const arrayData = getArray(this.props.data);
 
     const result = this.props.search
-      ? ArrayData.filter(service => {
+      ? arrayData.filter(service => {
           return (
             service.serviceName.toLowerCase().includes(this.props.search) ||
             service.category.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayData;
+      : arrayData;
 
     return (
       <div >
         <div className="containerGeneral" style={{"justifyContent": "flex-end", "marginBottom": "15px"}}>
           <div className="containerSearch">
-            <Search value={ArrayData} />
+            <Search value={arrayData} />
           </div>
         </div>
         {this.state.modal && (

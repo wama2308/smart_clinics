@@ -60,10 +60,10 @@ class UsersInactivosList extends React.Component {
     );
 
     const { rowsPerPage, page } = this.state;
-    const ArrayUser = getArray(this.props.users)
+    const arrayUser = getArray(this.props.users)
 
     const result = this.props.search
-      ? ArrayUser.filter(user => {
+      ? arrayUser.filter(user => {
           return (
             user.email.toLowerCase().includes(this.props.search) ||
             user.names.toLowerCase().includes(this.props.search) ||
@@ -71,13 +71,13 @@ class UsersInactivosList extends React.Component {
             user.username.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayUser;
+      : arrayUser;
 
     return (
       <div>
         <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
           <div className="containerSearch">
-            <Search value={ArrayUser} />
+            <Search value={arrayUser} />
           </div>
         </div>
         <br />

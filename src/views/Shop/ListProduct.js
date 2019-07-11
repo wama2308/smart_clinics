@@ -82,17 +82,17 @@ class ListProduct extends React.Component {
     const detailsDisabled = GetDisabledPermits(this.props.permitsProducts , "Details")
     const updateDisabled = GetDisabledPermits(this.props.permitsProducts , "Update")
     const { rowsPerPage, page } = this.state;
-    const ArrayProduct = getArray(this.props.allProducts)
+    const arrayProduct = getArray(this.props.allProducts)
 
     const result = this.props.search
-      ? ArrayProduct.filter(product => {
+      ? arrayProduct.filter(product => {
           return (
               product.name.toLowerCase().includes(this.props.search) ||
               product.code.toLowerCase().includes(this.props.search)||
               product.type.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayProduct;
+      : arrayProduct;
 
      return (
       <div>
@@ -108,7 +108,7 @@ class ListProduct extends React.Component {
         />
       <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
           <div className="containerSearch">
-            <Search value={ArrayProduct} />
+            <Search value={arrayProduct} />
           </div>
         </div>
         <br />

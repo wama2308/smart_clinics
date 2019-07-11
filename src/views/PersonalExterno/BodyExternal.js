@@ -72,10 +72,10 @@ class BodyExternal extends React.Component {
       "Delete"
     );
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray(this.props.data);
+    const arrayData = getArray(this.props.data);
 
     const result = this.props.search
-      ? ArrayData.filter(item => {
+      ? arrayData.filter(item => {
           return (
             item.name_branchoffices.toLowerCase().includes(this.props.search) ||
             item.name_medical_center
@@ -85,7 +85,7 @@ class BodyExternal extends React.Component {
             item.province.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayData;
+      : arrayData;
 
     return (
       <div
@@ -106,7 +106,7 @@ class BodyExternal extends React.Component {
           style={{ justifyContent: "flex-end" }}
         >
           <div className="containerSearch" style={{ "margin-bottom": "15px" }}>
-            <Search value={ArrayData} />
+            <Search value={arrayData} />
           </div>
         </div>
         <Table hover responsive borderless>
@@ -118,7 +118,7 @@ class BodyExternal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayData && ArrayData.length > 0
+            {arrayData && arrayData.length > 0
               ? result
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(item => {

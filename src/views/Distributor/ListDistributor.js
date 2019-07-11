@@ -97,10 +97,10 @@ class ListDistributor extends React.Component {
     const deleteDisabled = GetDisabledPermits(this.props.distributorPermits, "Delete");
     const createDisabled = GetDisabledPermits(this.props.distributorPermits, "Create");
     const { rowsPerPage, page } = this.state;
-    const ArrayDistributor = getArray(this.props.listDistributor)
+    const arrayDistributor = getArray(this.props.listDistributor)
 
     const result = this.props.search
-      ? ArrayDistributor.filter(distributor => {
+      ? arrayDistributor.filter(distributor => {
           return (
               distributor.name.toLowerCase().includes(this.props.search) ||
               distributor.phone[0].includes(this.props.search)||
@@ -109,7 +109,7 @@ class ListDistributor extends React.Component {
               distributor.email[0].toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayDistributor;
+      : arrayDistributor;
 
     return (
       <div>
@@ -133,7 +133,7 @@ class ListDistributor extends React.Component {
           </Button>
         </div>
         <div className="containerSearch">
-          <Search value={ArrayDistributor} />
+          <Search value={arrayDistributor} />
         </div>
       </div>
         <br />
@@ -150,7 +150,7 @@ class ListDistributor extends React.Component {
             </tr>
           </thead>
           <tbody>
-            { ArrayDistributor ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
+            { arrayDistributor ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
               return (
                 <tr key={distributor.number} className="text-left">
                   <td>{distributor.number}</td>
@@ -187,7 +187,7 @@ class ListDistributor extends React.Component {
             }
           </tbody>
           {
-            ArrayDistributor > 10 &&
+            arrayDistributor > 10 &&
             <Pagination contador={this.props.listDistributor}
               page={page}
               rowsPerPage={rowsPerPage}

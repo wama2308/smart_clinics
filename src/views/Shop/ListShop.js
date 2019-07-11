@@ -117,17 +117,17 @@ class ListShop extends React.Component {
       const detailsDisabled = GetDisabledPermits(this.props.permitsBuy , "Details")
 
       const { rowsPerPage, page } = this.state;
-      const ArrayData = getArray(this.props.data)
+      const arrayData = getArray(this.props.data)
 
       const result = this.props.search
-        ? ArrayData.filter(shop => {
+        ? arrayData.filter(shop => {
             return (
                 shop.number_invoice.toLowerCase().includes(this.props.search) ||
                 shop.number_controll.toLowerCase().includes(this.props.search)||
                 shop.type_shop.toLowerCase().includes(this.props.search)
             );
           })
-        : ArrayData;
+        : arrayData;
 
      return (
       <div>
@@ -171,7 +171,7 @@ class ListShop extends React.Component {
             </Button>
           </div>
           <div className="containerSearch">
-            <Search value={ArrayData} />
+            <Search value={arrayData} />
           </div>
         </div>
         <br />

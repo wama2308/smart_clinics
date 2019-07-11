@@ -90,15 +90,15 @@ class ListTransferenciasRecibidas extends React.Component {
     const updateDisabled = GetDisabledPermits(this.props.permitsTransfer , "Update")
     const detailsDisabled = GetDisabledPermits(this.props.permitsTransfer, "Details")
 
-    const ArrayData = getArray(this.props.data)
+    const arrayData = getArray(this.props.data)
     const result = this.props.search
-      ? ArrayData.filter(data => {
+      ? arrayData.filter(data => {
           return (
               data.number_invoice.toLowerCase().includes(this.props.search) ||
               data.number_controll.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayData;
+      : arrayData;
 
     const { rowsPerPage, page } = this.state;
      return (
@@ -121,7 +121,7 @@ class ListTransferenciasRecibidas extends React.Component {
         }
         <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
           <div className="containerSearch">
-            <Search value={ArrayData} />
+            <Search value={arrayData} />
           </div>
         </div>
         <br />

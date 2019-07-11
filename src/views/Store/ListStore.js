@@ -101,16 +101,16 @@ class ListStore extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray(this.props.data)
+    const arrayData = getArray(this.props.data)
 
     const result = this.props.search
-      ? ArrayData.filter(data => {
+      ? arrayData.filter(data => {
           return (
               data.name.toLowerCase().includes(this.props.search) ||
               data.branchoffice.label.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayData;
+      : arrayData;
 
     return (
       <div>
@@ -131,7 +131,7 @@ class ListStore extends React.Component {
             <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
          </div>
           <div className="containerSearch">
-            <Search value={ArrayData} />
+            <Search value={arrayData} />
           </div>
         </div>
         <br />
@@ -147,7 +147,7 @@ class ListStore extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+            {arrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>

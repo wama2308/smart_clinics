@@ -86,15 +86,15 @@ class Plantillas extends React.Component {
     const deleteDisabled = GetDisabledPermits(this.props.serviciosPermits, "Delete")
 
     const { rowsPerPage, page } = this.state;
-    const ArrayTemplate = getArray(this.props.template)
+    const arrayTemplate = getArray(this.props.template)
 
       const result = this.props.search
-        ? ArrayTemplate.filter(template => {
+        ? arrayTemplate.filter(template => {
             return (
               template.template.toLowerCase().includes(this.props.search)
             );
           })
-        : ArrayTemplate;
+        : arrayTemplate;
 
 
     return (
@@ -122,7 +122,7 @@ class Plantillas extends React.Component {
             </Button>
          </div>
           <div className="containerSearch">
-            <Search value={ArrayTemplate} />
+            <Search value={arrayTemplate} />
           </div>
         </div>
         </div>
@@ -194,7 +194,7 @@ class Plantillas extends React.Component {
                 })}
             </tbody>
           {
-            ArrayTemplate > 10 &&
+            arrayTemplate > 10 &&
             <Pagination contador={this.props.template}
               page={page}
               rowsPerPage={rowsPerPage}

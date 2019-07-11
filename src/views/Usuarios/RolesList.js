@@ -105,15 +105,15 @@ class RolesList extends React.Component {
     );
 
     const { rowsPerPage, page } = this.state;
-    const ArrayRoles = getArray(this.props.roles);
+    const arrayRoles = getArray(this.props.roles);
 
     const result = this.props.search
-      ? ArrayRoles.filter(rol => {
+      ? arrayRoles.filter(rol => {
           return (
             rol.rol.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayRoles;
+      : arrayRoles;
 
     return (
       <div>
@@ -144,7 +144,7 @@ class RolesList extends React.Component {
             </Button>
          </div>
           <div className="containerSearch">
-            <Search value={ArrayRoles} />
+            <Search value={arrayRoles} />
           </div>
         </div>
         <br />

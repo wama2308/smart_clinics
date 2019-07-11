@@ -51,10 +51,10 @@ class ListPersonalInactivo extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayCargo = getArray(this.props.personalInactivo);
+    const arrayCargo = getArray(this.props.personalInactivo);
 
    const result = this.props.search
-     ? ArrayCargo.filter(personal => {
+     ? arrayCargo.filter(personal => {
          return (
              personal.names.toLowerCase().includes(this.props.search) ||
              personal.surnames.toLowerCase().includes(this.props.search) ||
@@ -64,13 +64,13 @@ class ListPersonalInactivo extends React.Component {
              personal.dni.includes(this.props.search)
          );
        })
-     : ArrayCargo;
+     : arrayCargo;
 
     return (
       <div>
         <div className="containerGeneral" style={{"justifyContent": "flex-end", }}>
           <div className="containerSearch">
-            <Search value={ArrayCargo} />
+            <Search value={arrayCargo} />
           </div>
         </div>
         <br />

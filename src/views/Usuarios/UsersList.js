@@ -114,10 +114,10 @@ class UsersList extends React.Component {
     );
 
     const { rowsPerPage, page } = this.state;
-    const ArrayUsers = getArray(this.props.users);
+    const arrayUsers = getArray(this.props.users);
 
     const result = this.props.search
-      ? ArrayUsers.filter(users => {
+      ? arrayUsers.filter(users => {
           return (
             users.email.toLowerCase().includes(this.props.search) ||
             users.names.toLowerCase().includes(this.props.search) ||
@@ -125,7 +125,7 @@ class UsersList extends React.Component {
             users.username.toLowerCase().includes(this.props.search)
           );
         })
-      : ArrayUsers;
+      : arrayUsers;
 
     return (
       <div>
@@ -165,7 +165,7 @@ class UsersList extends React.Component {
             </Button>
           </div>
           <div className="containerSearch">
-            <Search value={ArrayUsers} />
+            <Search value={arrayUsers} />
           </div>
         </div>
         <br />
