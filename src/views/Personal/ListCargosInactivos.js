@@ -2,8 +2,9 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
-import { DoneOutlineOutlined } from "@material-ui/icons";
+import { CheckCircle } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import { getArray } from '../../core/utils';
 
 class ListCargosInactivos extends React.Component {
   constructor(props) {
@@ -49,13 +50,7 @@ class ListCargosInactivos extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayCargo = [];
-
-    this.props.cargosInactivos.map((cargo, key) => {
-      ArrayCargo.push({
-        ...cargo, number: key + 1
-      })
-    })
+    const ArrayCargo = getArray(this.props.cargosInactivos);
 
     return (
       <div>
@@ -81,7 +76,7 @@ class ListCargosInactivos extends React.Component {
                           title="Activar Cargo"
                           className="iconButtons"
                           onClick={() => { this.activarCargo(cargo.value); }}>
-                          <DoneOutlineOutlined className="iconTable" />
+                          <CheckCircle className="iconTable" />
                         </IconButton>
                       </div>
                     </td>
@@ -92,14 +87,15 @@ class ListCargosInactivos extends React.Component {
                 null
             }
           </tbody>
+          {
+            this.props.cargosInactivos.length > 10 &&
+              <Pagination contador={this.props.cargosInactivos}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                handleChangePage={this.handleChangePage} />
+            }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.cargosInactivos}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
       </div>
 
     );

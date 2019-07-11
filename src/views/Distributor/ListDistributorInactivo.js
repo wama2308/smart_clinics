@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { HowToReg } from "@material-ui/icons";
-import { GetDisabledPermits } from '../../core/utils';
+import { GetDisabledPermits, getArray } from '../../core/utils';
 import ModalDistributor from './ModalDistributor.js';
 import Pagination from "../../components/Pagination";
 
@@ -55,13 +55,7 @@ class ListDistributorInactivo extends React.Component {
   render() {
     const activeDisabled = GetDisabledPermits(this.props.distributorPermits, "Active");
     const { rowsPerPage, page } = this.state;
-    const ArrayDistributor = [];
-
-    this.props.listDistributor.map((distributor, key) => {
-      ArrayDistributor.push({
-        ...distributor, number: key + 1
-      })
-    })
+    const ArrayDistributor = getArray(this.props.listDistributor)
 
     return (
       <div>
@@ -98,15 +92,15 @@ class ListDistributorInactivo extends React.Component {
               null
             }
           </tbody>
+            {
+              ArrayDistributor > 10 &&
+              <Pagination contador={this.props.listDistributor}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+            }
         </Table>
-        <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-          <Pagination contador={this.props.listDistributor}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-            handleChangePage={this.handleChangePage} />
-        </div>
-
       </div>
     );
   }

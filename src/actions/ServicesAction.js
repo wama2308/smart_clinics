@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { getDataToken, url } from "../core/connection";
@@ -169,7 +168,7 @@ export const deletePlantillas = obj => dispatch => {
   });
 };
 
-export const editPlantilla = (obj, callback )=> dispatch => {
+export const editPlantilla = (obj, callback) => dispatch => {
   getDataToken().then(data => {
     axios({
       method: "post",
@@ -177,8 +176,15 @@ export const editPlantilla = (obj, callback )=> dispatch => {
       data: obj,
       ...data
     }).then(() => {
-        callback()
-       dispatch(openSnackbars("success", "Operacion Exitosa"));
+      callback();
+      dispatch(openSnackbars("success", "Operacion Exitosa"));
     });
+  });
+};
+
+export const editModifyServices = value => dispatch => {
+  dispatch({
+    type: "DELETE_MODIFY_SERVICES",
+    payload: value
   });
 };

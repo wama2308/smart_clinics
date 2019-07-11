@@ -672,7 +672,7 @@ export const saveUserNoMasterPersonalAction = (data, email, userId, callback) =>
     });
 };
 
- /***************************TEST WAMA***************************/
+ /***************************PUSHER***************************/
 export const loadRolNewPusher = rolNew => dispatch => {
   getPosts()
     .then(datos => {
@@ -695,6 +695,96 @@ export const loadRolEditPusher = rolEdit => dispatch => {
         type: "LOAD_ROL_EDIT_PUSHER",
         payload: {
           ...rolEdit
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadRolDisabledPusher = rolDisabled => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_DISABLED_PUSHER",
+        payload: {
+          ...rolDisabled
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadRolEnabledPusher = rolEnabled => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_ENABLED_PUSHER",
+        payload: {
+          ...rolEnabled
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadUserNoMasterNewPusher = data => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_USER_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadUserNoMasterEditPusher = data => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_USER_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadUserNoMasterDisabledPusher = data => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_USER_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadUserNoMasterEnabledPusher = data => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_USER_ENABLED_PUSHER",
+        payload: {
+          ...data
         }
       });
     })

@@ -3,9 +3,9 @@ import { Table } from "reactstrap";
 import { FaFileAlt } from "react-icons/fa";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility } from "@material-ui/icons";
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import ModalServicio from "./modalsServicio/ModalServicio";
-import Pagination from '../../components/Pagination';
+import Pagination from "../../components/Pagination";
 export default class tabService extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +15,7 @@ export default class tabService extends React.Component {
       disabled: true,
       type: 1,
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 10
     };
   }
 
@@ -51,17 +51,15 @@ export default class tabService extends React.Component {
   };
 
   render() {
-    const updateDisabled = GetDisabledPermits(this.props.serviciosPermits, "Update")
+    const updateDisabled = GetDisabledPermits(
+      this.props.serviciosPermits,
+      "Update"
+    );
     const { rowsPerPage, page } = this.state;
-    const ArrayData = [];
+    const ArrayData = getArray(this.props.data);
 
-    this.props.data.map((template, key) => {
-      ArrayData.push({
-        ...template, number: key + 1
-      })
-    })
     return (
-      <div >
+      <div>
         {this.state.modal && (
           <ModalServicio
             open={this.state.modal}
@@ -72,11 +70,12 @@ export default class tabService extends React.Component {
             plantilla={this.props.plantilla}
             disabled={this.state.disabled}
             type={this.state.type}
+            deleteModifyServices={this.props.deleteModifyServices}
           />
         )}
         <form
           className="formCodeConfirm"
-        // onSubmit={this.handleSaveServicio.bind(this)}
+          // onSubmit={this.handleSaveServicio.bind(this)}
         >
           <div className={this.state.divContainerTable}>
             <Table hover responsive borderless>
@@ -92,7 +91,10 @@ export default class tabService extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((service) => {
+                {ArrayData.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                ).map(service => {
                   return (
                     <tr key={service.number}>
                       <td scope="row" style={{ width: "10%" }}>
@@ -157,15 +159,16 @@ export default class tabService extends React.Component {
                   );
                 })}
               </tbody>
+              {this.props.data.length > 10 && (
+                <Pagination
+                  contador={this.props.data}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  handleChangePage={this.handleChangePage}
+                />
+              )}
             </Table>
-            <div style={{ 'display': "flex", 'justify-content': "flex-end" }}>
-              <Pagination
-                contador={this.props.data}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
-            </div>
           </div>
           <div />
         </form>
