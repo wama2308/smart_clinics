@@ -85,10 +85,8 @@ class ModalConfigCommissions extends React.Component {
       divTipoPersonaError = "¡Seleccione el tipo de personal!";
       divTipoPersona = "borderColor";
     }else{
-      console.log("si no")
       const serviceConfirm = this.props.configCommissions.services.find(service => service.percentage !== 0);
-      if(this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){
-        console.log("personal externo")
+      if(this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){        
         if(!this.state.arrayTiempoSelect){
           divTiempoError = "¡Seleccione el tiempo!";
           divTiempo = "borderColor";
