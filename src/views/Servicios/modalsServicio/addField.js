@@ -10,16 +10,80 @@ import {
   Label,
   FormFeedback
 } from "reactstrap";
+import { addField, editField } from "../../../actions/ServicesAction";
+import { connect } from "react-redux";
 import { Formik } from "formik";
+import TagsInput from "react-tagsinput";
 
-class addField extends React.Component {
+class AddField extends React.Component {
+  handleSubmit = values => {
+    if (this.props.update) {
+      this.props.editField(
+        {
+          licenseId: this.props.licenseID,
+          serviceId: this.props.serviceID,
+          field: values
+        },
+        () => {
+          this.props.close();
+        }
+      );
+    } else {
+      this.props.addField(
+        {
+          licenseId: this.props.licenseID,
+          serviceId: this.props.serviceID,
+          field: values
+        },
+        () => {
+
+          this.props.close();
+        }
+      );
+    }
+  };
+
+  orderField = (obj, set) => {
+    const options = [];
+    obj.map(option => {
+      options.push({ label: option, value: option });
+    });
+
+    set("options", options);
+  };
+
+  getOptions = obj => {
+    const options = [];
+    obj.map(option => {
+      options.push(option.label);
+    });
+    return options;
+  };
+
   render() {
-    const { open, close } = this.props;
-
+    const { open, close, update } = this.props;
+    console.log("update", update);
     const type = ["input", "textArea", "select", "checkbox"];
-    const size = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const size = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const values = {
+      label: "",
+      placeholder: "",
+      max_length: "",
+      tooltip: "",
+      type: type[0],
+      size: size[5],
+      group: size[0],
+      position: size[0],
+      required: false,
+      options: []
+    };
+
+    const initialVal = update ? update : values;
+
     return (
       <Formik
+        onSubmit={this.handleSubmit}
+        initialValues={initialVal}
         render={({
           values,
           handleSubmit,
@@ -83,13 +147,13 @@ class addField extends React.Component {
                       maxLength
                     </Label>
                     <Input
-                      type="text"
+                      type="number"
                       name="maxLength"
                       className="inputStyle"
-                      value={values.maxLength}
+                      value={values.max_length}
                       onBlur={handleBlur}
                       onChange={event =>
-                        setFieldValue("maxLength", event.target.value)
+                        setFieldValue("max_length", event.target.value)
                       }
                     />
 
@@ -149,6 +213,31 @@ class addField extends React.Component {
                       </FormFeedback>
                     )}
                   </FormGroup>
+                  {values.type === "select" && (
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="emails">options</Label>
+                      <div>
+                        <TagsInput
+                          name="email"
+                          className="react-tagsinputMy"
+                          inputProps={{
+                            placeholder: "opciones",
+                            className: "react-tagsinput-inputMy",
+                            type: "text"
+                          }}
+                          focusedClassName="react-tagsinput-focusedMy"
+                          tagProps={{
+                            className: "react-tagsinput-tagMy",
+                            classNameRemove: "react-tagsinput-removeMy"
+                          }}
+                          value={this.getOptions(values.options)}
+                          onChange={event =>
+                            this.orderField(event, setFieldValue)
+                          }
+                        />
+                      </div>
+                    </FormGroup>
+                  )}
 
                   <FormGroup className="top form-group col-sm-6">
                     <Label for="codigo" className="mr-sm-2">
@@ -162,7 +251,7 @@ class addField extends React.Component {
                       id="codigo"
                       className="inputStyle"
                       onChange={event =>
-                        setFieldValue("dni", event.target.value)
+                        setFieldValue("size", event.target.value)
                       }
                     >
                       {size.map((size, key) => {
@@ -189,11 +278,11 @@ class addField extends React.Component {
                     <Input
                       type="select"
                       name="grupo"
-                      value={values.size}
+                      value={values.group}
                       id="codigo"
                       className="inputStyle"
                       onChange={event =>
-                        setFieldValue("grupo", event.target.value)
+                        setFieldValue("group", event.target.value)
                       }
                     >
                       {this.props.group.map((group, key) => {
@@ -212,15 +301,61 @@ class addField extends React.Component {
                     )}
                   </FormGroup>
 
+                  <FormGroup className="top form-group col-sm-6">
+                    <Label for="codigo" className="mr-sm-2">
+                      posicíon
+                    </Label>
+
+                    <Input
+                      type="select"
+                      name="grupo"
+                      value={values.position}
+                      id="codigo"
+                      className="inputStyle"
+                      onChange={event =>
+                        setFieldValue("position", event.target.value)
+                      }
+                    >
+                      {size.map((group, key) => {
+                        return (
+                          <option key={key} value={group}>
+                            {group}
+                          </option>
+                        );
+                      })}
+                    </Input>
+
+                    {errors.grupo && touched.grupo && (
+                      <FormFeedback style={{ display: "block" }} tooltip>
+                        {errors.grupo}
+                      </FormFeedback>
+                    )}
+                  </FormGroup>
+
+                  <FormGroup
+                    className={`top form-group col-sm-12 groupContainer`}
+                  >
+                    <Label for="servicio">Requerido?</Label>
+                    <Input
+                      style={{ width: "15%" }}
+                      checked={values.required}
+                      type="checkbox"
+                      onChange={() =>
+                        setFieldValue(`required`, !values.required)
+                      }
+                      name="code"
+                    />
+                  </FormGroup>
+
                   <hr />
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="secondary" onClick={this.toggle}>
+                <Button color="danger" onClick={this.props.close}>
                   Cancel
                 </Button>
-                <Button color="success" onClick={this.toggle}>
-                  Do Something
+                <Button color="primary" onClick={handleSubmit}>
+                  Guardar
                 </Button>{" "}
               </ModalFooter>
             </Modal>
@@ -231,4 +366,7 @@ class addField extends React.Component {
   }
 }
 
-export default addField;
+export default connect(
+  null,
+  { addField, editField }
+)(AddField);

@@ -7,10 +7,14 @@ const loadPlantillasTinymceUrl = `${url}/api/LoadTemplatesTinymce`;
 const loadOriginalserviceUrl = `${url}/api/LoadServicesPreloadedOriginalId`;
 const loadCatergoriaUrl = `${url}/api/LoadSelectCategory`;
 const LoadServicesPreloadedId = `${url}/api/LoadServicesPreloadedId`;
-const editServiceUrl = `${url}/api/EditService`;
+const editServiceUrl = `${url}/api/editService`;
 const saveTemplateUrl = `${url}/api/saveTemplate`;
 const deletePlantillasUrl = `${url}/api/deleteTemplateId`;
 const editPlatillaurl = `${url}/api/editTemplate`;
+const deleteField = `${url}/api/disabledField`;
+const createField = `${url}/api/createField`;
+const editFieldUrl = `${url}/api/editField`;
+const enabledFieldUrl = `${url}/api/enabledField`;
 
 export const getDataServices = () => dispatch => {
   getDataToken().then(data => {
@@ -123,6 +127,7 @@ const loadCategoria = (data, dispatch, cb) => {
 };
 
 export const editServices = (datos, loaded) => dispatch => {
+  console.log(datos);
   getDataToken().then(data => {
     axios({
       method: "post",
@@ -183,8 +188,63 @@ export const editPlantilla = (obj, callback) => dispatch => {
 };
 
 export const editModifyServices = value => dispatch => {
-  dispatch({
-    type: "DELETE_MODIFY_SERVICES",
-    payload: value
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: deleteField,
+      data: value,
+      ...token
+    }).then(async res => {
+      dispatch({
+        type: "DELETE_FIELD",
+        payload: res.data
+      });
+    });
+  });
+};
+
+export const addField = (value, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: createField,
+      data: value,
+      ...token
+    }).then(res => {
+      callback();
+      console.log("asdasd", res);
+    });
+  });
+};
+
+export const editField = (value, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: editFieldUrl,
+      data: value,
+      ...token
+    }).then(res => {
+      callback();
+
+      dispatch({
+        type: "EDIT_FIELD",
+        payload: { field: res.data }
+      });
+      dispatch(openSnackbars("success", "Operacion Exitosa"));
+    });
+  });
+};
+
+export const enabledField = values => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: enabledFieldUrl,
+      data: values,
+      ...token
+    }).then(res => {
+      dispatch(openSnackbars("success", "Operacion Exitosa"));
+    });
   });
 };
