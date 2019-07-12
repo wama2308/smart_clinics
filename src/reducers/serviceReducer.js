@@ -1,19 +1,27 @@
 import { Map, List } from "immutable";
 const setData = (state, node, payload) => state.set(node, payload);
 
-const deleteModifyServices =(state,values)=>{
-  console.log("asdasdasd",state, values)
-}
+const deleteServices = (state, values) => {
+  const json = state.getIn(["ModalService", "serviceOriginal"]);
+  json["fields"] = json["fields"].filter(field => {
+    return field._id !== values.field_id;
+  });
 
-const setStoreEditServicesPusher = (state, payload) => {
-	let estado = state.toJS();
-	const key = estado.servicios.findIndex(servicios => servicios.serviceId === payload._id);
-  console.log("key", key);
-  estado.servicios[key].serviceName = payload.name;
-  
-	return Map(estado);
-}
+  state.setIn(["ModalService", "serviceOriginal"], json);
 
+  return Map(state.toJS());
+};
+
+const editFieldService = (state, values) => {
+  const json = state.getIn(["ModalService", "serviceOriginal"]);
+  const index = json["fields"].findIndex(field => {
+    return field._id === values.field._id;
+  });
+
+  const result = state.toJS();
+  result.ModalService.serviceOriginal.fields[index] = values.field;
+  return Map(result);
+};
 
 const serviceReducer = (state = Map(), action) => {
   switch (action.type) {
@@ -23,16 +31,16 @@ const serviceReducer = (state = Map(), action) => {
     case "GET_DATA_MODAL_SERVICE":
       return setData(state, "ModalService", action.payload);
 
-    // case'EDIT_MEDICAL_SUCURSALES':
-    //   return setEdit(state, action.payload)
-
-    case "DELETE_MODIFY_SERVICES":{
-      return deleteModifyServices(state, action.payload);
+    case "DELETE_FIELD": {
+      return deleteServices(state, action.payload);
     }
-    case "LOAD_SERVICES_EDIT_PUSHER":{
-      return setStoreEditServicesPusher(state, action.payload)
-    }
+    // case "LOAD_SERVICES_EDIT_PUSHER":{
+    //   return setStoreEditServicesPusher(state, action.payload)
+    // }
 
+    case "EDIT_FIELD": {
+      return editFieldService(state, action.payload);
+    }
     default:
       return state;
   }
