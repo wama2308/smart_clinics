@@ -7,7 +7,7 @@ const loadPlantillasTinymceUrl = `${url}/api/LoadTemplatesTinymce`;
 const loadOriginalserviceUrl = `${url}/api/LoadServicesPreloadedOriginalId`;
 const loadCatergoriaUrl = `${url}/api/LoadSelectCategory`;
 const LoadServicesPreloadedId = `${url}/api/LoadServicesPreloadedId`;
-const editServiceUrl = `${url}/api/EditService`;
+const editServiceUrl = `${url}/api/editService`;
 const saveTemplateUrl = `${url}/api/saveTemplate`;
 const deletePlantillasUrl = `${url}/api/deleteTemplateId`;
 const editPlatillaurl = `${url}/api/editTemplate`;
@@ -188,3 +188,15 @@ export const editModifyServices = value => dispatch => {
     payload: value
   });
 };
+
+ //--------------------------PUSHER------------------------------//
+ export const loadStoreServicesEditPusher = data => dispatch =>{
+   getDataToken().then(datos =>{
+     dispatch({
+       type:"LOAD_SERVICES_EDIT_PUSHER",
+       payload: {...data}
+     })
+   }).catch(() => {
+     console.log("Problemas con el token");
+   });
+ }

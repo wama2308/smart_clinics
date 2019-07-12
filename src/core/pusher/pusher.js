@@ -37,6 +37,7 @@ import { loadStoreTransferReceivedEditPusher } from '../../actions/ShopActions'
 import { loadStoreTransferReceivedDisabledPusher } from '../../actions/ShopActions'
 import { loadStoreTransferReceivedAcceptPusher } from '../../actions/ShopActions'
 import { loadStoreTransferReceivedRejectPusher } from '../../actions/ShopActions'
+import { loadStoreServicesEditPusher } from '../../actions/ServicesAction'
 
 const pusher = new Pusher("34e5435919b3fe059eec", {
   cluster: "us2",
@@ -53,6 +54,7 @@ const store_branchoffices = pusher.subscribe("store_branchoffices");
 const shop = pusher.subscribe("shop");
 const transfer_received = pusher.subscribe("transfer_received");
 const transfer = pusher.subscribe("transfer");
+const service = pusher.subscribe("services");
 
 export default class PusherApi {
   constructor(dispatch) {
@@ -193,7 +195,7 @@ export default class PusherApi {
     transfer.bind('reject', data => {
       this.store.dispatch(loadStoreTransferRejectPusher(data))
     });
-    
+
     transfer_received.bind('save', data => {
       this.store.dispatch(loadStoreTransferReceivedSavePusher(data))
     });
@@ -214,5 +216,8 @@ export default class PusherApi {
       this.store.dispatch(loadStoreTransferReceivedRejectPusher(data))
     });
 
+    service.bind('edit', data =>{
+      this.store.dispatch(loadStoreServicesEditPusher(data))
+    })
   }
 }
