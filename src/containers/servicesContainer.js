@@ -20,7 +20,8 @@ import {
   getDataServices,
   loadOriginalService,
   deletePlantillas,
-  editModifyServices
+  editModifyServices,
+  enabledField
 } from "../actions/ServicesAction";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { openConfirmDialog } from "../actions/aplicantionActions";
@@ -32,13 +33,12 @@ class ServicesContainer extends React.Component {
     this.state = {
       loading: false,
       activeTab: 1,
-      serviciosPermits:[]
+      serviciosPermits: []
     };
   }
 
   componentDidMount = () => {
     this.props.getData();
-
 
     this.props.aplication.permission[0].modules.map(permisos => {
       if (permisos.name === "Servicios") {
@@ -121,7 +121,9 @@ class ServicesContainer extends React.Component {
                         serviceModalData={this.props.serviceModalData}
                         plantilla={this.props.plantilla}
                         search={this.props.searchData}
-                        deleteModifyServices = {this.props.deleteModifyServices}
+                        deleteModifyServices={this.props.deleteModifyServices}
+                        alert={this.props.alert}
+                        enabledField={this.props.enabledField}
                       />
                     </TabPane>
                     <TabPane
@@ -180,7 +182,8 @@ const mapDispatchToProps = dispatch => ({
   getDataModalService: obj => dispatch(loadOriginalService(obj)),
   alert: (obj, callback) => dispatch(openConfirmDialog(obj, callback)),
   delete: obj => dispatch(deletePlantillas(obj)),
-  deleteModifyServices: obj => dispatch(editModifyServices(obj))
+  deleteModifyServices: obj => dispatch(editModifyServices(obj)),
+  enabledField: obj => dispatch(enabledField(obj))
 });
 
 export default connect(
