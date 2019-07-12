@@ -9,6 +9,9 @@ import jstz from "jstz";
 import "./Services.css";
 import "./loading.css";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
+
 
 class Plantillas extends React.Component {
   constructor(props) {
@@ -68,6 +71,13 @@ class Plantillas extends React.Component {
     this.setState({ page });
   };
 
+  getPlantilla = plantilla => {
+    if (!plantilla) {
+      return [];
+    }
+    return plantilla;
+  };
+
   render() {
     let count = [];
 
@@ -76,7 +86,16 @@ class Plantillas extends React.Component {
     const deleteDisabled = GetDisabledPermits(this.props.serviciosPermits, "Delete")
 
     const { rowsPerPage, page } = this.state;
-    const ArrayTemplate = getArray(this.props.template)
+    const arrayTemplate = getArray(this.props.template)
+
+      const result = this.props.search
+        ? arrayTemplate.filter(template => {
+            return (
+              template.template.toLowerCase().includes(this.props.search)
+            );
+          })
+        : arrayTemplate;
+
 
     return (
       <div>
@@ -93,16 +112,21 @@ class Plantillas extends React.Component {
             paddingLeft: 20
           }}
         >
-          <Button
-            color="success"
-            disabled={createDisabled}
-            onClick={() => this.setState({ openModal: true })}
-          >
-            Agregar
-          </Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+            <Button
+              color="success"
+              disabled={createDisabled}
+              onClick={() => this.setState({ openModal: true })}>
+              Agregar
+            </Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={arrayTemplate} />
+          </div>
+        </div>
         </div>
         <br />
-
         <div>
           <Table hover responsive borderless>
             <thead className="thead-light">
@@ -114,7 +138,7 @@ class Plantillas extends React.Component {
             </thead>
             <tbody>
               {this.props.template.length > 0 &&
-               ArrayTemplate.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((template) => {
+               result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((template) => {
                   if (template.status === true) {
                     count.push(template.number);
                     return (
@@ -170,7 +194,7 @@ class Plantillas extends React.Component {
                 })}
             </tbody>
           {
-            ArrayTemplate > 10 &&
+            arrayTemplate > 10 &&
             <Pagination contador={this.props.template}
               page={page}
               rowsPerPage={rowsPerPage}

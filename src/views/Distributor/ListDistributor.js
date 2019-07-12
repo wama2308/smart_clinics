@@ -5,6 +5,9 @@ import { Delete, Edit, Visibility } from "@material-ui/icons";
 import { GetDisabledPermits, getArray } from "../../core/utils";
 import ModalDistributor from './ModalDistributor.js';
 import Pagination from '../../components/Pagination';
+import TextField from "@material-ui/core/TextField";
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListDistributor extends React.Component {
   constructor(props) {
@@ -21,7 +24,8 @@ class ListDistributor extends React.Component {
       userId: '',
       page: 0,
       rowsPerPage: 10,
-      cont: 0
+      cont: 0,
+      search: ""
     };
   }
 
@@ -87,12 +91,25 @@ class ListDistributor extends React.Component {
     this.setState({ page });
   };
 
+
   render() {
     const updateDisabled = GetDisabledPermits(this.props.distributorPermits, "Update");
     const deleteDisabled = GetDisabledPermits(this.props.distributorPermits, "Delete");
     const createDisabled = GetDisabledPermits(this.props.distributorPermits, "Create");
     const { rowsPerPage, page } = this.state;
-    const ArrayDistributor = getArray(this.props.listDistributor)
+    const arrayDistributor = getArray(this.props.listDistributor)
+
+    const result = this.props.search
+      ? arrayDistributor.filter(distributor => {
+          return (
+              distributor.name.toLowerCase().includes(this.props.search) ||
+              distributor.phone[0].includes(this.props.search)||
+              distributor.typeIdentity.toLowerCase().includes(this.props.search)||
+              distributor.tin.toString().includes(this.props.search)||
+              distributor.email[0].toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayDistributor;
 
     return (
       <div>
@@ -106,11 +123,19 @@ class ListDistributor extends React.Component {
           userId={this.state.userId}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success"
+
+      <div className="containerGeneral">
+        <div className="container-button" >
+          <Button color="success"
           disabled={createDisabled}
           onClick={() => { this.openModal(1); }}>
           Agregar Proveedor
           </Button>
+        </div>
+        <div className="containerSearch">
+          <Search value={arrayDistributor} />
+        </div>
+      </div>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -125,7 +150,7 @@ class ListDistributor extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayDistributor ? ArrayDistributor.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
+            { arrayDistributor ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
               return (
                 <tr key={distributor.number} className="text-left">
                   <td>{distributor.number}</td>
@@ -162,7 +187,7 @@ class ListDistributor extends React.Component {
             }
           </tbody>
           {
-            ArrayDistributor > 10 &&
+            arrayDistributor > 10 &&
             <Pagination contador={this.props.listDistributor}
               page={page}
               rowsPerPage={rowsPerPage}

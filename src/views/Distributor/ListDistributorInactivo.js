@@ -5,6 +5,8 @@ import { HowToReg } from "@material-ui/icons";
 import { GetDisabledPermits, getArray } from '../../core/utils';
 import ModalDistributor from './ModalDistributor.js';
 import Pagination from "../../components/Pagination";
+import '../../components/style.css'
+import Search from "../../components/Select";
 
 class ListDistributorInactivo extends React.Component {
   constructor(props) {
@@ -52,13 +54,37 @@ class ListDistributorInactivo extends React.Component {
     this.setState({ page });
   };
 
+  getDistribuitorInactivo = distribuitor => {
+    if (!distribuitor) {
+      return [];
+    }
+    return distribuitor;
+  };
+
   render() {
     const activeDisabled = GetDisabledPermits(this.props.distributorPermits, "Active");
     const { rowsPerPage, page } = this.state;
-    const ArrayDistributor = getArray(this.props.listDistributor)
+    const arrayDistributor = getArray(this.props.listDistributor)
+
+    const result = this.props.search
+      ? arrayDistributor.filter(distributor => {
+          return (
+            distributor.name.toLowerCase().includes(this.props.search) ||
+              distributor.phone[0].includes(this.props.searchData)||
+              distributor.typeIdentity.toLowerCase().includes(this.props.search) ||
+              distributor.tin.includes(this.props.search)||
+              distributor.email[0].toLowerCase().includes(this.props.searchData)
+          );
+        })
+      : arrayDistributor;
 
     return (
       <div>
+        <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
+          <div className="containerSearch">
+            <Search value={arrayDistributor} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
@@ -72,7 +98,7 @@ class ListDistributorInactivo extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayDistributor ? ArrayDistributor.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
+            {arrayDistributor ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
               return (
                 <tr key={distributor.number} className="text-left">
                   <td>{distributor.number}</td>
@@ -82,7 +108,13 @@ class ListDistributorInactivo extends React.Component {
                   <td>{distributor.phone[0]}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
-                      <IconButton aria-label="Delete" disabled={activeDisabled} title="Activar Proveedor" className="iconButtons" onClick={() => { this.activarProveedor(distributor.id); }}><HowToReg className="iconTable" /></IconButton>
+                      <IconButton aria-label="Delete"
+                        disabled={activeDisabled}
+                        title="Activar Proveedor"
+                        className="iconButtons"
+                        onClick={() => { this.activarProveedor(distributor.id); }}>
+                        <HowToReg className="iconTable" />
+                      </IconButton>
                     </div>
                   </td>
                 </tr>
@@ -93,7 +125,7 @@ class ListDistributorInactivo extends React.Component {
             }
           </tbody>
             {
-              ArrayDistributor > 10 &&
+              arrayDistributor > 10 &&
               <Pagination contador={this.props.listDistributor}
               page={page}
               rowsPerPage={rowsPerPage}

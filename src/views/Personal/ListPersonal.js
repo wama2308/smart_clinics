@@ -5,6 +5,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { GetDisabledPermits, getArray } from "../../core/utils";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListPersonal extends React.Component {
   constructor(props) {
@@ -96,7 +98,21 @@ class ListPersonal extends React.Component {
     const disabledUpdate = GetDisabledPermits(this.props.permitsPersonal, "Update")
     const disabledDelete = GetDisabledPermits(this.props.permitsPersonal, "Delete")
     const { rowsPerPage, page } = this.state;
-    const ArrayPersonal = getArray(this.props.personal)
+    const arrayPersonal = getArray(this.props.personal)
+
+    const result = this.props.search
+      ? arrayPersonal.filter(personal => {
+          return (
+              personal.names.toLowerCase().includes(this.props.search) ||
+              personal.surnames.toLowerCase().includes(this.props.search) ||
+              personal.positions.toLowerCase().includes(this.props.search) ||
+              personal.phone[0].includes(this.props.search) ||
+              personal.type_identity.toLowerCase().toString().includes(this.props.search) ||
+              personal.dni.includes(this.props.search) ||
+              personal.email[0].toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayPersonal;
 
     return (
       <div>
@@ -118,7 +134,18 @@ class ListPersonal extends React.Component {
           roles={this.props.roles}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" disabled={disabledCreate} onClick={() => { this.openModal(1); }}>Agregar Personal</Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+        <Button color="success"
+          disabled={disabledCreate}
+          onClick={() => { this.openModal(1); }}>
+          Agregar Personal
+        </Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={arrayPersonal} />
+          </div>
+        </div>
         <br />
         <br />
         <Table hover responsive borderless>
@@ -134,7 +161,7 @@ class ListPersonal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayPersonal ? ArrayPersonal.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((personal) => {
+            {arrayPersonal ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((personal) => {
               return (
                 <tr key={personal.number} className="text-left">
                   <td>{personal.number}</td>

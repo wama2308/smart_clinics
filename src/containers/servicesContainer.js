@@ -120,6 +120,7 @@ class ServicesContainer extends React.Component {
                         getdataModal={this.props.getDataModalService}
                         serviceModalData={this.props.serviceModalData}
                         plantilla={this.props.plantilla}
+                        search={this.props.searchData}
                         deleteModifyServices={this.props.deleteModifyServices}
                         alert={this.props.alert}
                         enabledField={this.props.enabledField}
@@ -136,6 +137,7 @@ class ServicesContainer extends React.Component {
                         template={dataPlantilla}
                         alert={this.props.alert}
                         delete={this.props.delete}
+                        search={this.props.searchData}
                       />
                     </TabPane>
                   </TabContent>
@@ -172,7 +174,8 @@ const mapStateToProps = state => ({
   service: state.service.get("servicios"),
   plantilla: state.service.get("plantillas"),
   serviceModalData: state.service.get("ModalService"),
-  aplication: state.global.dataGeneral
+  aplication: state.global.dataGeneral,
+  searchData: state.global.search
 });
 const mapDispatchToProps = dispatch => ({
   getData: () => dispatch(getDataServices()),

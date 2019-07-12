@@ -154,6 +154,7 @@ class configContainer extends Component {
                         data={this.props.medicalCenter.toJS()}
                         info={this.props.aplication}
                         medicalPermits={this.state.permitsMedical}
+                        search={this.props.searchData}
                       />
                     </TabPane>
                     <TabPane tabId={2}>
@@ -166,6 +167,7 @@ class configContainer extends Component {
                         deleteSucursal={this.props.deleteSucursal}
                         confirm={this.props.confirm}
                         medicalPermits={this.state.permitsMedical}
+                        search={this.props.searchData}
                       />
                     </TabPane>
 
@@ -173,6 +175,7 @@ class configContainer extends Component {
                       <Licencias
                         licenses={this.props.medicalCenter.get("licenses")}
                         symbol={symbol}
+                        search={this.props.searchData}
                       />
                     </TabPane>
                   </TabContent>
@@ -208,7 +211,8 @@ class configContainer extends Component {
 const mapStateToProps = state => ({
   medicalCenter: state.config,
   authData: state.auth,
-  aplication: state.global.dataGeneral
+  aplication: state.global.dataGeneral,
+  searchData: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({

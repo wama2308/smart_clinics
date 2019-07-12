@@ -1,5 +1,5 @@
 .borderButton{
-	border-width: 0px;   
+	border-width: 0px;
 	background-color: transparent;
 }
 
@@ -14,13 +14,13 @@
 }
 
 .show{
-    display: block;    
+    display: block;
 }
 
 .ModalAlert{
     max-width: 30%;
     width:30%;
-    background: white;    
+    background: white;
     border-radius: 10px;
     box-shadow: 0 0 10 px rgba(0,0,0, .4);
     text-align: center;
@@ -38,4 +38,15 @@ padding: 1em;
   padding-bottom: 1em;
   text-align: center;
   color:orange;
+}
+
+.containerGeneral{
+	display: flex;
+}
+.container-button{
+	display: flex;
+	width: 80%;
+}
+.containerSearch{
+	width: 7cm;
 }

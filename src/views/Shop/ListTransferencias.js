@@ -6,6 +6,8 @@ import ModalShop from './ModalShop.js';
 import ModalTransferencias from './ModalTransferencias.js';
 import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListTransferencias extends React.Component {
   constructor(props) {
@@ -94,8 +96,17 @@ class ListTransferencias extends React.Component {
     const deleteDisabled = GetDisabledPermits(this.props.permitsTransfer , "Delete")
     const detailsDisabled = GetDisabledPermits(this.props.permitsTransfer , "Details")
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray(this.props.data)
-    
+    const arrayData = getArray(this.props.data)
+
+    const result = this.props.search
+      ? arrayData.filter(data => {
+          return (
+              data.number_invoice.toLowerCase().includes(this.props.search) ||
+              data.number_controll.toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayData;
+
      return (
       <div>
         {
@@ -114,7 +125,11 @@ class ListTransferencias extends React.Component {
             valorCloseModal = {this.valorCloseModal}
           />
         }
-
+        <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
+          <div className="containerSearch">
+            <Search value={arrayData} />
+          </div>
+        </div>
         <br />
           <Table hover responsive borderless>
             <thead className="thead-light">
@@ -132,7 +147,7 @@ class ListTransferencias extends React.Component {
             </thead>
             <tbody>
              {
-               this.props.data ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+               this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
                 <tr key={ data.number } className="text-left">
                   <td>{ data.number }</td>

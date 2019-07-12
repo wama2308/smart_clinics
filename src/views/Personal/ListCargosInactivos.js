@@ -4,6 +4,8 @@ import ModalCargos from './ModalCargos.js';
 import IconButton from "@material-ui/core/IconButton";
 import { CheckCircle } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 import { getArray } from '../../core/utils';
 
 class ListCargosInactivos extends React.Component {
@@ -50,10 +52,23 @@ class ListCargosInactivos extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayCargo = getArray(this.props.cargosInactivos);
+    const arrayCargo = getArray(this.props.cargosInactivos);
+
+    const result = this.props.search
+      ? arrayCargo.filter(cargo => {
+          return (
+              cargo.label.toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayCargo;
 
     return (
       <div>
+        <div className="containerGeneral" style={{"justifyContent": "flex-end", }}>
+          <div className="containerSearch">
+            <Search value={arrayCargo} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
@@ -65,7 +80,7 @@ class ListCargosInactivos extends React.Component {
           </thead>
           <tbody>
             {
-              ArrayCargo ? ArrayCargo.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo) => {
+              arrayCargo ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo) => {
                 return (
                   <tr key={cargo.number} className="text-left">
                     <td>{cargo.number}</td>

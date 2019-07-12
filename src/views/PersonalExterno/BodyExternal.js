@@ -4,7 +4,9 @@ import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import { GetDisabledPermits, getArray } from "../../core/utils";
 import PreRegistro from "./PreRegistro/PreRegistro";
-import Pagination from '../../components/Pagination';
+import Pagination from "../../components/Pagination";
+import Search from "../../components/Select";
+import "../../components/style.css";
 
 class BodyExternal extends React.Component {
   constructor(props) {
@@ -13,7 +15,7 @@ class BodyExternal extends React.Component {
       openModal: false,
       ids: null,
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 10
     };
   }
   ViewModal = data => {
@@ -65,9 +67,25 @@ class BodyExternal extends React.Component {
       { label: "Acciones" }
     ];
 
-    const deleteDisabled = GetDisabledPermits(this.props.externalPermits, "Delete")
+    const deleteDisabled = GetDisabledPermits(
+      this.props.externalPermits,
+      "Delete"
+    );
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray(this.props.data)
+    const arrayData = getArray(this.props.data);
+
+    const result = this.props.search
+      ? arrayData.filter(item => {
+          return (
+            item.name_branchoffices.toLowerCase().includes(this.props.search) ||
+            item.name_medical_center
+              .toLowerCase()
+              .includes(this.props.search) ||
+            item.country.toLowerCase().includes(this.props.search) ||
+            item.province.toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayData;
 
     return (
       <div
@@ -83,6 +101,14 @@ class BodyExternal extends React.Component {
             disabled={true}
           />
         )}
+        <div
+          className="containerGeneral"
+          style={{ justifyContent: "flex-end" }}
+        >
+          <div className="containerSearch" style={{ "margin-bottom": "15px" }}>
+            <Search value={arrayData} />
+          </div>
+        </div>
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
@@ -92,52 +118,54 @@ class BodyExternal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayData && ArrayData.length > 0
-              ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
-                return (
-                  <tr key={item.number - 1}>
-                    <td>{item.name_branchoffices}</td>
-                    <td>{this.props.type}</td>
-                    <td>{item.name_medical_center}</td>
-                    <td>{item.country}</td>
-                    <td>{item.province}</td>
-                    <td>
-                      <div className="float-left">
-                        <IconButton
-                          className="iconButtons"
-                          onClick={() => {
-                            this.ViewModal(item);
-                          }}
-                        >
-                          <Visibility className="iconTable" />
-                        </IconButton>
-                        <IconButton
-                          className="iconButtons"
-                          disabled={deleteDisabled}
-                          onClick={() => {
-                            this.delete(item);
-                          }}
-                        >
-                          <Delete className="iconTable" />
-                        </IconButton>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
+            {arrayData && arrayData.length > 0
+              ? result
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(item => {
+                    return (
+                      <tr key={item.number - 1}>
+                        <td>{item.name_branchoffices}</td>
+                        <td>{this.props.type}</td>
+                        <td>{item.name_medical_center}</td>
+                        <td>{item.country}</td>
+                        <td>{item.province}</td>
+                        <td>
+                          <div className="float-left">
+                            <IconButton
+                              className="iconButtons"
+                              onClick={() => {
+                                this.ViewModal(item);
+                              }}
+                            >
+                              <Visibility className="iconTable" />
+                            </IconButton>
+                            <IconButton
+                              className="iconButtons"
+                              disabled={deleteDisabled}
+                              onClick={() => {
+                                this.delete(item);
+                              }}
+                            >
+                              <Delete className="iconTable" />
+                            </IconButton>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
               : null}
           </tbody>
-          {
-            this.props.data.length > 10 &&
-              <Pagination contador={this.props.data}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
-          }
+          {this.props.data.length > 10 && (
+            <Pagination
+              contador={this.props.data}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage}
+            />
+          )}
         </Table>
       </div>
-
     );
   }
 }
