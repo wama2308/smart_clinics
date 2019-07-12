@@ -14,11 +14,13 @@ import {
   Card,
   NavItem,
   Nav,
-  NavLink
+  NavLink,
+  Table
 } from "reactstrap";
 import "../Services.css";
 import "../loading.css";
 import classnames from "classnames";
+import { DoneOutlineOutlined } from "@material-ui/icons";
 import { Formik } from "formik";
 import Select from "react-select";
 import { Editor } from "@tinymce/tinymce-react";
@@ -154,8 +156,19 @@ class ModalServicio extends React.Component {
     }
   }
 
+  activeField = obj => {
+    this.props.enabledField({
+      licenseId: this.props.licenseID,
+      serviceId: this.props.serviceID,
+      field_id: obj._id
+    });
+
+    console.log("field", obj);
+  };
+
   render() {
     const { open, close, serviceModalData, plantilla, disabled } = this.props;
+
     const data = !serviceModalData
       ? undefined
       : serviceModalData.serviceOriginal;
@@ -190,6 +203,7 @@ class ModalServicio extends React.Component {
               resetForm
             }) => {
               const group = this.getGroup(values.fields);
+              const inactive = serviceModalData.serviceOriginal.fields_disable;
               return (
                 <div>
                   {this.state.openModal && (
@@ -293,19 +307,21 @@ class ModalServicio extends React.Component {
                         </NavLink>
                       </NavItem>
 
-                      <NavItem>
-                        <NavLink
-                          style={{ height: 50 }}
-                          className={classnames({
-                            active: this.state.activeTab === 2
-                          })}
-                          onClick={() => {
-                            this.toggleTab(2);
-                          }}
-                        >
-                          Inactivo
-                        </NavLink>
-                      </NavItem>
+                      {inactive && !disabled && (
+                        <NavItem>
+                          <NavLink
+                            style={{ height: 50 }}
+                            className={classnames({
+                              active: this.state.activeTab === 2
+                            })}
+                            onClick={() => {
+                              this.toggleTab(2);
+                            }}
+                          >
+                            Inactivo
+                          </NavLink>
+                        </NavItem>
+                      )}
                     </Nav>
                     {this.state.activeTab === 1 && (
                       <EditableInput>
@@ -331,25 +347,29 @@ class ModalServicio extends React.Component {
                                         <Label for="servicio">
                                           {field.label}
                                         </Label>
-                                        <div className="buttonSEdit">
-                                          <IconButton
-                                            onClick={() => {
-                                              this.setState({
-                                                openModal: true,
-                                                edit: field
-                                              });
-                                            }}
-                                          >
-                                            <Edit style={{ fontSize: 18 }} />
-                                          </IconButton>
-                                          <IconButton
-                                            onClick={() => {
-                                              this.confirm(field);
-                                            }}
-                                          >
-                                            <Delete style={{ fontSize: 18 }} />
-                                          </IconButton>
-                                        </div>
+                                        {!disabled && (
+                                          <div className="buttonSEdit">
+                                            <IconButton
+                                              onClick={() => {
+                                                this.setState({
+                                                  openModal: true,
+                                                  edit: field
+                                                });
+                                              }}
+                                            >
+                                              <Edit style={{ fontSize: 18 }} />
+                                            </IconButton>
+                                            <IconButton
+                                              onClick={() => {
+                                                this.confirm(field);
+                                              }}
+                                            >
+                                              <Delete
+                                                style={{ fontSize: 18 }}
+                                              />
+                                            </IconButton>
+                                          </div>
+                                        )}
                                       </div>
 
                                       <Input
@@ -385,25 +405,30 @@ class ModalServicio extends React.Component {
                                         <Label for="servicio">
                                           {field.label}
                                         </Label>
-                                        <div className="buttonSEdit">
-                                          <IconButton
-                                            onClick={() => {
-                                              this.setState({
-                                                openModal: true,
-                                                edit: field
-                                              });
-                                            }}
-                                          >
-                                            <Edit style={{ fontSize: 18 }} />
-                                          </IconButton>
-                                          <IconButton
-                                            onClick={() => {
-                                              this.confirm(field);
-                                            }}
-                                          >
-                                            <Delete style={{ fontSize: 18 }} />
-                                          </IconButton>
-                                        </div>
+
+                                        {!disabled && (
+                                          <div className="buttonSEdit">
+                                            <IconButton
+                                              onClick={() => {
+                                                this.setState({
+                                                  openModal: true,
+                                                  edit: field
+                                                });
+                                              }}
+                                            >
+                                              <Edit style={{ fontSize: 18 }} />
+                                            </IconButton>
+                                            <IconButton
+                                              onClick={() => {
+                                                this.confirm(field);
+                                              }}
+                                            >
+                                              <Delete
+                                                style={{ fontSize: 18 }}
+                                              />
+                                            </IconButton>
+                                          </div>
+                                        )}
                                       </div>
                                       <div>
                                         <Select
@@ -443,29 +468,34 @@ class ModalServicio extends React.Component {
                                         <Label for="servicio">
                                           {field.label}
                                         </Label>
-                                        <div className="buttonSEdit">
-                                          <IconButton
-                                            onClick={() => {
-                                              this.setState({
-                                                openModal: true,
-                                                edit: field
-                                              });
-                                            }}
-                                          >
-                                            <Edit style={{ fontSize: 18 }} />
-                                          </IconButton>
-                                          <IconButton
-                                            onClick={() => {
-                                              this.confirm(field);
-                                            }}
-                                          >
-                                            <Delete style={{ fontSize: 18 }} />
-                                          </IconButton>
-                                        </div>
+                                        {!disabled && (
+                                          <div className="buttonSEdit">
+                                            <IconButton
+                                              onClick={() => {
+                                                this.setState({
+                                                  openModal: true,
+                                                  edit: field
+                                                });
+                                              }}
+                                            >
+                                              <Edit style={{ fontSize: 18 }} />
+                                            </IconButton>
+                                            <IconButton
+                                              onClick={() => {
+                                                this.confirm(field);
+                                              }}
+                                            >
+                                              <Delete
+                                                style={{ fontSize: 18 }}
+                                              />
+                                            </IconButton>
+                                          </div>
+                                        )}
                                       </div>
                                       <Input
                                         type="textarea"
                                         name="code"
+                                        disabled={disabled}
                                         rows={5}
                                         value={field.value}
                                         onChange={event => {
@@ -474,8 +504,6 @@ class ModalServicio extends React.Component {
                                             event.target.value
                                           );
                                         }}
-                                        style={{ backgroundColor: "white" }}
-                                        id="codigo"
                                       />
                                     </FormGroup>
                                   );
@@ -497,29 +525,34 @@ class ModalServicio extends React.Component {
                                         <Label for="servicio">
                                           {field.label}
                                         </Label>
-                                        <div className="buttonSEdit">
-                                          <IconButton
-                                            onClick={() => {
-                                              this.setState({
-                                                openModal: true,
-                                                edit: field
-                                              });
-                                            }}
-                                          >
-                                            <Edit style={{ fontSize: 18 }} />
-                                          </IconButton>
-                                          <IconButton
-                                            onClick={() => {
-                                              this.confirm(field);
-                                            }}
-                                          >
-                                            <Delete style={{ fontSize: 18 }} />
-                                          </IconButton>
-                                        </div>
+                                        {!disabled && (
+                                          <div className="buttonSEdit">
+                                            <IconButton
+                                              onClick={() => {
+                                                this.setState({
+                                                  openModal: true,
+                                                  edit: field
+                                                });
+                                              }}
+                                            >
+                                              <Edit style={{ fontSize: 18 }} />
+                                            </IconButton>
+                                            <IconButton
+                                              onClick={() => {
+                                                this.confirm(field);
+                                              }}
+                                            >
+                                              <Delete
+                                                style={{ fontSize: 18 }}
+                                              />
+                                            </IconButton>
+                                          </div>
+                                        )}
                                       </div>
                                       <Input
                                         style={{ width: "10%" }}
                                         value={field.value}
+                                        disabled={disabled}
                                         type="checkbox"
                                         onClick={() =>
                                           setFieldValue(
@@ -546,11 +579,63 @@ class ModalServicio extends React.Component {
                             style={{
                               margin: 20
                             }}
+                            disabled={disabled}
                             color="success"
                             onClick={() => this.setState({ openModal: true })}
                           >
                             Agregar nuevas plantillas
                           </Button>
+                        </div>
+                      </EditableInput>
+                    )}
+
+                    {this.state.activeTab === 2 && (
+                      <EditableInput>
+                        <div
+                          style={{
+                            padding: 20
+                          }}
+                        >
+                          <Table hover responsive borderless>
+                            <thead className="thead-light">
+                              <tr>
+                                <th className="text-left">Nombre </th>
+                                <th className="text-left">Type</th>
+                                <th className="text-left">Requerido</th>
+                                <th
+                                  className="text-left"
+                                  style={{ minWidth: "105px" }}
+                                >
+                                  Acciones
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {inactive.map(data => {
+                                return (
+                                  <tr key={data._id} className="text-left">
+                                    <td>{data.label}</td>
+                                    <td>{data.type}</td>
+                                    <td>{data.required ? "si" : "no"}</td>
+                                    <td style={{ minWidth: "205px" }}>
+                                      <div className="float-left">
+                                        <IconButton
+                                          aria-label="Delete"
+                                          title="Activar servicio"
+                                          className="iconButtons"
+                                          onClick={() => {
+                                            this.activeField(data);
+                                          }}
+                                        >
+                                          <DoneOutlineOutlined className="iconTable" />
+                                        </IconButton>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </Table>
                         </div>
                       </EditableInput>
                     )}
@@ -624,11 +709,11 @@ export default connect(
 )(ModalServicio);
 
 const EditableInput = styled(Card)`
+  border-top: none;
   .containerInputs {
     display: flex;
     flex: 1;
     flex-wrap: wrap;
-    border-top: none;
   }
 
   .groupContainer {
