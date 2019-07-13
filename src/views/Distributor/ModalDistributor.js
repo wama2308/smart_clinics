@@ -52,8 +52,36 @@ class ModalDistributor extends React.Component {
 		};
 	}
 
-	componentDidMount(){
-        
+	componentDidMount(){        
+        if(this.props.option === 4){
+            this.setState({
+                modal: this.props.modal            
+            });  
+            let type_identity = "";
+            this.props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
+                if(typeIdentity.default === 1){
+                    type_identity = typeIdentity.label;
+                }                 
+            })            
+            if((this.props.distributor.contacs.length === 0) && (this.props.distributor.tableContac === 0)){                
+                this.setState({
+                    loading:'hide',
+                    arrayTypeIdentitySelect: type_identity,
+                })                      
+            }else if((this.props.distributor.contacs.length !== 0) && (this.props.distributor.tableContac === 1)){
+                this.setState({
+                    loading:'hide',
+                    errorListContacs:"",
+                    collapse:true
+                }) 
+            }else if((this.props.distributor.contacs.length === 0) && (this.props.distributor.tableContac === 1)){
+                this.setState({
+                    loading:'hide',
+                    errorListContacs:"¡Ingrese al menos un  contacto!",
+                    collapse:true 
+                }) 
+            }            
+        }
     }
 
     handleChange = (e) => {
@@ -317,7 +345,7 @@ class ModalDistributor extends React.Component {
         })
     }
 
-    componentWillReceiveProps=(props)=>{       
+    componentWillReceiveProps=(props)=>{   
         this.setState({
             modal: props.modal            
         });   
@@ -414,6 +442,35 @@ class ModalDistributor extends React.Component {
                     }) 
                 }                     
             }
+        }
+        if(this.props.option === 4){
+            this.setState({
+                modal: this.props.modal            
+            });  
+            let type_identity = "";
+            this.props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
+                if(typeIdentity.default === 1){
+                    type_identity = typeIdentity.label;
+                }                 
+            })            
+            if((this.props.distributor.contacs.length === 0) && (this.props.distributor.tableContac === 0)){                
+                this.setState({
+                    loading:'hide',
+                    arrayTypeIdentitySelect: type_identity,
+                })                      
+            }else if((this.props.distributor.contacs.length !== 0) && (this.props.distributor.tableContac === 1)){
+                this.setState({
+                    loading:'hide',
+                    errorListContacs:"",
+                    collapse:true
+                }) 
+            }else if((this.props.distributor.contacs.length === 0) && (this.props.distributor.tableContac === 1)){
+                this.setState({
+                    loading:'hide',
+                    errorListContacs:"¡Ingrese al menos un  contacto!",
+                    collapse:true 
+                }) 
+            }            
         }
     }
 

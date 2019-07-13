@@ -28,6 +28,13 @@ class UsersList extends React.Component {
   }
 
   openUser = (option, pos, userId) => {
+    let disabledEditEmail = false;
+    if(this.props.typeUser === "Master"){
+      disabledEditEmail = false;
+    }else{
+      disabledEditEmail = true;
+    }
+
     if (option === 1) {
       if (this.props.totalBranchOffices > 0) {
         this.setState({
@@ -66,7 +73,7 @@ class UsersList extends React.Component {
         modalHeader: "Editar Usuario",
         modalFooter: "Editar",
         disabled: false,
-        disabledEmail: true,
+        disabledEmail: disabledEditEmail,
         showHide: "show",
         userIdEdit: userId
       });
@@ -149,7 +156,7 @@ class UsersList extends React.Component {
           editUserNoMasterAction={this.props.editUserNoMasterAction}
           addSucursalFunction={this.props.addSucursalFunction}
           deleteSucursalFunction={this.props.deleteSucursalFunction}
-          userIdEdit={this.state.userIdEdit}
+          userIdEdit={this.state.userIdEdit}          
         />
 
         <div className="containerGeneral">

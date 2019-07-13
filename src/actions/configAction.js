@@ -9,6 +9,7 @@ const SubmitDataMedicalCenter = `${url}/api/editPerfilMedicalCenter`;
 const saveSucursal = `${url}/api/saveBranchOffices`;
 const deleteSucursalApi = `${url}/api/deleteBranchOffices`;
 const editBranchUrl = `${url}/api/editBranchOffices`;
+const enabledBranchOffices = `${url}/api/enabledBranchOffices`;
 
 export const loadMedicalcenterAction = () => dispatch => {
   getDataToken().then(datos => {
@@ -32,7 +33,6 @@ export const loadMedicalcenterAction = () => dispatch => {
       });
   });
 };
-
 
 export const editMedicalCenter = (data, callback) => dispatch => {
   getDataToken().then(datos => {
@@ -76,7 +76,7 @@ export const deleteSucursal = (key, time) => dispatch => {
       method: "post",
       url: deleteSucursalApi,
       data: {
-        posicion: key,
+        _id: key._id,
         timeZ: time
       },
       ...datos
@@ -88,8 +88,24 @@ export const deleteSucursal = (key, time) => dispatch => {
   });
 };
 
+export const activeBranch = key => dispatch => {
+  getDataToken().then(datos => {
+    axios({
+      method: "post",
+      url: enabledBranchOffices,
+      data: {
+        _id: key._id
+      },
+      ...datos
+    })
+      .then(res => {
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+      })
+      .catch(res => {});
+  });
+};
+
 export const branchEdit = (data, callback) => dispatch => {
-  console.log("entro en editar");
   getDataToken().then(datos => {
     axios({
       method: "post",
@@ -105,6 +121,14 @@ export const branchEdit = (data, callback) => dispatch => {
         dispatch(openSnackbars("error", error.toString()));
       });
   });
+};
+
+export const enableBranchs = data => dispatch => {
+  console.log("enable", data);
+};
+
+export const disabledBranchs = data => dispatch => {
+  console.log("disabled", data);
 };
 
 export const SetDataSave = data => {

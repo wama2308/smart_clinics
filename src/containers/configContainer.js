@@ -19,7 +19,8 @@ import { connect } from "react-redux";
 import {
   loadMedicalcenterAction,
   editMedicalCenter,
-  deleteSucursal
+  deleteSucursal,
+  activeBranch
 } from "../actions/configAction";
 import {
   openConfirmDialog,
@@ -135,6 +136,18 @@ class configContainer extends Component {
                           this.toggleTab(3);
                         }}
                       >
+                        Sucursales inactivas
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={classnames({
+                          active: this.state.activeTab === 4
+                        })}
+                        onClick={() => {
+                          this.toggleTab(4);
+                        }}
+                      >
                         Licencias
                       </NavLink>
                     </NavItem>
@@ -157,6 +170,7 @@ class configContainer extends Component {
                         search={this.props.searchData}
                       />
                     </TabPane>
+
                     <TabPane tabId={2}>
                       <Sucursales
                         openSnackbars={this.props.openSnackbars}
@@ -172,6 +186,22 @@ class configContainer extends Component {
                     </TabPane>
 
                     <TabPane tabId={3}>
+                      <Sucursales
+                        openSnackbars={this.props.openSnackbars}
+                        permits={permits}
+                        sucursales={this.props.medicalCenter.get(
+                          "branchoffices_disabled"
+                        )}
+                        inactive={true}
+                        deleteSucursal={this.props.deleteSucursal}
+                        confirm={this.props.confirm}
+                        medicalPermits={this.state.permitsMedical}
+                        search={this.props.searchData}
+                        activeBranch={this.props.activeBranch}
+                      />
+                    </TabPane>
+
+                    <TabPane tabId={4}>
                       <Licencias
                         licenses={this.props.medicalCenter.get("licenses")}
                         symbol={symbol}
@@ -222,7 +252,8 @@ const mapDispatchToProps = dispatch => ({
   confirm: (message, callback) =>
     dispatch(openConfirmDialog(message, callback)),
   deleteSucursal: (key, time) => dispatch(deleteSucursal(key, time)),
-  openSnackbars: (type, message) => dispatch(openSnackbars(type, message))
+  openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
+  activeBranch: obj => dispatch(activeBranch(obj))
 });
 
 export default connect(

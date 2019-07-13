@@ -105,7 +105,7 @@ class BodyExternal extends React.Component {
           className="containerGeneral"
           style={{ justifyContent: "flex-end" }}
         >
-          <div className="containerSearch" style={{ "margin-bottom": "15px" }}>
+          <div className="containerSearch" style={{ marginBottom: "15px" }}>
             <Search value={arrayData} />
           </div>
         </div>
