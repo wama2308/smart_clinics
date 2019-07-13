@@ -240,7 +240,7 @@ class ListDistributor extends React.Component {
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage}
             />
-          )}
+          }
         </Table>
       </div>
     );
