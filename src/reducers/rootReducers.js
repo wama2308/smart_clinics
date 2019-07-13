@@ -10,6 +10,7 @@ import PersonalInternoReducers from "./PersonalInternoReducers";
 import VentasReducer from "./ventasReducer";
 import StoreReducer from "./StoreReducers";
 import ShopReducer from "./ShopReducers";
+import ConfigCommissionsReducer from "./CommissionesReducers";
 
 export default combineReducers({
   auth: authReducer,
@@ -22,5 +23,6 @@ export default combineReducers({
   personaInterno: PersonalInternoReducers,
   store: StoreReducer,
   shop: ShopReducer,
-  ventas: VentasReducer
+  ventas: VentasReducer,
+  configCommissions: ConfigCommissionsReducer
 });

@@ -238,14 +238,13 @@ class RolesPermisos extends React.Component {
                     <TabPane tabId="1">
                         <FormGroup className="top form-group col-sm-12">
                             <Label for="rol">Rol</Label>
-                            <div className={this.props.divSelectRol}>                                                                        
-                                <InputGroup className="form-group col-sm-20">                                                                
-                                    <Select isDisabled={this.state.varDisabled} className="selectUsersRoles" name="rol" value={this.props.selectedRolOption} onChange={this.handleChangeSelectRol} options={this.props.rolSelect} />&nbsp;
-                                    <div style={{width:'-2%'}}>
-                                        <Button title="Ver Rol" className={this.state.ocultarBotones} disabled={this.state.varDisabled} onClick={() => { this.openRoles(2, this.state.rolIdView); }}><FaSearch size="1em"/></Button>&nbsp;
-                                        <Button title="Agregar Rol" disabled={this.state.varDisabled} onClick={this.toggleNuevoRol} id="">{this.state.imageButton}</Button>
-                                    </div>
-                                </InputGroup>                                
+                            <div className={this.props.divSelectRol} style={{display:'flex', width:'100%'}}>                                                                        
+                                <div style={{flex:1}}>                                                              
+                                    <Select isDisabled={this.state.varDisabled} className="" name="rol" value={this.props.selectedRolOption} onChange={this.handleChangeSelectRol} options={this.props.rolSelect} />
+                                </div>
+                                <Button title="Ver Rol" className={this.state.ocultarBotones} disabled={this.state.varDisabled} onClick={() => { this.openRoles(2, this.state.rolIdView); }}><FaSearch size="1em"/></Button>
+                                &nbsp;
+                                <Button title="Agregar Rol" disabled={this.state.varDisabled} onClick={this.toggleNuevoRol} id="">{this.state.imageButton}</Button>                                                                
                             </div>
                             <div className="errorSelect">{this.props.rolSelectError}</div>                                                                                                                                                                                                        
                         </FormGroup>       

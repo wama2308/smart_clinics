@@ -66,8 +66,8 @@ class ListDistributor extends React.Component {
 
   deleteProveedor = proveedorId => {
     const message = {
-      title: "Eliminar Proveedor",
-      info: "¿Esta seguro que desea eliminar este Proveedor?"
+      title: "Inactivar Proveedor",
+      info: "¿Esta seguro que desea inactivar este Proveedor?"
     };
     this.props.confirm(message, res => {
       if (res) {
