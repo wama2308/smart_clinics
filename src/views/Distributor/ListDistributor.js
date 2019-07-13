@@ -232,9 +232,9 @@ class ListDistributor extends React.Component {
                   })
               : null}
           </tbody>
-          {arrayDistributor > 10 && (
-            <Pagination
-              contador={this.props.listDistributor}
+          {
+            arrayDistributor.length > 10 &&
+            <Pagination contador={this.props.listDistributor}
               page={page}
               rowsPerPage={rowsPerPage}
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
