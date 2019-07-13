@@ -9,7 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Products from './Products.js';
 import { openConfirmDialog } from "../../actions/aplicantionActions";
-import { cleanProducts, saveShopAction, editShopAction, deleteProductsFunction, removeProductAction } from "../../actions/ShopActions";
+import { cleanProducts, saveShopAction, editShopAction, deleteProductsFunction, removeProductAction, actionProps } from "../../actions/ShopActions";
 import { InitalState } from './InitialState.js';
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit } from "@material-ui/icons";
@@ -143,38 +143,17 @@ class ModalShop extends React.Component {
         const isValid = this.validate();
         if (isValid) {
             let compraDate = new Date(this.state.compraDate).toISOString().slice(0,10);
-            let valueTipoCompra = "";
-            let arrayTipoCompra = Object.values(this.state.arrayTipoCompraSelect);
-            arrayTipoCompra.forEach(function (elemento, indice) {
-                if(indice === 1){
-                    valueTipoCompra = elemento;
-                }
-            });
-            let valueProveedor = "";
-            let arrayProveedor = Object.values(this.state.arrayProveedorSelect);
-            arrayProveedor.forEach(function (elemento, indice) {
-                if(indice === 1){
-                    valueProveedor = elemento;
-                }
-            });
-            let valueSucursal = "";
-            let arraySucursal = Object.values(this.state.arraySucursalesSelect);
-            arraySucursal.forEach(function (elemento, indice) {
-                if(indice === 0){
-                    valueSucursal = elemento;
-                }
-            });
 
             if(this.props.option === 1)
             {
                 this.setState({loading:'show'})
                 this.props.saveShopAction(
                   {
-                    typeshop: valueTipoCompra,
+                    typeshop: this.state.arrayTipoCompraSelect.value,
                     number_invoice: this.state.nroCompra,
                     numero_control: this.state.nroControl,
-                    provider_id: valueProveedor,
-                    sucursal_id: valueSucursal,
+                    provider_id: this.state.arrayProveedorSelect.value,
+                    sucursal_id: this.state.arraySucursalesSelect.value,
                     starting_address: this.state.direccionPartida,
                     arrival_address: this.state.direccionLlegada,
                     date_purchase: compraDate,
@@ -195,11 +174,11 @@ class ModalShop extends React.Component {
                 this.props.editShopAction(
                   {
                     shop_id: this.props.shop_id,
-                    typeshop: valueTipoCompra,
+                    typeshop: this.state.arrayTipoCompraSelect.value,
                     number_invoice: this.state.nroCompra,
                     numero_control: this.state.nroControl,
-                    provider_id: valueProveedor,
-                    sucursal_id: valueSucursal,
+                    provider_id: this.state.arrayProveedorSelect.value,
+                    sucursal_id: this.state.arraySucursalesSelect.value,
                     starting_address: this.state.direccionPartida,
                     arrival_address: this.state.direccionLlegada,
                     date_purchase: compraDate,
@@ -330,7 +309,7 @@ class ModalShop extends React.Component {
                     var date_purchase_split = props.shop.dataShopId.date_purchase.split('-');
                     var date_purchase = new Date(date_purchase_split[0], date_purchase_split[1] - 1, date_purchase_split[2]);
                 }
-                if(props.shop.dataShopId.observation && props.aplication.confirm.message === "" && props.shop.action === 0){
+                if(props.shop.dataShopId.observation && props.shop.action === 0){
                     this.setState({
                         arrayTipoCompraSelect: props.shop.dataShopId.type_shop,
                         arraySucursalesSelect: props.shop.dataShopId.sucursal_id,
@@ -343,6 +322,7 @@ class ModalShop extends React.Component {
                         observacion: props.shop.dataShopId.observation,
                         loading: props.shop.loading,
                     })
+                    this.props.actionProps();
                 }
 
             }
@@ -559,6 +539,7 @@ const mapDispatchToProps = dispatch => ({
     deleteProductsFunction: (key, subtotal, impuesto, total) =>dispatch(deleteProductsFunction(key, subtotal, impuesto, total)),
     removeProductAction: (shopId, productId, loteId) =>dispatch(removeProductAction(shopId, productId, loteId)),
     cleanProducts: () =>dispatch(cleanProducts()),
+    actionProps: () =>dispatch(actionProps()),
 });
 
 export default connect(

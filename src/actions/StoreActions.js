@@ -114,6 +114,19 @@ export const cleanShelfs = () => dispatch => {
     });
 };
 
+export const actionProps = () => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "ACTION_PROPS",
+        payload: 1
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 export const LoadStoreIdFunction = (storeId, sucursalId) => dispatch => {
   getDataToken()
     .then(datos => {
@@ -238,3 +251,65 @@ export const enableStoreBranchOfficesAction = (storeId, sucursalId) => dispatch 
       console.log("Problemas con el token");
     });
 };
+
+/***************************PUSHER***************************/
+
+export const loadStoreNewPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_STORE_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_STORE_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_STORE_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadStoreEnabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_STORE_ENABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}

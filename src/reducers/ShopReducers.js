@@ -143,9 +143,124 @@ const setSelectAllSwitchTransferencias = (state, payload) => {
 			product.confirm = payload.value;
 			estado.action = 1;
 		})	
-	}
+	}	
 	
-	
+	return Map(estado);
+}
+
+const setActionProps = (state, payload) => {
+	let estado = state.toJS();
+	estado.action = payload;		
+	return Map(estado);
+}
+
+const setStoreShopSavePusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.data.push(payload);	
+	return Map(estado);
+}
+
+const setStoreShopEditPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.data.findIndex(shop => shop._id === payload._id);
+	estado.data[key].number_controll = payload.number_controll;
+	estado.data[key].subtotal = payload.subtotal;	
+	estado.data[key].igv = payload.igv;			
+	estado.data[key].total = payload.total;				
+	estado.data[key].number_invoice = payload.number_invoice;				
+	estado.data[key].type_shop = payload.type_shop;				
+	estado.data[key].observation = payload.observation;				
+	estado.data[key].medical_center = payload.medical_center;				
+	estado.data[key].sucursal = payload.sucursal;				
+	estado.data[key].provider = payload.provider;				
+	estado.data[key].date = payload.date;				
+	return Map(estado);
+}
+
+const setStoreShopDisabledPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.data.findIndex(shop => shop._id === payload._id);
+	estado.data.splice(key, 1);		
+	return Map(estado);
+}
+
+const setStoreTransferSavePusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.allTransfer.push(payload);	
+	return Map(estado);
+}
+
+const setStoreTransferEditPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.allTransfer.findIndex(transfer => transfer._id === payload._id);
+	estado.allTransfer[key].number_controll = payload.number_controll;
+	estado.allTransfer[key].number_invoice = payload.number_invoice;	
+	estado.allTransfer[key].subtotal = payload.subtotal;			
+	estado.allTransfer[key].igv = payload.igv;				
+	estado.allTransfer[key].total = payload.total;				
+	estado.allTransfer[key].transmitter = payload.transmitter;				
+	estado.allTransfer[key].status = payload.status;					
+	return Map(estado);
+}
+
+const setStoreTransferDisabledPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.allTransfer.findIndex(transfer => transfer._id === payload._id);
+	estado.allTransfer.splice(key, 1);		
+	return Map(estado);
+}
+
+const setStoreTransferAcceptPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.allTransfer.findIndex(transfer => transfer._id === payload._id);
+	estado.allTransfer[key].status = payload.status;		
+	return Map(estado);
+}
+
+const setStoreTransferRejectPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.allTransfer.findIndex(transfer => transfer._id === payload._id);
+	estado.allTransfer[key].status = payload.status;		
+	return Map(estado);
+}
+
+const setStoreTransferReceivedSavePusher = (state, payload) => {
+	let estado = state.toJS();
+	estado.allTransferRecibidas.push(payload);	
+	return Map(estado);
+}
+
+const setStoreTransferReceivedEditPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.allTransferRecibidas.findIndex(transfer => transfer._id === payload._id);
+	estado.allTransferRecibidas[key].number_controll = payload.number_controll;
+	estado.allTransferRecibidas[key].number_invoice = payload.number_invoice;	
+	estado.allTransferRecibidas[key].subtotal = payload.subtotal;			
+	estado.allTransferRecibidas[key].igv = payload.igv;				
+	estado.allTransferRecibidas[key].total = payload.total;				
+	estado.allTransferRecibidas[key].receiver = payload.receiver;				
+	estado.allTransferRecibidas[key].status = payload.status;					
+	return Map(estado);
+}
+
+const setStoreTransferReceivedDisabledPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.allTransferRecibidas.findIndex(transfer => transfer._id === payload._id);
+	estado.allTransferRecibidas.splice(key, 1);		
+	return Map(estado);
+}
+
+const setStoreTransferReceivedAcceptPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key_received = estado.allTransferRecibidas.findIndex(transferReceived => transferReceived._id === payload._id);
+	estado.allTransferRecibidas[key_received].status = payload.status;						
+	return Map(estado);
+}
+
+const setStoreTransferReceivedRejectPusher = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.allTransferRecibidas.findIndex(transfer => transfer._id === payload._id);
+	estado.allTransferRecibidas[key].status = payload.status;						
 	return Map(estado);
 }
 
@@ -205,7 +320,48 @@ const ShopReducer = (state = Map(), action) => {
   		case "LOAD_TRANSFER_ID":
 	  		return setStoreTransferId(state, action.payload);			
 
+  		case 'ACTION_PROPS': 
+	  		return setActionProps(state, action.payload)  
 
+  		case 'LOAD_SHOP_NEW_PUSHER': 
+	  		return setStoreShopSavePusher(state, action.payload)	  
+
+	  	case 'LOAD_SHOP_EDIT_PUSHER': 
+	  		return setStoreShopEditPusher(state, action.payload)
+	  
+		case 'LOAD_SHOP_DISABLED_PUSHER': 
+	  		return setStoreShopDisabledPusher(state, action.payload)
+
+  		case 'LOAD_TRANSFER_NEW_PUSHER': 
+	  		return setStoreTransferSavePusher(state, action.payload)	  
+
+	  	case 'LOAD_TRANSFER_EDIT_PUSHER': 
+	  		return setStoreTransferEditPusher(state, action.payload)
+	  
+		case 'LOAD_TRANSFER_DISABLED_PUSHER': 
+	  		return setStoreTransferDisabledPusher(state, action.payload)
+
+  		case 'LOAD_TRANSFER_ACCEPT_PUSHER': 
+	  		return setStoreTransferAcceptPusher(state, action.payload)
+
+  		case 'LOAD_TRANSFER_REJECT_PUSHER': 
+	  		return setStoreTransferRejectPusher(state, action.payload)
+
+  		case 'LOAD_TRANSFER_RECEIVED_SAVE_PUSHER': 
+	  		return setStoreTransferReceivedSavePusher(state, action.payload)	  
+
+	  	case 'LOAD_TRANSFER_RECEIVED_EDIT_PUSHER': 
+	  		return setStoreTransferReceivedEditPusher(state, action.payload)
+	  
+		case 'LOAD_TRANSFER_RECEIVED_DISABLED_PUSHER': 
+	  		return setStoreTransferReceivedDisabledPusher(state, action.payload)
+
+  		case 'LOAD_TRANSFER_RECEIVED_ACCEPT_PUSHER': 
+	  		return setStoreTransferReceivedAcceptPusher(state, action.payload)
+	  
+		case 'LOAD_TRANSFER_RECEIVED_REJECT_PUSHER': 
+	  		return setStoreTransferReceivedRejectPusher(state, action.payload)
+		  
 
 		default:
 			return state;
