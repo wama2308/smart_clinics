@@ -18,13 +18,14 @@ import { LoadDistributorFunction, LoadDistributorIdFunction, DeleteDistributorAc
 import { openConfirmDialog } from "../actions/aplicantionActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import classnames from "classnames";
+import Search from "../components/Select"
 
 class DistributorContainers extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeTab: "1",
-      distributorPermits:[]
+      distributorPermits: []
     };
 
   }
@@ -49,57 +50,93 @@ class DistributorContainers extends Component {
     }
   }
 
+  getSearch = (data) => {
+    if (this.state.activeTab === "1") {
+      const result = this.props.searchData
+        ? data.get("data").filter(distributor => {
+          return (
+            distributor.name.toLowerCase().includes(this.props.search) ||
+            distributor.phone[0].includes(this.props.searchData) ||
+            distributor.typeIdentity.toLowerCase().includes(this.props.search) ||
+            distributor.tin.toString().includes(this.props.search) ||
+            distributor.email[0].toLowerCase().includes(this.props.searchData)
+          );
+        })
+        : data.get("data");
+      return result
+    } else if (this.state.activeTab === "2") {
+      const resultInactivo = this.props.searchData
+        ? data.get("proveedoresInactivos").filter(distributor => {
+          return (
+            distributor.name.toLowerCase().includes(this.props.search) ||
+            distributor.phone[0].includes(this.props.searchData) ||
+            distributor.typeIdentity.toLowerCase().includes(this.props.search) ||
+            distributor.tin.toString().includes(this.props.search) ||
+            distributor.email[0].toLowerCase().includes(this.props.searchData)
+          );
+        })
+        : data.get("proveedoresInactivos");
+      return resultInactivo
+    }
+  }
+
   render() {
     //console.log("props ", this.props.distributor.toJS());
+    const arrayClean = this.getSearch(this.props.distributor)
+
     return (
       <div className="animated fadeIn">
         <Row>
           <Col>
             <Card>
-              <CardHeader>Configuracion de Proveedor</CardHeader>
+              <CardHeader>Configuracion de Proveedor
+                
+                    <Search value={this.props.distributor} />
+              
+              </CardHeader>
               <CardBody>
-              {
-                this.props.distributor.get('loading') === 'hide' ?
-                  <div>
-                    <Nav tabs>
-                      <NavItem>
+                {
+                  this.props.distributor.get('loading') === 'hide' ?
+                    <div>
+                      <Nav tabs>
+                        <NavItem>
                           <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                              Proveedores
+                            Proveedores
                           </NavLink>
-                      </NavItem>
-                      <NavItem>
+                        </NavItem>
+                        <NavItem>
                           <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
-                              Proveedores Inactivos
+                            Proveedores Inactivos
                           </NavLink>
-                      </NavItem>
-                    </Nav>
-                    <TabContent activeTab={this.state.activeTab}>
-                      <TabPane tabId="1">
-                        <ListDistributor
-                          distributorPermits={this.state.distributorPermits}
-                          confirm={this.props.confirm}
-                          listDistributor={this.props.distributor.get("data")}
-                          LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
-                          DeleteDistributorAction={this.props.DeleteDistributorAction}
-                          search={this.props.searchData}
-                        />
-                      </TabPane>
-                      <TabPane tabId="2">
-                        <ListDistributorInactivo
-                         distributorPermits={this.state.distributorPermits}
-                          confirm={this.props.confirm}
-                          listDistributor={this.props.distributor.get("proveedoresInactivos")}
-                          enableProviderFunction={this.props.enableProviderFunction}
-                          search={this.props.searchData}
-                        />
-                      </TabPane>
-                    </TabContent>
-                  </div>
-                :
-                <div style={{height: "60vh"}}>
-                  <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
-                </div>
-              }
+                        </NavItem>
+                      </Nav>
+                      <TabContent activeTab={this.state.activeTab}>
+                        <TabPane tabId="1">
+                          <ListDistributor
+                            distributorPermits={this.state.distributorPermits}
+                            confirm={this.props.confirm}
+                            listDistributor={arrayClean}
+                            LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
+                            DeleteDistributorAction={this.props.DeleteDistributorAction}
+                            search={this.props.searchData}
+                          />
+                        </TabPane>
+                        <TabPane tabId="2">
+                          <ListDistributorInactivo
+                            distributorPermits={this.state.distributorPermits}
+                            confirm={this.props.confirm}
+                            listDistributor={arrayClean}
+                            enableProviderFunction={this.props.enableProviderFunction}
+                            search={this.props.searchData}
+                          />
+                        </TabPane>
+                      </TabContent>
+                    </div>
+                    :
+                    <div style={{ height: "60vh" }}>
+                      <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
+                    </div>
+                }
               </CardBody>
             </Card>
           </Col>
@@ -121,7 +158,7 @@ const mapDispatchToProps = dispatch => ({
   LoadDistributorIdFunction: (distrbutorId) => dispatch(LoadDistributorIdFunction(distrbutorId)),
   DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),
   enableProviderFunction: (distrbutorId) => dispatch(enableProviderFunction(distrbutorId)),
-  confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
+  confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
 });
 
 export default connect(

@@ -99,18 +99,6 @@ class ListDistributor extends React.Component {
     const { rowsPerPage, page } = this.state;
     const arrayDistributor = getArray(this.props.listDistributor)
 
-    const result = this.props.search
-      ? arrayDistributor.filter(distributor => {
-          return (
-              distributor.name.toLowerCase().includes(this.props.search) ||
-              distributor.phone[0].includes(this.props.search)||
-              distributor.typeIdentity.toLowerCase().includes(this.props.search)||
-              distributor.tin.toString().includes(this.props.search)||
-              distributor.email[0].toLowerCase().includes(this.props.search)
-          );
-        })
-      : arrayDistributor;
-
     return (
       <div>
         <ModalDistributor
@@ -150,7 +138,7 @@ class ListDistributor extends React.Component {
             </tr>
           </thead>
           <tbody>
-            { arrayDistributor ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
+            { arrayDistributor ? arrayDistributor.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
               return (
                 <tr key={distributor.number} className="text-left">
                   <td>{distributor.number}</td>
