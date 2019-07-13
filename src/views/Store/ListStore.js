@@ -112,6 +112,8 @@ class ListStore extends React.Component {
         })
       : arrayData;
 
+      console.log(this.props.data);
+
     return (
       <div>
         <ModalStore
@@ -188,7 +190,7 @@ class ListStore extends React.Component {
             }
           </tbody>
           {
-            this.props.data.lenght > 10 &&
+            this.props.data.length > 10 &&
               <Pagination contador={this.props.data}
                 page={page}
                 rowsPerPage={rowsPerPage}

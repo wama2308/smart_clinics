@@ -187,7 +187,7 @@ class ListDistributor extends React.Component {
             }
           </tbody>
           {
-            arrayDistributor > 10 &&
+            arrayDistributor.length > 10 &&
             <Pagination contador={this.props.listDistributor}
               page={page}
               rowsPerPage={rowsPerPage}
