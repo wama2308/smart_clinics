@@ -5,6 +5,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { GetDisabledPermits, getArray } from "../../core/utils";
 import { HowToReg } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class UsersInactivosList extends React.Component {
   constructor(props) {
@@ -58,10 +60,26 @@ class UsersInactivosList extends React.Component {
     );
 
     const { rowsPerPage, page } = this.state;
-    const ArrayUser = getArray(this.props.users)
+    const arrayUser = getArray(this.props.users)
+
+    const result = this.props.search
+      ? arrayUser.filter(user => {
+          return (
+            user.email.toLowerCase().includes(this.props.search) ||
+            user.names.toLowerCase().includes(this.props.search) ||
+            user.surnames.toLowerCase().includes(this.props.search) ||
+            user.username.toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayUser;
 
     return (
       <div>
+        <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
+          <div className="containerSearch">
+            <Search value={arrayUser} />
+          </div>
+        </div>
         <br />
         <div className="row">
           <div className="form-group col-sm-12">
@@ -79,7 +97,7 @@ class UsersInactivosList extends React.Component {
               </thead>
               <tbody>
                 {this.props.users
-                  ? ArrayUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => {
+                  ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => {
                     return (
                       <tr key={user.number} className="text-left">
                         <td>{user.number}</td>

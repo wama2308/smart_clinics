@@ -6,6 +6,8 @@ import { GetDisabledPermits, getArray } from "../../core/utils";
 import { CheckCircle } from "@material-ui/icons";
 
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class RolesInactivosList extends React.Component {
   constructor(props) {
@@ -59,10 +61,23 @@ class RolesInactivosList extends React.Component {
     );
 
     const { rowsPerPage, page } = this.state;
-    const ArrayRoles = getArray(this.props.roles);
+    const arrayRoles = getArray(this.props.roles);
+
+    const result = this.props.search
+      ? arrayRoles.filter(rol => {
+          return (
+            rol.rol.toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayRoles;
 
     return (
       <div>
+        <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
+          <div className="containerSearch">
+            <Search value={arrayRoles} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
@@ -74,7 +89,7 @@ class RolesInactivosList extends React.Component {
           </thead>
           <tbody>
             {this.props.roles
-              ? ArrayRoles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rol) => {
+              ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rol) => {
                 return (
                   <tr key={rol.number} className="text-left">
                     <td>{rol.number}</td>

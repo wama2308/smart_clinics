@@ -5,6 +5,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
 import { GetDisabledPermits, getArray } from "../../core/utils";
 import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
 
 class ListCargos extends React.Component {
   constructor(props) {
@@ -98,7 +100,15 @@ class ListCargos extends React.Component {
     const updateDisabled = GetDisabledPermits(this.props.permitsCargos, "Update")
     const deleteDisabled = GetDisabledPermits(this.props.permitsCargos, "Delete")
     const { rowsPerPage, page } = this.state;
-    const ArrayCargo = getArray(this.props.cargos)
+    const arrayCargo = getArray(this.props.cargos)
+
+    const result = this.props.search
+      ? arrayCargo.filter(cargo => {
+          return (
+              cargo.label.toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayCargo;
 
     return (
       <div>
@@ -114,7 +124,19 @@ class ListCargos extends React.Component {
           cargoId={this.state.cargoId}
           valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" disabled={createDisabled} onClick={() => { this.openModal(1); }}>Agregar Cargos</Button>
+        <div className="containerGeneral">
+          <div className="container-button" >
+          <Button color="success"
+             disabled={createDisabled}
+             onClick={() => { this.openModal(1); }}>
+             Agregar Cargos
+           </Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={arrayCargo} />
+          </div>
+        </div>
+
         <br />
         <br />
         <Table hover responsive borderless>
@@ -126,7 +148,7 @@ class ListCargos extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {ArrayCargo ? ArrayCargo.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo, i) => {
+            {arrayCargo ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo, i) => {
               return (
                 <tr key={cargo.number} className="text-left">
                   <td>{cargo.number}</td>

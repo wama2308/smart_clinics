@@ -36,7 +36,11 @@ class ShopContainers extends Component {
     super(props);
     this.state = {
       activeTab: "1",
-      permitsShop:[]
+      permitsShop: [],
+      permitsTransfer: [],
+      permitsCompras: [],
+      permitsProducts: [],
+      permitsBuy:[]
     };
   }
 
@@ -50,8 +54,31 @@ class ShopContainers extends Component {
         });
       }
     });
-  };
 
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Transferencias") {
+        this.setState({
+          permitsTransfer: permisos.permits
+        });
+      }
+    });
+
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Productos") {
+        this.setState({
+          permitsProducts: permisos.permits
+        });
+      }
+    });
+
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Compras") {
+        this.setState({
+          permitsBuy: permisos.permits
+        });
+      }
+    });
+  };
 
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -98,7 +125,6 @@ class ShopContainers extends Component {
                       <TabContent activeTab={this.state.activeTab}>
                           <TabPane tabId="1">
                             <ListShop
-                              permitsShop={this.state.permitsShop}
                               confirm={this.props.confirm}
                               data={this.props.shop.data}
                               allProducts={this.props.shop.allProducts}
@@ -106,14 +132,17 @@ class ShopContainers extends Component {
                               disableShopAction={this.props.disableShopAction}
                               provider={this.props.aplication.dataGeneral.dataCountries.provider}
                               alert={this.props.alert}
+                              permitsBuy={this.state.permitsBuy}
+                              search={this.props.searchData}
                             />
                           </TabPane>
                           <TabPane tabId="2">
                             <ListProduct
-                              permitsShop={this.state.permitsShop}
+                              permitsProducts={this.state.permitsProducts}
                               confirm={this.props.confirm}
                               allProducts={this.props.shop.allProducts}
                               queryOneSupplieWithLotFunction={this.props.queryOneSupplieWithLotFunction}
+                              search={this.props.searchData}
                             />
                           </TabPane>
                           <TabPane tabId="3">
@@ -122,6 +151,8 @@ class ShopContainers extends Component {
                               data={this.props.shop.allTransfer}
                               queryOneTransferFunction={this.props.queryOneTransferFunction}
                               disableTransferAction={this.props.disableTransferAction}
+                              permitsTransfer={this.state.permitsTransfer}
+                              search={this.props.searchData}
                             />
                           </TabPane>
                           <TabPane tabId="4">
@@ -131,6 +162,8 @@ class ShopContainers extends Component {
                               queryOneTransferFunction={this.props.queryOneTransferFunction}
                               rejectTransferAction={this.props.rejectTransferAction}
                               acceptTransferAction={this.props.acceptTransferAction}
+                              permitsTransfer={this.state.permitsTransfer}
+                              search={this.props.searchData}
                             />
                           </TabPane>
                       </TabContent>
@@ -152,7 +185,8 @@ class ShopContainers extends Component {
 const mapStateToProps = state => ({
   shop: state.shop.toJS(),
   authData: state.auth,
-  aplication: state.global
+  aplication: state.global,
+  searchData: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -81,6 +81,7 @@ class DistributorContainers extends Component {
                           listDistributor={this.props.distributor.get("data")}
                           LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
                           DeleteDistributorAction={this.props.DeleteDistributorAction}
+                          search={this.props.searchData}
                         />
                       </TabPane>
                       <TabPane tabId="2">
@@ -89,6 +90,7 @@ class DistributorContainers extends Component {
                           confirm={this.props.confirm}
                           listDistributor={this.props.distributor.get("proveedoresInactivos")}
                           enableProviderFunction={this.props.enableProviderFunction}
+                          search={this.props.searchData}
                         />
                       </TabPane>
                     </TabContent>
@@ -110,7 +112,8 @@ class DistributorContainers extends Component {
 const mapStateToProps = state => ({
   distributor: state.distributor,
   authData: state.auth,
-  aplication: state.global
+  aplication: state.global,
+  searchData: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -125,5 +128,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DistributorContainers);
-
-

@@ -9,7 +9,7 @@ import {
   Col,
   Row,
   TabContent,
-  TabPane  
+  TabPane
 } from "reactstrap";
 import { connect } from "react-redux";
 import ListStore from "../views/Store/ListStore";
@@ -37,16 +37,16 @@ class StoreContainer extends Component {
 
   componentDidMount = () => {
     this.props.LoadStoreFunction();
-  };  
+  };
 
-  render() {   
+  render() {
     return (
       <div className="animated fadeIn">
         <Row>
           <Col>
             <Card>
               <CardHeader>Configuracion de Almacen</CardHeader>
-              <CardBody>                              
+              <CardBody>
               {
                 this.props.store.loading === 'hide' ?
                   <div>
@@ -60,25 +60,27 @@ class StoreContainer extends Component {
                           <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
                               Almacenes Inactivos
                           </NavLink>
-                      </NavItem>                        
+                      </NavItem>
                     </Nav>
                     <TabContent activeTab={this.state.activeTab}>
                       <TabPane tabId="1">
-                        <ListStore 
+                        <ListStore
                           confirm={this.props.confirm}
                           branchOfficces={this.props.store.branchOfficces}
                           data={this.props.store.data}
                           DeleteStoreAction={this.props.DeleteStoreAction}
                           LoadStoreIdFunction={this.props.LoadStoreIdFunction}
+                          search={this.props.searchData}
                         />
                       </TabPane>
                       <TabPane tabId="2">
-                        <ListStoreInactivos 
-                          confirm={this.props.confirm}                      
+                        <ListStoreInactivos
+                          confirm={this.props.confirm}
                           data={this.props.store.storeInactivos}
-                          enableStoreBranchOfficesAction={this.props.enableStoreBranchOfficesAction}                      
-                        />      
-                      </TabPane>                          
+                          enableStoreBranchOfficesAction={this.props.enableStoreBranchOfficesAction}
+                          search={this.props.searchData}
+                        />
+                      </TabPane>
                     </TabContent>
                   </div>
                 :
@@ -98,14 +100,15 @@ class StoreContainer extends Component {
 const mapStateToProps = state => ({
   store: state.store.toJS(),
   authData: state.auth,
-  aplication: state.global
+  aplication: state.global,
+  searchData: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({
-  LoadStoreFunction: () => dispatch(LoadStoreFunction()),  
-  DeleteStoreAction: (storeId, sucursalId) => dispatch(DeleteStoreAction(storeId, sucursalId)),  
-  enableStoreBranchOfficesAction: (storeId, sucursalId) => dispatch(enableStoreBranchOfficesAction(storeId, sucursalId)),  
-  LoadStoreIdFunction: (storeId, sucursalId) => dispatch(LoadStoreIdFunction(storeId, sucursalId)),  
+  LoadStoreFunction: () => dispatch(LoadStoreFunction()),
+  DeleteStoreAction: (storeId, sucursalId) => dispatch(DeleteStoreAction(storeId, sucursalId)),
+  enableStoreBranchOfficesAction: (storeId, sucursalId) => dispatch(enableStoreBranchOfficesAction(storeId, sucursalId)),
+  LoadStoreIdFunction: (storeId, sucursalId) => dispatch(LoadStoreIdFunction(storeId, sucursalId)),
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
 });
 
@@ -113,5 +116,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(StoreContainer);
-
-

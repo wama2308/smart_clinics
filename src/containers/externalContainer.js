@@ -85,7 +85,7 @@ class EnternalContainer extends React.Component {
   render() {
     const value = this.props.externalStaff;
     const result = this.filterData(value);
-    
+
     const createDisabled = GetDisabledPermits(this.state.externalPermits, "Create")
     return (
       <Container>
@@ -166,6 +166,7 @@ class EnternalContainer extends React.Component {
                     data={result.approved}
                     delete={this.props.delete}
                     type={"Aprobado"}
+                    search={this.props.searchData}
                   />
                 </TabPane>
                 <TabPane
@@ -180,6 +181,7 @@ class EnternalContainer extends React.Component {
                     data={result.cancelled}
                     delete={this.props.delete}
                     deleteData={this.props.deleteData}
+                    search={this.props.searchData}
                   />
                 </TabPane>
                 <TabPane
@@ -194,6 +196,7 @@ class EnternalContainer extends React.Component {
                     data={result.pending}
                     delete={this.props.delete}
                     type={"Pendiente"}
+                    search={this.props.searchData}
                   />
                 </TabPane>
               </TabContent>
@@ -223,7 +226,8 @@ class EnternalContainer extends React.Component {
 
 const mapStateToProps = state => ({
   externalStaff: state.external.get("allExternalStaff"),
-  aplication: state.global.dataGeneral
+  aplication: state.global.dataGeneral,
+  searchData: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({

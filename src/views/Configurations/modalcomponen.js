@@ -204,11 +204,6 @@ class ModalComponent extends React.Component {
       disabled,
       aplication
     } = this.props;
-    // const countrys = validator.filterCountry(medicalCenter.country);
-    // const type = !medicalCenter.typeConfig ? [] : medicalCenter.typeConfig.type;
-    // const sector = !medicalCenter.typeConfig
-    //   ? []
-    //   : medicalCenter.typeConfig.sector;
 
     console.log("desde aqui", this.props);
     const values = this.props.dataEdit
@@ -431,15 +426,15 @@ class ModalComponent extends React.Component {
                           <Label for="Direccion">direccion</Label>
                           <Input
                             type="text"
-                            value={values.direccion}
+                            value={values.address}
                             name="Direccion"
                             disabled={disabled}
                             id="Direccion"
                             onChange={event =>
-                              setFieldValue("direccion", event.target.value)
+                              setFieldValue("address", event.target.value)
                             }
                           />
-                          {errors.direccion && touched.direccion && (
+                          {errors.address && touched.address && (
                             <FormFeedback style={{ display: "block" }} tooltip>
                               {errors.direccion}
                             </FormFeedback>

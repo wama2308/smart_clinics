@@ -5,7 +5,10 @@ import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility } from "@material-ui/icons";
 import { GetDisabledPermits, getArray } from "../../core/utils";
 import ModalServicio from "./modalsServicio/ModalServicio";
-import Pagination from "../../components/Pagination";
+import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
+
 export default class tabService extends React.Component {
   constructor(props) {
     super(props);
@@ -50,16 +53,37 @@ export default class tabService extends React.Component {
     this.setState({ page });
   };
 
+  getService = service => {
+    if (!service) {
+      return [];
+    }
+    return service;
+  };
+
   render() {
     const updateDisabled = GetDisabledPermits(
       this.props.serviciosPermits,
       "Update"
     );
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray(this.props.data);
+    const arrayData = getArray(this.props.data);
+
+    const result = this.props.search
+      ? arrayData.filter(service => {
+          return (
+            service.serviceName.toLowerCase().includes(this.props.search) ||
+            service.category.toLowerCase().includes(this.props.search)
+          );
+        })
+      : arrayData;
 
     return (
-      <div>
+      <div >
+        <div className="containerGeneral" style={{"justifyContent": "flex-end", "marginBottom": "15px"}}>
+          <div className="containerSearch">
+            <Search value={arrayData} />
+          </div>
+        </div>
         {this.state.modal && (
           <ModalServicio
             open={this.state.modal}
@@ -71,6 +95,8 @@ export default class tabService extends React.Component {
             disabled={this.state.disabled}
             type={this.state.type}
             deleteModifyServices={this.props.deleteModifyServices}
+            alert={this.props.alert}
+            enabledField={this.props.enabledField}
           />
         )}
         <form
@@ -91,10 +117,7 @@ export default class tabService extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {ArrayData.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                ).map(service => {
+                {result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((service) => {
                   return (
                     <tr key={service.number}>
                       <td scope="row" style={{ width: "10%" }}>

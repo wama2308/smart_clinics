@@ -97,9 +97,7 @@ class ExternalModal extends React.Component {
     const result = this.props.searchData
       ? branchs.filter(branch => {
           return (
-            branch.medical_center
-              .toLowerCase()
-              .includes(this.props.searchData) ||
+            branch.medical_center.toLowerCase().includes(this.props.searchData) ||
             branch.name.toLowerCase().includes(this.props.searchData) ||
             branch.type.toLowerCase().includes(this.props.searchData)
           );

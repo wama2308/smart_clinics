@@ -28,8 +28,6 @@ class PersonalInterno extends Component {
     this.props.LoadPersonalCargosFunction();
     this.props.loadUsersRoles();
 
-
-    
     this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
       if (permisos.name === "Personal") {
         this.setState({
@@ -103,30 +101,34 @@ class PersonalInterno extends Component {
                               totalBranchOffices={this.props.usersRoles.get('totalBranchOffices')}
                               arrayBranchOffices={this.props.usersRoles.get('arrayBranchOffices')}
                               roles={this.props.usersRoles.get('roles')}
+                              search={this.props.searchData}
                             />
                           </TabPane>
                           <TabPane tabId="2">
-                            <ListCargos 
+                            <ListCargos
                               permitsCargos={this.state.permitsCargos}
-                              cargos={this.props.personaInterno.get('cargos')}                              
-                              disabledPositionAction={this.props.disabledPositionAction}                              
+                              cargos={this.props.personaInterno.get('cargos')}
+                              disabledPositionAction={this.props.disabledPositionAction}
                               confirm={this.props.confirm}
+                              search={this.props.searchData}
                             />
                           </TabPane>
-                          <TabPane tabId="3">                            
-                            <ListPersonalInactivo 
+                          <TabPane tabId="3">
+                            <ListPersonalInactivo
                               permitsPersonal={this.state.permitsPersonal}
-                              personalInactivo={this.props.personaInterno.get('personalInactivo')}                              
-                              enabledInternalStaffAction={this.props.enabledInternalStaffAction}   
-                              confirm={this.props.confirm}                           
+                              personalInactivo={this.props.personaInterno.get('personalInactivo')}
+                              enabledInternalStaffAction={this.props.enabledInternalStaffAction}
+                              confirm={this.props.confirm}
+                              search={this.props.searchData}
                             />
                           </TabPane>
                           <TabPane tabId="4">
-                            <ListCargosInactivos 
+                            <ListCargosInactivos
                               permitsCargos={this.state.permitsCargos}
-                              cargosInactivos={this.props.personaInterno.get('cargosInactivos')}                              
-                              enabledPositionAction={this.props.enabledPositionAction}                              
+                              cargosInactivos={this.props.personaInterno.get('cargosInactivos')}
+                              enabledPositionAction={this.props.enabledPositionAction}
                               confirm={this.props.confirm}
+                              search={this.props.searchData}
                             />
                           </TabPane>
                       </TabContent>
@@ -151,10 +153,11 @@ const mapStateToProps = state => ({
   authData: state.auth,
   aplication: state.global,
   usersRoles: state.usersRoles,
+  searchData: state.global.search
 });
 const mapDispatchToProps = dispatch => ({
-  LoadPersonalCargosFunction: () => dispatch(LoadPersonalCargosFunction()),  
-  DeletePersonalInternoAction: (id) => dispatch(DeletePersonalInternoAction(id)),  
+  LoadPersonalCargosFunction: () => dispatch(LoadPersonalCargosFunction()),
+  DeletePersonalInternoAction: (id) => dispatch(DeletePersonalInternoAction(id)),
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
   LoadPersonalIdFunction: (id) =>dispatch(LoadPersonalIdFunction(id)),
   enabledInternalStaffAction: (id) =>dispatch(enabledInternalStaffAction(id)),
