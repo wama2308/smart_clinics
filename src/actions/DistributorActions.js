@@ -24,7 +24,8 @@ export const LoadDistributorFunction = () => dispatch => {
               contacs: [],
               tableContac: 0,
               distributorId: {},
-              action: 0
+              action: 0,
+              newProvider: {}
             }
           });          		
         });

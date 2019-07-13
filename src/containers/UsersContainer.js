@@ -163,6 +163,7 @@ class UsersContainer extends Component {
                             this.props.deleteSucursalFunction
                           }
                           alert={this.props.alert}
+                          typeUser = {this.props.aplication.dataGeneral.permission[0].name}
                         />
                       </TabPane>
                       <TabPane tabId="2">
