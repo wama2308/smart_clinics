@@ -24,8 +24,7 @@ export const LoadDistributorFunction = () => dispatch => {
               contacs: [],
               tableContac: 0,
               distributorId: {},
-              action: 0,
-              newProvider: {}
+              action: 0,              
             }
           });          		
         });
@@ -126,7 +125,7 @@ export const cleanContacs = () => dispatch => {
     });
 };
 
-export const saveDistributorAction = (data, callback) => dispatch => {
+export const saveDistributorAction = (data, callback, option) => dispatch => {
   getDataToken()
     .then(datos => {
       axios({
@@ -135,9 +134,17 @@ export const saveDistributorAction = (data, callback) => dispatch => {
         data: data,
         headers: datos.headers
       })
-        .then(() => {
+        .then(res => {
+          if(option === 4){
+            dispatch({
+              type: "ADD_NEW_PROVIDER_SELECT",
+              payload: {          
+                provider: res.data
+              }
+            });
+          }
           callback();
-          dispatch(openSnackbars("success", "Operacion Exitosa"));
+          dispatch(openSnackbars("success", "Operacion Exitosa"));          
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error guardando el proveedor"));

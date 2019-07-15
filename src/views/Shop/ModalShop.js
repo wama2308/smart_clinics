@@ -296,11 +296,6 @@ class ModalShop extends React.Component {
     };
 
     componentWillReceiveProps=(props)=>{
-        //this.forceUpdate();
-        //console.log("componentWillReceiveProps ", props.aplication.dataGeneral.dataCountries.provider);
-        this.setState({
-            ...InitalState
-        })
         if(this.props.shop.products.length > 0){
             this.setState({divTableProductos:''})
         }
@@ -308,9 +303,10 @@ class ModalShop extends React.Component {
             this.setState({
                 loading: 'hide',
             })
+            props.shop.newProvider.label&&this.setState({arrayProveedorSelect: props.shop.newProvider})
         }
-        if(props.option === 2 || props.option === 3){
-            if(props.shop.dataShopId){
+        if(props.option === 2 || props.option === 3){            
+            if(props.shop.dataShopId){                
                 if(props.shop.dataShopId.date_purchase){
                     var date_purchase_split = props.shop.dataShopId.date_purchase.split('-');
                     var date_purchase = new Date(date_purchase_split[0], date_purchase_split[1] - 1, date_purchase_split[2]);
@@ -326,7 +322,7 @@ class ModalShop extends React.Component {
                         direccionLlegada: props.shop.dataShopId.arrival_address,
                         compraDate: date_purchase,
                         observacion: props.shop.dataShopId.observation,
-                        loading: props.shop.loading,
+                        loading: 'hide',
                     })
                     this.props.actionProps();
                 }
@@ -368,7 +364,6 @@ class ModalShop extends React.Component {
     }
 
     render() {
-        //console.log("render ", this.props.aplication.dataGeneral.dataCountries.provider);
         return (
             <span>
                 {

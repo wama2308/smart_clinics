@@ -184,6 +184,7 @@ class ShopContainers extends Component {
 
 const mapStateToProps = state => ({
   shop: state.shop.toJS(),
+  distributor: state.distributor.toJS(),
   authData: state.auth,
   aplication: state.global,
   searchData: state.global.search

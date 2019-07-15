@@ -240,7 +240,7 @@ class RolesPermisos extends React.Component {
                             <Label for="rol">Rol</Label>
                             <div className={this.props.divSelectRol} style={{display:'flex', width:'100%'}}>                                                                        
                                 <div style={{flex:1}}>                                                              
-                                    <Select isDisabled={this.state.varDisabled} className="" name="rol" value={this.props.selectedRolOption} onChange={this.handleChangeSelectRol} options={this.props.rolSelect} />
+                                    <Select isSearchable="true" isDisabled={this.state.varDisabled} className="" name="rol" value={this.props.selectedRolOption} onChange={this.handleChangeSelectRol} options={this.props.rolSelect} />
                                 </div>
                                 <Button title="Ver Rol" className={this.state.ocultarBotones} disabled={this.state.varDisabled} onClick={() => { this.openRoles(2, this.state.rolIdView); }}><FaSearch size="1em"/></Button>
                                 &nbsp;

@@ -56,7 +56,8 @@ export const LoadShopFunction = () => dispatch => {
                     dataShopId: {},
                     allProducts: allProducts,
                     ProductLoteId: {},
-                    action: 0
+                    action: 0,
+                    newProvider: {}
                   }
                 });
               });
