@@ -103,10 +103,10 @@ class Sucursales extends React.Component {
     const result = this.props.search
       ? ArraySucursales.filter(item => {
           return (
-            item.name.toLowerCase().includes(this.props.search) ||
-            item.code.toLowerCase().includes(this.props.search) ||
-            item.province.toLowerCase().includes(this.props.search) ||
-            item.country.toLowerCase().includes(this.props.search)
+            item.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            item.code.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            item.province.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            item.country.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : ArraySucursales;

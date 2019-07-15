@@ -28,7 +28,11 @@ class Licencias extends React.Component {
 
     const result = this.props.search
       ? ArrayLicences.filter(item => {
-          return item.license.toLowerCase().includes(this.props.search);
+          return (
+            item.license.toLowerCase().includes(this.props.search.toLowerCase())||
+            item.numberclients.toString().includes(this.props.search)||
+            item.numberexams.toString().includes(this.props.search)
+          )
         })
       : ArrayLicences;
 

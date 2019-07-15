@@ -66,14 +66,14 @@ class ListDistributorInactivo extends React.Component {
     const { rowsPerPage, page } = this.state;
     const arrayDistributor = getArray(this.props.listDistributor)
 
-    const result = this.props.search
+    const result = this.props.search.toLowerCase()
       ? arrayDistributor.filter(distributor => {
           return (
-            distributor.name.toLowerCase().includes(this.props.search) ||
-              distributor.phone[0].includes(this.props.searchData)||
-              distributor.typeIdentity.toLowerCase().includes(this.props.search) ||
-              distributor.tin.includes(this.props.search)||
-              distributor.email[0].toLowerCase().includes(this.props.searchData)
+            distributor.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            distributor.phone[0].includes(this.props.search)||
+            distributor.typeIdentity.toLowerCase().includes(this.props.search.toLowerCase())||
+            distributor.tin.toString().includes(this.props.search)||
+            distributor.email[0].toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayDistributor;

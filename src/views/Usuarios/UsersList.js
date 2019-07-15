@@ -119,10 +119,10 @@ class UsersList extends React.Component {
     const result = this.props.search
       ? arrayUsers.filter(users => {
           return (
-            users.email.toLowerCase().includes(this.props.search) ||
-            users.names.toLowerCase().includes(this.props.search) ||
-            users.surnames.toLowerCase().includes(this.props.search) ||
-            users.username.toLowerCase().includes(this.props.search)
+            users.email.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            users.names.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            users.surnames.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            users.username.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayUsers;

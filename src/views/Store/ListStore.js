@@ -103,11 +103,11 @@ class ListStore extends React.Component {
     const { rowsPerPage, page } = this.state;
     const arrayData = getArray(this.props.data)
 
-    const result = this.props.search
+    const result = this.props.search.toLowerCase()
       ? arrayData.filter(data => {
           return (
-              data.name.toLowerCase().includes(this.props.search) ||
-              data.branchoffice.label.toLowerCase().includes(this.props.search)
+            data.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            data.branchoffice.label.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayData;
