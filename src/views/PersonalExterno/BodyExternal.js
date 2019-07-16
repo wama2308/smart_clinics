@@ -77,12 +77,12 @@ class BodyExternal extends React.Component {
     const result = this.props.search
       ? arrayData.filter(item => {
           return (
-            item.name_branchoffices.toLowerCase().includes(this.props.search) ||
+            item.name_branchoffices.toLowerCase().includes(this.props.search.toLowerCase()) ||
             item.name_medical_center
               .toLowerCase()
-              .includes(this.props.search) ||
-            item.country.toLowerCase().includes(this.props.search) ||
-            item.province.toLowerCase().includes(this.props.search)
+              .includes(this.props.search.toLowerCase()) ||
+            item.country.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            item.province.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayData;

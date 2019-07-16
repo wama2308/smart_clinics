@@ -56,12 +56,13 @@ class ListPersonalInactivo extends React.Component {
    const result = this.props.search
      ? arrayCargo.filter(personal => {
          return (
-             personal.names.toLowerCase().includes(this.props.search) ||
-             personal.surnames.toLowerCase().includes(this.props.search) ||
-             personal.positions.toLowerCase().includes(this.props.search) ||
-             personal.phone[0].includes(this.props.search) ||
-             personal.type_identity.toLowerCase().toString().includes(this.props.search) ||
-             personal.dni.includes(this.props.search)
+          personal.names.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          personal.surnames.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          personal.positions.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          personal.phone[0].includes(this.props.search) ||
+          personal.type_identity.toLowerCase().toString().includes(this.props.search.toLowerCase()) ||
+          personal.dni.includes(this.props.search) ||
+          personal.email[0].toLowerCase().includes(this.props.search.toLowerCase())
          );
        })
      : arrayCargo;

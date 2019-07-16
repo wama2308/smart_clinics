@@ -122,9 +122,9 @@ class ListShop extends React.Component {
       const result = this.props.search
         ? arrayData.filter(shop => {
             return (
-                shop.number_invoice.toLowerCase().includes(this.props.search) ||
-                shop.number_controll.toLowerCase().includes(this.props.search)||
-                shop.type_shop.toLowerCase().includes(this.props.search)
+                shop.number_invoice.toLowerCase().includes(this.props.search.toLowerCase()) ||
+                shop.number_controll.toLowerCase().includes(this.props.search.toLowerCase())||
+                shop.type_shop.toLowerCase().includes(this.props.search.toLowerCase())
             );
           })
         : arrayData;

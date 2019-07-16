@@ -71,8 +71,8 @@ export default class tabService extends React.Component {
     const result = this.props.search
       ? arrayData.filter(service => {
           return (
-            service.serviceName.toLowerCase().includes(this.props.search) ||
-            service.category.toLowerCase().includes(this.props.search)
+            service.serviceName.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            service.category.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayData;

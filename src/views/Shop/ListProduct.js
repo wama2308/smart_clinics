@@ -87,9 +87,9 @@ class ListProduct extends React.Component {
     const result = this.props.search
       ? arrayProduct.filter(product => {
           return (
-              product.name.toLowerCase().includes(this.props.search) ||
-              product.code.toLowerCase().includes(this.props.search)||
-              product.type.toLowerCase().includes(this.props.search)
+            product.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            product.code.toLowerCase().includes(this.props.search.toLowerCase())||
+            product.type.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayProduct;
