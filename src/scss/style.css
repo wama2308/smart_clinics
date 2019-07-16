@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
  * CoreUI - Open Source Dashboard UI Kit
- * @version v2.1.12
+ * @version v2.1.11
  * @link https://coreui.io
  * Copyright (c) 2018 creativeLabs Łukasz Holeczek
  * Licensed under MIT (https://coreui.io/license)
@@ -9788,23 +9788,12 @@ html[dir="rtl"] .aside-menu-show .aside-menu {
   html:not([dir="rtl"]) .sidebar-sm-show.sidebar-fixed.sidebar-compact .app-footer,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-compact .main,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-compact .app-footer {
-    margin-left: 150px; } }
-
-@media (min-width: 576px) and (max-width: 991.98px) {
+    margin-left: 150px; }
   html:not([dir="rtl"]) .sidebar-sm-show.sidebar-fixed.sidebar-minimized .main,
   html:not([dir="rtl"]) .sidebar-sm-show.sidebar-fixed.sidebar-minimized .app-footer,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .main,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-left: 200px; } }
-
-@media (min-width: 576px) and (min-width: 992px) {
-  html:not([dir="rtl"]) .sidebar-sm-show.sidebar-fixed.sidebar-minimized .main,
-  html:not([dir="rtl"]) .sidebar-sm-show.sidebar-fixed.sidebar-minimized .app-footer,
-  html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .main,
-  html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-left: 50px; } }
-
-@media (min-width: 576px) {
+    margin-left: 200px; }
   html:not([dir="rtl"]) .sidebar-sm-show.breadcrumb-fixed .breadcrumb,
   html:not([dir="rtl"]) .sidebar-show.breadcrumb-fixed .breadcrumb {
     left: 200px; }
@@ -9837,23 +9826,12 @@ html[dir="rtl"] .aside-menu-show .aside-menu {
   html[dir="rtl"] .sidebar-sm-show.sidebar-fixed.sidebar-compact .app-footer,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-compact .main,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-compact .app-footer {
-    margin-right: 150px; } }
-
-@media (min-width: 576px) and (max-width: 991.98px) {
+    margin-right: 150px; }
   html[dir="rtl"] .sidebar-sm-show.sidebar-fixed.sidebar-minimized .main,
   html[dir="rtl"] .sidebar-sm-show.sidebar-fixed.sidebar-minimized .app-footer,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .main,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-right: 200px; } }
-
-@media (min-width: 576px) and (min-width: 992px) {
-  html[dir="rtl"] .sidebar-sm-show.sidebar-fixed.sidebar-minimized .main,
-  html[dir="rtl"] .sidebar-sm-show.sidebar-fixed.sidebar-minimized .app-footer,
-  html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .main,
-  html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-right: 50px; } }
-
-@media (min-width: 576px) {
+    margin-right: 200px; }
   html[dir="rtl"] .sidebar-sm-show.breadcrumb-fixed .breadcrumb,
   html[dir="rtl"] .sidebar-show.breadcrumb-fixed .breadcrumb {
     right: 200px; }
@@ -9893,23 +9871,12 @@ html[dir="rtl"] .aside-menu-show .aside-menu {
   html:not([dir="rtl"]) .sidebar-md-show.sidebar-fixed.sidebar-compact .app-footer,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-compact .main,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-compact .app-footer {
-    margin-left: 150px; } }
-
-@media (min-width: 768px) and (max-width: 991.98px) {
+    margin-left: 150px; }
   html:not([dir="rtl"]) .sidebar-md-show.sidebar-fixed.sidebar-minimized .main,
   html:not([dir="rtl"]) .sidebar-md-show.sidebar-fixed.sidebar-minimized .app-footer,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .main,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-left: 200px; } }
-
-@media (min-width: 768px) and (min-width: 992px) {
-  html:not([dir="rtl"]) .sidebar-md-show.sidebar-fixed.sidebar-minimized .main,
-  html:not([dir="rtl"]) .sidebar-md-show.sidebar-fixed.sidebar-minimized .app-footer,
-  html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .main,
-  html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-left: 50px; } }
-
-@media (min-width: 768px) {
+    margin-left: 200px; }
   html:not([dir="rtl"]) .sidebar-md-show.breadcrumb-fixed .breadcrumb,
   html:not([dir="rtl"]) .sidebar-show.breadcrumb-fixed .breadcrumb {
     left: 200px; }
@@ -9942,23 +9909,12 @@ html[dir="rtl"] .aside-menu-show .aside-menu {
   html[dir="rtl"] .sidebar-md-show.sidebar-fixed.sidebar-compact .app-footer,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-compact .main,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-compact .app-footer {
-    margin-right: 150px; } }
-
-@media (min-width: 768px) and (max-width: 991.98px) {
+    margin-right: 150px; }
   html[dir="rtl"] .sidebar-md-show.sidebar-fixed.sidebar-minimized .main,
   html[dir="rtl"] .sidebar-md-show.sidebar-fixed.sidebar-minimized .app-footer,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .main,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-right: 200px; } }
-
-@media (min-width: 768px) and (min-width: 992px) {
-  html[dir="rtl"] .sidebar-md-show.sidebar-fixed.sidebar-minimized .main,
-  html[dir="rtl"] .sidebar-md-show.sidebar-fixed.sidebar-minimized .app-footer,
-  html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .main,
-  html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-right: 50px; } }
-
-@media (min-width: 768px) {
+    margin-right: 200px; }
   html[dir="rtl"] .sidebar-md-show.breadcrumb-fixed .breadcrumb,
   html[dir="rtl"] .sidebar-show.breadcrumb-fixed .breadcrumb {
     right: 200px; }
@@ -9998,23 +9954,12 @@ html[dir="rtl"] .aside-menu-show .aside-menu {
   html:not([dir="rtl"]) .sidebar-lg-show.sidebar-fixed.sidebar-compact .app-footer,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-compact .main,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-compact .app-footer {
-    margin-left: 150px; } }
-
-@media (min-width: 992px) and (max-width: 991.98px) {
+    margin-left: 150px; }
   html:not([dir="rtl"]) .sidebar-lg-show.sidebar-fixed.sidebar-minimized .main,
   html:not([dir="rtl"]) .sidebar-lg-show.sidebar-fixed.sidebar-minimized .app-footer,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .main,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-left: 200px; } }
-
-@media (min-width: 992px) and (min-width: 992px) {
-  html:not([dir="rtl"]) .sidebar-lg-show.sidebar-fixed.sidebar-minimized .main,
-  html:not([dir="rtl"]) .sidebar-lg-show.sidebar-fixed.sidebar-minimized .app-footer,
-  html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .main,
-  html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-left: 50px; } }
-
-@media (min-width: 992px) {
+    margin-left: 50px; }
   html:not([dir="rtl"]) .sidebar-lg-show.breadcrumb-fixed .breadcrumb,
   html:not([dir="rtl"]) .sidebar-show.breadcrumb-fixed .breadcrumb {
     left: 200px; }
@@ -10047,23 +9992,12 @@ html[dir="rtl"] .aside-menu-show .aside-menu {
   html[dir="rtl"] .sidebar-lg-show.sidebar-fixed.sidebar-compact .app-footer,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-compact .main,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-compact .app-footer {
-    margin-right: 150px; } }
-
-@media (min-width: 992px) and (max-width: 991.98px) {
+    margin-right: 150px; }
   html[dir="rtl"] .sidebar-lg-show.sidebar-fixed.sidebar-minimized .main,
   html[dir="rtl"] .sidebar-lg-show.sidebar-fixed.sidebar-minimized .app-footer,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .main,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-right: 200px; } }
-
-@media (min-width: 992px) and (min-width: 992px) {
-  html[dir="rtl"] .sidebar-lg-show.sidebar-fixed.sidebar-minimized .main,
-  html[dir="rtl"] .sidebar-lg-show.sidebar-fixed.sidebar-minimized .app-footer,
-  html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .main,
-  html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-right: 50px; } }
-
-@media (min-width: 992px) {
+    margin-right: 50px; }
   html[dir="rtl"] .sidebar-lg-show.breadcrumb-fixed .breadcrumb,
   html[dir="rtl"] .sidebar-show.breadcrumb-fixed .breadcrumb {
     right: 200px; }
@@ -10103,23 +10037,12 @@ html[dir="rtl"] .aside-menu-show .aside-menu {
   html:not([dir="rtl"]) .sidebar-xl-show.sidebar-fixed.sidebar-compact .app-footer,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-compact .main,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-compact .app-footer {
-    margin-left: 150px; } }
-
-@media (min-width: 1200px) and (max-width: 991.98px) {
+    margin-left: 150px; }
   html:not([dir="rtl"]) .sidebar-xl-show.sidebar-fixed.sidebar-minimized .main,
   html:not([dir="rtl"]) .sidebar-xl-show.sidebar-fixed.sidebar-minimized .app-footer,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .main,
   html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-left: 200px; } }
-
-@media (min-width: 1200px) and (min-width: 992px) {
-  html:not([dir="rtl"]) .sidebar-xl-show.sidebar-fixed.sidebar-minimized .main,
-  html:not([dir="rtl"]) .sidebar-xl-show.sidebar-fixed.sidebar-minimized .app-footer,
-  html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .main,
-  html:not([dir="rtl"]) .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-left: 50px; } }
-
-@media (min-width: 1200px) {
+    margin-left: 50px; }
   html:not([dir="rtl"]) .sidebar-xl-show.breadcrumb-fixed .breadcrumb,
   html:not([dir="rtl"]) .sidebar-show.breadcrumb-fixed .breadcrumb {
     left: 200px; }
@@ -10152,23 +10075,12 @@ html[dir="rtl"] .aside-menu-show .aside-menu {
   html[dir="rtl"] .sidebar-xl-show.sidebar-fixed.sidebar-compact .app-footer,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-compact .main,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-compact .app-footer {
-    margin-right: 150px; } }
-
-@media (min-width: 1200px) and (max-width: 991.98px) {
+    margin-right: 150px; }
   html[dir="rtl"] .sidebar-xl-show.sidebar-fixed.sidebar-minimized .main,
   html[dir="rtl"] .sidebar-xl-show.sidebar-fixed.sidebar-minimized .app-footer,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .main,
   html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-right: 200px; } }
-
-@media (min-width: 1200px) and (min-width: 992px) {
-  html[dir="rtl"] .sidebar-xl-show.sidebar-fixed.sidebar-minimized .main,
-  html[dir="rtl"] .sidebar-xl-show.sidebar-fixed.sidebar-minimized .app-footer,
-  html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .main,
-  html[dir="rtl"] .sidebar-show.sidebar-fixed.sidebar-minimized .app-footer {
-    margin-right: 50px; } }
-
-@media (min-width: 1200px) {
+    margin-right: 50px; }
   html[dir="rtl"] .sidebar-xl-show.breadcrumb-fixed .breadcrumb,
   html[dir="rtl"] .sidebar-show.breadcrumb-fixed .breadcrumb {
     right: 200px; }

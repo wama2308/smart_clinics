@@ -163,7 +163,7 @@ class ContacDistributor extends React.Component {
         event.preventDefault();
         const isValid = this.validate();        
         if (isValid) {                  
-            console.log("");                 
+            
         }
     } 
 

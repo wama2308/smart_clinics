@@ -157,7 +157,7 @@ export const getTokenInfo = () => dispatch => {
   const token = localStorage.getItem("id_token");
   const result = decode(token);
 
-  console.log("aca", result);
+  
   dispatch({
     type: "USERS_PERMISS",
     payload: {

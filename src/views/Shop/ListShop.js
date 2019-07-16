@@ -242,7 +242,7 @@ class ListShop extends React.Component {
               }
             </tbody>
             {
-              this.props.length > 10 &&
+              this.props.data.length > 10 &&
               <Pagination contador={this.props.data}
                 page={page}
                 rowsPerPage={rowsPerPage}

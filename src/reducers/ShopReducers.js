@@ -154,6 +154,12 @@ const setActionProps = (state, payload) => {
 	return Map(estado);
 }
 
+const setStoreNewProviderSelect = (state, payload) => {
+	let estado = state.toJS();
+	estado.newProvider = payload.provider;	
+	return Map(estado);
+}
+
 const setStoreShopSavePusher = (state, payload) => {
 	let estado = state.toJS();
 	estado.data.push(payload);	
@@ -323,6 +329,11 @@ const ShopReducer = (state = Map(), action) => {
   		case 'ACTION_PROPS': 
 	  		return setActionProps(state, action.payload)  
 
+	  	case 'ADD_NEW_PROVIDER_SELECT': 
+	  		return setStoreNewProviderSelect(state, action.payload)
+	  		
+	  	/*PUSHER*/		
+
   		case 'LOAD_SHOP_NEW_PUSHER': 
 	  		return setStoreShopSavePusher(state, action.payload)	  
 
@@ -361,7 +372,6 @@ const ShopReducer = (state = Map(), action) => {
 	  
 		case 'LOAD_TRANSFER_RECEIVED_REJECT_PUSHER': 
 	  		return setStoreTransferReceivedRejectPusher(state, action.payload)
-		  
 
 		default:
 			return state;

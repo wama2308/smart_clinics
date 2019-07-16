@@ -16,7 +16,17 @@ import ListShop from "../views/Shop/ListShop";
 import ListProduct from "../views/Shop/ListProduct";
 import ListTransferencias from "../views/Shop/ListTransferencias";
 import ListTransferenciasRecibidas from "../views/Shop/ListTransferenciasRecibidas";
-import { LoadShopFunction, LoadShopIdFunction, disableShopAction, queryOneSupplieWithLotFunction, queryOneTransferFunction, disableTransferAction, rejectTransferAction, acceptTransferAction } from "../actions/ShopActions";
+import { 
+  LoadShopFunction, 
+  LoadShopIdFunction, 
+  disableShopAction, 
+  queryOneSupplieWithLotFunction, 
+  queryOneTransferFunction, 
+  disableTransferAction, 
+  rejectTransferAction, 
+  acceptTransferAction } 
+from "../actions/ShopActions";
+import { LoadDistributorFunction } from "../actions/DistributorActions";
 import { openConfirmDialog, openSnackbars } from "../actions/aplicantionActions";
 import classnames from "classnames";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -36,6 +46,7 @@ class ShopContainers extends Component {
 
   componentDidMount = () => {
     this.props.LoadShopFunction();
+    this.props.LoadDistributorFunction();
     this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
       if (permisos.name === "Almacen") {
         this.setState({
@@ -173,12 +184,14 @@ class ShopContainers extends Component {
 
 const mapStateToProps = state => ({
   shop: state.shop.toJS(),
+  distributor: state.distributor.toJS(),
   authData: state.auth,
   aplication: state.global,
   searchData: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({
+  LoadDistributorFunction: () => dispatch(LoadDistributorFunction()),
   LoadShopFunction: () => dispatch(LoadShopFunction()),
   LoadShopIdFunction: (shopId) => dispatch(LoadShopIdFunction(shopId)),
   queryOneTransferFunction: (transferId) => dispatch(queryOneTransferFunction(transferId)),
