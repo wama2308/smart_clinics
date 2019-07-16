@@ -66,7 +66,7 @@ class RolesInactivosList extends React.Component {
     const result = this.props.search
       ? arrayRoles.filter(rol => {
           return (
-            rol.rol.toLowerCase().includes(this.props.search)
+            rol.rol.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayRoles;

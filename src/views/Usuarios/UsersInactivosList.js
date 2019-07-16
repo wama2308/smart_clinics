@@ -65,10 +65,10 @@ class UsersInactivosList extends React.Component {
     const result = this.props.search
       ? arrayUser.filter(user => {
           return (
-            user.email.toLowerCase().includes(this.props.search) ||
-            user.names.toLowerCase().includes(this.props.search) ||
-            user.surnames.toLowerCase().includes(this.props.search) ||
-            user.username.toLowerCase().includes(this.props.search)
+            user.email.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            user.names.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            user.surnames.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            user.username.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayUser;

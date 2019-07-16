@@ -91,7 +91,7 @@ class Plantillas extends React.Component {
       const result = this.props.search
         ? arrayTemplate.filter(template => {
             return (
-              template.template.toLowerCase().includes(this.props.search)
+              template.template.toLowerCase().includes(this.props.search.toLowerCase())
             );
           })
         : arrayTemplate;

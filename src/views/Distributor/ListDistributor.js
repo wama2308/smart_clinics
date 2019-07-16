@@ -110,13 +110,11 @@ class ListDistributor extends React.Component {
     const result = this.props.search
       ? arrayDistributor.filter(distributor => {
           return (
-            distributor.name.toLowerCase().includes(this.props.search) ||
-            distributor.phone[0].includes(this.props.search) ||
-            distributor.typeIdentity
-              .toLowerCase()
-              .includes(this.props.search) ||
-            distributor.tin.toString().includes(this.props.search) ||
-            distributor.email[0].toLowerCase().includes(this.props.search)
+            distributor.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            distributor.phone[0].includes(this.props.search)||
+            distributor.typeIdentity.toLowerCase().includes(this.props.search.toLowerCase())||
+            distributor.tin.toString().includes(this.props.search)||
+            distributor.email[0].toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayDistributor;
