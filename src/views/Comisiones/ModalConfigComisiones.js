@@ -21,7 +21,10 @@ import { openConfirmDialog, openSnackbars } from "../../actions/aplicantionActio
 import {
   setPorcentajeTable,
   setSwitchTableComisiones,
-  actionProps
+  actionProps,
+  cleanListServices,
+  saveConfigCommissionsAction,
+  editConfigCommissionsAction
 } from "../../actions/CommissionsActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -54,14 +57,14 @@ class ModalConfigCommissions extends React.Component {
     this.setState({
       collapse: !this.state.collapse
     });
-  };
+  };  
 
   closeModal = () => {
     this.setState({
       ...InitalState,
       loading: "show"
     });
-    //this.props.cleanShelfs();
+    this.props.cleanListServices();
     this.props.valorCloseModal(false);
   };
 
@@ -80,33 +83,83 @@ class ModalConfigCommissions extends React.Component {
     let divPorcentajeComisionError = '';
     let acumPorcentajes = 0;
     let acumConfirms = 0;
-
+    console.log("this.state.arrayModoPagoSelect", this.state.arrayModoPagoSelect)
     if(!this.state.arrayTipoPersonaSelect){
       divTipoPersonaError = "¡Seleccione el tipo de personal!";
       divTipoPersona = "borderColor";
     }else{
-      const serviceConfirm = this.props.configCommissions.services.find(service => service.percentage !== 0);
       if(this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){        
+        const servicePercentaje = this.props.configCommissions.services.find(service => service.percentage !== 0);
         if(!this.state.arrayTiempoSelect){
           divTiempoError = "¡Seleccione el tiempo!";
           divTiempo = "borderColor";
         }
-        else if(!serviceConfirm){
+        else if(!servicePercentaje){
           acumPorcentajes++;
           this.props.alert("warning", "¡Ingrese al menos un porcentaje de ganancia!");
         }   
+      }else{
+        const serviceConfirm = this.props.configCommissions.services.find(service => service.confirm === true);
+        if(!this.state.arrayTiempoSelect){
+          divTiempoError = "¡Seleccione el tiempo!";
+          divTiempo = "borderColor";
+        }
+
+        if(!this.state.arrayModoPagoSelect){
+          divModoPagoError = "¡Seleccione el modo de pago!";
+          divModoPago = "borderColor";
+        }else{
+          if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930011"){
+            if(this.state.montoComision === "0.00" || this.state.montoComision === "0.0"){
+              divMontoComisionError = "¡Ingrese el monto!";
+              divMontoComision = "borderColor";
+            }
+          }else if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930022"){
+            if(this.state.porcentajeComision === "0" || this.state.porcentajeComision === ""){
+              divPorcentajeComisionError = "¡Ingrese el porcentaje!";
+              divPorcentajeComision = "borderColor";
+            }
+          }else if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930044"){
+            if(this.state.especifique === ""){
+              divEspecifiqueError = "Especifique el modo de pago";
+              divEspecifique = "borderColor";
+            }
+          }else if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930033"){
+            if(!serviceConfirm){
+              acumConfirms++;
+              this.props.alert("warning", "¡Seleccione al menos un servicio!");
+            }
+          }
+        }
       }
     }
 
-    if (divTipoPersonaError || divTiempoError) {
+    if (divTipoPersonaError || 
+        divTiempoError || 
+        divModoPagoError || 
+        divMontoComisionError || 
+        divPorcentajeComisionError || 
+        divEspecifiqueError
+      ) 
+    {
       this.setState({
         divTipoPersonaError,
         divTipoPersona,
         divTiempoError,
-        divTiempo
+        divTiempo,
+        divModoPagoError,
+        divModoPago,
+        divMontoComisionError,
+        divMontoComision,
+        divPorcentajeComisionError,
+        divPorcentajeComision,
+        divEspecifiqueError,
+        divEspecifique
       });
       return false;
     }else if(acumPorcentajes === 1){
+      return false;
+    }else if(acumConfirms === 1){
       return false;
     }
     return true;    
@@ -117,111 +170,81 @@ class ModalConfigCommissions extends React.Component {
     const isValid = this.validate();
     if (isValid) {
       alert("SISA");
-      /*let valueSucursales = "";
-      let arraySucursales = Object.values(this.state.arraySucursalesSelect);
-      arraySucursales.forEach(function(elemento, indice) {
-        if (indice === 0) {
-          valueSucursales = elemento;
+      console.log("arrayTipoPersonaSelect ", this.state.arrayTipoPersonaSelect)
+      console.log("arrayTiempoSelect ", this.state.arrayTiempoSelect)
+      console.log("arrayModoPagoSelect ", this.state.arrayModoPagoSelect)
+      console.log("monto minimo comision ", this.state.montoMinimoComision)
+      console.log("montoComision ", this.state.montoComision)
+      console.log("porcentajeComision ", this.state.porcentajeComision)
+      console.log("arrayServicios ", this.props.configCommissions.services)
+
+      let amount = 0;
+      let modoPago = "";
+      if(this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710"){        
+        if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930011"){
+          amount = this.state.montoComision;
+        }else if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930022"){
+          amount = this.state.porcentajeComision;
+        }else{
+          amount = 0;
         }
-      });
-      if (this.props.option === 1) {
-        if (this.props.store.shelfs.length === 0) {
-          const message = {
-            title: "¡Registrar sin estantes!",
-            info: "¿Esta seguro que desea guardar el almacen sin estantes?"
-          };
-          this.props.confirm(message, res => {
-            if (res) {
-              this.setState({ loading: "show" });
-              this.props.saveStoreAction(
-                {
-                  sucursal_id: valueSucursales,
-                  name: this.state.almacen,
-                  description: this.state.descripcion,
-                  shelf: this.props.store.shelfs,
-                  timeZ: jstz.determine().name()
-                },
-                () => {
-                  this.closeModal();
-                }
-              );
-            }
-          });
-        } else {
-          this.setState({ loading: "show" });
-          this.props.saveStoreAction(
-            {
-              sucursal_id: valueSucursales,
-              name: this.state.almacen,
-              description: this.state.descripcion,
-              shelf: this.props.store.shelfs,
-              timeZ: jstz.determine().name()
-            },
-            () => {
-              this.closeModal();
-            }
-          );
-        }
-      } else if (this.props.option === 3) {
-        if (this.props.store.shelfs.length === 0) {
-          const message = {
-            title: "¡Registrar sin estantes!",
-            info: "¿Esta seguro que desea guardar el almacen sin estantes?"
-          };
-          this.props.confirm(message, res => {
-            if (res) {
-              this.setState({ loading: "show" });
-              this.props.editStoreAction(
-                {
-                  store_id: this.props.id,
-                  sucursal_id_now: this.props.sucursal_id_now,
-                  sucursal_id: valueSucursales,
-                  name: this.state.almacen,
-                  description: this.state.descripcion,
-                  shelf: this.props.store.shelfs,
-                  timeZ: jstz.determine().name()
-                },
-                () => {
-                  this.closeModal();
-                }
-              );
-            }
-          });
-        } else {
-          this.setState({ loading: "show" });
-          this.props.editStoreAction(
-            {
-              store_id: this.props.id,
-              sucursal_id_now: this.props.sucursal_id_now,
-              sucursal_id: valueSucursales,
-              name: this.state.almacen,
-              description: this.state.descripcion,
-              shelf: this.props.store.shelfs,
-              timeZ: jstz.determine().name()
-            },
-            () => {
-              this.closeModal();
-            }
-          );
-        }
-      }*/
+        modoPago = this.state.arrayModoPagoSelect.value;
+      }      
+
+      if(this.props.option === 1)
+      {
+        this.setState({loading:'show'})                                    
+        this.props.saveConfigCommissionsAction(
+          {
+            time: this.state.arrayTiempoSelect.value,
+            type_staff: this.state.arrayTipoPersonaSelect.value,
+            payment_type: modoPago,
+            amount_min: this.state.montoMinimoComision,
+            amount: amount,
+            others: this.state.especifique,
+            services: this.props.configCommissions.services,
+            timeZ: jstz.determine().name()
+          },
+          () => {
+            this.closeModal();                    
+          },
+          this.props.option
+        )
+      } 
     }
   };
 
   handleChangeTipoPersona = arrayTipoPersonaSelect => {
     let hideModoPago = "";
+    let hideEspecifique = "";
+    let hideMontoComision = "";
+    let hidePorcentajeComision = "";
     if(arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){
       hideModoPago = "hide";
+      hideEspecifique = 'hide';
+      hideMontoComision = "hide";
+      hidePorcentajeComision = "hide";
     }else{
       hideModoPago = "show";
+      hideEspecifique = 'hide';
+      hideMontoComision = "hide";
+      hidePorcentajeComision = "hide";
     }
 
     this.setState({
       arrayTipoPersonaSelect,
+      arrayModoPagoSelect: null,
       divTipoPersona: "",
       divTipoPersonaError: "",
-      hideModoPago:hideModoPago
+      hideModoPago:hideModoPago,
+      montoComision:'0.00',
+      porcentajeComision:'',
+      especifique:'',
+      hideEspecifique: hideEspecifique,
+      hideMontoComision: hideMontoComision,
+      hidePorcentajeComision: hidePorcentajeComision,
     });
+    this.props.cleanListServices();
   };  
 
   handleChangeTiempo = arrayTiempoSelect => {
@@ -260,7 +283,11 @@ class ModalConfigCommissions extends React.Component {
       hideEspecifique: hideEspecifique,
       hideMontoComision: hideMontoComision,
       hidePorcentajeComision: hidePorcentajeComision,
+      montoComision:'0.00',
+      porcentajeComision:'',
+      especifique:''
     });
+    this.props.cleanListServices();
   };  
 
   componentWillReceiveProps = props => {
@@ -271,6 +298,13 @@ class ModalConfigCommissions extends React.Component {
     this.setState({
         divMontoComision: "",
         divMontoComisionError: "",         
+    })
+  }
+
+  handlekeyMontoMinimoComision= event =>{
+    this.setState({
+        divMontoMinimoComision: "",
+        divMontoMinimoComisionError: "",         
     })
   }
 
@@ -297,6 +331,22 @@ class ModalConfigCommissions extends React.Component {
       }        
   }  
 
+  eventoBlurMontoMinimo = (e) => {
+        if(this.state.montoMinimoComision === '' || this.state.montoMinimoComision === '0.0'){
+            this.setState({
+                montoMinimoComision: '0.00'                      
+            }); 
+        }        
+    }
+
+  eventoFocusMontoMinimo = (e) => {        
+      if(this.state.montoMinimoComision === '0.00'){
+          this.setState({
+              montoMinimoComision: ''                      
+          }); 
+      }        
+  }
+
   render() {
     return (
       <span>
@@ -310,7 +360,7 @@ class ModalConfigCommissions extends React.Component {
               <ModalHeader toggle={this.closeModal}>
                 {this.props.modalHeader}
               </ModalHeader>
-              <ModalBody className="Scroll">
+              <ModalBody className="Scroll" style={{height:'65vh'}}>
                 <form
                   className="formCodeConfirm"
                   onSubmit={this.handleSave.bind(this)}
@@ -348,6 +398,25 @@ class ModalConfigCommissions extends React.Component {
                         {this.state.divTiempoError}
                       </div>
                     </FormGroup>
+                    <FormGroup className={`top form-group col-sm-6`}>                                                                 
+                        <Label for="montoMinimoComision">Monto Minimo para Comision:</Label> 
+                        <div className={this.state.divMontoMinimoComision}>                               
+                            <Input 
+                              disabled={this.state.disabled} 
+                              name="montoMinimoComision" 
+                              id="montoMinimoComision" 
+                              onKeyUp={this.handlekeyMontoMinimoComision} 
+                              onChange={this.handleChange} 
+                              value={this.state.montoMinimoComision} 
+                              type="text" 
+                              placeholder="Monto minimo para Comision" 
+                              onKeyPress={ enterDecimal } 
+                              onBlur ={this.eventoBlurMontoMinimo} 
+                              onFocus = {this.eventoFocusMontoMinimo} 
+                            />                                    
+                        </div>
+                        <div className="errorSelect">{this.state.divMontoMinimoComisionError}</div>                                                                                                                                                                                         
+                    </FormGroup>                     
                     <FormGroup className={`top form-group col-sm-6 ${this.state.hideModoPago}`}>
                       <Label for="tiempo">Modo de Pago</Label>
                       <div className={this.state.divModoPago}>
@@ -365,7 +434,7 @@ class ModalConfigCommissions extends React.Component {
                       </div>
                     </FormGroup>
                     <FormGroup className={`top form-group col-sm-6 ${this.state.hideMontoComision}`}>                                                                 
-                        <Label for="montoComision">Monto para Comision:</Label> 
+                        <Label for="montoComision">Monto Comision:</Label> 
                         <div className={this.state.divMontoComision}>                               
                             <Input 
                               disabled={this.state.disabled} 
@@ -375,7 +444,7 @@ class ModalConfigCommissions extends React.Component {
                               onChange={this.handleChange} 
                               value={this.state.montoComision} 
                               type="text" 
-                              placeholder="Monto para Comision" 
+                              placeholder="Monto Comision" 
                               onKeyPress={ enterDecimal } 
                               onBlur ={this.eventoBlur} 
                               onFocus = {this.eventoFocus} 
@@ -444,7 +513,7 @@ class ModalConfigCommissions extends React.Component {
               <ModalFooter>
                 <Button className="" color="danger" onClick={this.closeModal}>
                   Cancelar
-                </Button>
+                </Button>                
                 <Button
                   className={this.props.showHide}
                   color="primary"
@@ -482,14 +551,13 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  /*confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
-  saveStoreAction: (data, callback) => dispatch(saveStoreAction(data, callback)),
-  editStoreAction: (data, callback) => dispatch(editStoreAction(data, callback)),
-  cleanShelfs: () => dispatch(cleanShelfs())*/
   alert: (type, message) => dispatch(openSnackbars(type, message)),     
   actionProps: () => dispatch(actionProps()),
+  cleanListServices: () => dispatch(cleanListServices()),
   setPorcentajeTable: (pos, value) =>dispatch(setPorcentajeTable(pos, value)),
   setSwitchTableComisiones: (pos, value) =>dispatch(setSwitchTableComisiones(pos, value)),
+  saveConfigCommissionsAction: (data, callback) =>dispatch(saveConfigCommissionsAction(data, callback)),
+  editConfigCommissionsAction: (data, callback) =>dispatch(editConfigCommissionsAction(data, callback)),
 });
 
 export default connect(

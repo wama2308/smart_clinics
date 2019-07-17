@@ -244,7 +244,7 @@ export const enableStoreBranchOfficesAction = (storeId, sucursalId) => dispatch 
           dispatch(openSnackbars("success", "Almacen activado con exito"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error activado el almacen"));
+          dispatch(openSnackbars("error", "Error activando el almacen"));
         });
     })
     .catch(() => {
