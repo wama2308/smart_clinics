@@ -17,7 +17,7 @@ export const MedicalInitialValues = {
   twitter: '',
   instagram: '',
   web: '',
-  direccion: '',
+  address: '',
 };
 
 const data = {

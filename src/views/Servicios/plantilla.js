@@ -194,7 +194,7 @@ class Plantillas extends React.Component {
                 })}
             </tbody>
           {
-            arrayTemplate > 10 &&
+            arrayTemplate.length > 10 &&
             <Pagination contador={this.props.template}
               page={page}
               rowsPerPage={rowsPerPage}

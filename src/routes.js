@@ -13,6 +13,9 @@ import ventasContainer from "./containers/ventasContainer";
 import StoreContainer from "./containers/StoreContainer";
 import ShopContainers from "./containers/ShopContainers";
 import PatientContainer from "./containers/patientContainer";
+import ConfigComisionesContainer from "./containers/ConfigComisionesContainer";
+import Calendar from "./containers/CalendarContainer";
+
 import Dashboard from "./views/Dashboard";
 import ReclamosContainer from "./containers/ReclamosContainer";
 
@@ -182,8 +185,17 @@ const Widgets = Loadable({
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
-  { path: "/", exact: true, name: "Inicio", component: DefaultLayout },
-  { path: "/dashboard", name: "Panel", component: Dashboard },
+  {
+    path: "/",
+    exact: true,
+    name: "Inicio",
+    component: DefaultLayout
+  },
+  {
+    path: "/dashboard",
+    name: "Panel",
+    component: Dashboard
+  },
 
   {
     path: "/configuration",
@@ -201,7 +213,11 @@ const routes = [
     name: "Personal Externo",
     component: ExternalContainer
   },
-  { path: "/configuration/Users", name: "Usuarios", component: UserContainer },
+  {
+    path: "/configuration/Users",
+    name: "Usuarios",
+    component: UserContainer
+  },
   {
     path: "/configuration/Proveedor",
     name: "Proveedor",
@@ -217,9 +233,23 @@ const routes = [
     name: "Servicios",
     component: servicesContainer
   },
-  { path: "/configuration/store", name: "Almacen", component: StoreContainer },
+  {
+    path: "/configuration/store",
+    name: "Almacen",
+    component: StoreContainer
+  },
   { path: "/administrative/sales", name: "Ventas", component: ventasContainer },
   { path: "/administrative/shops", name: "Compras", component: ShopContainers },
+  {
+    path: "/configuration/commissions",
+    name: "Comisiones",
+    component: ConfigComisionesContainer
+  },
+  {
+    path: "/administrative/calendar",
+    name: "Calendario",
+    component: Calendar
+  },
   {
     path: "/administrative/patients",
     name: "Informacion de paciente",

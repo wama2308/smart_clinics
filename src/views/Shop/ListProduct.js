@@ -158,7 +158,7 @@ class ListProduct extends React.Component {
                 null
               }
             </tbody>
-            {this.props.length > 10 &&
+            {this.props.allProducts.length > 10 &&
               <Pagination contador={this.props.allProducts}
               page={page}
               rowsPerPage={rowsPerPage}
