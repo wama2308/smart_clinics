@@ -134,6 +134,7 @@ class ListServices extends React.Component {
                           value={data.percentage}
                           onChange={this.handleChangeInputTable(i)}
                           style={{width: "40%"}}
+                          disabled={this.props.disabled} 
                         />
                       </div>
                     </td>

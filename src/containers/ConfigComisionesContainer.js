@@ -14,7 +14,12 @@ import {
 import { connect } from "react-redux";
 import ListConfigComisiones from "../views/Comisiones/ListConfigComisiones";
 import ListConfigComisionesDisabled from "../views/Comisiones/ListConfigComisionesDisabled";
-import { LoadConfigCommissionsFunction } from "../actions/CommissionsActions";
+import { 
+  LoadConfigCommissionsFunction, 
+  DeleteConfigCommissionsAction, 
+  enableConfigCommissionsAction, 
+  LoadConfigCommissionIdFunction } 
+from "../actions/CommissionsActions";
 import { openConfirmDialog } from "../actions/aplicantionActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import classnames from "classnames";
@@ -67,13 +72,15 @@ class ConfigComisionesContainer extends Component {
                         <ListConfigComisiones 
                           confirm={this.props.confirm}
                           data={this.props.configCommissions.data}
-                          
+                          DeleteConfigCommissionsAction={this.props.DeleteConfigCommissionsAction}                          
+                          LoadConfigCommissionIdFunction={this.props.LoadConfigCommissionIdFunction}                          
                         />
                       </TabPane>
                       <TabPane tabId="2">
                         <ListConfigComisionesDisabled 
                           confirm={this.props.confirm}                      
-                          data={this.props.configCommissions.dataInactive}                          
+                          data={this.props.configCommissions.data}                          
+                          enableConfigCommissionsAction={this.props.enableConfigCommissionsAction}                                                    
                         />      
                       </TabPane>                          
                     </TabContent>
@@ -100,9 +107,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   LoadConfigCommissionsFunction: () => dispatch(LoadConfigCommissionsFunction()),  
-  /*DeleteStoreAction: (storeId, sucursalId) => dispatch(DeleteStoreAction(storeId, sucursalId)),  
-  enableStoreBranchOfficesAction: (storeId, sucursalId) => dispatch(enableStoreBranchOfficesAction(storeId, sucursalId)),  
-  LoadStoreIdFunction: (storeId, sucursalId) => dispatch(LoadStoreIdFunction(storeId, sucursalId)),  */
+  DeleteConfigCommissionsAction: (id) => dispatch(DeleteConfigCommissionsAction(id)),  
+  enableConfigCommissionsAction: (id) => dispatch(enableConfigCommissionsAction(id)),  
+  LoadConfigCommissionIdFunction: (id) => dispatch(LoadConfigCommissionIdFunction(id)),  
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
 });
 
