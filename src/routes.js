@@ -14,6 +14,7 @@ import StoreContainer from "./containers/StoreContainer";
 import ShopContainers from "./containers/ShopContainers";
 import PatientContainer from "./containers/patientContainer";
 import Dashboard from "./views/Dashboard";
+import ReclamosContainer from "./containers/ReclamosContainer";
 
 function Loading() {
   return <div>Loading...</div>;
@@ -281,7 +282,13 @@ const routes = [
   { path: "/notifications/badges", name: "Badges", component: Badges },
   { path: "/notifications/modals", name: "Modals", component: Modals },
   { path: "/widgets", name: "Widgets", component: Widgets },
-  { path: "/charts", name: "Charts", component: Charts }
+  { path: "/charts", name: "Charts", component: Charts },
+  {
+    name: "Reclamos",
+    url: "/reclamos",
+    icon: "fa fa-bullhorn",
+    component: ReclamosContainer
+   }
 ];
 
 export default routes;
