@@ -107,6 +107,7 @@ class ListStore extends React.Component {
             disabled={this.state.disabled}
             showHide={this.state.showHide}
             valorCloseModal={this.valorCloseModal}
+            id={this.state.id}
           />
         )}
         <Button color="success"  onClick={() => { this.openModal(1); }}>Agregar</Button>

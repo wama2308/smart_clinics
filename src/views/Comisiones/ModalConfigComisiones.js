@@ -28,6 +28,7 @@ import {
 } from "../../actions/CommissionsActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { number_format } from "../../core/utils";
 
 class ModalConfigCommissions extends React.Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class ModalConfigCommissions extends React.Component {
   }
 
   componentDidMount() {
-    //console.log("componentDidMount")
+    console.log("componentDidMount")
     if(this.props.option === 1){
         this.setState({            
             loading: 'hide',
@@ -211,6 +212,26 @@ class ModalConfigCommissions extends React.Component {
           this.props.option
         )
       } 
+      if(this.props.option === 3)
+      {
+        this.setState({loading:'show'})                                    
+        this.props.editConfigCommissionsAction(
+          {
+            _id: this.props.id,
+            time: this.state.arrayTiempoSelect.value,
+            type_staff: this.state.arrayTipoPersonaSelect.value,
+            payment_type: modoPago,
+            amount_min: this.state.montoMinimoComision,
+            amount: amount,
+            others: this.state.especifique,
+            services: this.props.configCommissions.services,
+            timeZ: jstz.determine().name()
+          },
+          () => {
+            this.closeModal();                    
+          }
+        )
+      }
     }
   };
 
@@ -291,7 +312,65 @@ class ModalConfigCommissions extends React.Component {
   };  
 
   componentWillReceiveProps = props => {
-    //console.log("componentWillReceiveProps")
+    console.log("componentWillReceiveProps", props.configCommissions)
+    if(props.option === 1){
+      this.setState({
+        loading:'hide'
+      });
+    }
+    if(props.option === 2 || props.option === 3){
+      if(props.configCommissions.dataId._id  && props.configCommissions.action === 0){
+        let hideModoPago = "";
+        let hideEspecifique = "";
+        let hideMontoComision = "";
+        let hidePorcentajeComision = "";
+        if(props.configCommissions.dataId.type_staff.value === "5d1776e3b0d4a50b23936710"){
+          hideModoPago = "hide";
+          hideEspecifique = 'hide';
+          hideMontoComision = "hide";
+          hidePorcentajeComision = "hide";
+        }else{
+          hideModoPago = "show";
+          hideEspecifique = 'hide';
+          hideMontoComision = "hide";
+          hidePorcentajeComision = "hide";
+        }        
+
+        if(props.configCommissions.dataId.payment_type.value === "5d1776e3b0d4a50b23930044"){
+          hideEspecifique = 'show';
+          hideMontoComision = "hide";
+          hidePorcentajeComision = "hide";
+        }else if(props.configCommissions.dataId.payment_type.value === "5d1776e3b0d4a50b23930011"){
+          hideEspecifique = 'hide';
+          hideMontoComision = "show";
+          hidePorcentajeComision = "hide";
+        }else if(props.configCommissions.dataId.payment_type.value === "5d1776e3b0d4a50b23930022"){
+          hideEspecifique = 'hide';
+          hideMontoComision = "hide";
+          hidePorcentajeComision = "show";
+        }else{
+          hideEspecifique = 'hide';
+          hideMontoComision = "hide";
+          hidePorcentajeComision = "hide";
+        }    
+
+        this.setState({
+          hideModoPago:hideModoPago,      
+          hideEspecifique: hideEspecifique,
+          hideMontoComision: hideMontoComision,
+          hidePorcentajeComision: hidePorcentajeComision,
+          arrayTipoPersonaSelect: props.configCommissions.dataId.type_staff,
+          arrayTiempoSelect: props.configCommissions.dataId.time,
+          montoMinimoComision: number_format(props.configCommissions.dataId.amount_min, 2),
+          montoComision: number_format(props.configCommissions.dataId.amount, 2),
+          arrayModoPagoSelect: props.configCommissions.dataId.payment_type,
+          porcentajeComision: number_format(props.configCommissions.dataId.amount, 2),
+          especifique: props.configCommissions.dataId.other,
+          loading:'hide'
+        });
+        this.props.actionProps();
+      }
+    }
   };
 
   handlekeyMontoComision= event =>{
@@ -402,7 +481,7 @@ class ModalConfigCommissions extends React.Component {
                         <Label for="montoMinimoComision">Monto Minimo para Comision:</Label> 
                         <div className={this.state.divMontoMinimoComision}>                               
                             <Input 
-                              disabled={this.state.disabled} 
+                              disabled={this.props.disabled} 
                               name="montoMinimoComision" 
                               id="montoMinimoComision" 
                               onKeyUp={this.handlekeyMontoMinimoComision} 
@@ -437,7 +516,7 @@ class ModalConfigCommissions extends React.Component {
                         <Label for="montoComision">Monto Comision:</Label> 
                         <div className={this.state.divMontoComision}>                               
                             <Input 
-                              disabled={this.state.disabled} 
+                              disabled={this.props.disabled} 
                               name="montoComision" 
                               id="montoComision" 
                               onKeyUp={this.handlekeyMontoComision} 
@@ -456,7 +535,7 @@ class ModalConfigCommissions extends React.Component {
                         <Label for="porcentajeComision">Porcentaje Comision:</Label> 
                         <div className={this.state.divPorcentajeComision}>                               
                             <Input 
-                              disabled={this.state.disabled} 
+                              disabled={this.props.disabled} 
                               name="porcentajeComision" 
                               id="porcentajeComision" 
                               onKeyUp={this.handlekeyPorcentajeComision} 
@@ -494,6 +573,7 @@ class ModalConfigCommissions extends React.Component {
                       typePersonal = {this.state.arrayTipoPersonaSelect.value}
                       setPorcentajeTable = {this.props.setPorcentajeTable}
                       setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
+                      disabled = {this.props.disabled}
                     />
                     :
                     (this.state.arrayModoPagoSelect &&
@@ -504,6 +584,7 @@ class ModalConfigCommissions extends React.Component {
                       typePersonal = {this.state.arrayTipoPersonaSelect.value}
                       setPorcentajeTable = {this.props.setPorcentajeTable}
                       setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
+                      disabled = {this.props.disabled}
                     />
                     
                   }               

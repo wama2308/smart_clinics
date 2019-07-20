@@ -3,6 +3,7 @@ import { Map } from 'immutable'
 const LoadConfigCommissionIdFunction = (state, payload) => {
 	let estado = state.toJS();
 	estado.dataId = payload.data;			
+	estado.services = payload.data.services;			
 	return Map(estado);
 }
 
@@ -30,6 +31,7 @@ const setSwitchTableComisiones = (state, payload) => {
 
 const setCleanListServices = (state, payload) => {
 	let estado = state.toJS();
+	estado.action = 0;
 	estado.services.map((service, i) => {
 		service.percentage = payload.percentaje;
 		service.confirm = payload.confirm;
