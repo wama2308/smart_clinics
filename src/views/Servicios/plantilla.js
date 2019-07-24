@@ -91,7 +91,7 @@ class Plantillas extends React.Component {
       const result = this.props.search
         ? arrayTemplate.filter(template => {
             return (
-              template.template.toLowerCase().includes(this.props.search)
+              template.template.toLowerCase().includes(this.props.search.toLowerCase())
             );
           })
         : arrayTemplate;
@@ -194,7 +194,7 @@ class Plantillas extends React.Component {
                 })}
             </tbody>
           {
-            arrayTemplate > 10 &&
+            arrayTemplate.length > 10 &&
             <Pagination contador={this.props.template}
               page={page}
               rowsPerPage={rowsPerPage}

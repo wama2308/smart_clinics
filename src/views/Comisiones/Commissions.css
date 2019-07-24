@@ -1,5 +1,5 @@
-.ModalShop{
-    max-width: 1100px;
+.ModalCommissions{
+    max-width: 980px;
     width:100%;        
     background: white;    
     border-radius: 20px;
@@ -196,11 +196,6 @@ padding: 1em;
 
 .selectBuscarProductos {
     width: 90%;
-    
-}
-
-.selectProveedor {
-    width: 91%;
     
 }
 

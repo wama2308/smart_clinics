@@ -28,6 +28,13 @@ class UsersList extends React.Component {
   }
 
   openUser = (option, pos, userId) => {
+    let disabledEditEmail = false;
+    if(this.props.typeUser === "Master"){
+      disabledEditEmail = false;
+    }else{
+      disabledEditEmail = true;
+    }
+
     if (option === 1) {
       if (this.props.totalBranchOffices > 0) {
         this.setState({
@@ -66,7 +73,7 @@ class UsersList extends React.Component {
         modalHeader: "Editar Usuario",
         modalFooter: "Editar",
         disabled: false,
-        disabledEmail: true,
+        disabledEmail: disabledEditEmail,
         showHide: "show",
         userIdEdit: userId
       });
@@ -119,10 +126,10 @@ class UsersList extends React.Component {
     const result = this.props.search
       ? arrayUsers.filter(users => {
           return (
-            users.email.toLowerCase().includes(this.props.search) ||
-            users.names.toLowerCase().includes(this.props.search) ||
-            users.surnames.toLowerCase().includes(this.props.search) ||
-            users.username.toLowerCase().includes(this.props.search)
+            users.email.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            users.names.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            users.surnames.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            users.username.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayUsers;
@@ -149,7 +156,7 @@ class UsersList extends React.Component {
           editUserNoMasterAction={this.props.editUserNoMasterAction}
           addSucursalFunction={this.props.addSucursalFunction}
           deleteSucursalFunction={this.props.deleteSucursalFunction}
-          userIdEdit={this.state.userIdEdit}
+          userIdEdit={this.state.userIdEdit}          
         />
 
         <div className="containerGeneral">
@@ -240,8 +247,7 @@ class UsersList extends React.Component {
               : null}
           </tbody>
         </Table>
-        {this.props.users.length > 10 && (
-          <div style={{ display: "flex", "justify-content": "flex-end" }}>
+        {this.props.users.length > 10 && (         
             <Pagination
               contador={this.props.users}
               page={page}
@@ -249,7 +255,6 @@ class UsersList extends React.Component {
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage}
             />
-          </div>
         )}
       </div>
     );

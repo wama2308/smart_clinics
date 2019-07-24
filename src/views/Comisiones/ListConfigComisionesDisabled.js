@@ -2,11 +2,9 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { CheckCircle } from "@material-ui/icons";
-import ModalStore from './ModalStore.js';
 import Pagination from '../../components/Pagination';
-import Search from "../../components/Select";
-import '../../components/style.css'
 import { getArray } from '../../core/utils'
+import { number_format } from "../../core/utils";
 
 class ListStoreInactivos extends React.Component {
   constructor(props) {
@@ -29,18 +27,17 @@ class ListStoreInactivos extends React.Component {
 
   componentDidMount() { }
 
-  ActivateStore = (id, sucursalId) => {
+  activateRegister = (id) => {
     const message = {
-      title: "Activar Almacen",
-      info: "¿Esta seguro que desea activar este almacen?"
+      title: "Activar Configuracion de Comision",
+      info: "¿Esta seguro que desea activar esta configuracion de comision?"
     };
     this.props.confirm(message, res => {
       if (res) {
-        this.props.enableStoreBranchOfficesAction(id, sucursalId);
+        this.props.enableConfigCommissionsAction(id);
       }
     });
   }
-
   handleChangeRowsPerPage = event => {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
@@ -49,58 +46,39 @@ class ListStoreInactivos extends React.Component {
     this.setState({ page });
   };
 
-  getStore = store => {
-    if (!store) {
-      return [];
-    }
-    return store;
-  };
-
   render() {
     const { rowsPerPage, page } = this.state;
-    const arrayData = getArray(this.props.data);
-
-    const result = this.props.search.toLowerCase()
-      ? arrayData.filter(data => {
-          return (
-            data.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            data.branchoffice.label.toLowerCase().includes(this.props.search.toLowerCase())
-          );
-        })
-      : arrayData;
+    const ArrayData = getArray(this.props.data.commissions_disabled);
 
     return (
       <div>
-        <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
-          <div className="containerSearch">
-            <Search value={arrayData} />
-          </div>
-        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
-            <tr>
+             <tr>
               <th className="text-left">Nro</th>
-              <th className="text-left">Almacen</th>
-              <th className="text-left">Sucursal</th>
-              <th className="text-left">Descripcion</th>
+              <th className="text-left">Personal</th>
+              <th className="text-left">Tiempo</th>
+              <th className="text-left">Modo de Pago</th>
+              <th className="text-left">Minimo para Pago</th>              
               <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {arrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+            {ArrayData ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
-                  <td>{data.name}</td>
-                  <td>{data.branchoffice.label}</td>
-                  <td>{data.description}</td>
+                  <td>{data.type_staff}</td>
+                  <td>{data.time}</td>
+                  <td>{data.payment_type}</td>
+                  <td>{number_format(data.amount_min, 2)}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
-                        title="Activar Almacen"
+                        title="Activar Comision"
                         className="iconButtons"
-                        onClick={() => { this.ActivateStore(data._id, data.branchoffice.value); }}>
+                        onClick={() => { this.activateRegister(data._id); }}>
                         <CheckCircle className="iconTable" />
                       </IconButton>
                     </div>
@@ -113,8 +91,8 @@ class ListStoreInactivos extends React.Component {
             }
           </tbody>
           {
-            this.props.data.length > 10 &&
-              <Pagination contador={this.props.data}
+            this.props.data.commissions_disabled.length > 10 &&
+              <Pagination contador={this.props.data.commissions_disabled}
                 page={page}
                 rowsPerPage={rowsPerPage}
                 handleChangeRowsPerPage={this.handleChangeRowsPerPage}

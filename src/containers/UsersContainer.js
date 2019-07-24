@@ -36,7 +36,8 @@ import UsersInactivosList from "../views/Usuarios/UsersInactivosList";
 import RolesInactivosList from "../views/Usuarios/RolesInactivosList";
 import {
   openSnackbars,
-  openConfirmDialog
+  openConfirmDialog,
+  search
 } from "../actions/aplicantionActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -66,7 +67,14 @@ class UsersContainer extends Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set) 
     }
+  }
+
+  componentWillUnmount() {
+    let set = ""
+    this.props.search(set)
   }
 
   render() {
@@ -163,7 +171,9 @@ class UsersContainer extends Component {
                             this.props.deleteSucursalFunction
                           }
                           alert={this.props.alert}
+                          typeUser={this.props.aplication.dataGeneral.permission[0].name}
                           search={this.props.searchData}
+
                         />
                       </TabPane>
                       <TabPane tabId="2">
@@ -203,18 +213,18 @@ class UsersContainer extends Component {
                     </TabContent>
                   </div>
                 ) : (
-                  <div style={{ height: "60vh" }}>
-                    <CircularProgress
-                      style={{
-                        position: " absolute",
-                        height: 40,
-                        top: "45%",
-                        right: "50%",
-                        zIndex: 2
-                      }}
-                    />
-                  </div>
-                )}
+                    <div style={{ height: "60vh" }}>
+                      <CircularProgress
+                        style={{
+                          position: " absolute",
+                          height: 40,
+                          top: "45%",
+                          right: "50%",
+                          zIndex: 2
+                        }}
+                      />
+                    </div>
+                  )}
 
                 <br />
               </CardBody>
@@ -257,7 +267,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(deleteSucursalFunction(key, callback)),
   confirmDeleteUser: (message, callback) =>
     dispatch(openConfirmDialog(message, callback)),
-  alert: (type, message) => dispatch(openSnackbars(type, message))
+  alert: (type, message) => dispatch(openSnackbars(type, message)),
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

@@ -24,7 +24,7 @@ import {
   enabledField
 } from "../actions/ServicesAction";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog, search } from "../actions/aplicantionActions";
 import Plantillas from "../views/Servicios/plantilla";
 
 class ServicesContainer extends React.Component {
@@ -58,8 +58,16 @@ class ServicesContainer extends React.Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set) 
     }
   }
+
+  componentWillUnmount() {
+    let set = ""  
+    this.props.search(set)
+  }
+  
 
   render() {
     const dataService = this.props.service ? this.props.service : [];
@@ -183,7 +191,8 @@ const mapDispatchToProps = dispatch => ({
   alert: (obj, callback) => dispatch(openConfirmDialog(obj, callback)),
   delete: obj => dispatch(deletePlantillas(obj)),
   deleteModifyServices: obj => dispatch(editModifyServices(obj)),
-  enabledField: obj => dispatch(enabledField(obj))
+  enabledField: obj => dispatch(enabledField(obj)),
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

@@ -2,11 +2,10 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-import ModalStore from './ModalStore.js';
+import ModalConfigCommissions from './ModalConfigComisiones.js';
 import Pagination from '../../components/Pagination';
-import Search from "../../components/Select";
-import '../../components/style.css'
 import { getArray, GetDisabledPermits } from '../../core/utils'
+import { number_format } from "../../core/utils";
 
 class ListStore extends React.Component {
   constructor(props) {
@@ -29,50 +28,48 @@ class ListStore extends React.Component {
 
   componentDidMount() { }
 
-  openModal = (option, pos, id, sucursalId) => {
+  openModal = (option, id) => {
     if (option === 1) {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Registrar Almacen',
+        modalHeader: 'Registrar Configuracion de Comision',
         modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
       })
     } else if (option === 2) {
-      this.props.LoadStoreIdFunction(id, sucursalId);
+      this.props.LoadConfigCommissionIdFunction(id);
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Almacen',
+        modalHeader: 'Ver Configuracion de Comision',
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'hide',
       })
     } else if (option === 3) {
-      this.props.LoadStoreIdFunction(id, sucursalId);
+      this.props.LoadConfigCommissionIdFunction(id);
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Almacen',
+        modalHeader: 'Editar Configuracion de Comision',
         modalFooter: 'Editar',
         disabled: false,
-        showHide: 'show',
-        position: pos,
-        id: id,
-        sucursal_id_now: sucursalId
+        showHide: 'show',        
+        id: id,        
       })
     }
   }
 
-  deleteStore = (id, sucursalId) => {
+  deleteRegister = (id) => {
     const message = {
-      title: "Eliminar Almacen",
-      info: "¿Esta seguro que desea eliminar este almacen?"
+      title: "Eliminar Configuracion de Comision",
+      info: "¿Esta seguro que desea eliminar esta configuracion de comision?"
     };
     this.props.confirm(message, res => {
       if (res) {
-        this.props.DeleteStoreAction(id, sucursalId);
+        this.props.DeleteConfigCommissionsAction(id);
       }
     });
   }
@@ -92,91 +89,71 @@ class ListStore extends React.Component {
     this.setState({ page });
   };
 
-  getStore = distribuitor => {
-    if (!distribuitor) {
-      return [];
-    }
-    return distribuitor;
-  };
-
   render() {
     const { rowsPerPage, page } = this.state;
-    const arrayData = getArray(this.props.data)
-
-    const result = this.props.search.toLowerCase()
-      ? arrayData.filter(data => {
-          return (
-            data.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            data.branchoffice.label.toLowerCase().includes(this.props.search.toLowerCase())
-          );
-        })
-      : arrayData;
-
-      console.log(this.props.data);
+    const ArrayData = getArray(this.props.data.commissions)
 
     return (
-      <div>
-        <ModalStore
-          option={this.state.option}
-          modal={this.state.modal}
-          modalHeader={this.state.modalHeader}
-          modalFooter={this.state.modalFooter}
-          disabled={this.state.disabled}
-          showHide={this.state.showHide}
-          id={this.state.id}
-          sucursal_id_now={this.state.sucursal_id_now}
-          branchOfficces={this.props.branchOfficces}
-          valorCloseModal={this.valorCloseModal}
-        />
-        <div className="containerGeneral">
-          <div className="container-button" >
-            <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
-         </div>
-          <div className="containerSearch">
-            <Search value={arrayData} />
-          </div>
-        </div>
+      <div>      
+        {
+          (this.state.option === 1 ||
+          this.state.option === 2 ||
+          this.state.option === 3) && (
+          <ModalConfigCommissions
+            option={this.state.option}
+            modal={this.state.modal}
+            modalHeader={this.state.modalHeader}
+            modalFooter={this.state.modalFooter}
+            disabled={this.state.disabled}
+            showHide={this.state.showHide}
+            valorCloseModal={this.valorCloseModal}
+            id={this.state.id}
+          />
+        )}
+        <Button color="success"  onClick={() => { this.openModal(1); }}>Agregar</Button>
         <br />
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
               <th className="text-left">Nro</th>
-              <th className="text-left">Almacen</th>
-              <th className="text-left">Sucursal</th>
-              <th className="text-left">Descripcion</th>
+              <th className="text-left">Personal</th>
+              <th className="text-left">Tiempo</th>
+              <th className="text-left">Modo de Pago</th>
+              <th className="text-left">Minimo para Pago</th>              
               <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {arrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+            {ArrayData ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
-                  <td>{data.name}</td>
-                  <td>{data.branchoffice.label}</td>
-                  <td>{data.description}</td>
+                  <td>{data.type_staff}</td>
+                  <td>{data.time}</td>
+                  <td>{data.payment_type}</td>
+                  <td>{number_format(data.amount_min, 2)}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
-                        title="Ver Almacen"
+                        title="Ver Comision"
                         className="iconButtons"
-                        onClick={() => { this.openModal(2, data.number, data._id, data.branchoffice.value); }}>
+                        onClick={() => { this.openModal(2, data._id); }}>
                         <Visibility className="iconTable" />
                       </IconButton>
 
                       <IconButton aria-label="Delete"
-                        title="Editar Almacen"
+                        title="Editar Comision"
                         className="iconButtons"
-                        onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}
+                        onClick={() => { this.openModal(3, data._id); }}
                         >
                         <Edit className="iconTable" />
                       </IconButton>
 
                       <IconButton aria-label="Delete"
-                        title="Eliminar Almacen"
+                        title="Eliminar Comision"
                         className="iconButtons"
-                        onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}
+                        onClick={() => { this.deleteRegister(data._id); }}
                         >
                         <Delete className="iconTable" />
                       </IconButton>
@@ -190,8 +167,8 @@ class ListStore extends React.Component {
             }
           </tbody>
           {
-            this.props.data.length > 10 &&
-              <Pagination contador={this.props.data}
+            this.props.data.commissions.length > 10 &&
+              <Pagination contador={this.props.data.commissions}
                 page={page}
                 rowsPerPage={rowsPerPage}
                 handleChangeRowsPerPage={this.handleChangeRowsPerPage}

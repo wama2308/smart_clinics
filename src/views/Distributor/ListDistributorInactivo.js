@@ -66,8 +66,28 @@ class ListDistributorInactivo extends React.Component {
     const { rowsPerPage, page } = this.state;
     const arrayDistributor = getArray(this.props.listDistributor)
 
+    const result = this.props.search.toLowerCase()
+      ? arrayDistributor.filter(distributor => {
+        return (
+          distributor.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          distributor.phone[0].includes(this.props.search) ||
+          distributor.typeIdentity.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          distributor.tin.toString().includes(this.props.search) ||
+          distributor.email[0].toLowerCase().includes(this.props.search.toLowerCase())
+        );
+      })
+      : arrayDistributor;
+
     return (
       <div>
+
+        <div className="containerGeneral">
+          <div className="container-button">
+          </div>
+          <div className="containerSearch">
+            <Search value={arrayDistributor} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
@@ -107,14 +127,14 @@ class ListDistributorInactivo extends React.Component {
               null
             }
           </tbody>
-            {
-              arrayDistributor > 10 &&
-              <Pagination contador={this.props.listDistributor}
+          {
+            arrayDistributor.length > 10 &&
+            <Pagination contador={this.props.listDistributor}
               page={page}
               rowsPerPage={rowsPerPage}
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage} />
-            }
+          }
         </Table>
       </div>
     );

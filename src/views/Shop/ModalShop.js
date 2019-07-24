@@ -8,11 +8,12 @@ import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Products from './Products.js';
-import { openConfirmDialog } from "../../actions/aplicantionActions";
+import ModalDistributor from '../Distributor/ModalDistributor.js';
+import { openConfirmDialog, search } from "../../actions/aplicantionActions";
 import { cleanProducts, saveShopAction, editShopAction, deleteProductsFunction, removeProductAction, actionProps } from "../../actions/ShopActions";
 import { InitalState } from './InitialState.js';
 import IconButton from "@material-ui/core/IconButton";
-import { Delete, Edit } from "@material-ui/icons";
+import { Delete, Edit, AddCircle } from "@material-ui/icons";
 import { number_format } from "../../core/utils";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -302,9 +303,10 @@ class ModalShop extends React.Component {
             this.setState({
                 loading: 'hide',
             })
+            props.shop.newProvider.label&&this.setState({arrayProveedorSelect: props.shop.newProvider})
         }
-        if(props.option === 2 || props.option === 3){
-            if(props.shop.dataShopId){
+        if(props.option === 2 || props.option === 3){            
+            if(props.shop.dataShopId){                
                 if(props.shop.dataShopId.date_purchase){
                     var date_purchase_split = props.shop.dataShopId.date_purchase.split('-');
                     var date_purchase = new Date(date_purchase_split[0], date_purchase_split[1] - 1, date_purchase_split[2]);
@@ -320,7 +322,7 @@ class ModalShop extends React.Component {
                         direccionLlegada: props.shop.dataShopId.arrival_address,
                         compraDate: date_purchase,
                         observacion: props.shop.dataShopId.observation,
-                        loading: props.shop.loading,
+                        loading: 'hide',
                     })
                     this.props.actionProps();
                 }
@@ -342,9 +344,45 @@ class ModalShop extends React.Component {
         });
     }
 
+    openModal = (option, pos, id) => {
+        this.setState({
+            modal: true,
+            option: option,
+            modalHeader: 'Registrar Proveedor',
+            modalFooter: 'Guardar',
+            disabled: false,
+            showHide: 'show',
+        })
+         
+    }
+
+    valorCloseModal = (valor) => {
+        this.setState({
+          modal: valor,
+          option: 0,
+        });
+    }
+    componentWillUnmount() {
+        let set = ""
+        this.props.search(set)
+    }
+    
+
     render() {
         return (
             <span>
+                {
+                    this.state.option === 4 &&
+                    <ModalDistributor
+                      option={this.state.option}
+                      modal={this.state.modal}
+                      modalHeader={this.state.modalHeader}
+                      modalFooter={this.state.modalFooter}
+                      disabled={this.state.disabled}
+                      showHide={this.state.showHide}
+                      valorCloseModal={this.valorCloseModal}
+                    />
+                }                
                 <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalShop">
                     {
                         this.state.loading === "hide" ?
@@ -383,8 +421,11 @@ class ModalShop extends React.Component {
                                     </FormGroup>
                                     <FormGroup className="top form-group col-sm-6">
                                         <Label for="proveedor">Proveedor:</Label>
-                                        <div className={this.state.divProveedor}>
-                                            <Select isSearchable="true" isDisabled={this.props.disabled} name="proveedor" value={this.state.arrayProveedorSelect} onChange={this.handleChangeProvider} options={this.props.aplication.dataGeneral.dataCountries.provider} />
+                                        <div className={this.state.divProveedor} style={{display:'flex', width:'100%'}}>
+                                            <div style={{flex:1}}>
+                                                <Select isSearchable="true" isDisabled={this.props.disabled} name="proveedor" value={this.state.arrayProveedorSelect} onChange={this.handleChangeProvider} options={this.props.aplication.dataGeneral.dataCountries.provider} />
+                                            </div>
+                                            <Button title="Agregar Proveedor" disabled={this.state.varDisabled} onClick={() => { this.openModal(4); }} id=""><AddCircle className="iconTable" /></Button>                                            
                                         </div>
                                         <div className="errorSelect">{this.state.divProveedorError}</div>
                                     </FormGroup>
@@ -527,7 +568,7 @@ class ModalShop extends React.Component {
     }
 }
 const mapStateToProps = state => ({
-  shop: state.shop.toJS(),
+  shop: state.shop.toJS(),  
   authData: state.auth,
   aplication: state.global
 });
@@ -540,6 +581,7 @@ const mapDispatchToProps = dispatch => ({
     removeProductAction: (shopId, productId, loteId) =>dispatch(removeProductAction(shopId, productId, loteId)),
     cleanProducts: () =>dispatch(cleanProducts()),
     actionProps: () =>dispatch(actionProps()),
+    search: (set)=>dispatch(search(set))
 });
 
 export default connect(

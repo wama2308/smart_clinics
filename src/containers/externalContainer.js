@@ -15,7 +15,7 @@ import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
 import { deleteRequest } from "../actions/externalAction";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog, search } from "../actions/aplicantionActions";
 import { GetDisabledPermits } from "../core/utils";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { allExternalStaff } from "../actions/externalAction";
@@ -37,6 +37,8 @@ class EnternalContainer extends React.Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set) 
     }
   }
 
@@ -82,6 +84,11 @@ class EnternalContainer extends React.Component {
     }
   };
 
+  componentWillUnmount() {
+    let set = ""  
+    this.props.search(set)
+  }
+  
   render() {
     const value = this.props.externalStaff;
     const result = this.filterData(value);
@@ -234,7 +241,8 @@ const mapDispatchToProps = dispatch => ({
   deleteData: (message, callback) =>
     dispatch(openConfirmDialog(message, callback)),
   allExternalStaff: () => dispatch(allExternalStaff()),
-  delete: obj => dispatch(deleteRequest(obj))
+  delete: obj => dispatch(deleteRequest(obj)),
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

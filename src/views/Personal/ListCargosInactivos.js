@@ -57,7 +57,7 @@ class ListCargosInactivos extends React.Component {
     const result = this.props.search
       ? arrayCargo.filter(cargo => {
           return (
-              cargo.label.toLowerCase().includes(this.props.search)
+              cargo.label.toLowerCase().includes(this.props.search.toLowerCase())
           );
         })
       : arrayCargo;

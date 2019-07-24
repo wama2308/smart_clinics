@@ -192,7 +192,7 @@ class ListTransferencias extends React.Component {
                 null
               }
             </tbody>
-            {this.props.length > 10 &&
+            {this.props.data.length > 10 &&
               <Pagination contador={this.props.data}
               page={page}
               rowsPerPage={rowsPerPage}

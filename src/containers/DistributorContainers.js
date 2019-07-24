@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import ListDistributor from "../views/Distributor/ListDistributor";
 import ListDistributorInactivo from "../views/Distributor/ListDistributorInactivo";
 import { LoadDistributorFunction, LoadDistributorIdFunction, DeleteDistributorAction, enableProviderFunction } from "../actions/DistributorActions";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog, search } from "../actions/aplicantionActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import classnames from "classnames";
 import Search from "../components/Select"
@@ -42,11 +42,19 @@ class DistributorContainers extends Component {
     });
   };
 
+  
+  componentWillUnmount() {
+    let set = ""
+    this.props.search(set)
+  }
+
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set) 
     }
   }
 
@@ -89,11 +97,7 @@ class DistributorContainers extends Component {
         <Row>
           <Col>
             <Card>
-              <CardHeader>Configuracion de Proveedor
-                
-                    <Search value={this.props.distributor} />
-              
-              </CardHeader>
+              <CardHeader>Configuracion de Proveedor</CardHeader>
               <CardBody>
                 {
                   this.props.distributor.get('loading') === 'hide' ?
@@ -115,7 +119,7 @@ class DistributorContainers extends Component {
                           <ListDistributor
                             distributorPermits={this.state.distributorPermits}
                             confirm={this.props.confirm}
-                            listDistributor={arrayClean}
+                            listDistributor={this.props.distributor.get("data")}
                             LoadDistributorIdFunction={this.props.LoadDistributorIdFunction}
                             DeleteDistributorAction={this.props.DeleteDistributorAction}
                             search={this.props.searchData}
@@ -125,7 +129,7 @@ class DistributorContainers extends Component {
                           <ListDistributorInactivo
                             distributorPermits={this.state.distributorPermits}
                             confirm={this.props.confirm}
-                            listDistributor={arrayClean}
+                            listDistributor={this.props.distributor.get("proveedoresInactivos")}
                             enableProviderFunction={this.props.enableProviderFunction}
                             search={this.props.searchData}
                           />
@@ -159,6 +163,7 @@ const mapDispatchToProps = dispatch => ({
   DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),
   enableProviderFunction: (distrbutorId) => dispatch(enableProviderFunction(distrbutorId)),
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
+  search: (set)=>dispatch(search(set))
 });
 
 export default connect(
