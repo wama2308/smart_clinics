@@ -72,7 +72,7 @@ class ListServices extends React.Component {
   }
 
   handleChangeSwitch = pos => event => {
-    this.props.setSwitchTableComisiones(pos, event.target.checked);        
+    this.props.setSwitchTableComisiones(pos, event.target.checked, this.props.tab, this.props.typePersonal);        
   };
 
   componentWillReceiveProps = props => {
@@ -92,7 +92,7 @@ class ListServices extends React.Component {
             disabled={this.props.disabled} 
             name="searchService" 
             id="searchService" 
-            onKeyUp={this.handlekeyCargo} 
+            onKeyUp={this.handlekeySearchService} 
             onChange={this.handleChange} 
             value={this.state.searchService} 
             type="text"             

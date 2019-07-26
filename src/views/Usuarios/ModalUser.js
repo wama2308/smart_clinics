@@ -5,7 +5,7 @@ import '../../components/style.css';
 import './Users.css';
 import jstz from 'jstz';
 import { connect } from "react-redux";
-import { ValidateEmailUserNoMasterFunction, deleteInfoUser, deleteUserIdView, addEmailStoreAction, saveUserNoMasterPersonalAction} from "../../actions/UserAction";
+import { ValidateEmailUserNoMasterFunction, deleteInfoUser, deleteUserIdView, addEmailStoreAction, saveUserNoMasterPersonalAction, addNombresStoreAction, addApellidosStoreAction, addUserNameStoreAction} from "../../actions/UserAction";
 import ModalInfoUserEmail from './ModalInfoUserEmail.js';
 import RolesPermisos from './RolesPermisos.js';
 import SucursalesList from './SucursalesList.js';
@@ -86,7 +86,7 @@ class ModalUser extends React.Component {
     testWama = () => {}
 
     handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target;        
         this.setState({
             [name]: value
         });
@@ -158,6 +158,7 @@ class ModalUser extends React.Component {
             loading:'show'
         });
         this.props.valorCloseModalRoles(false);
+        this.props.valorCloseModal(false);
         this.props.deleteUserIdView();
     }
 
@@ -170,6 +171,39 @@ class ModalUser extends React.Component {
         if(value !== ""){
             this.props.ValidateEmailUserNoMasterFunction(value);
             this.props.addEmailStoreAction(value);
+        }
+
+    }
+
+    pruebaOnBlurNombres = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value,            
+        });
+        if(value !== ""){
+            this.props.addNombresStoreAction(value);
+        }
+
+    }
+
+    pruebaOnBlurApellidos = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value,            
+        });
+        if(value !== ""){
+            this.props.addApellidosStoreAction(value);
+        }
+
+    }
+
+    pruebaOnBlurUserName = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value,            
+        });
+        if(value !== ""){
+            this.props.addUserNameStoreAction(value);
         }
 
     }
@@ -505,6 +539,10 @@ class ModalUser extends React.Component {
                 nombreUsuario: props.usersRoles.userIdView.username,
                 listSucursales: props.usersRoles.userIdView.sucursal,
             })
+        }else if (props.option === 0){
+            this.setState({
+                loading:'show'
+            });
         }
     }
 
@@ -657,17 +695,17 @@ class ModalUser extends React.Component {
                                 </FormGroup>
                                 <FormGroup className="top form-group col-sm-12">
                                     <Label for="nombres">Nombres:</Label>
-                                    <Input disabled={this.state.varDisabled} invalid={this.state.nombresInvalid} name="nombres" id="nombres" onKeyUp={this.handlekeyNombres} onChange={this.handleChange} value={this.state.nombres} type="text" placeholder="Nombres" />
+                                    <Input disabled={this.state.varDisabled} invalid={this.state.nombresInvalid} name="nombres" id="nombres" onKeyUp={this.handlekeyNombres} onChange={this.handleChange} value={this.state.nombres} type="text" placeholder="Nombres" onBlur={this.pruebaOnBlurNombres}/>
                                     <FormFeedback tooltip>{this.state.nombresError}</FormFeedback>
                                 </FormGroup>
                                 <FormGroup className="top form-group col-sm-12">
                                     <Label for="apellidos">Apellidos:</Label>
-                                    <Input disabled={this.state.varDisabled} invalid={this.state.apellidosInvalid} name="apellidos" id="apellidos" onKeyUp={this.handlekeyApellidos} onChange={this.handleChange} value={this.state.apellidos} type="text" placeholder="Apellidos" />
+                                    <Input disabled={this.state.varDisabled} invalid={this.state.apellidosInvalid} name="apellidos" id="apellidos" onKeyUp={this.handlekeyApellidos} onChange={this.handleChange} value={this.state.apellidos} type="text" placeholder="Apellidos" onBlur={this.pruebaOnBlurApellidos}/>
                                     <FormFeedback tooltip>{this.state.apellidosError}</FormFeedback>
                                 </FormGroup>
                                 <FormGroup className="top form-group col-sm-12">
                                     <Label for="nombreUsuario">Nombre de Usuario:</Label>
-                                    <Input disabled={this.state.varDisabled} invalid={this.state.nombreUsuarioInvalid} name="nombreUsuario" id="nombreUsuario" onKeyUp={this.handlekeyNombreUsuario} onChange={this.handleChange} value={this.state.nombreUsuario} type="text" placeholder="Nombre de Usuario" />
+                                    <Input disabled={this.state.varDisabled} invalid={this.state.nombreUsuarioInvalid} name="nombreUsuario" id="nombreUsuario" onKeyUp={this.handlekeyNombreUsuario} onChange={this.handleChange} value={this.state.nombreUsuario} type="text" placeholder="Nombre de Usuario" onBlur={this.pruebaOnBlurUserName}/>
                                     <FormFeedback tooltip>{this.state.nombreUsuarioError}</FormFeedback>
                                 </FormGroup>
                                 {
@@ -755,6 +793,9 @@ const mapDispatchToProps = dispatch => ({
   ValidateEmailUserNoMasterFunction: (email) => dispatch(ValidateEmailUserNoMasterFunction(email)),
   deleteInfoUser: (clean, exist) => dispatch(deleteInfoUser(clean, exist)),
   addEmailStoreAction: (email) => dispatch(addEmailStoreAction(email)),
+  addNombresStoreAction: (email) => dispatch(addNombresStoreAction(email)),
+  addApellidosStoreAction: (email) => dispatch(addApellidosStoreAction(email)),
+  addUserNameStoreAction: (email) => dispatch(addUserNameStoreAction(email)),
   alert: (type, message) => dispatch(openSnackbars(type, message)),
   confirmDeleteBranchOffices: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
   saveUserNoMasterPersonalAction: (data, email, userId, callback) =>dispatch(saveUserNoMasterPersonalAction(data, email, userId, callback)),
