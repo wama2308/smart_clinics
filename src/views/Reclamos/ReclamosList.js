@@ -24,7 +24,7 @@ class ReclamosList extends Component {
       position: 0,
       id: '',
       sucursal_id_now: '',
-      collapse : false
+      collapse: false
     }
   }
   openModal = (option, pos, id, sucursalId) => {
@@ -71,17 +71,17 @@ class ReclamosList extends Component {
   }
 
   toggle() {
-    if(this.state.collapse === false){
+    if (this.state.collapse === false) {
       this.setState({
         collapse: true
       });
-    }else{
+    } else {
       this.setState({
         collapse: false
       });
     }
   }
-  closeChat =() =>{
+  closeChat = () => {
     this.setState({
       collapse: false
     })
@@ -137,12 +137,14 @@ class ReclamosList extends Component {
           valorCloseModal={this.valorCloseModal}
         />
         <Chat show={this.state.collapse}
-        hide={this.closeChat}
+          hide={this.closeChat}
         />
-        <Button color="success"
-          onClick={() => { this.openModal(1); }}>
-          Agregar
+        <div style={{"marginBottom": "1.8%"}}>
+          <Button color="success"
+            onClick={() => { this.openModal(1); }}>
+            Agregar
         </Button>
+        </div>
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
@@ -191,7 +193,7 @@ class ReclamosList extends Component {
                         >
                           <Delete className="iconTable" />
                         </IconButton>
-                        <IconButton  onClick={() => this.toggle()} className="iconButtons">
+                        <IconButton onClick={() => this.toggle()} className="iconButtons">
                           <QuestionAnswer className="iconTable" />
                         </IconButton>
                       </div>
