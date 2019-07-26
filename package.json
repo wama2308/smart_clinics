@@ -35,6 +35,7 @@
     "date-fns": "^2.0.0-alpha.27",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "firebase": "^5.11.0",
     "flag-icon-css": "^3.0.0",
     "font-awesome": "^4.7.0",
     "formik": "^1.5.1",

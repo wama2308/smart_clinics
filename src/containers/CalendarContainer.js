@@ -2,8 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import Calendario from "../views/calendar/Calendario";
 import AddEvent from "../views/calendar/addEvent";
+import { setAgent, getAgent } from "../actions/agendaAction";
+import { connect } from "react-redux";
 
-export default class Calendar extends React.Component {
+class Calendar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -14,6 +16,11 @@ export default class Calendar extends React.Component {
       event: []
     };
   }
+
+  componentDidMount = () => {
+    this.props.getAgent();
+  };
+
   addEvent = obj => {
     this.setState({ start: obj.start, end: obj.end, open: true });
   };
@@ -27,30 +34,49 @@ export default class Calendar extends React.Component {
   };
 
   saveEvent = obj => {
-    const events = this.state.event;
+    const events = this.props.events
+      ? Object.values(this.props.events)
+      : [];
+
     events.push({
       start: this.state.start,
       end: this.state.end,
       ...obj
     });
-
-    this.setState({ event: events, open: false });
+    this.props.setAgent(events, () => {
+      this.setState({ start: "", end: "", open: false });
+    });
   };
 
   render() {
+    console.log("aca", this.props.events);
     return (
       <Container>
-        <AddEvent
-          {...this.state}
-          close={this.close}
-          change={this.changeEndOrStart}
-          saveEvent={this.saveEvent}
+        {this.state.open && (
+          <AddEvent
+            {...this.state}
+            close={this.close}
+            change={this.changeEndOrStart}
+            saveEvent={this.saveEvent}
+          />
+        )}
+        <Calendario
+          addEvent={this.addEvent}
+          event={this.props.events ? this.props.events : []}
         />
-        <Calendario addEvent={this.addEvent} event={this.state.event} />
       </Container>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  events: state.calendar.get("events")
+});
+
+export default connect(
+  mapStateToProps,
+  { setAgent, getAgent }
+)(Calendar);
 
 const Container = styled.div`
   background: #fff;

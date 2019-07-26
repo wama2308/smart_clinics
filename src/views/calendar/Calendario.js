@@ -6,19 +6,32 @@ import "moment/locale/es";
 
 const localizer = momentLocalizer(moment);
 
-console.log(localizer, "asdasd", moment);
-
 export default class Calendario extends React.Component {
-  state = {
-    events: []
+  dataTimeFix = values => {
+    console.log("casdasd", values);
+    if (!Object.values(values)) {
+      return [];
+    }
+    const array = [];
+    Object.values(values).map(data => {
+      array.push({
+        ...data,
+        end: data.end.toDate(),
+        start: data.start.toDate()
+      });
+    });
+
+    return array;
   };
 
   render() {
+    console.log(this.props.event);
+
     return (
       <Calendar
         selectable
         localizer={localizer}
-        events={this.props.event}
+        events={this.dataTimeFix(this.props.event)}
         culture={moment.locale("es")}
         views={["month", "day", "agenda"]}
         messages={{
@@ -28,7 +41,7 @@ export default class Calendario extends React.Component {
           month: "Mes",
           day: "Dia"
         }}
-        onSelectEvent={event => alert(event.title)}
+        onSelectEvent={event => this.props.addEvent(event)}
         onSelectSlot={this.props.addEvent}
       />
     );
