@@ -92,6 +92,14 @@ class UsersList extends React.Component {
     });
   };
 
+
+  valorCloseModal = valor => {
+    this.setState({
+      modal: valor,
+      option: 0
+    });
+  };
+
   valorCloseModalRoles = valor => {
     this.setState({
       modal: valor
@@ -150,6 +158,7 @@ class UsersList extends React.Component {
           arrayBranchOffices={this.props.arrayBranchOffices}
           roles={this.props.roles}
           valorCloseModalRoles={this.valorCloseModalRoles}
+          valorCloseModal={this.valorCloseModal}
           saveRolAction={this.props.saveRolAction}
           LoadRolIdFunction={this.props.LoadRolIdFunction}
           saveUserNoMasterAction={this.props.saveUserNoMasterAction}
@@ -246,18 +255,17 @@ class UsersList extends React.Component {
                   })
               : null}
           </tbody>
-        </Table>
-        {this.props.users.length > 10 && (
-          <div style={{ display: "flex", "justify-content": "flex-end" }}>
+          {
+            this.props.users.length > 10 && (            
             <Pagination
               contador={this.props.users}
               page={page}
               rowsPerPage={rowsPerPage}
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage}
-            />
-          </div>
-        )}
+            />            
+          )}
+        </Table>        
       </div>
     );
   }
