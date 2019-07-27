@@ -11,6 +11,7 @@ import VentasReducer from "./ventasReducer";
 import StoreReducer from "./StoreReducers";
 import ShopReducer from "./ShopReducers";
 import ConfigCommissionsReducer from "./CommissionesReducers";
+import calendarReducer from "./calendarReducer";
 
 export default combineReducers({
   auth: authReducer,
@@ -24,5 +25,6 @@ export default combineReducers({
   store: StoreReducer,
   shop: ShopReducer,
   ventas: VentasReducer,
-  configCommissions: ConfigCommissionsReducer
+  configCommissions: ConfigCommissionsReducer,
+  calendar: calendarReducer
 });
