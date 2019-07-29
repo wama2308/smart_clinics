@@ -17,11 +17,13 @@ export const setAgent = (obj, cb) => async dispatch => {
   const decoded = await decode(token);
   const ids = await getInitialBranchs(decoded);
 
+  console.log("dios mio", obj);
+
   agenda
     .add({
       ...ids,
       idUser: decoded.id,
-      events: obj
+      ...obj
     })
     .then(() => {
       cb();
@@ -37,15 +39,11 @@ export const getAgent = () => async dispatch => {
     .where("idMedicalCenter", "==", ids.idMedicalCenter)
     .where("idUser", "==", decoded.id)
     .onSnapshot(querySnaphot => {
-      let event = "";
+      let event = [];
       querySnaphot.forEach(values => {
-        if (values.data().events) {
-          console.log("data", values.data().events);
-          if (event === "") {
-            event = values.data().events;
-          } else {
-            event.push(...values.data().events);
-          }
+        console.log(values.data());
+        if (values.data()) {
+          event.push(values.data());
         }
       });
 

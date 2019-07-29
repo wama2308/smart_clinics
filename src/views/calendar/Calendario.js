@@ -8,7 +8,6 @@ const localizer = momentLocalizer(moment);
 
 export default class Calendario extends React.Component {
   dataTimeFix = values => {
-    console.log("casdasd", values);
     if (!Object.values(values)) {
       return [];
     }
@@ -25,8 +24,6 @@ export default class Calendario extends React.Component {
   };
 
   render() {
-    console.log(this.props.event);
-
     return (
       <Calendar
         selectable
