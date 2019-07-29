@@ -47,6 +47,11 @@ const configuration = {
       name: "Almacen",
       url: "/configuration/store",
       icon: "fa fa-home"
+    },
+    {
+      name: "Reclamos",
+      url: "/configuration/Reclamos",
+      icon: "fa fa-home"
     }
   ]
 };
