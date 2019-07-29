@@ -50,7 +50,7 @@ class ConfigComisionesContainer extends Component {
         <Row>
           <Col>
             <Card>
-              <CardHeader>Configuracion de Comisiones</CardHeader>
+              <CardHeader>Reglas para Comisiones</CardHeader>
               <CardBody>                              
               {
                 this.props.configCommissions.loading === 'hide' ?
@@ -58,12 +58,12 @@ class ConfigComisionesContainer extends Component {
                     <Nav tabs>
                       <NavItem>
                           <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                              Comisiones
+                              Reglas para Comisiones
                           </NavLink>
                       </NavItem>
                       <NavItem>
                           <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
-                              Comsiones Inactivas
+                              Reglas para Comisiones Inactivas
                           </NavLink>
                       </NavItem>                        
                     </Nav>

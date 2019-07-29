@@ -9,6 +9,7 @@ const editCommissionsGeneral = `${url}/api/editCommissionsGeneral`;
 const queryOneCommissionsGeneral = `${url}/api/queryOneCommissionsGeneral`;
 const disabledCommissionsGeneral = `${url}/api/disabledCommissionsGeneral`;
 const enabledCommissionsGeneral = `${url}/api/enabledCommissionsGeneral`;
+const selectExternalStaff = `${url}/api/selectExternalStaff`;
 
 export const LoadConfigCommissionsFunction = () => dispatch => {
   getDataToken()
@@ -16,20 +17,24 @@ export const LoadConfigCommissionsFunction = () => dispatch => {
     	axios.get(queryCommissionsGeneral, datos)
     	.then(res => {	
     		LoadServicesFunction(datos, arrayServices => {   	 
-		        dispatch({
-		          type: "LOAD_CONFIG_COMMISSIONS",
-		          payload: {
-		            loading: "hide",
-		            data: res.data,		            
+          LoadExternalStaffFunction(datos, arrayExternalStaff => {     
+  	        dispatch({
+  	          type: "LOAD_CONFIG_COMMISSIONS",
+  	          payload: {
+  	            loading: "hide",
+  	            data: res.data,		            
                 dataId:{},                                                        
-		            services: arrayServices,
-		            action:0
-				}
-			});      	
+  	            servicesCommission: arrayServices,
+                servicesPayment: arrayServices,
+                externalStaff: arrayExternalStaff,
+  	            action:0
+  			      }
+  	        });
+          });  
         });
   	   })
       .catch(error => {
-			console.log("Error consultando la api de la configuracion de comisiones",error.toString());
+			console.log("Error consultando la api de las reglas para las comisiones",error.toString());
       });
       
     })
@@ -59,7 +64,7 @@ export const LoadConfigCommissionIdFunction = (id) => dispatch => {
         })
         .catch(error => {
           console.log(
-            "Error consultando la api para consultar los detalles de la configuracion de comision por id",
+            "Error consultando la api para consultar los detalles de la regla para la comision por id",
             error.toString()
           );
         });
@@ -79,6 +84,21 @@ const LoadServicesFunction = (datos, execute) => {
     .catch(error => {
       console.log(
         "Error consultando la api para consultar los servicios",
+        error.toString()
+      );
+    });
+};
+
+const LoadExternalStaffFunction = (datos, execute) => {
+  axios
+    .get(selectExternalStaff, datos)
+    .then(res => {
+      //console.log(res.data);
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log(
+        "Error consultando la api para consultar el personal externo",
         error.toString()
       );
     });
@@ -113,6 +133,23 @@ export const cleanListServices = () => dispatch => {
     });
 };
 
+export const cleanListServicesTab = (tab) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "CLEAN_LIST_SERVICES_TAB",
+        payload: {
+          percentaje: 0,
+          confirm: false,
+          tab:tab
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 export const setPorcentajeTable = (pos, value) => dispatch => {
   getDataToken()
     .then(datos => {
@@ -129,14 +166,16 @@ export const setPorcentajeTable = (pos, value) => dispatch => {
     });
 };
 
-export const setSwitchTableComisiones = (pos, value) => dispatch => {
+export const setSwitchTableComisiones = (pos, value, tab, typePersonal) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_SWITCH_COMISIONES",
         payload: {
           pos: pos,
-          value: value          
+          value: value, 
+          tab: tab,
+          typePersonal:typePersonal          
         }
       });
     })
@@ -159,7 +198,7 @@ export const saveConfigCommissionsAction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {          
-          dispatch(openSnackbars("error", "Error guardando la configuracion de comision"));
+          dispatch(openSnackbars("error", "Error guardando la regla para la comision"));
         });
     })
     .catch(() => {
@@ -181,7 +220,7 @@ export const editConfigCommissionsAction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {          
-          dispatch(openSnackbars("error", "Error editando la configuracion de comision"));
+          dispatch(openSnackbars("error", "Error editando la regla para la comision"));
         });
     })
     .catch(() => {
@@ -201,10 +240,10 @@ export const DeleteConfigCommissionsAction = (id) => dispatch => {
         headers: datos.headers
       })
         .then(() => {
-          dispatch(openSnackbars("success", "Configuracion de comision eliminad con exito"));
+          dispatch(openSnackbars("success", "Regla para comision eliminada con exito"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error eliminando la configuracion de la comision"));
+          dispatch(openSnackbars("error", "Error eliminando la regla para la comision"));
         });
     })
     .catch(() => {
@@ -224,10 +263,10 @@ export const enableConfigCommissionsAction = (id) => dispatch => {
         headers: datos.headers
       })
         .then(() => {
-          dispatch(openSnackbars("success", "Configuracion de comision activada con exito"));
+          dispatch(openSnackbars("success", "Regla para comision activada con exito"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error activando la configuracion de comision"));
+          dispatch(openSnackbars("error", "Error activando la regla para la comision"));
         });
     })
     .catch(() => {

@@ -33,7 +33,7 @@ class ListStore extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Registrar Configuracion de Comision',
+        modalHeader: 'Registrar Regla para Comision',
         modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
@@ -43,7 +43,7 @@ class ListStore extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Configuracion de Comision',
+        modalHeader: 'Ver Regla para Comision',
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'hide',
@@ -53,7 +53,7 @@ class ListStore extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Configuracion de Comision',
+        modalHeader: 'Editar Regla para Comision',
         modalFooter: 'Editar',
         disabled: false,
         showHide: 'show',        
@@ -64,8 +64,8 @@ class ListStore extends React.Component {
 
   deleteRegister = (id) => {
     const message = {
-      title: "Eliminar Configuracion de Comision",
-      info: "¿Esta seguro que desea eliminar esta configuracion de comision?"
+      title: "Eliminar Regla para Comision",
+      info: "¿Esta seguro que desea eliminar esta regla para comision?"
     };
     this.props.confirm(message, res => {
       if (res) {
