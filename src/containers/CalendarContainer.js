@@ -34,16 +34,13 @@ class Calendar extends React.Component {
   };
 
   saveEvent = obj => {
-    const events = this.props.events
-      ? Object.values(this.props.events)
-      : [];
-
-    events.push({
+    const newEvent = {
       start: this.state.start,
       end: this.state.end,
       ...obj
-    });
-    this.props.setAgent(events, () => {
+    };
+
+    this.props.setAgent(newEvent, () => {
       this.setState({ start: "", end: "", open: false });
     });
   };

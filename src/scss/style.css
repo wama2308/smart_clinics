@@ -8891,19 +8891,12 @@ canvas {
     border: 0; }
     .sidebar .sidebar-form .form-control::placeholder {
       color: rgba(255, 255, 255, 0.7); }
-  .sidebar .sidebar-scroll {
+  .sidebar .sidebar-nav {
     position: relative;
     flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
     width: 200px; }
-  .sidebar .sidebar-nav {
-    position: relative;
-    flex: 1;
-    width: 200px; }
-  .sidebar > .sidebar-nav {
-    overflow-x: hidden;
-    overflow-y: auto; }
   .sidebar .nav {
     width: 200px;
     flex-direction: column;
@@ -9142,9 +9135,6 @@ canvas {
       top: 30px; }
   .sidebar-minimized .sidebar {
     z-index: 1019; }
-    .sidebar-minimized .sidebar .sidebar-scroll {
-      overflow: visible;
-      width: 50px; }
     .sidebar-minimized .sidebar .sidebar-nav {
       overflow: visible;
       width: 50px; }
