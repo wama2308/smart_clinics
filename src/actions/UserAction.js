@@ -594,6 +594,45 @@ export const addEmailStoreAction = email => dispatch => {
     });
 };
 
+export const addNombresStoreAction = nombres => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "ADD_NOMBRES_STORE",
+        payload: nombres
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const addApellidosStoreAction = apellidos => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "ADD_APELLIDOS_STORE",
+        payload: apellidos
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const addUserNameStoreAction = username => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "ADD_USERNAME_STORE",
+        payload: username
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 const UserRegisterLatestFunction = (email, execute) => {
   getPosts()
     .then(datos => {
@@ -650,14 +689,14 @@ export const saveUserNoMasterPersonalAction = (data, email, userId, callback) =>
         headers: datos.headers
       })
         .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
           UserRegisterLatestFunction(email, usuario => {
             dispatch({
               type: "LOAD_USUARIO_REGISTRADO_PERSONAL",
               payload: usuario
             });
-          });
-          callback();
-          dispatch(openSnackbars("success", "Operacion Exitosa"));
+          });          
           if(userId !== ""){
             //DeleteUserRegisterFunction(userId);
           }

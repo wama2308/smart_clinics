@@ -5,6 +5,7 @@ import { Delete, Edit, Visibility } from "@material-ui/icons";
 import ModalConfigCommissions from './ModalConfigComisiones.js';
 import Pagination from '../../components/Pagination';
 import { getArray, GetDisabledPermits } from '../../core/utils'
+import { number_format } from "../../core/utils";
 
 class ListStore extends React.Component {
   constructor(props) {
@@ -27,50 +28,48 @@ class ListStore extends React.Component {
 
   componentDidMount() { }
 
-  openModal = (option, pos, id, sucursalId) => {
+  openModal = (option, id) => {
     if (option === 1) {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Registrar Configuracion de Comision',
+        modalHeader: 'Registrar Regla para Comision',
         modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
       })
     } else if (option === 2) {
-      this.props.LoadStoreIdFunction(id, sucursalId);
+      this.props.LoadConfigCommissionIdFunction(id);
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Configuracion de Comision',
+        modalHeader: 'Ver Regla para Comision',
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'hide',
       })
     } else if (option === 3) {
-      this.props.LoadStoreIdFunction(id, sucursalId);
+      this.props.LoadConfigCommissionIdFunction(id);
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Configuracion de Comision',
+        modalHeader: 'Editar Regla para Comision',
         modalFooter: 'Editar',
         disabled: false,
-        showHide: 'show',
-        position: pos,
-        id: id,
-        sucursal_id_now: sucursalId
+        showHide: 'show',        
+        id: id,        
       })
     }
   }
 
-  deleteStore = (id, sucursalId) => {
+  deleteRegister = (id) => {
     const message = {
-      title: "Eliminar Almacen",
-      info: "¿Esta seguro que desea eliminar este almacen?"
+      title: "Eliminar Regla para Comision",
+      info: "¿Esta seguro que desea eliminar esta regla para comision?"
     };
     this.props.confirm(message, res => {
       if (res) {
-        this.props.DeleteStoreAction(id, sucursalId);
+        this.props.DeleteConfigCommissionsAction(id);
       }
     });
   }
@@ -92,7 +91,7 @@ class ListStore extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray(this.props.data)
+    const ArrayData = getArray(this.props.data.commissions)
 
     return (
       <div>      
@@ -108,6 +107,7 @@ class ListStore extends React.Component {
             disabled={this.state.disabled}
             showHide={this.state.showHide}
             valorCloseModal={this.valorCloseModal}
+            id={this.state.id}
           />
         )}
         <Button color="success"  onClick={() => { this.openModal(1); }}>Agregar</Button>
@@ -129,23 +129,23 @@ class ListStore extends React.Component {
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
-                  <td>{data.name}</td>
-                  <td>{data.branchoffice.label}</td>
-                  <td>{data.description}</td>
-                  <td>{data.description}</td>
+                  <td>{data.type_staff}</td>
+                  <td>{data.time}</td>
+                  <td>{data.payment_type}</td>
+                  <td>{number_format(data.amount_min, 2)}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
                         title="Ver Comision"
                         className="iconButtons"
-                        onClick={() => { this.openModal(2, data.number, data._id, data.branchoffice.value); }}>
+                        onClick={() => { this.openModal(2, data._id); }}>
                         <Visibility className="iconTable" />
                       </IconButton>
 
                       <IconButton aria-label="Delete"
                         title="Editar Comision"
                         className="iconButtons"
-                        onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}
+                        onClick={() => { this.openModal(3, data._id); }}
                         >
                         <Edit className="iconTable" />
                       </IconButton>
@@ -153,7 +153,7 @@ class ListStore extends React.Component {
                       <IconButton aria-label="Delete"
                         title="Eliminar Comision"
                         className="iconButtons"
-                        onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}
+                        onClick={() => { this.deleteRegister(data._id); }}
                         >
                         <Delete className="iconTable" />
                       </IconButton>
@@ -167,8 +167,8 @@ class ListStore extends React.Component {
             }
           </tbody>
           {
-            this.props.data.lenght > 10 &&
-              <Pagination contador={this.props.data}
+            this.props.data.commissions.length > 10 &&
+              <Pagination contador={this.props.data.commissions}
                 page={page}
                 rowsPerPage={rowsPerPage}
                 handleChangeRowsPerPage={this.handleChangeRowsPerPage}

@@ -2,31 +2,72 @@ import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
 
-const queryStoreBranchOffices = `${url}/api/queryStoreBranchOffices`;
+const queryCommissionsGeneral = `${url}/api/queryCommissionsGeneral`;
 const LoadServices = `${url}/api/LoadServices`;
+const createCommissionsGeneral = `${url}/api/createCommissionsGeneral`;
+const editCommissionsGeneral = `${url}/api/editCommissionsGeneral`;
+const queryOneCommissionsGeneral = `${url}/api/queryOneCommissionsGeneral`;
+const disabledCommissionsGeneral = `${url}/api/disabledCommissionsGeneral`;
+const enabledCommissionsGeneral = `${url}/api/enabledCommissionsGeneral`;
+const selectExternalStaff = `${url}/api/selectExternalStaff`;
 
 export const LoadConfigCommissionsFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
-    	axios.get(queryStoreBranchOffices, datos)
+    	axios.get(queryCommissionsGeneral, datos)
     	.then(res => {	
     		LoadServicesFunction(datos, arrayServices => {   	 
-		        dispatch({
-		          type: "LOAD_CONFIG_COMMISSIONS",
-		          payload: {
-		            loading: "hide",
-		            data: res.data,
-		            dataInactive: res.data,                                                            
-		            services: arrayServices,
-		            action:0
-				}
-			});      	
+          LoadExternalStaffFunction(datos, arrayExternalStaff => {     
+  	        dispatch({
+  	          type: "LOAD_CONFIG_COMMISSIONS",
+  	          payload: {
+  	            loading: "hide",
+  	            data: res.data,		            
+                dataId:{},                                                        
+  	            servicesCommission: arrayServices,
+                servicesPayment: arrayServices,
+                externalStaff: arrayExternalStaff,
+  	            action:0
+  			      }
+  	        });
+          });  
         });
   	   })
       .catch(error => {
-			console.log("Error consultando la api de la configuracion de comisiones",error.toString());
+			console.log("Error consultando la api de las reglas para las comisiones",error.toString());
       });
       
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const LoadConfigCommissionIdFunction = (id) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: queryOneCommissionsGeneral,
+        data: {
+          _id: id,          
+        },
+        headers: datos.headers
+      })
+        .then(res => {
+          dispatch({
+            type: "LOAD_CONFIG_COMMISSION_ID",
+            payload: {
+              data: res.data              
+            }
+          });
+        })
+        .catch(error => {
+          console.log(
+            "Error consultando la api para consultar los detalles de la regla para la comision por id",
+            error.toString()
+          );
+        });
     })
     .catch(() => {
       console.log("Problemas con el token");
@@ -48,12 +89,60 @@ const LoadServicesFunction = (datos, execute) => {
     });
 };
 
+const LoadExternalStaffFunction = (datos, execute) => {
+  axios
+    .get(selectExternalStaff, datos)
+    .then(res => {
+      //console.log(res.data);
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log(
+        "Error consultando la api para consultar el personal externo",
+        error.toString()
+      );
+    });
+};
+
 export const actionProps = () => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "ACTION_PROPS",
         payload: 1
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const cleanListServices = () => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "CLEAN_LIST_SERVICES",
+        payload: {
+          percentaje: 0,
+          confirm: false
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const cleanListServicesTab = (tab) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "CLEAN_LIST_SERVICES_TAB",
+        payload: {
+          percentaje: 0,
+          confirm: false,
+          tab:tab
+        }
       });
     })
     .catch(() => {
@@ -77,16 +166,108 @@ export const setPorcentajeTable = (pos, value) => dispatch => {
     });
 };
 
-export const setSwitchTableComisiones = (pos, value) => dispatch => {
+export const setSwitchTableComisiones = (pos, value, tab, typePersonal) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_SWITCH_COMISIONES",
         payload: {
           pos: pos,
-          value: value          
+          value: value, 
+          tab: tab,
+          typePersonal:typePersonal          
         }
       });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const saveConfigCommissionsAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: createCommissionsGeneral,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {          
+          dispatch(openSnackbars("error", "Error guardando la regla para la comision"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const editConfigCommissionsAction = (data, callback) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: editCommissionsGeneral,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {          
+          dispatch(openSnackbars("error", "Error editando la regla para la comision"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const DeleteConfigCommissionsAction = (id) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: disabledCommissionsGeneral,
+        data: {
+          _id: id          
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Regla para comision eliminada con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error eliminando la regla para la comision"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const enableConfigCommissionsAction = (id) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: enabledCommissionsGeneral,
+        data: {
+          _id: id
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Regla para comision activada con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error activando la regla para la comision"));
+        });
     })
     .catch(() => {
       console.log("Problemas con el token");
