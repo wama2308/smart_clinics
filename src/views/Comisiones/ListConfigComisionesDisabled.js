@@ -58,21 +58,27 @@ class ListStoreInactivos extends React.Component {
              <tr>
               <th className="text-left">Nro</th>
               <th className="text-left">Personal</th>
-              <th className="text-left">Tiempo</th>
-              <th className="text-left">Modo de Pago</th>
-              <th className="text-left">Minimo para Pago</th>              
+              <th className="text-left">Tiempo(dias)</th>
+              <th className="text-left">Tipo</th>
+              <th className="text-left">Condicion</th>              
+              <th className="text-left">Forma de pago</th>              
               <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {ArrayData ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+              let condition = "";
+              data.type_id === "5d1776e3b0d4a50b23931122" ?
+              condition = data.condition :
+              condition = number_format(data.condition, 2)+" "+this.props.current_simbol
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
                   <td>{data.type_staff}</td>
                   <td>{data.time}</td>
-                  <td>{data.payment_type}</td>
-                  <td>{number_format(data.amount_min, 2)}</td>
+                  <td>{data.type}</td>
+                  <td>{condition}</td>
+                  <td>{data.payment_type}</td>           
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
