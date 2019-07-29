@@ -40,10 +40,11 @@ export const getAgent = () => async dispatch => {
       let event = "";
       querySnaphot.forEach(values => {
         if (values.data().events) {
+          console.log("data", values.data().events);
           if (event === "") {
             event = values.data().events;
           } else {
-            event.push(values.data().events);
+            event.push(...values.data().events);
           }
         }
       });
