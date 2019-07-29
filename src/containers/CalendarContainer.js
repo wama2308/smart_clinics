@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Calendario from "../views/calendar/Calendario";
 import AddEvent from "../views/calendar/addEvent";
-import { setAgent, getAgent } from "../actions/agendaAction";
+import { setAgent, getAgent, editEvent } from "../actions/agendaAction";
 import { connect } from "react-redux";
 
 class Calendar extends React.Component {
@@ -13,6 +13,8 @@ class Calendar extends React.Component {
       open: false,
       start: null,
       end: null,
+      title: "",
+      description: "",
       event: []
     };
   }
@@ -22,7 +24,11 @@ class Calendar extends React.Component {
   };
 
   addEvent = obj => {
-    this.setState({ start: obj.start, end: obj.end, open: true });
+    if (!obj.id) {
+      this.setState({ start: obj.start, end: obj.end, open: true });
+    } else {
+      this.setState({ ...obj, open: true });
+    }
   };
 
   close = () => {
@@ -46,7 +52,6 @@ class Calendar extends React.Component {
   };
 
   render() {
-    console.log("aca", this.props.events);
     return (
       <Container>
         {this.state.open && (
@@ -55,6 +60,7 @@ class Calendar extends React.Component {
             close={this.close}
             change={this.changeEndOrStart}
             saveEvent={this.saveEvent}
+            editEvent={this.props.editEvent}
           />
         )}
         <Calendario
@@ -72,7 +78,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setAgent, getAgent }
+  { setAgent, getAgent, editEvent }
 )(Calendar);
 
 const Container = styled.div`

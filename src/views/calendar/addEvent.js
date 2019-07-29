@@ -12,6 +12,22 @@ export default class addEvent extends React.Component {
     description: ""
   };
 
+  eventEdit = () => {
+    const value = this.props;
+    this.props.editEvent(
+      {
+        title: value.title,
+        end: value.end,
+        start: value.start,
+        description: value.description
+      },
+      value.id,
+      () => {
+        this.props.close();
+      }
+    );
+  };
+
   render() {
     return (
       <Modal isOpen={this.props.open} toggle={this.props.close}>
@@ -20,9 +36,9 @@ export default class addEvent extends React.Component {
           <TextField
             id="standard-name"
             fullWidth
-            value={this.state.title}
+            value={this.props.title}
             placeholder="Añadadir titulo y una hora"
-            onChange={e => this.setState({ title: e.target.value })}
+            onChange={event => this.props.change("title", event.target.value)}
             margin="normal"
           />
           <div
@@ -58,21 +74,31 @@ export default class addEvent extends React.Component {
             fullWidth
             multiline
             rows="4"
-            value={this.state.description}
+            value={this.props.description}
             placeholder="Añade una descripcion"
-            onChange={e => this.setState({ description: e.target.value })}
+            onChange={event =>
+              this.props.change("description", event.target.value)
+            }
             margin="normal"
           />
         </ModalBody>
 
         <ModalFooter>
           <Button onClick={this.props.close}>Atras</Button>
-          <Button
-            color="success"
-            onClick={() => this.props.saveEvent(this.state)}
-          >
-            Save
-          </Button>
+          {!this.props.id && (
+            <Button
+              color="success"
+              onClick={() => this.props.saveEvent(this.state)}
+            >
+              Guardar
+            </Button>
+          )}
+
+          {this.props.id && (
+            <Button color="success" onClick={this.eventEdit}>
+              Editar
+            </Button>
+          )}
         </ModalFooter>
       </Modal>
     );

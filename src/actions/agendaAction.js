@@ -16,9 +16,6 @@ const getInitialBranchs = async decode => {
 export const setAgent = (obj, cb) => async dispatch => {
   const decoded = await decode(token);
   const ids = await getInitialBranchs(decoded);
-
-  console.log("dios mio", obj);
-
   agenda
     .add({
       ...ids,
@@ -40,10 +37,10 @@ export const getAgent = () => async dispatch => {
     .where("idUser", "==", decoded.id)
     .onSnapshot(querySnaphot => {
       let event = [];
-      querySnaphot.forEach(values => {
-        console.log(values.data());
+      querySnaphot.forEach((values, key) => {
+        console.log(values.id);
         if (values.data()) {
-          event.push(values.data());
+          event.push({ id: values.id, ...values.data() });
         }
       });
 
@@ -51,5 +48,16 @@ export const getAgent = () => async dispatch => {
         type: "GET_AGENDA",
         payload: event
       });
+    });
+};
+
+export const editEvent = (obj, id, callback) => dispatch => {
+  agenda
+    .doc(id)
+    .update({
+      ...obj
+    })
+    .then(() => {
+      callback();
     });
 };
