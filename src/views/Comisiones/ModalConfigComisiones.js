@@ -333,9 +333,10 @@ class ModalConfigCommissions extends React.Component {
   handleSave = event => {
     event.preventDefault();
     const isValid = this.validate();
-    if (isValid) {
+    if (isValid) {      
       let amount = 0;
       let modoPago = "";
+      let externalStaffId = "";
       if(this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710"){        
         if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930011"){
           amount = this.state.montoComision;
@@ -344,7 +345,9 @@ class ModalConfigCommissions extends React.Component {
         }else{
           amount = 0;
         }
-        modoPago = this.state.arrayModoPagoSelect.value;
+        modoPago = this.state.arrayModoPagoSelect.value;        
+      }else{
+        externalStaffId = this.state.arrayPersonalExterno.value;
       }      
 
       if(this.props.option === 1)
@@ -352,13 +355,17 @@ class ModalConfigCommissions extends React.Component {
         this.setState({loading:'show'})                                    
         this.props.saveConfigCommissionsAction(
           {
-            time: this.state.arrayTiempoSelect.value,
             type_staff: this.state.arrayTipoPersonaSelect.value,
-            payment_type: modoPago,
+            time: this.state.tiempoDias,
+            type: this.state.arrayTipo.value,
             amount_min: this.state.montoMinimoComision,
+            number_people: this.state.nroPersonasReferenciadas,
+            external_staff_id: externalStaffId,
+            services_commission: this.props.configCommissions.servicesCommission,
+            payment_type: modoPago,            
             amount: amount,
             others: this.state.especifique,
-            services: this.props.configCommissions.servicesCommission,
+            services_payment: this.props.configCommissions.servicesPayment,
             timeZ: jstz.determine().name()
           },
           () => {

@@ -285,7 +285,7 @@ class ModalShop extends React.Component {
         };
         this.props.confirm(message, res => {
             if (res) {
-                if(loteId !== ""){
+                if(loteId !== "0"){
                     this.props.removeProductAction(this.props.shop_id, id, loteId);
                     this.props.deleteProductsFunction(key, precio_cant, precio_imp, total);
                 }else{

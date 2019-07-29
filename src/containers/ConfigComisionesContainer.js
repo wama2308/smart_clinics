@@ -73,14 +73,16 @@ class ConfigComisionesContainer extends Component {
                           confirm={this.props.confirm}
                           data={this.props.configCommissions.data}
                           DeleteConfigCommissionsAction={this.props.DeleteConfigCommissionsAction}                          
-                          LoadConfigCommissionIdFunction={this.props.LoadConfigCommissionIdFunction}                          
+                          LoadConfigCommissionIdFunction={this.props.LoadConfigCommissionIdFunction}     
+                          current_simbol={this.props.aplication.dataGeneral.dataCountries.current_simbol}
                         />
                       </TabPane>
                       <TabPane tabId="2">
                         <ListConfigComisionesDisabled 
                           confirm={this.props.confirm}                      
                           data={this.props.configCommissions.data}                          
-                          enableConfigCommissionsAction={this.props.enableConfigCommissionsAction}                                                    
+                          enableConfigCommissionsAction={this.props.enableConfigCommissionsAction}  
+                          current_simbol={this.props.aplication.dataGeneral.dataCountries.current_simbol}                                                  
                         />      
                       </TabPane>                          
                     </TabContent>
