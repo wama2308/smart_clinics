@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
-import { TextField } from "@material-ui/core";
+import { TextField, IconButton } from "@material-ui/core";
+import { Delete, Clear } from "@material-ui/icons";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 const es = require("date-fns/locale/es");
@@ -28,10 +29,43 @@ export default class addEvent extends React.Component {
     );
   };
 
+  delete = () => {
+    const obj = {
+      title: "Evento",
+      info: "Desea eliminar este evento?"
+    };
+    this.props.confirm(obj, res => {
+      if (res) {
+        this.props.deleteItem(this.props.id, () => {
+          this.props.close();
+        });
+      }
+    });
+  };
+
   render() {
     return (
       <Modal isOpen={this.props.open} toggle={this.props.close}>
-        <ModalHeader toggle={this.props.close}>Agregar evento</ModalHeader>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 12,
+            borderBottom: "1px solid #00000059"
+          }}
+        >
+          <h5 className="modal-title">Agregar evento</h5>
+          <div>
+            <IconButton onClick={this.delete}>
+              <Delete />
+            </IconButton>
+            <IconButton onClick={this.props.close}>
+              <Clear />
+            </IconButton>
+          </div>
+        </div>
         <ModalBody style={{ minHeight: 300 }}>
           <TextField
             id="standard-name"

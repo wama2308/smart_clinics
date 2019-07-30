@@ -61,3 +61,12 @@ export const editEvent = (obj, id, callback) => dispatch => {
       callback();
     });
 };
+
+export const deleteItem = (id, callback) => dispatch => {
+  agenda
+    .doc(id)
+    .delete()
+    .then(() => {
+      callback();
+    });
+};
