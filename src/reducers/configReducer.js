@@ -24,6 +24,10 @@ const configReducer = (state = Map(), action) => {
     case "SET_DATA_BRACHN_OFFICE": {
       return setEdit(state, action.payload);
     }
+
+    case "GET_ALL_SERVICE": {
+      return setData(state, "allService", action.payload);
+    }
     default:
       return state;
   }

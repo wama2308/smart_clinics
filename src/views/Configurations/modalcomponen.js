@@ -30,7 +30,11 @@ import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { setDataSucursal, branchEdit } from "../../actions/configAction";
+import {
+  setDataSucursal,
+  branchEdit,
+  getInitialService
+} from "../../actions/configAction";
 import Autocomplete from "react-google-autocomplete";
 import Geosuggest from "react-geosuggest";
 import MapComponent from "./map.js";
@@ -38,6 +42,7 @@ import { MedicalInitialValues, MedicalValidacion } from "../constants";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
 import jstz from "jstz";
+import InitialService from "./initialService";
 import { Formik } from "formik";
 import { filterProvinces } from "../../core/utils";
 
@@ -47,6 +52,7 @@ class ModalComponent extends React.Component {
     contactos: false,
     multimedia: false,
     sociales: false,
+    servicios: false,
     localizacion: false,
     dataContactos: [],
     isMarkerShown: false,
@@ -62,11 +68,14 @@ class ModalComponent extends React.Component {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      this.setState({
-        ...obj,
-        initialLocation: {
-          ...obj
-        }
+
+      this.props.getService(() => {
+        this.setState({
+          ...obj,
+          initialLocation: {
+            ...obj
+          }
+        });
       });
     });
   };
@@ -205,7 +214,7 @@ class ModalComponent extends React.Component {
       aplication
     } = this.props;
 
-    console.log("desde aqui", this.props);
+    console.log("desde aqui", this.props.medicalCenter);
     const values = this.props.dataEdit
       ? this.props.dataEdit
       : MedicalInitialValues;
@@ -442,8 +451,32 @@ class ModalComponent extends React.Component {
                         </FormGroup>
                       </div>
                       <hr />
-
                       {/* ---------------------------------------------------------divider---------------------------- */}
+                      <div className="form-group col-lg-12 Widht">
+                        <Button
+                          color="primary"
+                          onClick={() =>
+                            this.setState({
+                              servicios: !this.state.servicios
+                            })
+                          }
+                          style={{ marginBottom: "1rem" }}
+                        >
+                          Servicios Iniciales
+                        </Button>
+
+                        <Collapse isOpen={this.state.servicios}>
+                          <InitialService
+                            data={
+                              this.props.medicalCenter.allService
+                                ? this.props.medicalCenter.allService
+                                : []
+                            }
+                          />
+                        </Collapse>
+                      </div>
+
+                      <hr />
 
                       <div className="form-group col-lg-12 Widht">
                         <Button
@@ -1008,7 +1041,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
   setDataSucursal: (data, cb) => dispatch(setDataSucursal(data, cb)),
-  branchEdit: (data, callback) => dispatch(branchEdit(data, callback))
+  branchEdit: (data, callback) => dispatch(branchEdit(data, callback)),
+  getService: callback => dispatch(getInitialService(callback))
 });
 
 export default connect(

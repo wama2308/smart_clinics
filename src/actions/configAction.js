@@ -10,6 +10,7 @@ const saveSucursal = `${url}/api/saveBranchOffices`;
 const deleteSucursalApi = `${url}/api/deleteBranchOffices`;
 const editBranchUrl = `${url}/api/editBranchOffices`;
 const enabledBranchOffices = `${url}/api/enabledBranchOffices`;
+const getAllDServices = `${url}/api/allServices`;
 
 export const loadMedicalcenterAction = () => dispatch => {
   getDataToken().then(datos => {
@@ -138,7 +139,14 @@ export const SetDataSave = data => {
   };
 };
 
-//       name: this.state.Sucursal,
-//       idCountry: this.state.pais,
-//       provinceid: this.state.valorProvince,
-//       timeZ: this.state.timeZ
+export const getInitialService = callback => dispatch => {
+  getDataToken().then(token => {
+    axios.get(getAllDServices, token).then(res => {
+      dispatch({
+       type:"GET_ALL_SERVICE",
+       payload:res.data,
+      })
+      callback();
+    });
+  });
+};

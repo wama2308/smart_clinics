@@ -10,5 +10,4 @@ export const getDataToken = () => {
     };
     resolve(datos);
   });
-
 };
