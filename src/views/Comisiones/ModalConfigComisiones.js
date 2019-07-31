@@ -199,7 +199,7 @@ class ModalConfigCommissions extends React.Component {
     let divModoPagoError = '';
     let divEspecifique = '';
     let divEspecifiqueError = '';
-    let divPorcentajeComision = '';    
+    let divPorcentajeComision = '0';    
     let divPorcentajeComisionError = '';
     let divNroPersonasReferenciadas = '';
     let divNroPersonasReferenciadasError = '';
@@ -380,13 +380,17 @@ class ModalConfigCommissions extends React.Component {
         this.props.editConfigCommissionsAction(
           {
             _id: this.props.id,
-            time: this.state.arrayTiempoSelect.value,
             type_staff: this.state.arrayTipoPersonaSelect.value,
-            payment_type: modoPago,
+            time: this.state.tiempoDias,
+            type: this.state.arrayTipo.value,
             amount_min: this.state.montoMinimoComision,
+            number_people: this.state.nroPersonasReferenciadas,
+            external_staff_id: externalStaffId,
+            services_commission: this.props.configCommissions.servicesCommission,
+            payment_type: modoPago,            
             amount: amount,
             others: this.state.especifique,
-            services: this.props.configCommissions.servicesCommission,
+            services_payment: this.props.configCommissions.servicesPayment,
             timeZ: jstz.determine().name()
           },
           () => {
@@ -424,7 +428,7 @@ class ModalConfigCommissions extends React.Component {
       divTipoPersonaError: "",
       hideModoPago:hideModoPago,
       montoComision:'0.00',
-      porcentajeComision:'',
+      porcentajeComision:'0',
       especifique:'',
       hideEspecifique: hideEspecifique,
       hideMontoComision: hideMontoComision,
@@ -500,15 +504,13 @@ class ModalConfigCommissions extends React.Component {
       hideMontoComision: hideMontoComision,
       hidePorcentajeComision: hidePorcentajeComision,
       montoComision:'0.00',
-      porcentajeComision:'',
+      porcentajeComision:'0',
       especifique:''
     });
     this.props.cleanListServicesTab(this.state.activeTab);
   };  
 
-  componentWillReceiveProps = props => {
-    console.log("componentWillReceiveProps servicesPayment", props.configCommissions.servicesPayment)
-    console.log("componentWillReceiveProps servicesCommission", props.configCommissions.servicesCommission)
+  componentWillReceiveProps = props => {    
     if(props.option === 1){
       this.setState({
         loading:'hide'
@@ -520,48 +522,91 @@ class ModalConfigCommissions extends React.Component {
         let hideEspecifique = "";
         let hideMontoComision = "";
         let hidePorcentajeComision = "";
+        let hidePersonalExterno = "";
+        let hideTipoNroPersonas = "";
+        let hideTipoMontoMinimo = "";
+        let montoMinimoComision = "0.00";
+        let nroPersonasReferenciadas = "0";
+        let montoComision = "0.00";
+        let porcentajeComision = "0";
+        let especifique = "0";
+        let arrayPersonalExterno = null;
         if(props.configCommissions.dataId.type_staff.value === "5d1776e3b0d4a50b23936710"){
           hideModoPago = "hide";
           hideEspecifique = 'hide';
           hideMontoComision = "hide";
           hidePorcentajeComision = "hide";
+          hidePersonalExterno = "show";
+          arrayPersonalExterno = props.configCommissions.dataId.external_staff; 
         }else{
           hideModoPago = "show";
           hideEspecifique = 'hide';
           hideMontoComision = "hide";
           hidePorcentajeComision = "hide";
+          hidePersonalExterno = "hide";
+          arrayPersonalExterno = null;
         }        
 
         if(props.configCommissions.dataId.payment_type.value === "5d1776e3b0d4a50b23930044"){
           hideEspecifique = 'show';
           hideMontoComision = "hide";
           hidePorcentajeComision = "hide";
+          montoComision = "0.00";
+          porcentajeComision = "0";
+          especifique = props.configCommissions.dataId.other;
         }else if(props.configCommissions.dataId.payment_type.value === "5d1776e3b0d4a50b23930011"){
           hideEspecifique = 'hide';
           hideMontoComision = "show";
           hidePorcentajeComision = "hide";
+          montoComision = number_format(props.configCommissions.dataId.amount, 2);
+          porcentajeComision = "0";
+          especifique = "";
         }else if(props.configCommissions.dataId.payment_type.value === "5d1776e3b0d4a50b23930022"){
           hideEspecifique = 'hide';
           hideMontoComision = "hide";
           hidePorcentajeComision = "show";
+          montoComision = "0.00";
+          porcentajeComision = props.configCommissions.dataId.amount;
+          especifique = "";
         }else{
           hideEspecifique = 'hide';
           hideMontoComision = "hide";
           hidePorcentajeComision = "hide";
+          montoComision = "0.00";
+          porcentajeComision = "0";
+          especifique = "";
         }    
 
+        if(props.configCommissions.dataId.type.value === "5d1776e3b0d4a50b23931122"){
+          hideTipoNroPersonas = "Show";
+          hideTipoMontoMinimo = 'hide';      
+          montoMinimoComision = "0.00";
+          nroPersonasReferenciadas = props.configCommissions.dataId.condition;
+        }else{
+          hideTipoNroPersonas = "hide";
+          hideTipoMontoMinimo = 'show';      
+          montoMinimoComision = number_format(props.configCommissions.dataId.condition, 2);
+          nroPersonasReferenciadas = "0";
+        }  
+
         this.setState({
+          hideTipoNroPersonas: hideTipoNroPersonas,
+          hideTipoMontoMinimo: hideTipoMontoMinimo,
+          hidePersonalExterno: hidePersonalExterno,
           hideModoPago:hideModoPago,      
           hideEspecifique: hideEspecifique,
           hideMontoComision: hideMontoComision,
           hidePorcentajeComision: hidePorcentajeComision,
           arrayTipoPersonaSelect: props.configCommissions.dataId.type_staff,
-          arrayTiempoSelect: props.configCommissions.dataId.time,
-          montoMinimoComision: number_format(props.configCommissions.dataId.amount_min, 2),
-          montoComision: number_format(props.configCommissions.dataId.amount, 2),
+          tiempoDias: props.configCommissions.dataId.time,
+          arrayTipo: props.configCommissions.dataId.type,
+          montoMinimoComision: montoMinimoComision,
+          nroPersonasReferenciadas: nroPersonasReferenciadas,
+          arrayPersonalExterno: arrayPersonalExterno,
           arrayModoPagoSelect: props.configCommissions.dataId.payment_type,
-          porcentajeComision: number_format(props.configCommissions.dataId.amount, 2),
-          especifique: props.configCommissions.dataId.other,
+          montoComision: montoComision,
+          porcentajeComision: porcentajeComision,
+          especifique: especifique,          
           loading:'hide'
         });
         this.props.actionProps();
@@ -636,15 +681,7 @@ class ModalConfigCommissions extends React.Component {
       }        
   }
 
-  render() {
-    /*let dataService = [];
-    if(this.state.arrayTipoPersonaSelect){
-      if(this.state.activeTab === "1" && this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710"){
-        dataService = this.props.configCommissions.servicesCommission;    
-      }else if(this.state.activeTab === "2"){
-        dataService = this.props.configCommissions.servicesPayment;
-      }
-    }*/
+  render() {    
     return (
       <span>
         <Modal
@@ -885,32 +922,7 @@ class ModalConfigCommissions extends React.Component {
                         }
                       </TabPane>                          
                     </TabContent>
-                  </div>  
-                  {
-                   /* (this.state.arrayTipoPersonaSelect && 
-                      this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710") ?
-                    <ListServices
-                      data = {this.props.configCommissions.services}
-                      option = {this.props.option}
-                      typePersonal = {this.state.arrayTipoPersonaSelect.value}
-                      setPorcentajeTable = {this.props.setPorcentajeTable}
-                      setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
-                      disabled = {this.props.disabled}
-                    />
-                    :
-                    (this.state.arrayModoPagoSelect &&
-                    this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930033") &&
-                    <ListServices
-                      data = {this.props.configCommissions.services}
-                      option = {this.props.option}
-                      typePersonal = {this.state.arrayTipoPersonaSelect.value}
-                      setPorcentajeTable = {this.props.setPorcentajeTable}
-                      setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
-                      disabled = {this.props.disabled}
-                    />*/
-                    
-                  }               
-                  
+                  </div>                    
                 </form>
               </ModalBody>
               {
