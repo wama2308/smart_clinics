@@ -3,7 +3,8 @@ import { Map } from 'immutable'
 const LoadConfigCommissionIdFunction = (state, payload) => {
 	let estado = state.toJS();
 	estado.dataId = payload.data;			
-	estado.services = payload.data.services;			
+	estado.servicesCommission = payload.data.services_commissions;			
+	estado.servicesPayment = payload.data.services_payments;			
 	return Map(estado);
 }
 
