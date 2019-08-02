@@ -21,8 +21,8 @@ export const loadMedicalcenterAction = () => dispatch => {
           type: "LOAD_MEDICAL_CENTER",
           payload: {
             loading: "hide",
-            ...res.data.medical_center,
-            licenses: res.data.licenses_array
+            ...res.data
+
           }
         });
       })
@@ -143,10 +143,17 @@ export const getInitialService = callback => dispatch => {
   getDataToken().then(token => {
     axios.get(getAllDServices, token).then(res => {
       dispatch({
-       type:"GET_ALL_SERVICE",
-       payload:res.data,
-      })
+        type: "GET_ALL_SERVICE",
+        payload: res.data
+      });
       callback();
     });
   });
+};
+
+export const addCheck = id => {
+  return {
+    type: "ADD_SERVICE",
+    payload: id
+  };
 };

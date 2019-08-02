@@ -1,5 +1,7 @@
 import React from "react";
 import { Table } from "reactstrap";
+
+import { Checkbox } from "@material-ui/core";
 import { FaFileAlt } from "react-icons/fa";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility } from "@material-ui/icons";
@@ -27,7 +29,6 @@ export default class InitialService extends React.Component {
           );
         })
       : arrayData;
-
     return (
       <div>
         <div
@@ -49,7 +50,6 @@ export default class InitialService extends React.Component {
                   <th style={{ width: "10%" }}>Nro</th>
                   <th style={{ width: "30%" }}>Servicio</th>
                   <th style={{ width: "30%" }}>Categoria</th>
-                  <th style={{ width: "15%" }}>Modificado</th>
                   <th style={{ minWidth: 154, textAlign: "center" }}>
                     Acciones
                   </th>
@@ -59,7 +59,6 @@ export default class InitialService extends React.Component {
                 {result
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(service => {
-                    console.log("aca", service);
                     return (
                       <tr key={service.number}>
                         <td scope="row" style={{ width: "10%" }}>
@@ -67,58 +66,20 @@ export default class InitialService extends React.Component {
                         </td>
                         <td style={{ width: "30%" }}>{service.serviceName}</td>
                         <td style={{ width: "30%" }}>{service.category}</td>
-                        <td style={{ width: "15%" }}>
-                          {service.status === false ? "NO" : "SI"}
-                        </td>
-                        <td style={{ width: "15%" }}>
-                          <div className="float-left">
-                            <a title="Ver servicio original">
-                              <IconButton
-                                aria-label="Delete"
-                                className="iconButtons"
-                                onClick={() => {
-                                  this.openModal(
-                                    service.licenseId,
-                                    service.serviceId,
-                                    1
-                                  );
-                                }}
-                              >
-                                <FaFileAlt className="iconTable" />
-                              </IconButton>
-                            </a>
-                            <a title="Ver servicio modificada">
-                              <IconButton
-                                aria-label="Delete"
-                                className="iconButtons"
-                                onClick={() => {
-                                  this.openModal(
-                                    service.licenseId,
-                                    service.serviceId,
-                                    2
-                                  );
-                                }}
-                              >
-                                <Visibility className="iconTable" />
-                              </IconButton>
-                            </a>
-                            <a title="Modificar servicio">
-                              <IconButton
-                                className="iconButtons"
-                                aria-label="Delete"
-                                //disabled={updateDisabled}
-                                onClick={() => {
-                                  this.openModal(
-                                    service.licenseId,
-                                    service.serviceId,
-                                    3
-                                  );
-                                }}
-                              >
-                                <Edit className="iconTable" />
-                              </IconButton>
-                            </a>
-                          </div>
+                        <td
+                          style={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <Checkbox
+                            checked={service.confirm}
+                            value="checkedB"
+                            color="primary"
+                            onChange={() =>
+                              this.props.addCheck(service.serviceId)
+                            }
+                            inputProps={{
+                              "aria-label": "secondary checkbox"
+                            }}
+                          />
                         </td>
                       </tr>
                     );
