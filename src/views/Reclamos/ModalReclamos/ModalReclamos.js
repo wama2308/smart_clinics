@@ -7,12 +7,18 @@ import Select from 'react-select';
 import { ModalFooter } from 'reactstrap';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
+import { cleanReclamos, saveReclamosAction } from '../../../actions/reclamosAction';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 class ModalReclamos extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ...InitalState
+      ...InitalState,
+      motivo: '',
+      motivoError: '',
+      motivoInvalid: false,
     }
   }
 
@@ -35,6 +41,7 @@ class ModalReclamos extends Component {
       loading: "show"
     });
     this.props.valorCloseModal(false);
+    this.props.cleanReclamos();
   };
 
   validate = () => {
@@ -50,11 +57,14 @@ class ModalReclamos extends Component {
     let divVisitadorSelect = ""
     let divVisitadorSelectError = "";
 
-    if (this.state.arraySucursalesSelect === null) {
+    let motivoError = "";
+    let motivoInvalid = false;
+
+    if (this.state.arraySucursalesSelect === null || this.state.arraySucursalesSelect.length === 0) {
       divSucursalesSelectError = "¡Seleccione la sucursal!";
       divSucursalesSelect = "borderColor";
     }
-    if (this.state.arrayCentroMedicoSelect === null) {
+    if (this.state.arrayCentroMedicoSelect === null || this.state.arrayCentroMedicoSelect.length === 0) {
       divCentroMedicoSelectError = "¡Seleccione el Centro Medico!";
       divCentroMedicoSelect = "borderColor"
     }
@@ -62,12 +72,16 @@ class ModalReclamos extends Component {
       descripcionError = "¡Ingrese la descripcion!";
       descripcionInvalid = true;
     }
-    if (this.state.arrayVisitadorSelect === null) {
+    if (this.state.arrayVisitadorSelect === null || this.state.arrayVisitadorSelect.length === 0) {
       divVisitadorSelectError = "¡Seleccione el Visitador!";
       divVisitadorSelect = "borderColor"
     }
+    if (this.state.motivo === "") {
+      motivoError = "¡Ingrese el Motivo!";
+      motivoInvalid = true;
+    }
 
-    if (divCentroMedicoSelectError || divSucursalesSelectError || descripcionError || divVisitadorSelectError) {
+    if (divCentroMedicoSelectError || divSucursalesSelectError || descripcionError || divVisitadorSelectError || motivoError) {
       this.setState({
         divSucursalesSelectError,
         divSucursalesSelect,
@@ -76,7 +90,9 @@ class ModalReclamos extends Component {
         divVisitadorSelectError,
         divVisitadorSelect,
         divCentroMedicoSelect,
-        divCentroMedicoSelectError
+        divCentroMedicoSelectError,
+        motivoError,
+        motivoInvalid
       });
       return false;
     }
@@ -90,19 +106,23 @@ class ModalReclamos extends Component {
     });
   };
 
-  handleChangeSucursalesSelect = arraySucursalesSelect => {
-    this.setState({
-      arraySucursalesSelect,
-      divSucursalesSelect: "",
-      divSucursalesSelectError: ""
-    });
-  };
-
   handleChangeCentroMedicoSelect = arrayCentroMedicoSelect => {
     this.setState({
       arrayCentroMedicoSelect,
+      arraySucursales: arrayCentroMedicoSelect.branchoffices,
       divCentroMedicoSelect: "",
-      divCentroMedicoSelectError: ""
+      divCentroMedicoSelectError: "",
+      arraySucursalesSelect: [],
+      arrayVisitadorSelect: []
+    });
+  };
+
+  handleChangeSucursalesSelect = arraySucursalesSelect => {
+    this.setState({
+      arraySucursalesSelect,
+      arrayVisitador: arraySucursalesSelect.visitor,
+      divSucursalesSelect: "",
+      divSucursalesSelectError: "",
     });
   };
 
@@ -113,7 +133,44 @@ class ModalReclamos extends Component {
       divVisitadorSelectError: '',
     });
   };
-  
+
+
+  handleSaveUser = (event) => {
+    event.preventDefault();
+    const isValid = this.validate();
+    if (isValid) {
+      if (this.props.option === 1) {
+        this.setState({ loading: 'hide' })
+        this.props.saveReclamosAction(
+          {
+            medical_center_id: this.state.arrayCentroMedicoSelect.value,
+            branchoffice_id: this.state.arraySucursalesSelect.value,
+            visitor_id: this.state.arrayVisitadorSelect.value,
+            rason: this.state.motivo,
+            claim: this.state.descripcion
+
+          },
+          () => {
+            this.closeModal();
+            this.setState({
+              ...InitalState,
+              motivo: '',
+              motivoError: '',
+              motivoInvalid: false,
+            })
+          }
+        )
+      }
+    }
+  }
+
+  handlekeyTitulo = event => {
+    this.setState({
+      motivoError: "",
+      motivoInvalid: false
+    });
+  }
+
   render() {
     return (
       <span>
@@ -121,100 +178,130 @@ class ModalReclamos extends Component {
           isOpen={this.props.modal}
           toggle={this.closeModal}
           className="ModalStore">
-          <div>
-            <ModalHeader toggle={this.closeModal}>
-              {this.props.modalHeader}</ModalHeader>
-            <ModalBody className="Scroll">
-              <form>
-                <div className="row">
-                  <FormGroup className="top form-group col-sm-6">
-                    <Label for="sucursales">Centro Medico</Label>
-                    <div className={this.state.divCentroMedicoSelect}>
-                      <Select
-                        isSearchable="true"
-                        isDisabled={this.props.disabled}
-                        name="sucursales"
-                        value={this.state.arrayCentroMedicoSelect}
-                        onChange={this.handleChangeCentroMedicoSelect}
-                      //options={this.props.branchOfficces}
+
+          {this.state.loading === "show" ?
+            <div>
+              <ModalHeader toggle={this.closeModal}>
+                {this.props.modalHeader}</ModalHeader>
+              <ModalBody className="Scroll">
+                <form onSubmit={this.handleSaveUser.bind(this)}>
+                  <div className="row">
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="CentroMedico">Centro Medico</Label>
+                      <div className={this.state.divCentroMedicoSelect}>
+                        <Select
+                          isSearchable="true"
+                          isDisabled={this.props.disabled}
+                          name="CentroMedico"
+                          value={this.state.arrayCentroMedicoSelect}
+                          onChange={this.handleChangeCentroMedicoSelect}
+                          options={this.props.branchOffices}
+                          id="CentroMedico"
+                        />
+                      </div>
+                      <div className="errorSelect">
+                        {this.state.divCentroMedicoSelectError}
+                      </div>
+                    </FormGroup>
+
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="sucursales">Sucursales</Label>
+                      <div className={this.state.divSucursalesSelect}>
+                        <Select
+                          isSearchable="true"
+                          isDisabled={this.props.disabled}
+                          name="sucursales"
+                          value={this.state.arraySucursalesSelect}
+                          onChange={this.handleChangeSucursalesSelect}
+                          options={this.state.arraySucursales}
+                          id="sucursales"
+                        />
+                      </div>
+                      <div className="errorSelect">
+                        {this.state.divSucursalesSelectError}
+                      </div>
+                    </FormGroup>
+
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="visitador">Visitador</Label>
+                      <div className={this.state.divVisitadorSelect}>
+                        <Select
+                          isSearchable="true"
+                          isDisabled={this.props.disabled}
+                          name="visitador"
+                          value={this.state.arrayVisitadorSelect}
+                          onChange={this.handleVisitadorSelect}
+                          options={this.state.arrayVisitador}
+                          id="visitador"
+                        />
+                      </div>
+                      <div className="errorSelect">
+                        {this.state.divVisitadorError}
+                      </div>
+                    </FormGroup>
+
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="motivo">Titulo:</Label>
+                      <Input disabled={this.props.disabled}
+                        invalid={this.state.motivoInvalid}
+                        name="motivo"
+                        id="motivo"
+                        onKeyUp={this.handlekeyTitulo}
+                        onChange={this.handleChange}
+                        value={this.state.motivo}
+                        type="text"
+                        placeholder="Titulo" />
+                      <FormFeedback tooltip>{this.state.motivoError}</FormFeedback>
+                    </FormGroup>
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="descripcion">Descripcion:</Label>
+                      <Input
+                        disabled={this.props.disabled}
+                        invalid={this.state.descripcionInvalid}
+                        name="descripcion"
+                        id="descripcion"
+                        onKeyUp={this.handlekeyDescripcion}
+                        onChange={this.handleChange}
+                        value={this.state.descripcion}
+                        type="textarea"
+                        placeholder="Descripcion"
                       />
-                    </div>
-                    <div className="errorSelect">
-                      {this.state.divCentroMedicoSelectError}
-                    </div>
-                  </FormGroup>
-                  <FormGroup className="top form-group col-sm-6">
-                    <Label for="sucursales">Sucursales</Label>
-                    <div className={this.state.divSucursalesSelect}>
-                      <Select
-                        isSearchable="true"
-                        isDisabled={this.props.disabled}
-                        name="sucursales"
-                        value={this.state.arraySucursalesSelect}
-                        onChange={this.handleChangeSucursalesSelect}
-                      //options={this.props.branchOfficces}
-                      />
-                    </div>
-                    <div className="errorSelect">
-                      {this.state.divSucursalesSelectError}
-                    </div>
-                  </FormGroup>
-                  <FormGroup className="top form-group col-sm-6">
-                    <Label for="sucursales">Visitador</Label>
-                    <div className={this.state.divVisitadorSelect}>
-                      <Select
-                        isSearchable="true"
-                        isDisabled={this.props.disabled}
-                        name="sucursales"
-                        value={this.state.arrayVisitadorSelect}
-                        onChange={this.handleVisitadorSelect}
-                      //options={this.props.branchOfficces}
-                      />
-                    </div>
-                    <div className="errorSelect">
-                      {this.state.divVisitadorError}
-                    </div>
-                  </FormGroup>
-                  <FormGroup className="top form-group col-sm-6">
-                    <Label for="descripcion">Descripcion:</Label>
-                    <Input
-                      disabled={this.props.disabled}
-                      invalid={this.state.descripcionInvalid}
-                      name="descripcion"
-                      id="descripcion"
-                      onKeyUp={this.handlekeyDescripcion}
-                      onChange={this.handleChange}
-                      value={this.state.descripcion}
-                      type="textarea"
-                      placeholder="Descripcion"
-                    />
-                    <FormFeedback tooltip>
-                      {this.state.descripcionError}
-                    </FormFeedback>
-                  </FormGroup>
-                </div>
-              </form>
-            </ModalBody>
-            <ModalFooter>
-              <Button className="" color="danger" onClick={this.closeModal}>
-                Cancelar
+                      <FormFeedback tooltip>
+                        {this.state.descripcionError}
+                      </FormFeedback>
+                    </FormGroup>
+                  </div>
+                </form>
+              </ModalBody>
+              <ModalFooter>
+                <Button className="" color="danger" onClick={this.closeModal}>
+                  Cancelar
                 </Button>
-              <Button
-                className={this.props.showHide}
-                color="primary"
-                onClick={this.handleSaveAlmacen}
-              >
-                {this.props.modalFooter}
-              </Button>
-            </ModalFooter>
-          </div>
+                <Button
+                  className={this.props.showHide}
+                  color="primary"
+                  onClick={this.handleSaveUser}
+                >
+                  {this.props.modalFooter}
+                </Button>
+              </ModalFooter>
+            </div> :
+            <div style={{ height: "55vh" }}>
+              <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
+            </div>
+          }
         </Modal>
       </span>
     );
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  cleanReclamos: () => dispatch(cleanReclamos()),
+  saveReclamosAction: (data, callback) => dispatch(saveReclamosAction(data, callback))
+})
+
 export default connect(
   null,
-  null
+  mapDispatchToProps
 )(ModalReclamos);

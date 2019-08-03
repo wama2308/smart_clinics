@@ -8,15 +8,20 @@ import { CardBody } from 'reactstrap';
 import ReclamosList from '../views/Reclamos/ReclamosList';
 import { connect } from 'react-redux';
 import Chat from '../views/Reclamos/Chat';
+import { LoadSelectReclamosFuction } from '../actions/reclamosAction';
 
 class ReclamosContainer extends Component {
   constructor(props) {
     super(props);
-    this.state ={
-      show: true
+    this.state = {
+      show: true,
+      arraySelect: []
     }
   }
-  
+  componentDidMount() {
+    this.props.LoadSelectReclamosFuction()
+  }
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -25,15 +30,26 @@ class ReclamosContainer extends Component {
             <Card style={{ height: "83vh" }}>
               <CardHeader>Reclamos</CardHeader>
               <CardBody>
-                <ReclamosList />
+                <ReclamosList
+                  reclamos={this.props.reclamos.brachOffices}
+                  list={this.props.reclamos.reclamosAll}
+                  
+                />
               </CardBody>
             </Card>
           </Col>
         </Row>
-       
+
       </div>
     );
   }
 }
+const mapDispatchToProps = dispatch => ({
+  LoadSelectReclamosFuction: () => dispatch(LoadSelectReclamosFuction())
+})
 
-export default connect(null, null) (ReclamosContainer)
+const mapStateToProps = state => ({
+  reclamos: state.reclamos.toJS()
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReclamosContainer)

@@ -12,6 +12,7 @@ import StoreReducer from "./StoreReducers";
 import ShopReducer from "./ShopReducers";
 import ConfigCommissionsReducer from "./CommissionesReducers";
 import calendarReducer from "./calendarReducer";
+import ReclamosReducer from "./reclamosReducer"
 
 export default combineReducers({
   auth: authReducer,
@@ -26,5 +27,6 @@ export default combineReducers({
   shop: ShopReducer,
   ventas: VentasReducer,
   configCommissions: ConfigCommissionsReducer,
-  calendar: calendarReducer
+  calendar: calendarReducer,
+  reclamos: ReclamosReducer
 });
