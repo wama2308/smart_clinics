@@ -22,7 +22,7 @@ import { connect } from "react-redux";
 class DefaultLayout extends Component {
   render() {
     const navigation = getMenu(this.props.menu);
-    console.log("jjjj", navigation);
+
     return (
       <div className="app">
         <AppHeader fixed>

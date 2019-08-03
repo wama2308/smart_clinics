@@ -255,6 +255,13 @@ const routes = [
     name: "Informacion de paciente",
     component: PatientContainer
   },
+  {
+    name: "Reclamos",
+    url: "/reclamos",
+    icon: "fa fa-bullhorn",
+    component: ReclamosContainer
+  },
+
   { path: "/theme", exact: true, name: "Theme", component: Colors },
   { path: "/theme/colors", name: "Colors", component: Colors },
   { path: "/theme/typography", name: "Typography", component: Typography },
@@ -312,13 +319,7 @@ const routes = [
   { path: "/notifications/badges", name: "Badges", component: Badges },
   { path: "/notifications/modals", name: "Modals", component: Modals },
   { path: "/widgets", name: "Widgets", component: Widgets },
-  { path: "/charts", name: "Charts", component: Charts },
-  {
-    name: "Reclamos",
-    url: "/reclamos",
-    icon: "fa fa-bullhorn",
-    component: ReclamosContainer
-   }
+  { path: "/charts", name: "Charts", component: Charts }
 ];
 
 export default routes;

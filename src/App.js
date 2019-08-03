@@ -52,6 +52,7 @@ class App extends Component {
   };
 
   render() {
+    console.log(this.props.logged, this.props.location.pathname);
     if (this.props.logged && this.props.location.pathname === "/auth") {
       return <Redirect to="/dashboard" />;
     } else if (
@@ -59,6 +60,8 @@ class App extends Component {
       this.props.location.pathname !== "/auth"
     ) {
       return <Redirect to="/auth" />;
+    } else if (this.props.logged && this.props.location.pathname === "/") {
+      return <Redirect to="/dashboard" />;
     }
     return (
       <div>
