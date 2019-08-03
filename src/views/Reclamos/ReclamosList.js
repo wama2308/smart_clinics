@@ -9,6 +9,8 @@ import ModalReclamos from './ModalReclamos/ModalReclamos';
 import { Button } from 'reactstrap';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
+import LightBox from '../../components/LightBox';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class ReclamosList extends Component {
   constructor(props) {
@@ -88,42 +90,9 @@ class ReclamosList extends Component {
   }
 
   render() {
-    const prueba = [
-      {
-        "numero": 1,
-        "username": "Pruena1",
-        "email": ["prueba1@gamil.com"],
-        "centromedico": "centro1",
-        "sucursal": "sucursal1",
-        "visitador": "1visitador"
-      },
-      {
-        "numero": 2,
-        "username": "Pruena2",
-        "email": ["prueba2@gamil.com"],
-        "centromedico": "centro1",
-        "sucursal": "sucursal1",
-        "visitador": "1visitador"
-      },
-      {
-        "numero": 3,
-        "username": "Pruena3",
-        "email": ["prueba3@gamil.com"],
-        "centromedico": "centro1",
-        "sucursal": "sucursal1",
-        "visitador": "1visitador"
-      },
-      {
-        "numero": 4,
-        "username": "Pruena4",
-        "email": ["prueba4@gamil.com"],
-        "centromedico": "centro1",
-        "sucursal": "sucursal1",
-        "visitador": "1visitador"
-      }
-    ]
     return (
       <div>
+        <LightBox />
         <ModalReclamos
           option={this.state.option}
           modal={this.state.modal}
@@ -133,78 +102,85 @@ class ReclamosList extends Component {
           showHide={this.state.showHide}
           id={this.state.id}
           sucursal_id_now={this.state.sucursal_id_now}
-          branchOfficces={this.props.branchOfficces}
+          branchOffices={this.props.reclamos}
           valorCloseModal={this.valorCloseModal}
         />
         <Chat show={this.state.collapse}
           hide={this.closeChat}
         />
-        <div style={{"marginBottom": "1.8%"}}>
+
+        <div style={{ "marginBottom": "1.8%" }}>
           <Button color="success"
-            onClick={() => { this.openModal(1); }}>
+            onClick={() => this.openModal(1)}>
             Agregar
         </Button>
         </div>
-        <Table hover responsive borderless>
-          <thead className="thead-light">
-            <tr>
-              <th style={{ width: "2%" }}>Nro</th>
-              <th style={{ width: "10%" }}>Usuario</th>
-              <th style={{ width: "10%" }}>Correo</th>
-              <th style={{ width: "10%" }}>Centro Medico</th>
-              <th style={{ width: "10%" }}>Sucursal</th>
-              <th style={{ width: "10%" }}>Visitador</th>
-              <th style={{ width: "10%" }}>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              prueba ? prueba.map(prueba => {
-                return (
-                  <tr key={prueba.numero}>
-                    <td>{prueba.numero}</td>
-                    <td>{prueba.username}</td>
-                    <td>{prueba.email[0]}</td>
-                    <td>{prueba.centromedico}</td>
-                    <td>{prueba.sucursal}</td>
-                    <td>{prueba.visitador}</td>
-                    <td style={{ 'minWidth': "205px" }}>
-                      <div className="float-left" >
-                        <IconButton aria-label="Delete"
-                          title="Ver Almacen"
-                          className="iconButtons"
-                        //onClick={() => { this.openModal(2, data.number, data._id, data.branchoffice.value); }}
-                        >
-                          <Visibility className="iconTable" />
-                        </IconButton>
+        <div className="row">
+          <div className="form-group col-sm-12">
+            <Table hover responsive borderless>
+              <thead className="thead-light">
+                <tr>
+                  <th style={{ width: "10%" }}>Centro Medico Emitente</th>
+                  <th style={{ width: "10%" }}>Centro Medico Receptor</th>
+                  <th style={{ width: "10%" }}>Sucursal que Emite</th>
+                  <th style={{ width: "10%" }}>Sucursal que Recive</th>
+                  <th style={{ width: "10%" }}>Visitador</th>
+                  <th style={{ width: "10%" }}>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  this.props.list ? this.props.list.map((list, key) => {
+                    return (
+                      <tr key={key}>
+                        <td>{list.medical_center_transmitter}</td>
+                        <td>{list.medical_center_receiver}</td>
+                        <td>{list.branchoffice_transmitter}</td>
+                        <td>{list.branchoffice_receiver}</td>
+                        <td>{list.visitor}</td>
+                        <td style={{ 'minWidth': "205px" }}>
+                          <div className="float-left" >
+                            <IconButton aria-label="Delete"
+                              title="Ver Reclamo"
+                              className="iconButtons"
+                            //onClick={() => { this.openModal(2, data.number, data._id, data.branchoffice.value); }}
+                            >
+                              <Visibility className="iconTable" />
+                            </IconButton>
 
-                        <IconButton aria-label="Delete"
-                          title="Editar Almacen"
-                          className="iconButtons"
-                        //onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}
-                        >
-                          <Edit className="iconTable" />
-                        </IconButton>
+                            <IconButton aria-label="Delete"
+                              title="Editar Reclamo"
+                              className="iconButtons"
+                            //onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}
+                            >
+                              <Edit className="iconTable" />
+                            </IconButton>
 
-                        <IconButton aria-label="Delete"
-                          title="Eliminar Almacen"
-                          className="iconButtons"
-                        //onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}
-                        >
-                          <Delete className="iconTable" />
-                        </IconButton>
-                        <IconButton onClick={() => this.toggle()} className="iconButtons">
-                          <QuestionAnswer className="iconTable" />
-                        </IconButton>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              }) : null
-            }
-          </tbody>
+                            <IconButton aria-label="Delete"
+                              title="Eliminar Reclamo"
+                              className="iconButtons"
+                            //onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}
+                            >
+                              <Delete className="iconTable" />
+                            </IconButton >
+                            <IconButton onClick={() => this.toggle()} className="iconButtons">
+                              <QuestionAnswer className="iconTable" />
+                            </IconButton>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  }) :
+                    <div style={{ height: "55vh" }}>
+                      <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
+                    </div>
 
-        </Table>
+                }
+              </tbody>
+
+            </Table>
+          </div>
+        </div>
       </div>
     );
   }
