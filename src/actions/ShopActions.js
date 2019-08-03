@@ -609,7 +609,7 @@ export const removeProductAction = (shopId, productId, loteId) => dispatch => {
 
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error eliminando el almacen"));
+          dispatch(openSnackbars("error", "Error eliminando el producto"));
         });
     })
     .catch(() => {

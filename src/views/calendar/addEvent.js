@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
-import { TextField } from "@material-ui/core";
+import { TextField, IconButton } from "@material-ui/core";
+import { Delete, Clear } from "@material-ui/icons";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 const es = require("date-fns/locale/es");
@@ -12,17 +13,66 @@ export default class addEvent extends React.Component {
     description: ""
   };
 
+  eventEdit = () => {
+    const value = this.props;
+    this.props.editEvent(
+      {
+        title: value.title,
+        end: value.end,
+        start: value.start,
+        description: value.description
+      },
+      value.id,
+      () => {
+        this.props.close();
+      }
+    );
+  };
+
+  delete = () => {
+    const obj = {
+      title: "Evento",
+      info: "Desea eliminar este evento?"
+    };
+    this.props.confirm(obj, res => {
+      if (res) {
+        this.props.deleteItem(this.props.id, () => {
+          this.props.close();
+        });
+      }
+    });
+  };
+
   render() {
     return (
       <Modal isOpen={this.props.open} toggle={this.props.close}>
-        <ModalHeader toggle={this.props.close}>Agregar evento</ModalHeader>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 12,
+            borderBottom: "1px solid #00000059"
+          }}
+        >
+          <h5 className="modal-title">Agregar evento</h5>
+          <div>
+            <IconButton onClick={this.delete}>
+              <Delete />
+            </IconButton>
+            <IconButton onClick={this.props.close}>
+              <Clear />
+            </IconButton>
+          </div>
+        </div>
         <ModalBody style={{ minHeight: 300 }}>
           <TextField
             id="standard-name"
             fullWidth
-            value={this.state.title}
+            value={this.props.title}
             placeholder="Añadadir titulo y una hora"
-            onChange={e => this.setState({ title: e.target.value })}
+            onChange={event => this.props.change("title", event.target.value)}
             margin="normal"
           />
           <div
@@ -58,21 +108,31 @@ export default class addEvent extends React.Component {
             fullWidth
             multiline
             rows="4"
-            value={this.state.description}
+            value={this.props.description}
             placeholder="Añade una descripcion"
-            onChange={e => this.setState({ description: e.target.value })}
+            onChange={event =>
+              this.props.change("description", event.target.value)
+            }
             margin="normal"
           />
         </ModalBody>
 
         <ModalFooter>
           <Button onClick={this.props.close}>Atras</Button>
-          <Button
-            color="success"
-            onClick={() => this.props.saveEvent(this.state)}
-          >
-            Save
-          </Button>
+          {!this.props.id && (
+            <Button
+              color="success"
+              onClick={() => this.props.saveEvent(this.state)}
+            >
+              Guardar
+            </Button>
+          )}
+
+          {this.props.id && (
+            <Button color="success" onClick={this.eventEdit}>
+              Editar
+            </Button>
+          )}
         </ModalFooter>
       </Modal>
     );

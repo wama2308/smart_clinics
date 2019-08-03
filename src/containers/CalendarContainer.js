@@ -2,7 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import Calendario from "../views/calendar/Calendario";
 import AddEvent from "../views/calendar/addEvent";
-import { setAgent, getAgent } from "../actions/agendaAction";
+import {
+  setAgent,
+  getAgent,
+  editEvent,
+  deleteItem
+} from "../actions/agendaAction";
+import { openConfirmDialog } from "../actions/aplicantionActions";
 import { connect } from "react-redux";
 
 class Calendar extends React.Component {
@@ -13,6 +19,8 @@ class Calendar extends React.Component {
       open: false,
       start: null,
       end: null,
+      title: "",
+      description: "",
       event: []
     };
   }
@@ -22,11 +30,22 @@ class Calendar extends React.Component {
   };
 
   addEvent = obj => {
-    this.setState({ start: obj.start, end: obj.end, open: true });
+    if (!obj.id) {
+      this.setState({ start: obj.start, end: obj.end, open: true });
+    } else {
+      this.setState({ ...obj, open: true });
+    }
   };
 
   close = () => {
-    this.setState({ open: false });
+    this.setState({
+      start: "",
+      end: "",
+      title: "",
+      description: "",
+      open: false,
+      id: null
+    });
   };
 
   changeEndOrStart = (name, value) => {
@@ -34,22 +53,25 @@ class Calendar extends React.Component {
   };
 
   saveEvent = obj => {
-    const events = this.props.events
-      ? Object.values(this.props.events)
-      : [];
-
-    events.push({
+    const newEvent = {
       start: this.state.start,
       end: this.state.end,
-      ...obj
-    });
-    this.props.setAgent(events, () => {
-      this.setState({ start: "", end: "", open: false });
+      title: this.state.title,
+      description: this.state.description
+    };
+
+    this.props.setAgent(newEvent, () => {
+      this.setState({
+        start: "",
+        end: "",
+        title: "",
+        description: "",
+        open: false
+      });
     });
   };
 
   render() {
-    console.log("aca", this.props.events);
     return (
       <Container>
         {this.state.open && (
@@ -58,6 +80,9 @@ class Calendar extends React.Component {
             close={this.close}
             change={this.changeEndOrStart}
             saveEvent={this.saveEvent}
+            editEvent={this.props.editEvent}
+            deleteItem={this.props.deleteItem}
+            confirm={this.props.openConfirmDialog}
           />
         )}
         <Calendario
@@ -75,7 +100,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setAgent, getAgent }
+  { setAgent, getAgent, editEvent, deleteItem, openConfirmDialog }
 )(Calendar);
 
 const Container = styled.div`

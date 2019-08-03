@@ -109,8 +109,6 @@ export default class MedicalCenter extends React.Component {
       this.state.selectedCountry
     );
     const disabled2 = GetDisabledPermits(this.props.medicalPermits, "Update");
-
-    console.log("permisos", this.props.medicalPermits);
     const disabled = this.state.loading === false || disabled2 ? true : false;
     return (
       <div>

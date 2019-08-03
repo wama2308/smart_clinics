@@ -41,7 +41,7 @@ const imageValidator=(value)=>{
  export const MedicalValidacion = yup.object().shape({
    name: yup.string().required(data.require),
    code: yup.string().required(data.require),
-   direccion: yup
+   address: yup
      .string()
      .label("Direccion")
      .required(data.require),

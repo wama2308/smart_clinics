@@ -16,12 +16,11 @@ const getInitialBranchs = async decode => {
 export const setAgent = (obj, cb) => async dispatch => {
   const decoded = await decode(token);
   const ids = await getInitialBranchs(decoded);
-
   agenda
     .add({
       ...ids,
       idUser: decoded.id,
-      events: obj
+      ...obj
     })
     .then(() => {
       cb();
@@ -37,14 +36,11 @@ export const getAgent = () => async dispatch => {
     .where("idMedicalCenter", "==", ids.idMedicalCenter)
     .where("idUser", "==", decoded.id)
     .onSnapshot(querySnaphot => {
-      let event = "";
-      querySnaphot.forEach(values => {
-        if (values.data().events) {
-          if (event === "") {
-            event = values.data().events;
-          } else {
-            event.push(values.data().events);
-          }
+      let event = [];
+      querySnaphot.forEach((values, key) => {
+        console.log(values.id);
+        if (values.data()) {
+          event.push({ id: values.id, ...values.data() });
         }
       });
 
@@ -52,5 +48,25 @@ export const getAgent = () => async dispatch => {
         type: "GET_AGENDA",
         payload: event
       });
+    });
+};
+
+export const editEvent = (obj, id, callback) => dispatch => {
+  agenda
+    .doc(id)
+    .update({
+      ...obj
+    })
+    .then(() => {
+      callback();
+    });
+};
+
+export const deleteItem = (id, callback) => dispatch => {
+  agenda
+    .doc(id)
+    .delete()
+    .then(() => {
+      callback();
     });
 };

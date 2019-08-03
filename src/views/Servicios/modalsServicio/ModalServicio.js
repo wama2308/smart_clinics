@@ -36,6 +36,7 @@ import Cleave from "cleave.js/react";
 import jstz from "jstz";
 import * as yup from "yup";
 import AddField from "./addField";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import styled from "styled-components";
 
 class ModalServicio extends React.Component {
@@ -184,7 +185,15 @@ class ModalServicio extends React.Component {
       <Modal isOpen={open} toggle={close} className="Modal">
         {this.state.loading === "show" && (
           <div align="center" className={"show"} style={{ padding: "5%" }}>
-            <img src="assets/loader.gif" width="30%" />
+            <CircularProgress
+            style={{
+              position: " absolute",
+              height: 40,
+              top: "45%",
+              right: "50%",
+              zIndex: 2
+            }}
+          />
           </div>
         )}
         {this.state.loading === "hide" && (
