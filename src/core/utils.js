@@ -270,11 +270,9 @@ export const GetDisabledPermits = (permits, type) => {
 };
 
 export const getArray = (props) => {
-  if(!props || typeof props === "object"){
+  if(!props){
     return []
   }
-
-  console.log("aca",props)
   const ArrayData = []
   props.map((data, key) => {
     ArrayData.push({
