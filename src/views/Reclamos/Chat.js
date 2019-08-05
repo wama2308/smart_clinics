@@ -6,6 +6,7 @@ import { HighlightOff, AddCircleOutline, Send } from '@material-ui/icons';
 import { IconButton, withStyles } from '@material-ui/core';
 import { Input } from 'reactstrap';
 import "../../components/style.css";
+import LightBox from '../../components/LightBox';
 
 class Chat extends Component {
   constructor(props) {
@@ -14,13 +15,15 @@ class Chat extends Component {
       collapse: this.props.show,
       fotoInvalid: false,
       fotoError: '',
-      foto: null
+      foto: null,
+      message: "",
+      box: false
     };
   }
 
   fileHandlerFoto = event => {
     event.preventDefault();
-    if (event.target.files[0].size > 25000) {
+    if (event.target.files[0].size > 250000) {
       this.setState({
         fotoError: 'El tamaño de la imagen no esta permitido ',
         fotoInvalid: true,
@@ -51,11 +54,29 @@ class Chat extends Component {
     }
   }
 
+  viewPhoto = (img) =>{
+   if (this.state.box === false) {
+    this.setState({
+      box: true,
+    })
+   }else{
+      this.setState({
+      box: true
+    })
+   }
+  }
+
+  hangleSend =() =>{
+    this.setState({
+      message:""
+    })
+  }
+
   render() {
-    console.log(this.state.foto);
 
     return (
       <div>
+        <LightBox hola={this.state.box} foto={this.state.foto}/>
         <Collapse isOpen={this.props.show}>
           <Card style={style.chat}>
             <CardHeader>
@@ -75,8 +96,10 @@ class Chat extends Component {
             <CardBody style={style.body}>
               <div style={style.primary}>
                 <div style={style.secondary}>
-                  <div style={style.tertiary}>
-                    45445454545445454545454544544545454
+                  <div style={style.tertiary} onClick={()=>this.viewPhoto(this.state.foto)}>
+                    {
+                      this.state.foto != null && <img alt="foto" style={{ width: 100, height: 100 }} className="image" src={"data:image/jpeg;" + this.state.foto} />
+                    }
                   </div>
                 </div>
               </div>
@@ -84,7 +107,7 @@ class Chat extends Component {
             <CardFooter style={style.footer} >
               <form>
                 <div style={{ "display": "flex" }}>
-                  <Input style={style.input}></Input>
+                  <Input style={style.input} onChange={(event) => this.setState({ message: event.target.value })}></Input>
                   <Input style={style.photo}
                     id="text-button-file"
                     className="top"
@@ -92,7 +115,7 @@ class Chat extends Component {
                     accept="image/*"
                     onChange={this.fileHandlerFoto}
                   />
-                  <IconButton style={style.send}>
+                  <IconButton style={style.send} onClick={this.hangleSend}>
                     <Send style={style.icon} />
                   </IconButton>
                   <label htmlFor="text-button-file">
@@ -129,7 +152,7 @@ const style = {
     "background": "",
   },
   input: {
-    "maxHeight": "25px",
+    "maxHeight": "27px",
     "borderRadius": "48px",
     "marginRight": "2px",
     "width": "11.6rem"
@@ -174,10 +197,10 @@ const style = {
     "display": "flex",
     "marginTop": "6%"
   },
-  icon:{
+  icon: {
     "fontSize": "20px"
   },
-  send:{
+  send: {
     "marginBottom": "8px",
     "padding": "3px"
   }
