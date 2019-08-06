@@ -20,7 +20,7 @@ export const cleanReclamos = () => dispatch => {
       dispatch({
         type: "CLEAN_RECLAMOS",
         payload: {
-          reclamos: []
+          dataReclamosId:{}
         }
       });
     })
@@ -95,7 +95,7 @@ export const deleteReclamosFuction = (id_claim_receiver, id_claim_transmitter) =
 export const queryOneReclamos = (id_receiber, id_transmitter) => dispatch => {
   getDataToken().then(datos => {
     axios({
-      method: "post",
+      method:"post",
       url: queryOne,
       data: {
         id_claim_receiver: id_receiber,

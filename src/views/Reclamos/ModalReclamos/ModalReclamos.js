@@ -23,15 +23,19 @@ class ModalReclamos extends Component {
   }
 
   componentWillReceiveProps(props) {
+    console.log("props", props);
     if (props.option === 2 || props.option === 3) {
-      if (props.reclamos.reclamosId) {
+      if (props.reclamos.reclamosId === true) {
         this.setState({
           descripcion: props.reclamos.reclamosId.claim,
           arrayCentroMedicoSelect: props.reclamos.reclamosId.medical_center_receiver,
           arraySucursalesSelect: props.reclamos.reclamosId.branchoffice_receiver,
           arrayVisitadorSelect: props.reclamos.reclamosId.visitor,
           motivo: props.reclamos.reclamosId.rason,
+          loading: 'show'
         })
+      }else{
+        this.setState({ loading: 'hide' })
       }
     }
   }
