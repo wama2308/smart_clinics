@@ -146,7 +146,7 @@ class Products extends React.Component {
                       <Cell className="cellStyle">{product.code}</Cell>
                       <Cell>{product.name}</Cell>
                       <Cell>{product.type}</Cell>
-                      <Cell>{product.quantity_stock}</Cell>
+                      <Cell>{product.service ? "0": product.quantity_stock}</Cell>
                       {this.state.edit === product._id &&
                       !disableAllProductos ? (
                         <td>
