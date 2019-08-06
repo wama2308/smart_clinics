@@ -23,7 +23,6 @@ class ModalReclamos extends Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log("props", props);
     if (props.option === 2 || props.option === 3) {
       if (props.reclamos.reclamosId) {
         if(props.reclamos.reclamosId.rason !== ""){
