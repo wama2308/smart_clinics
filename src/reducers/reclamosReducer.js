@@ -3,7 +3,6 @@ import { Map } from 'immutable'
 
 const setStoreCleanReclamos = (state, payload) => {
   let estado = state.toJS();
-  console.log(state.reclamos);
   estado.reclamosId = {};
 	return Map(estado);
 }

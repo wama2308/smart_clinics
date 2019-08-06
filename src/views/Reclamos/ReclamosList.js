@@ -71,7 +71,7 @@ class ReclamosList extends Component {
   valorCloseModal = (valor) => {
     this.setState({
       modal: valor,
-      option: 0,
+      option: null,
     });
   }
 
@@ -107,18 +107,19 @@ class ReclamosList extends Component {
   render() {
     return (
       <div>
-        <ModalReclamos
-          option={this.state.option}
-          modal={this.state.modal}
-          modalHeader={this.state.modalHeader}
-          modalFooter={this.state.modalFooter}
-          disabled={this.state.disabled}
-          showHide={this.state.showHide}
-          id_receiber={this.state.id_receiber}
-          id_transmitter={this.state.id_transmitter}
-          branchOffices={this.props.reclamos}
-          valorCloseModal={this.valorCloseModal}
-        />
+      {this.state.modal === true &&
+      <ModalReclamos
+        option={this.state.option}
+        modal={this.state.modal}
+        modalHeader={this.state.modalHeader}
+        modalFooter={this.state.modalFooter}
+        disabled={this.state.disabled}
+        showHide={this.state.showHide}
+        id_receiber={this.state.id_receiber}
+        id_transmitter={this.state.id_transmitter}
+        branchOffices={this.props.reclamos}
+        valorCloseModal={this.valorCloseModal}
+      />}
         <Chat show={this.state.collapse}
           hide={this.closeChat}
         />
