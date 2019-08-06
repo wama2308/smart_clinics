@@ -4,6 +4,9 @@ import { url, getDataToken } from "../core/connection";
 const LoadSelectReclamos = `${url}/api/sucribeMedicalCenter`;
 const SaveReclamos = `${url}/api/createClaims`;
 const queryAll = `${url}/api/queryClaimsMadeAll`;
+const queryOne = `${url}/api/queryOneClaimMade`;
+const updateReclamos = `${url}/api/updateClaims`;
+const deleteReclamos = `${url}/api/cancelClaims`
 
 const LoadReclamosFuntion = () => dispatch => {
   getDataToken().then(data => {
@@ -38,12 +41,77 @@ export const LoadSelectReclamosFuction = () => dispatch => {
               payload: {
                 brachOffices: res.data,
                 reclamosAll: arrayAll,
-                loading: "hide"
+                loading: "show"
               }
             })
           })
         })
     })
+}
+export const updateReclamosFuction = (data, callback) => dispatch => {
+  getDataToken().then(datos => {
+    axios({
+      method: "post",
+      url: updateReclamos,
+      data: data,
+      headers: datos.headers
+    })
+      .then(() => {
+        callback();
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+      })
+      .catch(error => {
+        dispatch(openSnackbars("error", "Error editando el Reclamo"));
+      });
+  }).catch(() => {
+    console.log("Problemas con el token");
+  });
+}
+
+export const deleteReclamosFuction = (id_claim_receiver, id_claim_transmitter) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: deleteReclamos,
+        data: {
+          id_claim_receiver: id_claim_receiver,
+          id_claim_transmitter: id_claim_transmitter
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Reclamo eliminado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error eliminando el Reclamo"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const queryOneReclamos = (id_receiber, id_transmitter) => dispatch => {
+  getDataToken().then(datos => {
+    axios({
+      method: "post",
+      url: queryOne,
+      data: {
+        id_claim_receiver: id_receiber,
+        id_claim_transmitter: id_transmitter
+      },
+      headers: datos.headers
+    }).then(res => {
+      dispatch({
+        type: "LOAD_RECLAMOS_ID",
+        payload: {
+          dataReclamosId: res.data,
+          loading: "hide",
+        }
+      })
+    })
+  })
 }
 
 const queryAllFunction = (datos, execute) => {
@@ -59,10 +127,6 @@ const queryAllFunction = (datos, execute) => {
       );
     });
 };
-
-
-
-
 
 export const saveReclamosAction = (data, callback) => dispatch => {
   getDataToken()
