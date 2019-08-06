@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Table, TableHead, TableBody } from '@material-ui/core';
+import { IconButton } from '@material-ui/core/IconButton';
+import { HighlightOff } from '@material-ui/icons';
 
 
 
@@ -15,13 +17,15 @@ class LightBox extends Component {
 
 
   render() {
-    console.log(this.props.foto);
+    
     return (
       <div >
         <Modal open={this.props.hola}>
           <Table>
-            <TableHead>
-
+            <TableHead style={style.header}>
+          
+              <HighlightOff style={style.close} onClick={()=>this.props.hide()}></HighlightOff>
+           
             </TableHead>
             <TableBody>
               <div style={style.paper}>
@@ -43,13 +47,20 @@ const style = {
   paper: {
     "position": "absolute",
     "width": "95%",
-    "border": "2px solid rgb(0, 0, 0)",
     "outline": "none",
     "right": "2%",
     "height": "14.5cm",
     "top": " 2cm",
     "display": "flex",
     "justifyContent": "center"
+  },
+  close:{
+    "fontSize": "3rem",
+    "cursor":"hand"
+  },
+  header:{
+    "display": "flex",
+    "justifyContent": "flex-end"
   }
 }
 

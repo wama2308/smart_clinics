@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { ModalFooter } from 'reactstrap';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { cleanReclamos, saveReclamosAction } from '../../../actions/reclamosAction';
+import { cleanReclamos, saveReclamosAction, updateReclamosFuction } from '../../../actions/reclamosAction';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
@@ -19,6 +19,24 @@ class ModalReclamos extends Component {
       motivo: '',
       motivoError: '',
       motivoInvalid: false,
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    console.log("props", props);
+    if (props.option === 2 || props.option === 3) {
+      if (props.reclamos.reclamosId === true) {
+        this.setState({
+          descripcion: props.reclamos.reclamosId.claim,
+          arrayCentroMedicoSelect: props.reclamos.reclamosId.medical_center_receiver,
+          arraySucursalesSelect: props.reclamos.reclamosId.branchoffice_receiver,
+          arrayVisitadorSelect: props.reclamos.reclamosId.visitor,
+          motivo: props.reclamos.reclamosId.rason,
+          loading: 'show'
+        })
+      }else{
+        this.setState({ loading: 'hide' })
+      }
     }
   }
 
@@ -143,6 +161,29 @@ class ModalReclamos extends Component {
         this.setState({ loading: 'hide' })
         this.props.saveReclamosAction(
           {
+            medical_center_id: this.state.arrayCentroMedicoSelect.value,
+            branchoffice_id: this.state.arraySucursalesSelect.value,
+            visitor_id: this.state.arrayVisitadorSelect.value,
+            rason: this.state.motivo,
+            claim: this.state.descripcion
+
+          },
+          () => {
+            this.closeModal();
+            this.setState({
+              ...InitalState,
+              motivo: '',
+              motivoError: '',
+              motivoInvalid: false,
+            })
+          }
+        )
+      } else if (this.props.option === 3) {
+        this.setState({ loading: 'hide' })
+        this.props.updateReclamosFuction(
+          {
+            id_claim_transmitter:this.props.id_transmitter, 
+            id_claim_receiver: this.props.id_receiber,
             medical_center_id: this.state.arrayCentroMedicoSelect.value,
             branchoffice_id: this.state.arraySucursalesSelect.value,
             visitor_id: this.state.arrayVisitadorSelect.value,
@@ -298,10 +339,15 @@ class ModalReclamos extends Component {
 
 const mapDispatchToProps = dispatch => ({
   cleanReclamos: () => dispatch(cleanReclamos()),
-  saveReclamosAction: (data, callback) => dispatch(saveReclamosAction(data, callback))
+  saveReclamosAction: (data, callback) => dispatch(saveReclamosAction(data, callback)),
+  updateReclamosFuction: (data, callback) =>dispatch(updateReclamosFuction(data, callback)),
 })
+const mapStateToProps = state => ({
+  reclamos: state.reclamos.toJS()
+});
+
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ModalReclamos);

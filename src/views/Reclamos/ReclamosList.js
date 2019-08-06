@@ -26,10 +26,12 @@ class ReclamosList extends Component {
       position: 0,
       id: '',
       sucursal_id_now: '',
-      collapse: false
+      collapse: false,
+      id_receiber:'',
+      id_transmitter:''
     }
   }
-  openModal = (option, pos, id, sucursalId) => {
+  openModal = (option, id_claim_receiver, id_claim_transmitter) => {
     if (option === 1) {
       this.setState({
         modal: true,
@@ -40,7 +42,7 @@ class ReclamosList extends Component {
         showHide: 'show',
       })
     } else if (option === 2) {
-      this.props.LoadStoreIdFunction(id, sucursalId);
+      this.props.queryOneReclamos(id_claim_receiver, id_claim_transmitter)
       this.setState({
         modal: true,
         option: option,
@@ -48,19 +50,20 @@ class ReclamosList extends Component {
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'hide',
+        id_receiber: id_claim_receiver,
+        id_transmitter: id_claim_transmitter
       })
     } else if (option === 3) {
-      this.props.LoadStoreIdFunction(id, sucursalId);
+      this.props.queryOneReclamos(id_claim_receiver, id_claim_transmitter)
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Reclamo',
-        modalFooter: 'Editar',
+        modalHeader: 'Registrar Reclamo',
+        modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
-        position: pos,
-        id: id,
-        sucursal_id_now: sucursalId
+        id_receiber: id_claim_receiver,
+        id_transmitter: id_claim_transmitter
       })
     }
   }
@@ -89,10 +92,21 @@ class ReclamosList extends Component {
     })
   }
 
+  deleteRegister = (id_claim_receiver, id_claim_transmitter) => {
+    const message = {
+      title: "Eliminar Registro",
+      info: "¿Esta seguro que desea eliminar este registro?"
+    };
+    this.props.confirm(message, res => {
+      if (res) {
+        this.props.deleteReclamosFuction(id_claim_receiver, id_claim_transmitter);
+      }
+    });
+  }
+
   render() {
     return (
       <div>
-        <LightBox />
         <ModalReclamos
           option={this.state.option}
           modal={this.state.modal}
@@ -100,8 +114,8 @@ class ReclamosList extends Component {
           modalFooter={this.state.modalFooter}
           disabled={this.state.disabled}
           showHide={this.state.showHide}
-          id={this.state.id}
-          sucursal_id_now={this.state.sucursal_id_now}
+          id_receiber={this.state.id_receiber}
+          id_transmitter={this.state.id_transmitter}
           branchOffices={this.props.reclamos}
           valorCloseModal={this.valorCloseModal}
         />
@@ -143,7 +157,7 @@ class ReclamosList extends Component {
                             <IconButton aria-label="Delete"
                               title="Ver Reclamo"
                               className="iconButtons"
-                            //onClick={() => { this.openModal(2, data.number, data._id, data.branchoffice.value); }}
+                              onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter ); }}
                             >
                               <Visibility className="iconTable" />
                             </IconButton>
@@ -151,7 +165,7 @@ class ReclamosList extends Component {
                             <IconButton aria-label="Delete"
                               title="Editar Reclamo"
                               className="iconButtons"
-                            //onClick={() => { this.openModal(3, data.number, data._id, data.branchoffice.value); }}
+                              onClick={() => { this.openModal(3,list.id_claim_receiver, list.id_claim_transmitter ); }}
                             >
                               <Edit className="iconTable" />
                             </IconButton>
@@ -159,10 +173,10 @@ class ReclamosList extends Component {
                             <IconButton aria-label="Delete"
                               title="Eliminar Reclamo"
                               className="iconButtons"
-                            //onClick={() => { this.deleteStore(data._id, data.branchoffice.value); }}
+                              onClick={() => { this.deleteRegister(list.id_claim_receiver, list.id_claim_transmitter); }}
                             >
                               <Delete className="iconTable" />
-                            </IconButton >
+                            </IconButton>
                             <IconButton onClick={() => this.toggle()} className="iconButtons">
                               <QuestionAnswer className="iconTable" />
                             </IconButton>
@@ -171,10 +185,7 @@ class ReclamosList extends Component {
                       </tr>
                     )
                   }) :
-                    <div style={{ height: "55vh" }}>
-                      <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
-                    </div>
-
+                  null
                 }
               </tbody>
 
