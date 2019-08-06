@@ -25,15 +25,17 @@ class ModalReclamos extends Component {
   componentWillReceiveProps(props) {
     console.log("props", props);
     if (props.option === 2 || props.option === 3) {
-      if (props.reclamos.reclamosId === true) {
-        this.setState({
-          descripcion: props.reclamos.reclamosId.claim,
-          arrayCentroMedicoSelect: props.reclamos.reclamosId.medical_center_receiver,
-          arraySucursalesSelect: props.reclamos.reclamosId.branchoffice_receiver,
-          arrayVisitadorSelect: props.reclamos.reclamosId.visitor,
-          motivo: props.reclamos.reclamosId.rason,
-          loading: 'show'
-        })
+      if (props.reclamos.reclamosId) {
+        if(props.reclamos.reclamosId.rason !== ""){
+          this.setState({
+            descripcion: props.reclamos.reclamosId.claim,
+            arrayCentroMedicoSelect: props.reclamos.reclamosId.medical_center_receiver,
+            arraySucursalesSelect: props.reclamos.reclamosId.branchoffice_receiver,
+            arrayVisitadorSelect: props.reclamos.reclamosId.visitor,
+            motivo: props.reclamos.reclamosId.rason,
+            loading: 'show'
+          })
+        }
       }else{
         this.setState({ loading: 'hide' })
       }
@@ -294,7 +296,7 @@ class ModalReclamos extends Component {
                         placeholder="Titulo" />
                       <FormFeedback tooltip>{this.state.motivoError}</FormFeedback>
                     </FormGroup>
-                    <FormGroup className="top form-group col-sm-6">
+                    <FormGroup className="top form-group col-sm-12">
                       <Label for="descripcion">Descripcion:</Label>
                       <Input
                         disabled={this.props.disabled}
@@ -306,6 +308,7 @@ class ModalReclamos extends Component {
                         value={this.state.descripcion}
                         type="textarea"
                         placeholder="Descripcion"
+                        rows="4"
                       />
                       <FormFeedback tooltip>
                         {this.state.descripcionError}
