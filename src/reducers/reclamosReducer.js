@@ -2,14 +2,20 @@ import { Map } from 'immutable'
 
 
 const setStoreCleanReclamos = (state, payload) => {
-	let estado = state.toJS();
-console.log("reducer",estado);
+  let estado = state.toJS();
+  console.log(state.reclamos);
+  estado.reclamosId = {};
+	return Map(estado);
+}
+
+const setDataReclamosId = (state, payload) => {
+  let estado = state.toJS();
+  estado.reclamosId = payload.dataReclamosId;
 	return Map(estado);
 }
 
 
 const ReclamosReducer = (state = Map(), action) => {
-  console.log(action.payload);
   switch (action.type) {
       case 'CLEAN_RECLAMOS': {
 		  	return setStoreCleanReclamos(state, action.payload)
@@ -19,6 +25,11 @@ const ReclamosReducer = (state = Map(), action) => {
       case 'LOAD_SELECT':{
         return  Map(action.payload)
       }
+
+      case 'LOAD_RECLAMOS_ID':{
+        return setDataReclamosId(state, action.payload)
+      }
+
       break;
     default:
       return state

@@ -17,7 +17,9 @@ class Chat extends Component {
       fotoError: '',
       foto: null,
       message: "",
-      box: false
+      box: false,
+      option: 0,
+      visitador: ""
     };
   }
 
@@ -72,11 +74,21 @@ class Chat extends Component {
     })
   }
 
-  render() {
+  closeChat = () => {
+    this.setState({
+      box: false
+    })
+  }
 
+  render() {
     return (
       <div>
-        <LightBox hola={this.state.box} foto={this.state.foto}/>
+        <LightBox 
+        hide={this.closeChat} 
+        hola={this.state.box} 
+        foto={this.state.foto}
+        />
+
         <Collapse isOpen={this.props.show}>
           <Card style={style.chat}>
             <CardHeader>
