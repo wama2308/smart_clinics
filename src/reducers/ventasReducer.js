@@ -80,12 +80,28 @@ const completedSale = (state, payload) => {
   return Map(obj);
 };
 
+const setArrayProductos = (state, payload)=>{
+    const result = state.toJS()
+    if(result.array_products){
+      result.array_products.push(payload)
+    }else{
+      result.array_products = payload
+    }
+
+    return Map(result)
+}
+
 const initialState = Map({
   loadingSell: true
 });
 
 const VentasReducer = (state = initialState, action) => {
   switch (action.type) {
+
+    case "SEARCH_ARRAY_PRODUCTS":{
+      return setArrayProductos(state, action.payload)
+    }
+
     case "SEARCH_PATIENT": {
       return setData(state, "patient", action.payload);
     }

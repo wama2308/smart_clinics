@@ -96,10 +96,18 @@ export const searchOnePatient = search => dispatch => {
       ...token
     })
       .then(res => {
+        console.log("onePatient",res)
         dispatch({
           type: "SEARCH_PATIENT",
-          payload: res.data
+          payload: res.data.patient
         });
+        if(res.data.array_products.length > 0){
+
+          dispatch({
+            type: "SEARCH_ARRAY_PRODUCTS",
+            payload: res.data.array_products
+          });
+        }
         dispatch(searchLoaded(true));
         dispatch({
           type: "SEARCH_DATA",
