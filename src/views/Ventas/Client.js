@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardHeader, CardBody, Button } from "reactstrap";
 import { Typography, IconButton } from "@material-ui/core";
+import Popover from "@material-ui/core/Popover";
 import Search from "../../components/DefaultSearch";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -11,7 +12,9 @@ class Client extends React.Component {
   state = {
     paciente: true,
     openModal: false,
-    disabled: false
+    disabled: false,
+    openReference: false,
+    anchorEl: null
   };
 
   close = () => {
@@ -22,6 +25,15 @@ class Client extends React.Component {
     this.setState({ openModal: true, disabled: true });
   };
 
+  referenceOpen = event => {
+    console.log("helo word");
+    this.setState({ openReference: true, anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ openReference: false });
+  };
+
   render() {
     const { patient } = this.props;
     const disabled = this.props.isSaved ? this.props.isSaved : false;
@@ -30,6 +42,10 @@ class Client extends React.Component {
       BILLED: "COMPLETADA",
       PAID: "POR PAGAR"
     };
+
+    const definePatient = patient ? patient.referencer._id : [];
+    const disabledForPatient = definePatient.length > 0 ? true : false;
+
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
 
@@ -45,8 +61,61 @@ class Client extends React.Component {
             patient={patient}
           />
         )}
+
+        {patient && (
+          <Popover
+            open={this.state.openReference}
+            anchorEl={this.state.anchorEl}
+            onClose={this.handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center"
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center"
+            }}
+          >
+            <div
+              style={{
+                borderRadius: "20%",
+                width: 280
+              }}
+            >
+              <Typography style={{ padding: 10, fontWeight: "bold" }}>
+                Nombres
+              </Typography>
+              <Typography style={{ paddingLeft: 10, paddingRight: 10 }}>
+                {patient.referencer.names} {patient.referencer.surnames}
+              </Typography>
+              <Typography style={{ padding: 10, fontWeight: "bold" }}>
+                Identificacion
+              </Typography>
+              <Typography
+                style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}
+              >
+                {patient.referencer.type_identity}-{patient.referencer.dni}
+              </Typography>
+            </div>
+          </Popover>
+        )}
         <Header>
-          <div>Paciente</div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            Paciente
+            {disabledForPatient && (
+              <div
+                onClick={this.referenceOpen}
+                style={{
+                  marginLeft: 10,
+                  padding: 5,
+                  background: "rgb(87, 214, 92)",
+                  borderRadius: 20
+                }}
+              >
+                Referenciado
+              </div>
+            )}
+          </div>
           <div
             style={{
               width: "40%",
@@ -63,7 +132,10 @@ class Client extends React.Component {
               />
             )}
             {patient && (
-              <IconButton disabled={disabled} onClick={this.props.clean}>
+              <IconButton
+                disabled={disabled || disabledForPatient}
+                onClick={this.props.clean}
+              >
                 <Delete />
               </IconButton>
             )}
