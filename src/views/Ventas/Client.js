@@ -43,7 +43,13 @@ class Client extends React.Component {
       PAID: "POR PAGAR"
     };
 
-    const definePatient = patient ? patient.referencer._id : [];
+    const definePatient = patient
+      ? patient.referencer._id
+        ? patient.referencer._id
+        : []
+      : [];
+
+    console.log("aca", definePatient);
     const disabledForPatient = definePatient.length > 0 ? true : false;
 
     const color =
