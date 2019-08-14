@@ -81,6 +81,23 @@ const orderData = data => {
   }
 };
 
+const orderReferences = (reference, dispatch) => {
+  console.log("entro!!!!!!!!!!!!!!11")
+  if (reference.length > 1) {
+    dispatch({
+      type: "OPEN_MODAL_REFERENCE",
+      payload: reference
+    });
+  }else{
+    console.log("!!!!!!!!!el seguno")
+    dispatch({
+      type:"SEARCH_ARRAY_PRODUCTS",
+      payload:reference[0].products
+    })
+
+  }
+};
+
 export const searchOnePatient = search => dispatch => {
   if (search.length === 0) {
     dispatch(openSnackbars("warning", "Ingrese nombre o dni del paciente!"));
@@ -96,17 +113,16 @@ export const searchOnePatient = search => dispatch => {
       ...token
     })
       .then(res => {
-        console.log("onePatient",res)
         dispatch({
           type: "SEARCH_PATIENT",
           payload: res.data.patient
         });
-        if(res.data.array_products.length > 0){
-
-          dispatch({
-            type: "SEARCH_ARRAY_PRODUCTS",
-            payload: res.data.array_products
-          });
+        if (res.data.referencer.length > 0) {
+          orderReferences(res.data.referencer, dispatch);
+          // dispatch({
+          //   type: "SEARCH_ARRAY_PRODUCTS",
+          //   payload: res.data.array_products
+          // });
         }
         dispatch(searchLoaded(true));
         dispatch({

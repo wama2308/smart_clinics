@@ -14,7 +14,8 @@ class Client extends React.Component {
     openModal: false,
     disabled: false,
     openReference: false,
-    anchorEl: null
+    anchorEl: null,
+    manualReference: false
   };
 
   close = () => {
@@ -26,7 +27,6 @@ class Client extends React.Component {
   };
 
   referenceOpen = event => {
-    console.log("helo word");
     this.setState({ openReference: true, anchorEl: event.currentTarget });
   };
 
@@ -43,14 +43,14 @@ class Client extends React.Component {
       PAID: "POR PAGAR"
     };
 
-    const definePatient = patient
-      ? patient.referencer._id
-        ? patient.referencer._id
-        : []
-      : [];
+    const definePatient =  []
+    // patient
+    //   ? patient.referencer._id
+    //     ? patient.referencer._id
+    //     : []
+    //   : [];
 
-    console.log("aca", definePatient);
-    const disabledForPatient = definePatient.length > 0 ? true : false;
+    const disabledForPatient = false // definePatient.length > 0 ? true : false;
 
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
@@ -68,7 +68,7 @@ class Client extends React.Component {
           />
         )}
 
-        {patient && (
+        {/* {patient && (
           <Popover
             open={this.state.openReference}
             anchorEl={this.state.anchorEl}
@@ -104,7 +104,7 @@ class Client extends React.Component {
               </Typography>
             </div>
           </Popover>
-        )}
+        )} */}
         <Header>
           <div style={{ display: "flex", alignItems: "center" }}>
             Paciente
@@ -155,7 +155,7 @@ class Client extends React.Component {
           )}
           {this.props.loaded && (
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              {patient && (
+              {patient && !this.state.manualReference && (
                 <div className="infoUser">
                   <div className="list" style={{ borderTop: "none" }}>
                     <div className="list-body">
@@ -167,7 +167,10 @@ class Client extends React.Component {
                     <div className="list-body">
                       <Typography variant="subtitle1">DNI:</Typography>
                       <Typography variant="body1" className="textSpace">
-                        {patient.type_identity}-{patient.dni}
+                        {patient.type_identity
+                          ? `${patient.type_identity}-`
+                          : "hello"}
+                        {patient.dni}
                       </Typography>
                     </div>
                   </div>
@@ -206,8 +209,53 @@ class Client extends React.Component {
                     <div style={{ color: color }}>
                       {message[this.props.statusSale]}
                     </div>
+                    <div>
+                      <Button
+                        color="success"
+                        onClick={() => this.setState({ manualReference: true })}
+                      >
+                        Referenciar
+                      </Button>
+                      &nbsp;
+                      <Button color="success" onClick={() => this.view()}>
+                        Ver detalles
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {patient && this.state.manualReference && (
+                <div
+                  className="infoUser"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1
+                  }}
+                >
+                  <div
+                    style={{
+                      flex: 1
+                    }}
+                  >
+                    hello world
+                  </div>
+                  <div
+                    style={{
+                      justifyContent: "flex-end",
+                      display: "flex"
+                    }}
+                  >
+                    <Button
+                      color="danger"
+                      onClick={() => this.setState({ manualReference: true })}
+                    >
+                      Cancelar
+                    </Button>
+                    &nbsp;
                     <Button color="success" onClick={() => this.view()}>
-                      Ver detalles
+                      Guardar
                     </Button>
                   </div>
                 </div>

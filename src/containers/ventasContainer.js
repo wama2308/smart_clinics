@@ -139,6 +139,8 @@ class VentasContainer extends React.Component {
     return obj;
   };
 
+
+
   armingObject = async () => {
     const totals = this.getTotal(this.props.products, this.props.aplication);
     const obj = {
@@ -218,6 +220,9 @@ class VentasContainer extends React.Component {
       this.props.products
     );
     const totalData = this.getTotal(this.props.products, this.props.aplication);
+
+    console.log(this.props.state)
+
     return (
       <Container>
         {!this.props.saleLoading && <Spinner />}
