@@ -7,6 +7,7 @@ import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import UserRegister from "./userRegister";
 import { Delete } from "@material-ui/icons";
+import ModalReferences from "./ModalReferences";
 
 class Client extends React.Component {
   state = {
@@ -43,14 +44,14 @@ class Client extends React.Component {
       PAID: "POR PAGAR"
     };
 
-    const definePatient =  []
+    const definePatient = [];
     // patient
     //   ? patient.referencer._id
     //     ? patient.referencer._id
     //     : []
     //   : [];
 
-    const disabledForPatient = false // definePatient.length > 0 ? true : false;
+    const disabledForPatient = false; // definePatient.length > 0 ? true : false;
 
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
@@ -59,6 +60,11 @@ class Client extends React.Component {
       <Card
         style={{ margin: "0px 10px 10px 0px", flex: 1, maxHeight: 335.365 }}
       >
+       {this.props.modalReference &&  <ModalReferences
+          open={this.props.modalReference}
+          close={this.props.closeReferences}
+          references={this.props.references}
+        />}
         {this.state.openModal && (
           <UserRegister
             open={this.state.openModal}

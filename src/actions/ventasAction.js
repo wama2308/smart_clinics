@@ -82,11 +82,15 @@ const orderData = data => {
 };
 
 const orderReferences = (reference, dispatch) => {
-  console.log("entro!!!!!!!!!!!!!!11")
+  dispatch({
+    type:"SET_REFERENCES",
+    payload:reference
+  })
   if (reference.length > 1) {
+    console.log("!!!!!!!!!!!!! el primero")
     dispatch({
       type: "OPEN_MODAL_REFERENCE",
-      payload: reference
+      payload: true
     });
   }else{
     console.log("!!!!!!!!!el seguno")
@@ -97,6 +101,15 @@ const orderReferences = (reference, dispatch) => {
 
   }
 };
+
+
+export const closeModalReferences = ()=>{
+  return{
+    type: "OPEN_MODAL_REFERENCE",
+    payload: false
+  }
+}
+
 
 export const searchOnePatient = search => dispatch => {
   if (search.length === 0) {

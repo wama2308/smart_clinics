@@ -21,7 +21,8 @@ import {
   cancelledBill,
   cancelDiscount,
   editDiscount,
-  createSale
+  createSale,
+  closeModalReferences
 } from "../actions/ventasAction";
 import {
   openConfirmDialog,
@@ -139,8 +140,6 @@ class VentasContainer extends React.Component {
     return obj;
   };
 
-
-
   armingObject = async () => {
     const totals = this.getTotal(this.props.products, this.props.aplication);
     const obj = {
@@ -221,7 +220,7 @@ class VentasContainer extends React.Component {
     );
     const totalData = this.getTotal(this.props.products, this.props.aplication);
 
-    console.log(this.props.state)
+    console.log("container de ventas!!!!", this.props.state);
 
     return (
       <Container>
@@ -249,6 +248,9 @@ class VentasContainer extends React.Component {
               options={optionsPatient}
               isSaved={this.props.isSaved}
               statusSale={this.props.statusSale}
+              modalReference={this.props.state.modalReference}
+              closeReferences={this.props.closeModalReferences}
+              references={this.props.state.references}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -342,7 +344,8 @@ export default connect(
     cancelDiscount,
     editDiscount,
     openSnackbars,
-    createSale
+    createSale,
+    closeModalReferences
   }
 )(VentasContainer);
 

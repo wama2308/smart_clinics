@@ -92,7 +92,8 @@ const setArrayProductos = (state, payload)=>{
 }
 
 const initialState = Map({
-  loadingSell: true
+  loadingSell: true,
+  modalReference:false
 });
 
 const VentasReducer = (state = initialState, action) => {
@@ -158,6 +159,15 @@ const VentasReducer = (state = initialState, action) => {
 
     case "SELL_COMPLETED":
       return completedSale(state, action.payload);
+
+    case "OPEN_MODAL_REFERENCE":{
+      return setData(state , "modalReference" , action.payload)
+    }
+
+    case "SET_REFERENCES":{
+      return setData(state, "references", action.payload)
+    }
+
     default:
       return state;
   }
