@@ -1,4 +1,5 @@
 import { search } from "../actions/aplicantionActions";
+import { Map } from 'immutable'
 
 const InitalState = {
   snackBars: {
@@ -9,23 +10,26 @@ const InitalState = {
   confirm: {
     open: false,
     message: "",
-    callback: undefined
+    callback: undefined,
   },
   openModalExists: false,
   search: "",
   outside: true,
   dataGeneral: null,
-  searchloading: true
+  searchloading: true,
+  chat:{
+    message:""
+  }
 };
 
 const setStoreSaveProviderPusher = (state, payload) => {
   let estado = state;
-  estado.dataGeneral.dataCountries.provider.push({ label: payload.name, value: payload.id });  
+  estado.dataGeneral.dataCountries.provider.push({ label: payload.name, value: payload.id });
   return estado;
 }
 
 const setStoreEditProviderPusher = (state, payload) => {
-  let estado = state;    
+  let estado = state;
   const key = estado.dataGeneral.dataCountries.provider.findIndex(provider => provider.value === payload.id);
   estado.dataGeneral.dataCountries.provider[key].label = payload.name;
   estado.dataGeneral.dataCountries.provider[key].value = payload.id;
@@ -35,13 +39,13 @@ const setStoreEditProviderPusher = (state, payload) => {
 const setStoreDisabledProviderPusher = (state, payload) => {
   let estado = state;
   const key = estado.dataGeneral.dataCountries.provider.findIndex(provider => provider.value === payload.id);
-  estado.dataGeneral.dataCountries.provider.splice(key, 1);   
+  estado.dataGeneral.dataCountries.provider.splice(key, 1);
   return estado;
 }
 
 const setStoreEnabledProviderPusher = (state, payload) => {
-  let estado = state;  
-  estado.dataGeneral.dataCountries.provider.push({ label: payload.name, value: payload.id });  
+  let estado = state;
+  estado.dataGeneral.dataCountries.provider.push({ label: payload.name, value: payload.id });
   return estado;
 }
 

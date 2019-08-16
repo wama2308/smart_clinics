@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+ import React, { Component } from 'react';
 import { Table } from 'reactstrap';
 import { Visibility, QuestionAnswer } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
@@ -11,6 +11,9 @@ import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
 import LightBox from '../../components/LightBox';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
+import Badge from '@material-ui/core/Badge';
+import jstz from 'jstz';
 
 class ReclamosList extends Component {
   constructor(props) {
@@ -27,10 +30,11 @@ class ReclamosList extends Component {
       id: '',
       sucursal_id_now: '',
       collapse: false,
-      id_receiber:'',
-      id_transmitter:''
+      id_receiber: '',
+      id_transmitter: ''
     }
   }
+
   openModal = (option, id_claim_receiver, id_claim_transmitter) => {
     if (option === 1) {
       this.setState({
@@ -65,6 +69,15 @@ class ReclamosList extends Component {
         id_receiber: id_claim_receiver,
         id_transmitter: id_claim_transmitter
       })
+    } else if (option === 4) {
+      this.props.loadMessageFunction(id_claim_receiver, id_claim_transmitter)
+     this.setState({
+       collapse: true,
+       id_receiber: id_claim_receiver,
+       id_transmitter: id_claim_transmitter
+     });
+     const time =  jstz.determine().name()
+     this.props.setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time)
     }
   }
 
@@ -86,6 +99,7 @@ class ReclamosList extends Component {
       });
     }
   }
+
   closeChat = () => {
     this.setState({
       collapse: false
@@ -105,25 +119,32 @@ class ReclamosList extends Component {
   }
 
   render() {
+    console.log(this.props.token.transmiter._id)
     return (
       <div>
-      {this.state.modal === true &&
-      <ModalReclamos
-        option={this.state.option}
-        modal={this.state.modal}
-        modalHeader={this.state.modalHeader}
-        modalFooter={this.state.modalFooter}
-        disabled={this.state.disabled}
-        showHide={this.state.showHide}
-        id_receiber={this.state.id_receiber}
-        id_transmitter={this.state.id_transmitter}
-        branchOffices={this.props.reclamos}
-        valorCloseModal={this.valorCloseModal}
-      />}
-        <Chat show={this.state.collapse}
-          hide={this.closeChat}
-        />
+        {this.state.modal === true &&
+          <ModalReclamos
+            option={this.state.option}
+            modal={this.state.modal}
+            modalHeader={this.state.modalHeader}
+            modalFooter={this.state.modalFooter}
+            disabled={this.state.disabled}
+            showHide={this.state.showHide}
+            id_receiber={this.state.id_receiber}
+            id_transmitter={this.state.id_transmitter}
+            branchOffices={this.props.reclamos}
+            valorCloseModal={this.valorCloseModal}
+          />}
 
+        { this.state.collapse === true &&
+          <Chat show={this.state.collapse}
+            hide={this.closeChat}
+            option={this.state.option}
+            id_receiber={this.state.id_receiber}
+            id_transmitter={this.state.id_transmitter}
+            transmiter={this.props.token.transmiter._id}
+          />
+        }
         <div style={{ "marginBottom": "1.8%" }}>
           <Button color="success"
             onClick={() => this.openModal(1)}>
@@ -135,11 +156,12 @@ class ReclamosList extends Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th style={{ width: "10%" }}>Centro Medico Emitente</th>
-                  <th style={{ width: "10%" }}>Centro Medico Receptor</th>
+                  <th style={{ width: "12%" }}>Centro Medico Emitente</th>
+                  <th style={{ width: "12%" }}>Centro Medico Receptor</th>
                   <th style={{ width: "10%" }}>Sucursal que Emite</th>
                   <th style={{ width: "10%" }}>Sucursal que Recive</th>
                   <th style={{ width: "10%" }}>Visitador</th>
+                    <th style={{ width: "10%" }}>Estatus</th>
                   <th style={{ width: "10%" }}>Acciones</th>
                 </tr>
               </thead>
@@ -153,12 +175,13 @@ class ReclamosList extends Component {
                         <td>{list.branchoffice_transmitter}</td>
                         <td>{list.branchoffice_receiver}</td>
                         <td>{list.visitor}</td>
+                        <td>{list.status}</td>
                         <td style={{ 'minWidth': "205px" }}>
                           <div className="float-left" >
                             <IconButton aria-label="Delete"
                               title="Ver Reclamo"
                               className="iconButtons"
-                              onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter ); }}
+                              onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter); }}
                             >
                               <Visibility className="iconTable" />
                             </IconButton>
@@ -166,7 +189,7 @@ class ReclamosList extends Component {
                             <IconButton aria-label="Delete"
                               title="Editar Reclamo"
                               className="iconButtons"
-                              onClick={() => { this.openModal(3,list.id_claim_receiver, list.id_claim_transmitter ); }}
+                              onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter); }}
                             >
                               <Edit className="iconTable" />
                             </IconButton>
@@ -178,15 +201,19 @@ class ReclamosList extends Component {
                             >
                               <Delete className="iconTable" />
                             </IconButton>
-                            <IconButton onClick={() => this.toggle()} className="iconButtons">
-                              <QuestionAnswer className="iconTable" />
+
+                            <IconButton onClick={() => this.openModal(4,list.id_claim_receiver, list.id_claim_transmitter)} className="iconButtons">
+                              <StyledBadge badgeContent={list.unread_messages > 0 ? list.unread_messages: null } color="primary">
+                                <QuestionAnswer className="iconTable" />
+                              </StyledBadge>
                             </IconButton>
+
                           </div>
                         </td>
                       </tr>
                     )
                   }) :
-                  null
+                    null
                 }
               </tbody>
 
@@ -197,5 +224,15 @@ class ReclamosList extends Component {
     );
   }
 }
+
+const StyledBadge = withStyles(theme => ({
+  badge: {
+    right: -3,
+    border: `2px solid ${
+      theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[900]
+    }`,
+  },
+}))(Badge);
+
 
 export default ReclamosList;
