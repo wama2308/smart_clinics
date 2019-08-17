@@ -184,6 +184,23 @@ export const setSwitchTableComisiones = (pos, value, tab, typePersonal) => dispa
     });
 };
 
+export const setSwitchAllTableComisiones = (value, tab, typePersonal) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "SET_SWITCH_ALL_COMISIONES",
+        payload: {
+          value: value, 
+          tab: tab,
+          typePersonal:typePersonal          
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 export const saveConfigCommissionsAction = (data, callback) => dispatch => {
   getDataToken()
     .then(datos => {
