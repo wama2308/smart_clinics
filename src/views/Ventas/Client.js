@@ -1,17 +1,22 @@
 import React from "react";
 import { Card, CardHeader, CardBody, Button } from "reactstrap";
 import { Typography, IconButton } from "@material-ui/core";
+import Popover from "@material-ui/core/Popover";
 import Search from "../../components/DefaultSearch";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import UserRegister from "./userRegister";
 import { Delete } from "@material-ui/icons";
+import ModalReferences from "./ModalReferences";
 
 class Client extends React.Component {
   state = {
     paciente: true,
     openModal: false,
-    disabled: false
+    disabled: false,
+    openReference: false,
+    anchorEl: null,
+    manualReference: false
   };
 
   close = () => {
@@ -22,14 +27,28 @@ class Client extends React.Component {
     this.setState({ openModal: true, disabled: true });
   };
 
+  referenceOpen = event => {
+    this.setState({ openReference: true, anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ openReference: false });
+  };
+
   render() {
-    const { patient } = this.props;
+    const { patient, selectedReferences } = this.props;
     const disabled = this.props.isSaved ? this.props.isSaved : false;
     const message = {
       "PENDING TO APPROVE": "PENDIENTE POR APROBAR",
       BILLED: "COMPLETADA",
       PAID: "POR PAGAR"
     };
+
+    const definePatient = selectedReferences ? selectedReferences : [];
+
+
+    const disabledForPatient = selectedReferences ? true : false;
+
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
 
@@ -37,6 +56,14 @@ class Client extends React.Component {
       <Card
         style={{ margin: "0px 10px 10px 0px", flex: 1, maxHeight: 335.365 }}
       >
+        {this.props.modalReference && (
+          <ModalReferences
+            open={this.props.modalReference}
+            close={this.props.closeReferences}
+            references={this.props.references}
+            patient={patient}
+          />
+        )}
         {this.state.openModal && (
           <UserRegister
             open={this.state.openModal}
@@ -45,8 +72,61 @@ class Client extends React.Component {
             patient={patient}
           />
         )}
+
+        {definePatient && (
+          <Popover
+            open={this.state.openReference}
+            anchorEl={this.state.anchorEl}
+            onClose={this.handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center"
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center"
+            }}
+          >
+            <div
+              style={{
+                borderRadius: "20%",
+                width: 280
+              }}
+            >
+              <Typography style={{ padding: 10, fontWeight: "bold" }}>
+                Nombres
+              </Typography>
+              <Typography style={{ paddingLeft: 10, paddingRight: 10 }}>
+                {definePatient.names} {definePatient.surnames}
+              </Typography>
+              <Typography style={{ padding: 10, fontWeight: "bold" }}>
+                Identificacion
+              </Typography>
+              <Typography
+                style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}
+              >
+                {definePatient.type_identity}-{definePatient.dni}
+              </Typography>
+            </div>
+          </Popover>
+        )}
         <Header>
-          <div>Paciente</div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            Paciente
+            {disabledForPatient && (
+              <div
+                onClick={this.referenceOpen}
+                style={{
+                  marginLeft: 10,
+                  padding: 5,
+                  background: "rgb(87, 214, 92)",
+                  borderRadius: 20
+                }}
+              >
+                Referenciado
+              </div>
+            )}
+          </div>
           <div
             style={{
               width: "40%",
@@ -63,7 +143,10 @@ class Client extends React.Component {
               />
             )}
             {patient && (
-              <IconButton disabled={disabled} onClick={this.props.clean}>
+              <IconButton
+                disabled={disabled || disabledForPatient}
+                onClick={this.props.clean}
+              >
                 <Delete />
               </IconButton>
             )}
@@ -77,7 +160,7 @@ class Client extends React.Component {
           )}
           {this.props.loaded && (
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              {patient && (
+              {patient && !this.state.manualReference && (
                 <div className="infoUser">
                   <div className="list" style={{ borderTop: "none" }}>
                     <div className="list-body">
@@ -89,7 +172,10 @@ class Client extends React.Component {
                     <div className="list-body">
                       <Typography variant="subtitle1">DNI:</Typography>
                       <Typography variant="body1" className="textSpace">
-                        {patient.type_identity}-{patient.dni}
+                        {patient.type_identity
+                          ? `${patient.type_identity}-`
+                          : "hello"}
+                        {patient.dni}
                       </Typography>
                     </div>
                   </div>
@@ -128,8 +214,53 @@ class Client extends React.Component {
                     <div style={{ color: color }}>
                       {message[this.props.statusSale]}
                     </div>
+                    <div>
+                      {/* <Button
+                        color="success"
+                        onClick={() => this.setState({ manualReference: true })}
+                      >
+                        Referenciar
+                      </Button> */}
+                      &nbsp;
+                      <Button color="success" onClick={() => this.view()}>
+                        Ver detalles
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {patient && this.state.manualReference && (
+                <div
+                  className="infoUser"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1
+                  }}
+                >
+                  <div
+                    style={{
+                      flex: 1
+                    }}
+                  >
+                    hello world
+                  </div>
+                  <div
+                    style={{
+                      justifyContent: "flex-end",
+                      display: "flex"
+                    }}
+                  >
+                    <Button
+                      color="danger"
+                      onClick={() => this.setState({ manualReference: true })}
+                    >
+                      Cancelar
+                    </Button>
+                    &nbsp;
                     <Button color="success" onClick={() => this.view()}>
-                      Ver detalles
+                      Guardar
                     </Button>
                   </div>
                 </div>

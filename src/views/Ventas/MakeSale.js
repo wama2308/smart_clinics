@@ -136,7 +136,8 @@ export default class MakeSale extends React.Component {
       sub_total: this.props.total.subTotal,
       igv: this.props.total.iva,
       total: this.props.total.total,
-      payment_type: completed.value
+      payment_type: completed.value,
+      reference_id: this.props.reference ? this.props.reference._id : undefined
     };
 
     const info = {
@@ -376,7 +377,7 @@ export default class MakeSale extends React.Component {
                                 type="select"
                                 value={values[pay.label].receivingbank}
                                 onChange={event => {
-                                  console.log("dios mio",pay.label)
+                                  console.log("dios mio", pay.label);
                                   setFieldValue(pay.label, {
                                     ...values[pay.label],
                                     receivingbank: event.target.value

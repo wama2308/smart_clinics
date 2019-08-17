@@ -182,7 +182,7 @@ class UserRegister extends React.Component {
         : this.orderExternalOptions(optionsExternal);
 
     const InitialValue = {
-      type_identity: aplication.dataCountries.type_identity[0].value,
+      type_identity: aplication.dataCountries.type_identity[0].label,
       dni: "",
       names: "",
       surnames: "",
@@ -314,7 +314,7 @@ class UserRegister extends React.Component {
                             {this.props.aplication.dataCountries.type_identity.map(
                               type => {
                                 return (
-                                  <option key={type.value} value={type.value}>
+                                  <option key={type.label} value={type.label}>
                                     {type.label}
                                   </option>
                                 );

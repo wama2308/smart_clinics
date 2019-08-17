@@ -80,12 +80,28 @@ const completedSale = (state, payload) => {
   return Map(obj);
 };
 
+const setArrayProductos = (state, payload) => {
+  const result = state.toJS();
+  if (result.array_products) {
+    result.array_products.push(payload);
+  } else {
+    result.array_products = payload;
+  }
+
+  return Map(result);
+};
+
 const initialState = Map({
-  loadingSell: true
+  loadingSell: true,
+  modalReference: false
 });
 
 const VentasReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "SEARCH_ARRAY_PRODUCTS": {
+      return setArrayProductos(state, action.payload);
+    }
+
     case "SEARCH_PATIENT": {
       return setData(state, "patient", action.payload);
     }
@@ -142,6 +158,19 @@ const VentasReducer = (state = initialState, action) => {
 
     case "SELL_COMPLETED":
       return completedSale(state, action.payload);
+
+    case "OPEN_MODAL_REFERENCE": {
+      return setData(state, "modalReference", action.payload);
+    }
+
+    case "SET_REFERENCES": {
+      return setData(state, "references", action.payload);
+    }
+
+    case "SELECTED_REFERENCE": {
+      return setData(state, "selectedReference", action.payload);
+    }
+
     default:
       return state;
   }
