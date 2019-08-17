@@ -8,7 +8,8 @@ import { Input } from 'reactstrap';
 import "../../components/style.css";
 import LightBox from '../../components/LightBox';
 import { connect } from 'react-redux';
-import { loadMessageFunction , registerMessageFunction } from '../../actions/actionsChat';
+import { loadMessageFunction , registerMessageFunction, messageFunction, cleanMessage, registerFotoFunction } from '../../actions/actionsChat';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import jstz from 'jstz';
 
 class Chat extends Component {
@@ -22,11 +23,14 @@ class Chat extends Component {
       message: "",
       box: false,
       option: 0,
-      visitador: ""
+      visitador: "",
+      id_receiber: '',
+      id_transmitter: '',
+      option: 0
     };
   }
 
-  fileHandlerFoto = event => {
+  fileHandlerFoto = (event) => {
     event.preventDefault();
     if (event.target.files[0].size > 250000) {
       this.setState({
@@ -50,23 +54,40 @@ class Chat extends Component {
         fileReader.onload = function (fileLoadedEvent) {
           file = fileLoadedEvent.target.result;
           this.setState({
-            foto: file,
+            foto: file
           })
         }
           .bind(this)
         fileReader.readAsDataURL(fileToLoad);
       }
     }
+    this.setState({
+        box: true,
+        id_receiber: this.props.id_receiber,
+        id_transmitter: this.props.id_transmitter,
+        option: 1
+      })
   }
 
+
+senfoto = ()=>{
+  const time =  jstz.determine().name()
+       this.props.registerFotoFunction(this.props.id_receiber,this.props.id_transmitter,this.state.foto, time, false, () => {
+         this.setState({
+           foto: null
+         })
+       })
+}
   viewPhoto = (img) => {
     if (this.state.box === false) {
       this.setState({
         box: true,
+        foto: img,
+         option: 2
       })
     } else {
       this.setState({
-        box: true
+        box: true,
       })
     }
   }
@@ -74,10 +95,10 @@ class Chat extends Component {
   hangleSend = (event) => {
     event.preventDefault();
       const time =  jstz.determine().name()
-      this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.state.message, time )
-      this.setState({
-        message: ""
+      this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.state.message, time, 0,()=>{
+       this.props.cleanMessage()     
       })
+ 
   }
 
   cleanState = () => {
@@ -93,14 +114,22 @@ class Chat extends Component {
     })
   }
 
+  cleanMessage = () =>{
+    this.props.cleanMessage()
+  }
+
   keyPress = (event) => {
     if (event.key == 'Enter') {
       const time =  jstz.determine().name()
-      this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.state.message, time, data=>{
+      this.props.messageFunction(this.state.message)
+     if(this.props.chat.message){
+        this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.props.chat.message, time, 0, ()=>{      
+        this.props.cleanMessage()
         this.setState({
-        message: ""
+          message: ""
+        })
       })
-      })
+     }
     }
 
   }
@@ -115,13 +144,14 @@ componentWillReceiveProps(props){
   if(props.option === 4){
     console.log(props.option);
   }
+
 }
 
 componentDidMount() {
 
 }
   render() {
-    console.log(this.props.chat);
+    console.log(this.state.foto);
 
     return (
       <div>
@@ -129,6 +159,10 @@ componentDidMount() {
           hide={this.closeLightBox}
           hola={this.state.box}
           foto={this.state.foto}
+          id_receiber={this.state.id_receiber}
+          id_transmitter={this.state.id_transmitter}
+          registerMessageFunction={this.props.registerMessageFunction}
+          option={this.state.option}
         />
 
         <Collapse isOpen={this.props.show}>
@@ -150,12 +184,12 @@ componentDidMount() {
             <CardBody style={style.body}>
               {
                 this.props.chat.dataMessage ? this.props.chat.dataMessage.map((list, key) =>{
-                if(list.transmitter === this.props.transmiter){
+                if(list.transmitter === this.props.transmiter && list.is_image === 0){
                   return ( 
                 <div key={key}>
                     <div style={style.primary}>
                       <div style={style.secondary}>
-                        <div style={style.tertiary} onClick={() => this.viewPhoto(this.state.foto)}>
+                        <div style={style.tertiary} >
                         { list.message } {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :  <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
                         </div>
 
@@ -163,12 +197,12 @@ componentDidMount() {
                     </div>
                   </div>
                   )
-                }else {
+                }else if(list.transmitter !== this.props.transmiter && list.is_image === 0){
                   return ( 
                 <div key={key}>
                     <div style={style.primaryLeft}>
                       <div style={style.secondaryLeft}>
-                        <div style={style.tertiary} onClick={() => this.viewPhoto(this.state.foto)}>
+                        <div style={style.tertiary} >
                         { list.message } {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :  <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
                         </div>
 
@@ -176,9 +210,42 @@ componentDidMount() {
                     </div>
                   </div>
                   )
+                }else if(list.transmitter === this.props.transmiter &&  list.is_image === 1){
+                   return(
+                    <div key={key}>
+                    <div style={style.imgPrimary}>
+                      <div style={style.imgSecondary}>
+                        <div style={style.imgTertiary} onClick={() => this.viewPhoto(list.message)}>
+                        {
+                         <img alt="foto" style={style.foto} className="image" src={"data:image/jpeg;" + list.message} />
+                        }
+                        </div>
+                        {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :  <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
+                      </div>
+                    </div>
+                  </div>
+                   )
+                }else if(list.transmitter !== this.props.transmiter && list.is_image === 1){
+                  return(
+                    <div key={key}>
+                    <div style={style.imgPrimaryLeft}>
+                      <div style={style.imgSecondaryLeft}>
+                        <div style={style.imgTertiaryLeft} onClick={() => this.viewPhoto(list.message)}>
+                        {
+                         <img alt="foto" style={style.foto} className="image" src={"data:image/jpeg;" + list.message} />
+                        }
+                        </div>
+                        {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :  <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
+                      </div>
+                    </div>
+                  </div>
+                   )
                 }
 
-                }): null
+                }):  
+                <div style={{height: "60vh"}}>
+                    <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
+                  </div>
               }
 
             </CardBody>
@@ -188,7 +255,7 @@ componentDidMount() {
                   <Input style={style.input}
                     onChange={(e)=>this.handlechange(e)}
                     onKeyPress={(e)=>this.keyPress(e)}
-                    value={this.state.message}
+                   
                   ></Input>
                   <Input style={style.photo}
                     id="text-button-file"
@@ -275,7 +342,6 @@ const style = {
     "lineHeight": "15px",
     "borderBottomLeftRadius": "10px",
     "borderBottomRightRadius": "10px",
-    "borderTopRightRadius": "10px",
     "minWidth": "25px",
     "fontSize": "smaller",
     "textAlign": "-webkit-auto",
@@ -313,27 +379,22 @@ const style = {
   },
   imgSecondary: {
     "color": "black",
-    "background": "#66b0e080",
+    "background": "#6192bf",
     "maxWidth": "75%",
     "lineHeight": "15px",
     "borderTopLeftRadius": "3px",
     "borderBottomLeftRadius": "3px",
     "borderBottomRightRadius": "3px",
     "minWidth": "25px",
-    "fontSize": "smaller",
-    "textAlign": "-webkit-auto",
+    "fontSize": "smaller"
   },
   imgTertiary: {
     "fontSize": "small",
-    "margin": "6px",
+    "margin": "1px",
   },
   foto: {
-    "marginLeft": "-4px",
-    "marginRight": "-4px",
-    "marginBottom": "-4px",
-    "marginTop": "-4px",
-    "width": "100px",
-    "height": "100px",
+    "height": "91px",
+    "margin": "1px"
   },
   done:{
     "fontSize":"12px"
@@ -341,12 +402,34 @@ const style = {
   doneContainer:{
     "display": "flow-root",
     "float": "right",
-    "marginLeft": "5px"
-  }
+    "marginLeft": "5px",
+  },
+  imgPrimaryLeft: {
+    "display": "flex",
+    "marginTop": "5px"
+  },
+  imgSecondaryLeft: {
+    "color": "black",
+    "background": "#7ebbf3",
+    "maxWidth": "75%",
+    "lineHeight": "15px",
+    "borderTopLeftRadius": "3px",
+    "borderBottomLeftRadius": "3px",
+    "borderBottomRightRadius": "3px",
+    "minWidth": "25px",
+    "fontSize": "smaller"
+  },
+  imgTertiaryLeft: {
+    "fontSize": "small",
+    "margin": "1px",
+  },
 }
 
 const mapDispatchToProps = dispatch => ({
-  registerMessageFunction: (id_claim_receiver,id_claim_transmitter,message, time) =>dispatch(registerMessageFunction(id_claim_receiver,id_claim_transmitter,message, time))
+  registerMessageFunction: (id_claim_receiver,id_claim_transmitter,message, time, option, callback) =>dispatch(registerMessageFunction(id_claim_receiver,id_claim_transmitter,message, time, option, callback)),
+  messageFunction: (data) =>dispatch(messageFunction(data)),
+  cleanMessage: ()=>dispatch(cleanMessage()),
+  registerFotoFunction: (id_claim_receiver,id_claim_transmitter,foto, time, option, callback) =>dispatch(registerFotoFunction(id_claim_receiver,id_claim_transmitter,foto, time, option, callback))
 })
 
 const mapStateToProps = state => ({

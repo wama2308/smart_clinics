@@ -14,8 +14,20 @@ const  setStoreChatSavePusher = (state, payload) =>{
   return Map(estado);
 }
 
+const setMessage =  (state, payload) =>{
+  let estado = state.toJS();
+  estado.message = payload;
+  return Map(estado);
+} 
+
+const setCleanMessage = (state, payload) =>{
+   let estado = state.toJS();
+  estado.message = payload;
+  return Map(estado);
+}
+
 const ChatReducer = (state = Map(), action) => {
-  console.log(action.type);
+
 switch (action.type) {
   case "LOAD_MESSAGE":{
     return loadDataMessage(state, action.payload)
@@ -25,6 +37,13 @@ switch (action.type) {
     case "SAVE_PUSHER":
       return setStoreChatSavePusher(state, action.payload)
     break;
+
+    case "MESSAGE":
+      return setMessage(state, action.payload)
+      break;
+
+     case "MESSAGE_CLEAN":
+     return setCleanMessage(state, action.payload)
 
   default:
     return state

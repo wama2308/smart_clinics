@@ -32,6 +32,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { openConfirmDialog } from '../actions/aplicantionActions';
 import classnames from "classnames";
 import jstz from 'jstz';
+import { GetDisabledPermits } from "./../core/utils";
 
 class ReclamosContainer extends Component {
   constructor(props) {
@@ -40,16 +41,38 @@ class ReclamosContainer extends Component {
       show: true,
       arraySelect: [],
       activeTab: "1",
-      master: false
+      master: false,
+      permitsRealizados: [],
+      permitsRecibidos:[],
+      permitsAtendidos:[]
     }
   }
   componentDidMount() {
-    this.props.LoadSelectReclamosFuction()
-    if(this.props.aplication.dataGeneral.permission[0].name === "Master"){
-      this.setState({
-        master: true
-      })
-    }
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Reclamos Realizados") {
+        this.setState({
+          permitsRealizados: permisos.permits
+        });
+      }
+    });
+
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Reclamos Recibidos") {
+        this.setState({
+          permitsRecibidos: permisos.permits
+        });
+      }
+    });
+
+    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+      if (permisos.name === "Reclamos Atendidos") {
+        this.setState({
+          permitsAtendidos: permisos.permits
+        });
+      }
+    });
+
+   
   }
 
   toggleTab(tab) {
@@ -61,6 +84,10 @@ class ReclamosContainer extends Component {
   }
 
   render() {
+    console.log(this.state.permitsRecibidos)
+     const disabledCreate = GetDisabledPermits(this.state.permitsRecibidos, "Create")
+     const disabledList = GetDisabledPermits(this.state.permitsRecibidos, "List")
+     console.log(disabledList)
     return (
       <div className="animated fadeIn">
         <Row>
@@ -99,6 +126,7 @@ class ReclamosContainer extends Component {
                               loadMessageFunction={this.props.loadMessageFunction}
                               setStatusMessageFunction={this.props.setStatusMessageFunction}
                               token={this.props.reclamos}
+                              permits={this.state.permitsRealizados}
                             />
                           </TabPane>
                           <TabPane tabId="2">
@@ -110,6 +138,7 @@ class ReclamosContainer extends Component {
                               loadMessageFunction={this.props.loadMessageFunction}
                               setStatusMessageFunction={this.props.setStatusMessageFunction}
                               token={this.props.reclamos}
+                              permits={this.state.permitsRecibidos}
                               />
                           </TabPane>
                           <TabPane tabId="3">
@@ -119,6 +148,7 @@ class ReclamosContainer extends Component {
                               acceptReclamosFunction={this.props.acceptReclamosFunction}
                               rejectReclamosFunction={this.props.rejectReclamosFunction}
                               confirm={this.props.confirm}
+                              permits={this.state.permitsAtendidos}
                               />
                           </TabPane>
                       </TabContent>

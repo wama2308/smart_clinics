@@ -14,6 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 import Badge from '@material-ui/core/Badge';
 import jstz from 'jstz';
+import { GetDisabledPermits } from "../../core/utils";
 
 class ReclamosReceibeList extends Component {
  constructor(props) {
@@ -145,6 +146,13 @@ class ReclamosReceibeList extends Component {
 
  render() {
    const visitador = this.validat(this.props.reclamos)
+
+   const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
+   const disabledUpdate = GetDisabledPermits(this.props.permits, "Update")
+   const disabledActive = GetDisabledPermits(this.props.permits, "Active")
+   const disabledDelete = GetDisabledPermits(this.props.permits, "Delete")
+   const disabledDetails = GetDisabledPermits(this.props.permits, "Details")
+
    return (
      <div>
        {this.state.modal === true &&
@@ -199,6 +207,7 @@ class ReclamosReceibeList extends Component {
                              title="Ver Reclamo"
                              className="iconButtons"
                              onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter); }}
+                             disabled={disabledDetails}
                            >
                              <Visibility className="iconTable" />
                            </IconButton>
@@ -207,11 +216,12 @@ class ReclamosReceibeList extends Component {
                              title="Transferir Reclamos"
                              className="iconButtons"
                              onClick={() => { this.transferClaims(list.id_claim_receiver, list.id_claim_transmitter); }}
+                             disabled={disabledCreate}
                            >
                            <Reply className="iconTable" />
                            </IconButton>
 
-                           <IconButton onClick={() => this.openModal(4,list.id_claim_receiver, list.id_claim_transmitter)} className="iconButtons">
+                           <IconButton onClick={() => this.openModal(4,list.id_claim_receiver, list.id_claim_transmitter)} className="iconButtons" disabled={disabledActive}>
                              <StyledBadge badgeContent={list.unread_messages > 0 ? list.unread_messages: null} color="primary">
                                <QuestionAnswer className="iconTable" />
                              </StyledBadge>

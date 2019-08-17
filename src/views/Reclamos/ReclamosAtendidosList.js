@@ -11,6 +11,7 @@ import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
 import LightBox from '../../components/LightBox';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { GetDisabledPermits } from "../../core/utils";
 import jstz from 'jstz';
 
 class ReclamosAtendidosList extends Component {
@@ -172,6 +173,13 @@ class ReclamosAtendidosList extends Component {
    const visitador = this.validat(this.props.reclamos)
    const time =  jstz.determine().name()
 
+   console.log(this.props.permits)
+   const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
+   const disabledUpdate = GetDisabledPermits(this.props.permits, "Update")
+   const disabledActive = GetDisabledPermits(this.props.permits, "Active")
+   const disabledDelete = GetDisabledPermits(this.props.permits, "Delete")
+   const disabledDetails = GetDisabledPermits(this.props.permits, "Details")
+
    return (
      <div>
        {this.state.modal === true &&
@@ -223,6 +231,7 @@ class ReclamosAtendidosList extends Component {
                              title="Ver Reclamo"
                              className="iconButtons"
                              onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter); }}
+                             disabled={disabledDetails}
                            >
                              <Visibility className="iconTable" />
                            </IconButton>

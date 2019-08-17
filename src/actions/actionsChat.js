@@ -27,8 +27,22 @@ export const loadMessageFunction = (id_claim_receiver, id_claim_transmitter) => 
     })
   })
 }
+export const messageFunction = (data) => dispatch =>{
+  dispatch({
+    type:"MESSAGE",
+    payload: data
+  })
+}
 
-export const registerMessageFunction = (id_claim_receiver,id_claim_transmitter,message, time, callback) => dispatch => {
+export const cleanMessage = () => dispatch =>{
+  dispatch({
+    type:"MESSAGE_CLEAN",
+    payload: ""
+  })
+}
+
+export const registerMessageFunction = (id_claim_receiver,id_claim_transmitter,message, time, option, callback) => dispatch => {
+  console.log(id_claim_receiver,id_claim_transmitter,message, time, option, callback)
   getDataToken().then(datos=>{
     axios({
       method:"post",
@@ -38,8 +52,33 @@ export const registerMessageFunction = (id_claim_receiver,id_claim_transmitter,m
         id_claim_transmitter: id_claim_transmitter,
         message: message,
         timeZ: time,
+        is_image: option
       },
       headers: datos.headers
+    }).then(data=>{
+     callback();
+     
+    })
+  })
+}
+
+export const registerFotoFunction = (id_claim_receiver,id_claim_transmitter,foto, time, option, callback) => dispatch => {
+  console.log(id_claim_receiver,id_claim_transmitter,foto, time, option, callback)
+  getDataToken().then(datos=>{
+    axios({
+      method:"post",
+      url: registerMessage,
+      data: {
+        id_claim_receiver: id_claim_receiver,
+        id_claim_transmitter: id_claim_transmitter,
+        message: foto,
+        timeZ: time,
+        is_image: option
+      },
+      headers: datos.headers
+    }).then(data=>{
+     callback();
+     
     })
   })
 }
