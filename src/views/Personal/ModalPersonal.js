@@ -674,8 +674,15 @@ class ModalCargos extends React.Component {
         });                    
     } 
 
+    valorCloseModal = valor => {
+        this.setState({
+          modal: valor,
+          option: 0
+        });
+    };
+
     componentWillReceiveProps=(props)=>{            
-        /*console.log("modal personal usersRoles", props.usersRoles.toJS()); */                     
+        console.log("modal personal usersRoles", props.usersRoles.toJS());                      
         //console.log("modal personal application ", props.aplication);     
         let type_identity = "";
         props.aplication.dataGeneral.dataCountries.type_identity.map((typeIdentity, i) => {       
@@ -859,6 +866,7 @@ class ModalCargos extends React.Component {
                                   arrayBranchOffices = {this.props.arrayBranchOffices}
                                   roles = {this.props.roles}     
                                   valorCloseModalRoles={this.valorCloseModalRoles}     
+                                  valorCloseModal={this.valorCloseModal}
                                   saveRolAction = {this.props.saveRolAction}  
                                   LoadRolIdFunction = {this.props.LoadRolIdFunction}
                                   saveUserNoMasterAction = {this.props.saveUserNoMasterAction}          

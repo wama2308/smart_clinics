@@ -30,7 +30,8 @@ import {
   cleanListServices,
   cleanListServicesTab,
   saveConfigCommissionsAction,
-  editConfigCommissionsAction
+  editConfigCommissionsAction,
+  setSwitchAllTableComisiones
 } from "../../actions/CommissionsActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -511,6 +512,7 @@ class ModalConfigCommissions extends React.Component {
   };  
 
   componentWillReceiveProps = props => {    
+    console.log("modal configCommissions", props.configCommissions);
     if(props.option === 1){
       this.setState({
         loading:'hide'
@@ -830,6 +832,7 @@ class ModalConfigCommissions extends React.Component {
                             typePersonal = {this.state.arrayTipoPersonaSelect.value}
                             setPorcentajeTable = {this.props.setPorcentajeTable}
                             setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
+                            setSwitchAllTableComisiones = {this.props.setSwitchAllTableComisiones}
                             disabled = {this.props.disabled}
                             tab = {this.state.activeTab}
                           />  
@@ -916,6 +919,7 @@ class ModalConfigCommissions extends React.Component {
                               typePersonal = {this.state.arrayTipoPersonaSelect.value}
                               setPorcentajeTable = {this.props.setPorcentajeTable}
                               setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
+                              setSwitchAllTableComisiones = {this.props.setSwitchAllTableComisiones}
                               disabled = {this.props.disabled}
                               tab = {this.state.activeTab}
                             />
@@ -992,6 +996,7 @@ const mapDispatchToProps = dispatch => ({
   cleanListServicesTab: (tab) => dispatch(cleanListServicesTab(tab)),
   setPorcentajeTable: (pos, value) =>dispatch(setPorcentajeTable(pos, value)),
   setSwitchTableComisiones: (pos, value, tab, typePersonal) =>dispatch(setSwitchTableComisiones(pos, value, tab, typePersonal)),
+  setSwitchAllTableComisiones: (value, tab, typePersonal) =>dispatch(setSwitchAllTableComisiones(value, tab, typePersonal)),
   saveConfigCommissionsAction: (data, callback) =>dispatch(saveConfigCommissionsAction(data, callback)),
   editConfigCommissionsAction: (data, callback) =>dispatch(editConfigCommissionsAction(data, callback)),
 });
