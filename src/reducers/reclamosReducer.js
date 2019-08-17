@@ -18,12 +18,13 @@ const ReclamosReducer = (state = Map(), action) => {
   switch (action.type) {
       case 'CLEAN_RECLAMOS': {
 		  	return setStoreCleanReclamos(state, action.payload)
-		  } 
+		  }
       break;
 
       case 'LOAD_SELECT':{
         return  Map(action.payload)
       }
+      break;
 
       case 'LOAD_RECLAMOS_ID':{
         return setDataReclamosId(state, action.payload)

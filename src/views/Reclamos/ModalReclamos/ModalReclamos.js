@@ -21,11 +21,17 @@ class ModalReclamos extends Component {
       motivoInvalid: false,
     }
   }
+  componentDidMount() {
+    if (this.props.option !== 1 ) {
+      this.setState({ loading: 'hide' })
+    }
+  }
+  
 
   componentWillReceiveProps(props) {
     if (props.option === 2 || props.option === 3) {
       if (props.reclamos.reclamosId) {
-        if(props.reclamos.reclamosId.rason !== ""){
+        if (props.reclamos.reclamosId.rason !== "") {
           this.setState({
             descripcion: props.reclamos.reclamosId.claim,
             arrayCentroMedicoSelect: props.reclamos.reclamosId.medical_center_receiver,
@@ -35,8 +41,6 @@ class ModalReclamos extends Component {
             loading: 'show'
           })
         }
-      }else{
-        this.setState({ loading: 'hide' })
       }
     }
   }
@@ -183,7 +187,7 @@ class ModalReclamos extends Component {
         this.setState({ loading: 'hide' })
         this.props.updateReclamosFuction(
           {
-            id_claim_transmitter:this.props.id_transmitter, 
+            id_claim_transmitter: this.props.id_transmitter,
             id_claim_receiver: this.props.id_receiber,
             medical_center_id: this.state.arrayCentroMedicoSelect.value,
             branchoffice_id: this.state.arraySucursalesSelect.value,
@@ -342,7 +346,7 @@ class ModalReclamos extends Component {
 const mapDispatchToProps = dispatch => ({
   cleanReclamos: () => dispatch(cleanReclamos()),
   saveReclamosAction: (data, callback) => dispatch(saveReclamosAction(data, callback)),
-  updateReclamosFuction: (data, callback) =>dispatch(updateReclamosFuction(data, callback)),
+  updateReclamosFuction: (data, callback) => dispatch(updateReclamosFuction(data, callback)),
 })
 const mapStateToProps = state => ({
   reclamos: state.reclamos.toJS()
