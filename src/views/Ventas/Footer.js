@@ -77,6 +77,7 @@ export default class Footer extends React.Component {
             cancel={this.props.cancel}
             confirm={this.props.confirm}
             code_bill={this.props.code_bill}
+            reference={this.props.reference}
           />
         )}
         <div style={{ display: "flex", alignItems: "center" }}>

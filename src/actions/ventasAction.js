@@ -16,6 +16,7 @@ const queryBillurl = `${url}/api/queryBill`;
 const cancelInvoice = `${url}/api/cancelInvoice`;
 const editCashierDiscount = `${url}/api/editCashierDiscount`;
 const referencePersonnelUrl = `${url}/api/referencePersonnel`;
+const deleteReferencePersonnel = `${url}/api/deleteReferencePersonnel`;
 
 export const searchPatient = search => dispatch => {
   if (search.length < 1) {
@@ -83,33 +84,65 @@ const orderData = data => {
 
 const orderReferences = (reference, dispatch) => {
   dispatch({
-    type:"SET_REFERENCES",
-    payload:reference
-  })
+    type: "SET_REFERENCES",
+    payload: reference
+  });
   if (reference.length > 1) {
-    console.log("!!!!!!!!!!!!! el primero")
     dispatch({
       type: "OPEN_MODAL_REFERENCE",
       payload: true
     });
-  }else{
-    console.log("!!!!!!!!!el seguno")
+  } else {
     dispatch({
-      type:"SEARCH_ARRAY_PRODUCTS",
-      payload:reference[0].products
-    })
-
+      type: "SEARCH_ARRAY_PRODUCTS",
+      payload: reference[0].products
+    });
+    dispatch({
+      type: "SELECTED_REFERENCE",
+      payload: {
+        ...reference[0],
+        products: (reference[0].products = undefined)
+      }
+    });
   }
 };
 
+export const selectedReferences = (data, callback) => dispatch => {
+  dispatch({
+    type: "SEARCH_ARRAY_PRODUCTS",
+    payload: data.products
+  });
 
-export const closeModalReferences = ()=>{
-  return{
+  dispatch({
+    type: "SELECTED_REFERENCE",
+    payload: {
+      ...data,
+      products: (data.products = undefined)
+    }
+  });
+
+  callback();
+};
+
+export const deleteReferences = (data, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: deleteReferencePersonnel,
+      data: data,
+      ...token
+    }).then(() => {
+      callback();
+    });
+  });
+};
+
+export const closeModalReferences = () => {
+  return {
     type: "OPEN_MODAL_REFERENCE",
     payload: false
-  }
-}
-
+  };
+};
 
 export const searchOnePatient = search => dispatch => {
   if (search.length === 0) {
@@ -401,7 +434,7 @@ export const editDiscount = (obj, callback) => dispatch => {
 };
 
 export const createSale = (obj, typeBill, callback) => dispatch => {
-  console.log(obj);
+  console.log("actions", obj);
   getDataToken().then(token => {
     axios({
       method: "POST",

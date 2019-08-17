@@ -251,6 +251,7 @@ class VentasContainer extends React.Component {
               modalReference={this.props.state.modalReference}
               closeReferences={this.props.closeModalReferences}
               references={this.props.state.references}
+              selectedReferences={this.props.state.selectedReference}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -296,6 +297,7 @@ class VentasContainer extends React.Component {
               createSale={this.props.createSale}
               dataGeneral={this.props.dataGeneral}
               code_bill={this.props.code_bill}
+              reference={this.props.state.selectedReference}
             />
           </div>
         </div>

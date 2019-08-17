@@ -9,34 +9,90 @@ import {
   ModalFooter,
   Button
 } from "reactstrap";
-import { KeyboardArrowDown } from "@material-ui/icons";
-import { Checkbox, IconButton } from "@material-ui/core";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+import {
+  Checkbox,
+  IconButton,
+  Table,
+  TableCell,
+  TableBody,
+  TableHead,
+  TableRow
+} from "@material-ui/core";
+import { formatNumber } from "../../core/utils";
 import styled from "styled-components";
+import { connect } from "react-redux";
+import { openConfirmDialog } from "../../actions/aplicantionActions";
+import {
+  selectedReferences,
+  deleteReferences
+} from "../../actions/ventasAction";
 
-export default class ModalReferences extends React.Component {
+class ModalReferences extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      collapse: false
+      collapse: false,
+      selected: false
     };
   }
+
+  addReferences = () => {
+    const refSelected = this.props.references.find(ref => {
+      return this.state.selected === ref._id;
+    });
+
+    const obj = {
+      title: "Eliminar Referencias",
+      info: "Tiene mas referencias Desea Eliminarlas?"
+    };
+
+    this.props.openConfirmDialog(obj, res => {
+      if (res) {
+        this.props.deleteReferences(
+          {
+            patient_id: this.props.patient._id,
+            reference_id: refSelected._id
+          },
+          () => {
+            this.props.selectedReferences(refSelected, () => {
+              this.props.close();
+            });
+          }
+        );
+      } else {
+        this.props.selectedReferences(refSelected, () => {
+          this.props.close();
+        });
+      }
+    });
+  };
+
   render() {
-    console.log("References Modal", this.props);
+    const dataHead = [
+      { label: "CODIGO" },
+      { label: "NOMBRE" },
+      { label: "TIPO" },
+      { label: "DISPONIBLE" },
+      { label: "CANTIDAD" },
+      { label: "PRECIO/U" },
+      { label: "PRECIO/T" }
+    ];
     return (
       <Modal
         toggle={this.props.close}
         isOpen={this.props.open}
-        style={{ minWidth: "55%" }}
+        style={{ minWidth: "70%" }}
       >
         <ModalHeader toggle={this.props.close}>
           Selecione una referencia
         </ModalHeader>
 
         <ModalBody>
-          {this.props.references.map(ref => {
+          {this.props.references.map((ref, key) => {
             return (
-              <div>
+              <div key={key}>
                 <Reference>
                   <div
                     style={{
@@ -46,7 +102,10 @@ export default class ModalReferences extends React.Component {
                       alignItems: "center"
                     }}
                   >
-                    <Checkbox checked={true} />
+                    <Checkbox
+                      checked={ref._id === this.state.selected ? true : false}
+                      onClick={() => this.setState({ selected: ref._id })}
+                    />
 
                     <div
                       style={{
@@ -67,18 +126,86 @@ export default class ModalReferences extends React.Component {
                   </div>
 
                   <div>
-                    <IconButton>
-                      <KeyboardArrowDown />
-                    </IconButton>
+                    {this.state.collapse !== key && (
+                      <IconButton
+                        onClick={() => {
+                          this.setState({
+                            collapse: key === this.state.collapse ? true : key
+                          });
+                        }}
+                      >
+                        <KeyboardArrowDown />
+                      </IconButton>
+                    )}
+                    {this.state.collapse === key && (
+                      <IconButton
+                        onClick={() => {
+                          this.setState({
+                            collapse: key === this.state.collapse ? true : key
+                          });
+                        }}
+                      >
+                        <KeyboardArrowUp />
+                      </IconButton>
+                    )}
                   </div>
                 </Reference>
-                <Collapse isOpen={this.state.collapse}>
+                <Collapse isOpen={this.state.collapse === key}>
                   <Card>
-                    <CardBody>
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life
-                      accusamus terry richardson ad squid. Nihil anim keffiyeh
-                      helvetica, craft beer labore wes anderson cred nesciunt
-                      sapiente ea proident.
+                    <CardBody
+                      style={{
+                        overflow: "auto"
+                      }}
+                    >
+                      <Table>
+                        <TableHead>
+                          <TableRow style={{ height: 35 }}>
+                            {dataHead.map((head, key) => {
+                              return (
+                                <TableCell
+                                  key={key}
+                                  style={{ border: "1px solid #c8ced3" }}
+                                >
+                                  {head.label}
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {ref.products.map(product => {
+                            return (
+                              <TableRow key={product._id}>
+                                <Cell className="cellStyle">
+                                  {product.code}
+                                </Cell>
+                                <Cell>{product.name}</Cell>
+                                <Cell>{product.type}</Cell>
+                                <Cell>
+                                  {product.service
+                                    ? "0"
+                                    : product.quantity_stock}
+                                </Cell>
+
+                                <Cell
+                                  onClick={() => this.editInput(product._id)}
+                                >
+                                  {product.quantity}
+                                </Cell>
+
+                                <Cell>{formatNumber(product.price)}</Cell>
+                                <Cell>
+                                  {product.quantity
+                                    ? formatNumber(
+                                        product.quantity * product.price
+                                      )
+                                    : formatNumber(product.price)}
+                                </Cell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
                     </CardBody>
                   </Card>
                 </Collapse>
@@ -87,13 +214,22 @@ export default class ModalReferences extends React.Component {
           })}
         </ModalBody>
         <ModalFooter>
-          <Button color="danger">Cancelar</Button>
-          <Button color="success">Guardar</Button>
+          <Button color="danger" onClick={() => this.props.close}>
+            Cancelar
+          </Button>
+          <Button color="success" onClick={this.addReferences}>
+            Guardar
+          </Button>
         </ModalFooter>
       </Modal>
     );
   }
 }
+
+export default connect(
+  null,
+  { selectedReferences, openConfirmDialog, deleteReferences }
+)(ModalReferences);
 
 const Reference = styled.div`
   height: 50px;
@@ -106,4 +242,8 @@ const Reference = styled.div`
   &:first-child {
     margin-top: 20px;
   }
+`;
+
+const Cell = styled(TableCell)`
+  border: 1px solid #c8ced3;
 `;

@@ -36,7 +36,7 @@ class Client extends React.Component {
   };
 
   render() {
-    const { patient } = this.props;
+    const { patient, selectedReferences } = this.props;
     const disabled = this.props.isSaved ? this.props.isSaved : false;
     const message = {
       "PENDING TO APPROVE": "PENDIENTE POR APROBAR",
@@ -44,14 +44,10 @@ class Client extends React.Component {
       PAID: "POR PAGAR"
     };
 
-    const definePatient = [];
-    // patient
-    //   ? patient.referencer._id
-    //     ? patient.referencer._id
-    //     : []
-    //   : [];
+    const definePatient = selectedReferences ? selectedReferences : [];
 
-    const disabledForPatient = false; // definePatient.length > 0 ? true : false;
+
+    const disabledForPatient = selectedReferences ? true : false;
 
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
@@ -60,11 +56,14 @@ class Client extends React.Component {
       <Card
         style={{ margin: "0px 10px 10px 0px", flex: 1, maxHeight: 335.365 }}
       >
-       {this.props.modalReference &&  <ModalReferences
-          open={this.props.modalReference}
-          close={this.props.closeReferences}
-          references={this.props.references}
-        />}
+        {this.props.modalReference && (
+          <ModalReferences
+            open={this.props.modalReference}
+            close={this.props.closeReferences}
+            references={this.props.references}
+            patient={patient}
+          />
+        )}
         {this.state.openModal && (
           <UserRegister
             open={this.state.openModal}
@@ -74,7 +73,7 @@ class Client extends React.Component {
           />
         )}
 
-        {/* {patient && (
+        {definePatient && (
           <Popover
             open={this.state.openReference}
             anchorEl={this.state.anchorEl}
@@ -98,7 +97,7 @@ class Client extends React.Component {
                 Nombres
               </Typography>
               <Typography style={{ paddingLeft: 10, paddingRight: 10 }}>
-                {patient.referencer.names} {patient.referencer.surnames}
+                {definePatient.names} {definePatient.surnames}
               </Typography>
               <Typography style={{ padding: 10, fontWeight: "bold" }}>
                 Identificacion
@@ -106,11 +105,11 @@ class Client extends React.Component {
               <Typography
                 style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}
               >
-                {patient.referencer.type_identity}-{patient.referencer.dni}
+                {definePatient.type_identity}-{definePatient.dni}
               </Typography>
             </div>
           </Popover>
-        )} */}
+        )}
         <Header>
           <div style={{ display: "flex", alignItems: "center" }}>
             Paciente
@@ -216,12 +215,12 @@ class Client extends React.Component {
                       {message[this.props.statusSale]}
                     </div>
                     <div>
-                      <Button
+                      {/* <Button
                         color="success"
                         onClick={() => this.setState({ manualReference: true })}
                       >
                         Referenciar
-                      </Button>
+                      </Button> */}
                       &nbsp;
                       <Button color="success" onClick={() => this.view()}>
                         Ver detalles
