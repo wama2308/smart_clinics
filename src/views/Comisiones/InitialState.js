@@ -39,5 +39,6 @@ export const InitalState = {
     hideTipoMontoMinimo:'hide',
     hidePersonalExterno:'hide',
     collapse: false,
+    checked: false,
     loading:'show', 
 }

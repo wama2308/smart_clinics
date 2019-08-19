@@ -73,6 +73,9 @@ class ModalUser extends React.Component {
             )
         })*/
         if (this.props.option === 4){
+            console.log(111111111)
+            this.props.addNombresStoreAction(this.props.namesSelect);
+            this.props.addApellidosStoreAction(this.props.surnamesSelect);
             this.setState({
                 modalUser: this.props.modal,
                 loading:'hide',
@@ -462,6 +465,7 @@ class ModalUser extends React.Component {
     }
 
     componentWillReceiveProps=(props)=>{
+        console.log("modal user", props.usersRoles)
         /*if(props.usersRoles.saveRol === 1){
             let lastRolPos = props.roles.length - 1;            
             let lastRol  = { label: props.roles[lastRolPos].rol, value: props.roles[lastRolPos]._id };
@@ -530,6 +534,7 @@ class ModalUser extends React.Component {
                 listSucursales: props.usersRoles.userIdView.sucursal,
             })
         }else if (props.option === 4){
+            console.log(2222222222)
             this.setState({
                 modalUser: props.modal,
                 loading:'hide',

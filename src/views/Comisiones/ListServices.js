@@ -1,11 +1,11 @@
 import React from "react";
-import { Table, Button, FormGroup, Input } from "reactstrap";
+import { Table, Button, FormGroup, Input, Label } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import Switch from '@material-ui/core/Switch';
 import "./Commissions.css";
 import Pagination from '../../components/Pagination';
-import { getArray, GetDisabledPermits } from '../../core/utils'
+import { getArray, GetDisabledPermits } from '../../core/utils';
 
 class ListServices extends React.Component {
   constructor(props) {
@@ -75,6 +75,13 @@ class ListServices extends React.Component {
     this.props.setSwitchTableComisiones(pos, event.target.checked, this.props.tab, this.props.typePersonal);        
   };
 
+  handleChangeSwitchAll = name => event => {        
+      this.setState({ 
+          [name]: event.target.checked 
+      });
+      this.props.setSwitchAllTableComisiones(event.target.checked, this.props.tab, this.props.typePersonal);
+  };
+
   componentWillReceiveProps = props => {
     this.setState({
       arrayTest: getArray(props.data)
@@ -101,7 +108,17 @@ class ListServices extends React.Component {
           />
         </FormGroup>  
       </div>
-      <div>              
+      <div>         
+        <div align="right">      
+                  <Label for="seleccionarTodos"><b>Seleccionar Todos:</b></Label>
+                  <Switch
+                    checked={this.state.checked?this.state.checked:false}
+                    onChange={this.handleChangeSwitchAll("checked")}
+                    value={this.state.checked}
+                    color="primary"
+                    disabled={this.props.disabled} 
+                  />
+                </div>     
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
@@ -153,13 +170,14 @@ class ListServices extends React.Component {
                   }
                   
                 </tr>
-              );
-            })
+              );              
+            })            
               :
               null
-            }
-          </tbody>
+            } 
+          </tbody>    
           {
+
             this.props.data.lenght > 10 &&
               <Pagination contador={this.props.data}
                 page={page}
@@ -167,7 +185,7 @@ class ListServices extends React.Component {
                 handleChangeRowsPerPage={this.handleChangeRowsPerPage}
                 handleChangePage={this.handleChangePage} />
           }
-        </Table>
+        </Table>        
       </div>  
       </span>    
     );

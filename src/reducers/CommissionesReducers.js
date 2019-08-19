@@ -61,8 +61,22 @@ const setCleanListServicesTab = (state, payload) => {
 			service.confirm = payload.confirm;
 		})		
 	}
-		
-	
+	return Map(estado);
+}
+
+const setSwitchAllTableComisiones = (state, payload) => {
+	let estado = state.toJS();
+	if(payload.tab === "1" && payload.typePersonal !== "5d1776e3b0d4a50b23936710"){		
+		estado.servicesCommission.map((commission, i) => {
+			commission.confirm = payload.value;
+			estado.action = 1;
+		})	
+	}else if(payload.tab === "2"){
+		estado.servicesPayment.map((payment, i) => {
+			payment.confirm = payload.value;
+			estado.action = 1;
+		})	
+	}
 	
 	return Map(estado);
 }
@@ -89,7 +103,10 @@ const ConfigCommissionsReducer = (state = Map(), action) => {
   		return setPorcentajeTableComisiones(state, action.payload);				
 
 	case "SET_SWITCH_COMISIONES":
-  		return setSwitchTableComisiones(state, action.payload);				  
+  		return setSwitchTableComisiones(state, action.payload);			
+
+  	case "SET_SWITCH_ALL_COMISIONES":
+  		return setSwitchAllTableComisiones(state, action.payload);		  
 
 	default:
 	  	return state;
