@@ -48,6 +48,8 @@ class ReclamosContainer extends Component {
     }
   }
   componentDidMount() {
+    this.props.LoadSelectReclamosFuction()
+
     this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
       if (permisos.name === "Reclamos Realizados") {
         this.setState({
@@ -70,9 +72,7 @@ class ReclamosContainer extends Component {
           permitsAtendidos: permisos.permits
         });
       }
-    });
-
-   
+    });   
   }
 
   toggleTab(tab) {
@@ -84,10 +84,6 @@ class ReclamosContainer extends Component {
   }
 
   render() {
-    console.log(this.state.permitsRecibidos)
-     const disabledCreate = GetDisabledPermits(this.state.permitsRecibidos, "Create")
-     const disabledList = GetDisabledPermits(this.state.permitsRecibidos, "List")
-     console.log(disabledList)
     return (
       <div className="animated fadeIn">
         <Row>
@@ -139,6 +135,7 @@ class ReclamosContainer extends Component {
                               setStatusMessageFunction={this.props.setStatusMessageFunction}
                               token={this.props.reclamos}
                               permits={this.state.permitsRecibidos}
+                              master={this.props.aplication.dataGeneral.permission[0].name}
                               />
                           </TabPane>
                           <TabPane tabId="3">
@@ -149,6 +146,7 @@ class ReclamosContainer extends Component {
                               rejectReclamosFunction={this.props.rejectReclamosFunction}
                               confirm={this.props.confirm}
                               permits={this.state.permitsAtendidos}
+                              master={this.props.aplication.dataGeneral.permission[0].name}
                               />
                           </TabPane>
                       </TabContent>
