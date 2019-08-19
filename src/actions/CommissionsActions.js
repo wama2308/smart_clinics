@@ -166,6 +166,21 @@ export const setPorcentajeTable = (pos, value) => dispatch => {
     });
 };
 
+export const setPorcentajeAllTable = (value) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "SET_PORCENTAJE_ALL_COMISIONES",
+        payload: {
+          value: value,          
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
 export const setSwitchTableComisiones = (pos, value, tab, typePersonal) => dispatch => {
   getDataToken()
     .then(datos => {

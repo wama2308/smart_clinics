@@ -24,7 +24,7 @@ class ListServices extends React.Component {
       searchService:'',
       page: 0,
       rowsPerPage: 10,
-      arrayTest:getArray(this.props.data)
+      arrayTest:getArray(this.props.data)      
     };
   }
 
@@ -52,41 +52,42 @@ class ListServices extends React.Component {
 
   handleChangeInputTable = (pos) => e => {
     const { name, value } = e.target;
-    let valor = 0;
-    valor = parseFloat(value);
-    /*if(value === "0"){
-        valor = 0;
-        var elemento = document.getElementById("divQuantity_"+pos);
-        elemento.className += " borderColorInputTable";            
-    }
-    else if(value === ""){
-        valor = 0;            
-        var elemento = document.getElementById("divQuantity_"+pos);
-        elemento.className += " borderColorInputTable";            
-    }else{
-        valor = parseFloat(value);
-        var elemento = document.getElementById("divQuantity_"+pos);
-        elemento.className += " borderColorInputTableWhite";             
-    }*/
-    this.props.setPorcentajeTable(pos, valor);
+    /*let valor = 0;
+    valor = parseFloat(value);*/    
+    this.props.setPorcentajeTable(pos, value);    
+    this.props.seteardivSeleccioneServiciosComision();
   }
 
   handleChangeSwitch = pos => event => {
-    this.props.setSwitchTableComisiones(pos, event.target.checked, this.props.tab, this.props.typePersonal);        
+    this.props.setSwitchTableComisiones(pos, event.target.checked, this.props.tab, this.props.typePersonal);     
+    this.props.seteardivSeleccioneServiciosComision();   
   };
 
   handleChangeSwitchAll = name => event => {        
       this.setState({ 
           [name]: event.target.checked 
       });
-      this.props.setSwitchAllTableComisiones(event.target.checked, this.props.tab, this.props.typePersonal);
+      this.props.setSwitchAllTableComisiones(event.target.checked, this.props.tab, this.props.typePersonal);      
+      this.props.seteardivSeleccioneServiciosComision();
   };
 
   componentWillReceiveProps = props => {
     this.setState({
-      arrayTest: getArray(props.data)
+      arrayTest: getArray(props.data)      
     })
   };
+
+  eventoBlurAplicarTodos = (pos) => e => {
+    if(document.getElementById("inputQuantity_"+pos).value === '' || document.getElementById("inputQuantity_"+pos).value === '0'){
+        document.getElementById("inputQuantity_"+pos).value = '0';
+    }        
+  }
+
+  eventoFocusAplicarTodos = (pos) => e => {        
+    if(document.getElementById("inputQuantity_"+pos).value === '0'){
+        document.getElementById("inputQuantity_"+pos).value = '';
+    }        
+  }  
 
   render() {
     const { rowsPerPage, page } = this.state;
@@ -109,16 +110,21 @@ class ListServices extends React.Component {
         </FormGroup>  
       </div>
       <div>         
-        <div align="right">      
-                  <Label for="seleccionarTodos"><b>Seleccionar Todos:</b></Label>
-                  <Switch
-                    checked={this.state.checked?this.state.checked:false}
-                    onChange={this.handleChangeSwitchAll("checked")}
-                    value={this.state.checked}
-                    color="primary"
-                    disabled={this.props.disabled} 
-                  />
-                </div>     
+        <div className="errorSelect" style={{width: "100%"}}>{this.props.divSeleccioneServiciosComision}</div>
+        <div className="errorSelect" style={{width: "100%"}}>{this.props.divSeleccioneServiciosPayment}</div>
+        {
+          this.props.typePersonal !== "5d1776e3b0d4a50b23936710" &&
+          <div align="right">      
+            <Label for="seleccionarTodos"><b>Seleccionar Todos:</b></Label>
+            <Switch
+              checked={this.state.checked?this.state.checked:false}
+              onChange={this.handleChangeSwitchAll("checked")}
+              value={this.state.checked}
+              color="primary"
+              disabled={this.props.disabled} 
+            />        
+          </div>     
+        }
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
@@ -152,6 +158,8 @@ class ListServices extends React.Component {
                           onChange={this.handleChangeInputTable(i)}
                           style={{width: "40%"}}
                           disabled={this.props.disabled} 
+                          onBlur ={this.eventoBlurAplicarTodos(i)} 
+                          onFocus = {this.eventoFocusAplicarTodos(i)} 
                         />
                       </div>
                     </td>

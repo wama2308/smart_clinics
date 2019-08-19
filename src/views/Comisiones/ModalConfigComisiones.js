@@ -31,7 +31,8 @@ import {
   cleanListServicesTab,
   saveConfigCommissionsAction,
   editConfigCommissionsAction,
-  setSwitchAllTableComisiones
+  setSwitchAllTableComisiones,
+  setPorcentajeAllTable
 } from "../../actions/CommissionsActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -119,6 +120,7 @@ class ModalConfigCommissions extends React.Component {
     let divPersonalExterno = '';
     let divPersonalExternoError = '';
     let acumConfirms = 0;
+    let divSeleccioneServiciosComision = '';    
 
     if(!this.state.arrayTipoPersonaSelect){
       divTipoPersonaError = "¡Seleccione el tipo de personal!";
@@ -154,7 +156,8 @@ class ModalConfigCommissions extends React.Component {
         const serviceConfirm = this.props.configCommissions.servicesCommission.find(service => service.confirm === true);
         if(!serviceConfirm){
           acumConfirms++;
-          this.props.alert("warning", "¡Seleccione al menos un servicio para la comision!");
+          //this.props.alert("warning", "¡Seleccione al menos un servicio para la comision!");
+          divSeleccioneServiciosComision = "¡Seleccione al menos un servicio para la comision!";
         }               
       }
     }
@@ -164,7 +167,8 @@ class ModalConfigCommissions extends React.Component {
         divTipoError ||
         divMontoMinimoComisionError ||         
         divNroPersonasReferenciadasError ||        
-        divPersonalExternoError
+        divPersonalExternoError ||
+        divSeleccioneServiciosComision
       ) 
     {
       this.setState({
@@ -179,7 +183,8 @@ class ModalConfigCommissions extends React.Component {
         divNroPersonasReferenciadasError,
         divNroPersonasReferenciadas,
         divPersonalExternoError,
-        divPersonalExterno
+        divPersonalExterno,
+        divSeleccioneServiciosComision
       });
       return false;
     }else if(acumConfirms === 1){
@@ -213,6 +218,8 @@ class ModalConfigCommissions extends React.Component {
     let acumPorcentajes = 0;
     let acumConfirms = 0;
     let acumConfirmsPayments = 0;
+    let divSeleccioneServiciosComision = '';
+    let divSeleccioneServiciosPayment = '';
     
     if(!this.state.arrayTipoPersonaSelect){
       divTipoPersonaError = "¡Seleccione el tipo de personal!";
@@ -241,20 +248,28 @@ class ModalConfigCommissions extends React.Component {
 
       if(this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){  
         const servicePercentaje = this.props.configCommissions.servicesPayment.find(service => service.percentage !== 0);        
+        const servicePercentajeVacios = this.props.configCommissions.servicesPayment.find(service => service.percentage === "");        
         if(!this.state.arrayPersonalExterno){
           divPersonalExternoError = "¡Seleccione el personal externo!";
           divPersonalExterno = "borderColor";
         }
         if(!servicePercentaje){
           acumPorcentajes++;
-          this.props.alert("warning", "¡Ingrese al menos un porcentaje de ganancia!");
+          //this.props.alert("warning", "¡Ingrese al menos un porcentaje de ganancia!");
+          divSeleccioneServiciosPayment = "¡Ingrese al menos un porcentaje de ganancia!";
+        }   
+        if(servicePercentajeVacios){
+          acumPorcentajes++;
+          //this.props.alert("warning", "¡Ingrese al menos un porcentaje de ganancia!");
+          divSeleccioneServiciosPayment = "¡Los porcentajes de ganancia no pueden estar vacios!";
         }   
       }else{
         const serviceConfirm = this.props.configCommissions.servicesCommission.find(service => service.confirm === true);
         const serviceConfirmPayment = this.props.configCommissions.servicesPayment.find(service => service.confirm === true);
         if(!serviceConfirm){
           acumConfirms++;
-          this.props.alert("warning", "¡Seleccione al menos un servicio para la comision!");
+          //this.props.alert("warning", "¡Seleccione al menos un servicio para la comision!");
+          divSeleccioneServiciosComision = "¡Seleccione al menos un servicio para la comision!";
         }
 
         if(!this.state.arrayModoPagoSelect){
@@ -279,7 +294,8 @@ class ModalConfigCommissions extends React.Component {
           }else if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930033"){
             if(!serviceConfirmPayment){
               acumConfirmsPayments++;
-              this.props.alert("warning", "¡Seleccione al menos un servicio para como pago!");
+              //this.props.alert("warning", "¡Seleccione al menos un servicio para como pago!");
+              divSeleccioneServiciosPayment = "¡Seleccione al menos un servicio para como pago!";
             }
           }
         }       
@@ -295,7 +311,9 @@ class ModalConfigCommissions extends React.Component {
         divTipoError ||
         divNroPersonasReferenciadasError ||
         divMontoMinimoComisionError ||
-        divPersonalExternoError
+        divPersonalExternoError ||
+        divSeleccioneServiciosComision ||
+        divSeleccioneServiciosPayment
       ) 
     {
       this.setState({
@@ -318,7 +336,9 @@ class ModalConfigCommissions extends React.Component {
         divMontoMinimoComisionError,
         divMontoMinimoComision,
         divPersonalExternoError,
-        divPersonalExterno
+        divPersonalExterno,
+        divSeleccioneServiciosComision,
+        divSeleccioneServiciosPayment
       });
       return false;
     }else if(acumPorcentajes === 1){
@@ -408,18 +428,21 @@ class ModalConfigCommissions extends React.Component {
     let hideMontoComision = "";
     let hidePorcentajeComision = "";
     let hidePersonalExterno = "";    
+    let hideAplicarPorcentajeTodos = "";    
     if(arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){
       hideModoPago = "hide";
       hideEspecifique = 'hide';
       hideMontoComision = "hide";
       hidePorcentajeComision = "hide";
       hidePersonalExterno = "show";
+      hideAplicarPorcentajeTodos = "show";
     }else{
       hideModoPago = "show";
       hideEspecifique = 'hide';
       hideMontoComision = "hide";
       hidePorcentajeComision = "hide";
       hidePersonalExterno = "hide";
+      hideAplicarPorcentajeTodos = "hide";
     }
 
     this.setState({
@@ -435,6 +458,7 @@ class ModalConfigCommissions extends React.Component {
       hideMontoComision: hideMontoComision,
       hidePorcentajeComision: hidePorcentajeComision,
       hidePersonalExterno: hidePersonalExterno,
+      hideAplicarPorcentajeTodos: hideAplicarPorcentajeTodos,
     });
     this.props.cleanListServicesTab(this.state.activeTab);
   };
@@ -512,7 +536,6 @@ class ModalConfigCommissions extends React.Component {
   };  
 
   componentWillReceiveProps = props => {    
-    console.log("modal configCommissions", props.configCommissions);
     if(props.option === 1){
       this.setState({
         loading:'hide'
@@ -637,6 +660,13 @@ class ModalConfigCommissions extends React.Component {
     })
   }
 
+  handlekeyAplicarPorcentajeTodos= event =>{
+    this.setState({
+        divAplicarPorcentajeTodos: "",
+        divAplicarPorcentajeTodosError: "",         
+    })
+  }
+
   handlekeyNroPersonasReferenciadas= event =>{
     this.setState({
         divNroPersonasReferenciadas: "",
@@ -681,6 +711,46 @@ class ModalConfigCommissions extends React.Component {
               montoMinimoComision: ''                      
           }); 
       }        
+  }  
+
+  handleChangeInputTable = e => {    
+    const { name, value } = e.target;    
+    this.setState({
+      [name]: value
+    });    
+    this.props.setPorcentajeAllTable(value);
+    this.setState({
+      divSeleccioneServiciosPayment: '',
+    });
+  };
+
+  eventoBlurAplicarTodos = (e) => {
+        if(this.state.aplicarPorcentajeTodos === '' || this.state.aplicarPorcentajeTodos === '0'){
+            this.setState({
+                aplicarPorcentajeTodos: '0'                      
+            }); 
+        }        
+    }
+
+  eventoFocusAplicarTodos = (e) => {        
+      if(this.state.aplicarPorcentajeTodos === '0'){
+          this.setState({
+              aplicarPorcentajeTodos: ''                      
+          }); 
+      }        
+  }  
+
+  seteardivSeleccioneServiciosComision = () => {
+    if(this.state.activeTab === '1'){
+      this.setState({
+        divSeleccioneServiciosComision: '',        
+      });
+    }else{
+      this.setState({
+        divSeleccioneServiciosPayment: '',
+      });
+    }
+    
   }
 
   render() {    
@@ -833,9 +903,11 @@ class ModalConfigCommissions extends React.Component {
                             setPorcentajeTable = {this.props.setPorcentajeTable}
                             setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
                             setSwitchAllTableComisiones = {this.props.setSwitchAllTableComisiones}
+                            divSeleccioneServiciosComision = {this.state.divSeleccioneServiciosComision}                            
                             disabled = {this.props.disabled}
                             tab = {this.state.activeTab}
-                          />  
+                            seteardivSeleccioneServiciosComision = {this.seteardivSeleccioneServiciosComision}
+                          />                          
                         }
                       </TabPane>
                       <TabPane tabId="2">
@@ -907,6 +979,24 @@ class ModalConfigCommissions extends React.Component {
                             </div>
                             <div className="errorSelect">{this.state.divEspecifiqueError}</div>
                           </FormGroup>
+                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideAplicarPorcentajeTodos}`}>                                                                 
+                            <Label for="aplicarPorcentajeTodos">Aplicar Porcentaje para Todos:</Label> 
+                            <div className={this.state.divAplicarPorcentajeTodos}>                               
+                                <Input 
+                                  disabled={this.props.disabled} 
+                                  name="aplicarPorcentajeTodos" 
+                                  id="aplicarPorcentajeTodos" 
+                                  onKeyUp={this.handlekeyAplicarPorcentajeTodos} 
+                                  onChange={this.handleChangeInputTable}
+                                  value={this.state.aplicarPorcentajeTodos} 
+                                  type="number" 
+                                  placeholder="Aplicar Porcentaje para Todos"   
+                                  onBlur ={this.eventoBlurAplicarTodos} 
+                                  onFocus = {this.eventoFocusAplicarTodos}                             
+                                />                                    
+                            </div>
+                            <div className="errorSelect">{this.state.divAplicarPorcentajeTodosError}</div>                                                                                                                                                                                         
+                          </FormGroup>
                         </div>
                         {
                            ((this.state.arrayModoPagoSelect &&
@@ -921,7 +1011,9 @@ class ModalConfigCommissions extends React.Component {
                               setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
                               setSwitchAllTableComisiones = {this.props.setSwitchAllTableComisiones}
                               disabled = {this.props.disabled}
-                              tab = {this.state.activeTab}
+                              tab = {this.state.activeTab}                              
+                              divSeleccioneServiciosPayment = {this.state.divSeleccioneServiciosPayment}
+                              seteardivSeleccioneServiciosComision = {this.seteardivSeleccioneServiciosComision}
                             />
                         }
                       </TabPane>                          
@@ -995,6 +1087,7 @@ const mapDispatchToProps = dispatch => ({
   cleanListServices: () => dispatch(cleanListServices()),
   cleanListServicesTab: (tab) => dispatch(cleanListServicesTab(tab)),
   setPorcentajeTable: (pos, value) =>dispatch(setPorcentajeTable(pos, value)),
+  setPorcentajeAllTable: (value) =>dispatch(setPorcentajeAllTable(value)),
   setSwitchTableComisiones: (pos, value, tab, typePersonal) =>dispatch(setSwitchTableComisiones(pos, value, tab, typePersonal)),
   setSwitchAllTableComisiones: (value, tab, typePersonal) =>dispatch(setSwitchAllTableComisiones(value, tab, typePersonal)),
   saveConfigCommissionsAction: (data, callback) =>dispatch(saveConfigCommissionsAction(data, callback)),
