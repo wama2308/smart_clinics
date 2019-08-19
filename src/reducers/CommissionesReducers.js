@@ -81,6 +81,16 @@ const setSwitchAllTableComisiones = (state, payload) => {
 	return Map(estado);
 }
 
+const setPorcentajeAllTable = (state, payload) => {
+	let estado = state.toJS();	
+	estado.servicesPayment.map((payment, i) => {
+		payment.percentage = payload.value;
+		estado.action = 1;
+	})	
+	
+	return Map(estado);
+}
+
 const ConfigCommissionsReducer = (state = Map(), action) => {
   switch (action.type) {
 
@@ -107,6 +117,9 @@ const ConfigCommissionsReducer = (state = Map(), action) => {
 
   	case "SET_SWITCH_ALL_COMISIONES":
   		return setSwitchAllTableComisiones(state, action.payload);		  
+
+	case "SET_PORCENTAJE_ALL_COMISIONES":
+  		return setPorcentajeAllTable(state, action.payload);		  
 
 	default:
 	  	return state;
