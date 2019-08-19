@@ -120,8 +120,7 @@ class ReclamosList extends Component {
   }
 
   render() {
-    console.log(this.props.token.transmiter._id)
-
+   
    const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
    const disabledUpdate = GetDisabledPermits(this.props.permits, "Update")
    const disabledActive = GetDisabledPermits(this.props.permits, "Active")

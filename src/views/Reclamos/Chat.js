@@ -72,12 +72,13 @@ class Chat extends Component {
 
 senfoto = ()=>{
   const time =  jstz.determine().name()
-       this.props.registerFotoFunction(this.props.id_receiber,this.props.id_transmitter,this.state.foto, time, false, () => {
+    this.props.registerFotoFunction(this.props.id_receiber,this.props.id_transmitter,this.state.foto, time, false, () => {
          this.setState({
            foto: null
          })
        })
 }
+
   viewPhoto = (img) => {
     if (this.state.box === false) {
       this.setState({
@@ -96,7 +97,11 @@ senfoto = ()=>{
     event.preventDefault();
       const time =  jstz.determine().name()
       this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.state.message, time, 0,()=>{
-       this.props.cleanMessage()     
+       this.props.cleanMessage(()=>{
+         this.setState({
+           message: ""
+         })
+       })     
       })
  
   }
@@ -118,16 +123,24 @@ senfoto = ()=>{
     this.props.cleanMessage()
   }
 
+  cleanMessage = ()=>{
+    this.setState({
+      message: ""
+    })
+  }
+
   keyPress = (event) => {
     if (event.key == 'Enter') {
       const time =  jstz.determine().name()
       this.props.messageFunction(this.state.message)
      if(this.props.chat.message){
         this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.props.chat.message, time, 0, ()=>{      
-        this.props.cleanMessage()
-        this.setState({
-          message: ""
+        this.props.cleanMessage(()=>{
+          this.setState({
+            message: ""
+          })
         })
+        
       })
      }
     }
@@ -144,14 +157,13 @@ componentWillReceiveProps(props){
   if(props.option === 4){
     console.log(props.option);
   }
-
 }
 
 componentDidMount() {
 
 }
   render() {
-    console.log(this.state.foto);
+    console.log(this.state.message);
 
     return (
       <div>
@@ -253,9 +265,9 @@ componentDidMount() {
               <form onSubmit={this.hangleSend.bind(this)}>
                 <div style={{ "display": "flex" }}>
                   <Input style={style.input}
-                    onChange={(e)=>this.handlechange(e)}
-                    onKeyPress={(e)=>this.keyPress(e)}
-                   
+                    onChange={this.handlechange}
+                    onKeyPress={this.keyPress}
+                   value={this.state.message}
                   ></Input>
                   <Input style={style.photo}
                     id="text-button-file"
@@ -342,6 +354,7 @@ const style = {
     "lineHeight": "15px",
     "borderBottomLeftRadius": "10px",
     "borderBottomRightRadius": "10px",
+    "borderTopRightRadius": "10px",
     "minWidth": "25px",
     "fontSize": "smaller",
     "textAlign": "-webkit-auto",
@@ -428,7 +441,7 @@ const style = {
 const mapDispatchToProps = dispatch => ({
   registerMessageFunction: (id_claim_receiver,id_claim_transmitter,message, time, option, callback) =>dispatch(registerMessageFunction(id_claim_receiver,id_claim_transmitter,message, time, option, callback)),
   messageFunction: (data) =>dispatch(messageFunction(data)),
-  cleanMessage: ()=>dispatch(cleanMessage()),
+  cleanMessage: (callback)=>dispatch(cleanMessage(callback)),
   registerFotoFunction: (id_claim_receiver,id_claim_transmitter,foto, time, option, callback) =>dispatch(registerFotoFunction(id_claim_receiver,id_claim_transmitter,foto, time, option, callback))
 })
 

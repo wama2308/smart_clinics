@@ -34,15 +34,15 @@ export const messageFunction = (data) => dispatch =>{
   })
 }
 
-export const cleanMessage = () => dispatch =>{
+export const cleanMessage = (callback) => dispatch =>{
   dispatch({
     type:"MESSAGE_CLEAN",
     payload: ""
   })
+  callback()
 }
 
 export const registerMessageFunction = (id_claim_receiver,id_claim_transmitter,message, time, option, callback) => dispatch => {
-  console.log(id_claim_receiver,id_claim_transmitter,message, time, option, callback)
   getDataToken().then(datos=>{
     axios({
       method:"post",

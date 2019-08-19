@@ -187,7 +187,7 @@ class ReclamosReceibeList extends Component {
                <tr>
                  <th >Centro Medico Emitente</th>
                  <th >Sucursal que Emite</th>
-                  { visitador === true && <th >Visitador</th> }
+                  { this.props.master === "Master" && <th >Visitador</th> }
                  <th >Estatus</th>
                  <th >Acciones</th>
                </tr>
