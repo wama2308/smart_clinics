@@ -72,8 +72,8 @@ class ReclamosList extends Component {
       })
     } else if (option === 4) {
       const time = jstz.determine().name()
-      this.props.loadMessageFunction(id_claim_receiver, id_claim_transmitter)
       this.props.setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time)
+      this.props.loadMessageFunction(id_claim_receiver, id_claim_transmitter)
       this.setState({
         collapse: true,
         id_receiber: id_claim_receiver,
@@ -154,6 +154,7 @@ class ReclamosList extends Component {
             id_receiber={this.state.id_receiber}
             id_transmitter={this.state.id_transmitter}
             transmiter={this.props.token.transmiter._id}
+            collapse={this.state.collapse}
           />
         }
         <div style={{ "marginBottom": "1.8%" }}>

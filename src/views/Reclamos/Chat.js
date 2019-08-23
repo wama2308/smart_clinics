@@ -8,7 +8,7 @@ import { Input } from 'reactstrap';
 import "../../components/style.css";
 import LightBox from '../../components/LightBox';
 import { connect } from 'react-redux';
-import { loadMessageFunction, registerMessageFunction, messageFunction, cleanMessage, registerFotoFunction } from '../../actions/actionsChat';
+import { loadMessageFunction, registerMessageFunction, messageFunction, cleanMessage, registerFotoFunction,setStatusMessageFunction } from '../../actions/actionsChat';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import jstz from 'jstz';
 
@@ -101,18 +101,14 @@ class Chat extends Component {
 
     if (this.state.message !== "") {
       this.props.messageFunction(this.state.message, () => {
+        const messages = this.state.message
         this.setState({
           message: ""
         })
+        this.props.registerMessageFunction(this.props.id_receiber, this.props.id_transmitter, messages, time, 0, () => {
+          this.props.cleanMessage()
+        })
       })
-
-      if (this.props.chat.message !== undefined) {
-        if (this.props.chat.message !== "") {
-          this.props.registerMessageFunction(this.props.id_receiber, this.props.id_transmitter, this.props.chat.message, time, 0, () => {
-            this.props.cleanMessage()
-          })
-        }
-      }
     }
   }
 
@@ -136,21 +132,15 @@ class Chat extends Component {
       const time = jstz.determine().name()
 
       if (this.state.message !== "") {
-        // this.props.messageFunction(this.state.message, () => {
-        //   this.setState({
-        //     message: ""
-        //   })
-        // })
-
-
-        this.props.registerMessageFunction(this.props.id_receiber, this.props.id_transmitter, event.target.value, time, 0, () => {
-          this.props.cleanMessage()
+        this.props.messageFunction(this.state.message, () => {
+          const messages = this.state.message
           this.setState({
             message: ""
           })
+          this.props.registerMessageFunction(this.props.id_receiber, this.props.id_transmitter, messages, time, 0, () => {
+            this.props.cleanMessage()
+          })
         })
-
-
       }
     }
   }
@@ -162,22 +152,20 @@ class Chat extends Component {
   }
 
   componentWillReceiveProps(props) {
-
     this.setState({
       data: props.chat.dataMessage,
       img: props.foto,
       show: "show"
     })
-
-  }
-
-  componentDidMount() {
-    if (this.props.chat.dataMessage !== []) {
-      this.setState({
-        show: "hide"
-      })
+    if (props.collapse === true) {
+      console.log("haciendo peticion");
+      
+      const time = jstz.determine().name()
+      this.props.setStatusMessageFunction(this.props.id_receiber, this.props.id_transmitter, time)
     }
   }
+
+ 
 
   render() {
     console.log(this.state.data);
@@ -217,7 +205,7 @@ class Chat extends Component {
               {this.state.show === "show" ?
                 <div>
                   {
-                    this.state.data ? this.state.data.map((list, key) => {
+                    this. props.chat.dataMessage ? this. props.chat.dataMessage.map((list, key) => {
                       if (list.transmitter === this.props.transmiter && list.is_image === 0) {
                         return (
                           <div key={key}>
@@ -471,7 +459,8 @@ const mapDispatchToProps = dispatch => ({
   registerMessageFunction: (id_claim_receiver, id_claim_transmitter, message, time, option, callback) => dispatch(registerMessageFunction(id_claim_receiver, id_claim_transmitter, message, time, option, callback)),
   messageFunction: (data, callback) => dispatch(messageFunction(data, callback)),
   cleanMessage: () => dispatch(cleanMessage()),
-  registerFotoFunction: (id_claim_receiver, id_claim_transmitter, foto, time, option, callback) => dispatch(registerFotoFunction(id_claim_receiver, id_claim_transmitter, foto, time, option, callback))
+  registerFotoFunction: (id_claim_receiver, id_claim_transmitter, foto, time, option, callback) => dispatch(registerFotoFunction(id_claim_receiver, id_claim_transmitter, foto, time, option, callback)),
+  setStatusMessageFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time))
 })
 
 const mapStateToProps = state => ({
