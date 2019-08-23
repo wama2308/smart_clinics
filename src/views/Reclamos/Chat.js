@@ -8,7 +8,7 @@ import { Input } from 'reactstrap';
 import "../../components/style.css";
 import LightBox from '../../components/LightBox';
 import { connect } from 'react-redux';
-import { loadMessageFunction , registerMessageFunction, messageFunction, cleanMessage, registerFotoFunction } from '../../actions/actionsChat';
+import { loadMessageFunction, registerMessageFunction, messageFunction, cleanMessage, registerFotoFunction } from '../../actions/actionsChat';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import jstz from 'jstz';
 
@@ -26,7 +26,9 @@ class Chat extends Component {
       visitador: "",
       id_receiber: '',
       id_transmitter: '',
-      option: 0
+      option: 0,
+      data: null,
+      show: ""
     };
   }
 
@@ -62,29 +64,29 @@ class Chat extends Component {
       }
     }
     this.setState({
-        box: true,
-        id_receiber: this.props.id_receiber,
-        id_transmitter: this.props.id_transmitter,
-        option: 1
-      })
+      box: true,
+      id_receiber: this.props.id_receiber,
+      id_transmitter: this.props.id_transmitter,
+      option: 1
+    })
   }
 
 
-senfoto = ()=>{
-  const time =  jstz.determine().name()
-    this.props.registerFotoFunction(this.props.id_receiber,this.props.id_transmitter,this.state.foto, time, false, () => {
-         this.setState({
-           foto: null
-         })
-       })
-}
+  senfoto = () => {
+    const time = jstz.determine().name()
+    this.props.registerFotoFunction(this.props.id_receiber, this.props.id_transmitter, this.state.foto, time, false, () => {
+      this.setState({
+        foto: null
+      })
+    })
+  }
 
   viewPhoto = (img) => {
     if (this.state.box === false) {
       this.setState({
         box: true,
         foto: img,
-         option: 2
+        option: 2
       })
     } else {
       this.setState({
@@ -95,16 +97,25 @@ senfoto = ()=>{
 
   hangleSend = (event) => {
     event.preventDefault();
-      const time =  jstz.determine().name()
-      this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.state.message, time, 0,()=>{
-       this.props.cleanMessage(()=>{
-         this.setState({
-           message: ""
-         })
-       })     
+    const time = jstz.determine().name()
+
+    if (this.state.message !== "") {
+      this.props.messageFunction(this.state.message, () => {
+        this.setState({
+          message: ""
+        })
       })
- 
+
+      if (this.props.chat.message !== undefined) {
+        if (this.props.chat.message !== "") {
+          this.props.registerMessageFunction(this.props.id_receiber, this.props.id_transmitter, this.props.chat.message, time, 0, () => {
+            this.props.cleanMessage()
+          })
+        }
+      }
+    }
   }
+
 
   cleanState = () => {
     this.setState({
@@ -115,67 +126,76 @@ senfoto = ()=>{
 
   closeLightBox = () => {
     this.setState({
-      box: false
-    })
-  }
-
-  cleanMessage = () =>{
-    this.props.cleanMessage()
-  }
-
-  cleanMessage = ()=>{
-    this.setState({
-      message: ""
+      box: false,
+      foto: null
     })
   }
 
   keyPress = (event) => {
     if (event.key == 'Enter') {
-      const time =  jstz.determine().name()
-      this.props.messageFunction(this.state.message)
-     if(this.props.chat.message){
-        this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.props.chat.message, time, 0, ()=>{      
-        this.props.cleanMessage(()=>{
+      const time = jstz.determine().name()
+
+      if (this.state.message !== "") {
+        // this.props.messageFunction(this.state.message, () => {
+        //   this.setState({
+        //     message: ""
+        //   })
+        // })
+
+
+        this.props.registerMessageFunction(this.props.id_receiber, this.props.id_transmitter, event.target.value, time, 0, () => {
+          this.props.cleanMessage()
           this.setState({
             message: ""
           })
         })
-        
-      })
-     }
-    }
 
+
+      }
+    }
   }
 
-  handlechange = (event) =>{
+  handlechange = (event) => {
     this.setState({
       message: event.target.value
     })
   }
 
-componentWillReceiveProps(props){
-  if(props.option === 4){
-    console.log(props.option);
+  componentWillReceiveProps(props) {
+
+    this.setState({
+      data: props.chat.dataMessage,
+      img: props.foto,
+      show: "show"
+    })
+
   }
-}
 
-componentDidMount() {
+  componentDidMount() {
+    if (this.props.chat.dataMessage !== []) {
+      this.setState({
+        show: "hide"
+      })
+    }
+  }
 
-}
   render() {
-    console.log(this.state.message);
+    console.log(this.state.data);
 
     return (
       <div>
-        <LightBox
-          hide={this.closeLightBox}
-          hola={this.state.box}
-          foto={this.state.foto}
-          id_receiber={this.state.id_receiber}
-          id_transmitter={this.state.id_transmitter}
-          registerMessageFunction={this.props.registerMessageFunction}
-          option={this.state.option}
-        />
+        {
+          this.state.box !== false &&
+          <LightBox
+            hide={this.closeLightBox}
+            hola={this.state.box}
+            foto={this.state.foto}
+            id_receiber={this.state.id_receiber}
+            id_transmitter={this.state.id_transmitter}
+            registerMessageFunction={this.props.registerMessageFunction}
+            option={this.state.option}
+          />
+        }
 
         <Collapse isOpen={this.props.show}>
           <Card style={style.chat}>
@@ -183,7 +203,7 @@ componentDidMount() {
               <div style={style.chatContainer}>
                 <div style={style.user}>
                   <div style={style.visitor}>
-                    
+                    Reclamos
                   </div>
                 </div>
                 <div style={{ "marginTop": "5px" }}>
@@ -194,72 +214,80 @@ componentDidMount() {
               </div>
             </CardHeader>
             <CardBody style={style.body}>
-              {
-                this.props.chat.dataMessage ? this.props.chat.dataMessage.map((list, key) =>{
-                if(list.transmitter === this.props.transmiter && list.is_image === 0){
-                  return ( 
-                <div key={key}>
-                    <div style={style.primary}>
-                      <div style={style.secondary}>
-                        <div style={style.tertiary} >
-                        { list.message } {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :  <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
-                        </div>
+              {this.state.show === "show" ?
+                <div>
+                  {
+                    this.state.data ? this.state.data.map((list, key) => {
+                      if (list.transmitter === this.props.transmiter && list.is_image === 0) {
+                        return (
+                          <div key={key}>
+                            <div style={style.primary}>
+                              <div style={style.secondary}>
+                                <div style={style.tertiary} >
+                                  {list.message} {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> : <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      } else if (list.transmitter !== this.props.transmiter && list.is_image === 0) {
+                        return (
+                          <div key={key}>
+                            <div style={style.primaryLeft}>
+                              <div style={style.secondaryLeft}>
+                                <div style={style.tertiary} >
+                                  {list.message} {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> : <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
+                                </div>
 
-                      </div>
-                    </div>
-                  </div>
-                  )
-                }else if(list.transmitter !== this.props.transmiter && list.is_image === 0){
-                  return ( 
-                <div key={key}>
-                    <div style={style.primaryLeft}>
-                      <div style={style.secondaryLeft}>
-                        <div style={style.tertiary} >
-                        { list.message } {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :  <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
-                        </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      } else if (list.transmitter === this.props.transmiter && list.is_image === 1) {
+                        return (
+                          <div key={key}>
+                            <div style={style.imgPrimary}>
+                              <div style={style.imgSecondary}>
+                                <div style={style.imgTertiary} onClick={() => this.viewPhoto(list.message)}>
+                                  {
+                                    <img alt="foto" style={style.foto} className="image" src={"data:image/jpeg;" + list.message} />
+                                  }
+                                </div>
+                                {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> : <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      } else if (list.transmitter !== this.props.transmiter && list.is_image === 1) {
+                        return (
+                          <div key={key}>
+                            <div style={style.imgPrimaryLeft}>
+                              <div style={style.imgSecondaryLeft}>
+                                <div style={style.imgTertiaryLeft} onClick={() => this.viewPhoto(list.message)}>
+                                  {
+                                    <img alt="foto" style={style.foto} className="image" src={"data:image/jpeg;" + list.message} />
+                                  }
+                                </div>
+                                {
+                                  list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :
+                                    <div style={style.doneContainer}><DoneAll style={style.done} /></div>
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      } else {
+                        return null
+                      }
 
-                      </div>
-                    </div>
-                  </div>
-                  )
-                }else if(list.transmitter === this.props.transmiter &&  list.is_image === 1){
-                   return(
-                    <div key={key}>
-                    <div style={style.imgPrimary}>
-                      <div style={style.imgSecondary}>
-                        <div style={style.imgTertiary} onClick={() => this.viewPhoto(list.message)}>
-                        {
-                         <img alt="foto" style={style.foto} className="image" src={"data:image/jpeg;" + list.message} />
-                        }
-                        </div>
-                        {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :  <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
-                      </div>
-                    </div>
-                  </div>
-                   )
-                }else if(list.transmitter !== this.props.transmiter && list.is_image === 1){
-                  return(
-                    <div key={key}>
-                    <div style={style.imgPrimaryLeft}>
-                      <div style={style.imgSecondaryLeft}>
-                        <div style={style.imgTertiaryLeft} onClick={() => this.viewPhoto(list.message)}>
-                        {
-                         <img alt="foto" style={style.foto} className="image" src={"data:image/jpeg;" + list.message} />
-                        }
-                        </div>
-                        {list.status === 0 ? <div style={style.doneContainer}><Done style={style.done} /></div> :  <div style={style.doneContainer}><DoneAll style={style.done} /></div>}
-                      </div>
-                    </div>
-                  </div>
-                   )
-                }
-
-                }):  
-                <div style={{height: "60vh"}}>
-                    <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
-                  </div>
+                    }) :
+                      null
+                  }
+                </div> :
+                <div style={{ height: "10vh" }}>
+                  <CircularProgress style={{ position: "absolute", height: 40, top: "45%", right: "40%", zIndex: 2 }} />
+                </div>
               }
-
             </CardBody>
             <CardFooter style={style.footer} >
               <form onSubmit={this.hangleSend.bind(this)}>
@@ -267,13 +295,13 @@ componentDidMount() {
                   <Input style={style.input}
                     onChange={this.handlechange}
                     onKeyPress={this.keyPress}
-                   value={this.state.message}
+                    value={this.state.message}
                   ></Input>
                   <Input style={style.photo}
                     id="text-button-file"
                     className="top"
                     type="file"
-                    accept="image/*" 
+                    accept="image/*"
                     onChange={this.fileHandlerFoto}
                   />
                   <IconButton type="button" style={style.send} onClick={this.hangleSend}>
@@ -347,7 +375,7 @@ const style = {
     "display": "flex",
     "marginTop": "3px"
   },
-  secondaryLeft:{
+  secondaryLeft: {
     "color": "black",
     "background": "#7ebbf3",
     "maxWidth": "75%",
@@ -407,12 +435,13 @@ const style = {
   },
   foto: {
     "height": "91px",
-    "margin": "1px"
+    "margin": "1px",
+    "cursor": "pointer"
   },
-  done:{
-    "fontSize":"12px"
+  done: {
+    "fontSize": "12px"
   },
-  doneContainer:{
+  doneContainer: {
     "display": "flow-root",
     "float": "right",
     "marginLeft": "5px",
@@ -439,10 +468,10 @@ const style = {
 }
 
 const mapDispatchToProps = dispatch => ({
-  registerMessageFunction: (id_claim_receiver,id_claim_transmitter,message, time, option, callback) =>dispatch(registerMessageFunction(id_claim_receiver,id_claim_transmitter,message, time, option, callback)),
-  messageFunction: (data) =>dispatch(messageFunction(data)),
-  cleanMessage: (callback)=>dispatch(cleanMessage(callback)),
-  registerFotoFunction: (id_claim_receiver,id_claim_transmitter,foto, time, option, callback) =>dispatch(registerFotoFunction(id_claim_receiver,id_claim_transmitter,foto, time, option, callback))
+  registerMessageFunction: (id_claim_receiver, id_claim_transmitter, message, time, option, callback) => dispatch(registerMessageFunction(id_claim_receiver, id_claim_transmitter, message, time, option, callback)),
+  messageFunction: (data, callback) => dispatch(messageFunction(data, callback)),
+  cleanMessage: () => dispatch(cleanMessage()),
+  registerFotoFunction: (id_claim_receiver, id_claim_transmitter, foto, time, option, callback) => dispatch(registerFotoFunction(id_claim_receiver, id_claim_transmitter, foto, time, option, callback))
 })
 
 const mapStateToProps = state => ({

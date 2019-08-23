@@ -6,17 +6,17 @@ const registerMessage = `${url}/api/registerChatClaim`
 const setStatusMessage = `${url}/api/queryUpdateUnreadMessagesChatClaim`
 
 
-export const loadMessageFunction = (id_claim_receiver, id_claim_transmitter) => dispatch =>{
-  getDataToken().then(datos=>{
+export const loadMessageFunction = (id_claim_receiver, id_claim_transmitter) => dispatch => {
+  getDataToken().then(datos => {
     axios({
-      method:"post",
+      method: "post",
       url: loadChat,
       data: {
         id_claim_receiver: id_claim_receiver,
         id_claim_transmitter: id_claim_transmitter
       },
       headers: datos.headers
-    }).then(data =>{
+    }).then(data => {
       dispatch({
         type: "LOAD_MESSAGE",
         payload: {
@@ -27,25 +27,27 @@ export const loadMessageFunction = (id_claim_receiver, id_claim_transmitter) => 
     })
   })
 }
-export const messageFunction = (data) => dispatch =>{
-  dispatch({
-    type:"MESSAGE",
-    payload: data
-  })
-}
 
-export const cleanMessage = (callback) => dispatch =>{
+export const messageFunction = (data, callback) => dispatch => {
   dispatch({
-    type:"MESSAGE_CLEAN",
-    payload: ""
+    type: "MESSAGE",
+    payload: data
   })
   callback()
 }
 
-export const registerMessageFunction = (id_claim_receiver,id_claim_transmitter,message, time, option, callback) => dispatch => {
-  getDataToken().then(datos=>{
+export const cleanMessage = () => dispatch => {
+  dispatch({
+    type: "MESSAGE_CLEAN",
+    payload: ""
+  })
+
+}
+
+export const registerMessageFunction = (id_claim_receiver, id_claim_transmitter, message, time, option, callback) => dispatch => {
+  getDataToken().then(datos => {
     axios({
-      method:"post",
+      method: "post",
       url: registerMessage,
       data: {
         id_claim_receiver: id_claim_receiver,
@@ -55,18 +57,18 @@ export const registerMessageFunction = (id_claim_receiver,id_claim_transmitter,m
         is_image: option
       },
       headers: datos.headers
-    }).then(data=>{
-     callback();
-     
+    }).then(data => {
+      callback();
+
     })
   })
 }
 
-export const registerFotoFunction = (id_claim_receiver,id_claim_transmitter,foto, time, option, callback) => dispatch => {
-  console.log(id_claim_receiver,id_claim_transmitter,foto, time, option, callback)
-  getDataToken().then(datos=>{
+export const registerFotoFunction = (id_claim_receiver, id_claim_transmitter, foto, time, option, callback) => dispatch => {
+  console.log(id_claim_receiver, id_claim_transmitter, foto, time, option, callback)
+  getDataToken().then(datos => {
     axios({
-      method:"post",
+      method: "post",
       url: registerMessage,
       data: {
         id_claim_receiver: id_claim_receiver,
@@ -76,17 +78,17 @@ export const registerFotoFunction = (id_claim_receiver,id_claim_transmitter,foto
         is_image: option
       },
       headers: datos.headers
-    }).then(data=>{
-     callback();
-     
+    }).then(data => {
+      callback();
+
     })
   })
 }
 
-export const setStatusMessageFunction = (id_claim_receiver,id_claim_transmitter, time) => dispatch => {
-  getDataToken().then(datos=>{
+export const setStatusMessageFunction = (id_claim_receiver, id_claim_transmitter, time) => dispatch => {
+  getDataToken().then(datos => {
     axios({
-      method:"post",
+      method: "post",
       url: setStatusMessage,
       data: {
         id_claim_receiver: id_claim_receiver,

@@ -1,63 +1,72 @@
 import React, { Component } from 'react';
-import { Modal, Table, TableHead, TableBody } from '@material-ui/core';
-import {IconButton, Fab}  from '@material-ui/core';
+//import { Modal, Table, TableHead, TableBody } from '@material-ui/core';
+import { IconButton, Fab } from '@material-ui/core';
 import { HighlightOff, Done } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import jstz from 'jstz';
+import { ModalHeader, Modal, ModalBody, ModalFooter } from 'reactstrap';
+
+
 
 class LightBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
       toggle: false,
-      img: null
+      img: this.props.foto,
     }
   }
 
-acceptImage = () =>{
-   const time =  jstz.determine().name()
-  this.props.registerMessageFunction(this.props.id_receiber,this.props.id_transmitter,this.props.foto, time, 1, ()=>{
-    this.props.hide()
-    
-  });
+  acceptImage = () => {
+    const time = jstz.determine().name()
+    this.props.registerMessageFunction(this.props.id_receiber, this.props.id_transmitter, this.props.foto, time, 1, () => {
+      this.props.hide()
+    });
+  }
 
-} 
-
+  componentWillReceiveProps(props) {
+    if (props.foto !== null) {
+      this.setState({
+        img: props.foto
+      })
+    }
+  }
 
   render() {
+    console.log(this.props.foto);
+
 
     return (
-      <div >
-        <Modal style={style.modal} open={this.props.hola} onClose={this.props.hide}>
-        <div>
+
+      <span>
+        <Modal
+          isOpen={this.props.hola}
+          toggle={this.props.hide}
+          className="ModalStore">
           <div>
-            <div >
-             <div style={style.header}> <HighlightOff onClick={this.props.hide} style={style.close}></HighlightOff></div>
-              <div style={style.paper} onClick={this.props.hide}>
-               { this.props.foto ?
-                  <div>
-                  {
-                    this.props.foto != null && <img alt="foto" style={{ height: 544 }} className="image" src={"data:image/jpeg;" + this.props.foto} />
-                  }
-                </div>:
-                <div style={{height: "60vh"}}>
-                  <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
-                </div>
-               }
+            <ModalHeader toggle={this.props.hide}>
+
+            </ModalHeader>
+            <ModalBody>
+              <div style={{ "display": "flex", "justifyContent": "center" }}>
+                {
+                  this.props.foto != null && <img alt="foto" style={{ height: 544 }} className="image" src={"data:image/jpeg;" + this.props.foto} />
+                }
               </div>
-            </div>     
+            </ModalBody>
+            <ModalFooter>
+              {
+                this.props.option === 1 &&
+                <div >
+                  <Fab color="primary" aria-label="add" onClick={() => this.acceptImage()}>
+                    <Done />
+                  </Fab>
+                </div>
+              }
+            </ModalFooter>
           </div>
-         { 
-           this.props.option === 1 &&
-           <div style={style.button} >
-               <Fab color="primary" aria-label="add" onClick={()=>this.acceptImage()}>
-                <Done />
-              </Fab>
-            </div>
-          }
-        </div>
         </Modal>
-      </div>
+      </span>
     );
   }
 }
@@ -84,7 +93,7 @@ const style = {
   modal: {
     "backgroundColor": "black"
   },
-  button:{
+  button: {
     "display": "flex",
     "justifyContent": "center",
     "margin": "5px",
