@@ -78,6 +78,8 @@ class Products extends React.Component {
   };
 
   render() {
+
+    console.log("products",this.props.manualReference)
     const { patient, products, aplication } = this.props;
     const disableAllProductos =
       this.props.discount || this.props.statusSale === "BILLED" ? true : false;
@@ -106,16 +108,19 @@ class Products extends React.Component {
         <Header>
           <div>Productos</div>
           <div style={{ width: "40%" }}>
-            {patient && (!this.state.edit || disableAllProductos) && (
-              <Search
-                disabled={disableAllProductos}
-                pressKey={true}
-                getOptions={this.props.searchAction}
-                placeholder="Buscar producto..."
-                options={this.props.options}
-                searchAction={this.props.getProducts}
-              />
-            )}
+            {patient && !this.props.manualReference &&
+              (!this.state.edit ||
+                disableAllProductos
+               ) && (
+                <Search
+                  disabled={disableAllProductos}
+                  pressKey={true}
+                  getOptions={this.props.searchAction}
+                  placeholder="Buscar producto..."
+                  options={this.props.options}
+                  searchAction={this.props.getProducts}
+                />
+              )}
           </div>
         </Header>
         <div style={{ overflow: "auto", height: "70%" }}>
@@ -146,7 +151,9 @@ class Products extends React.Component {
                       <Cell className="cellStyle">{product.code}</Cell>
                       <Cell>{product.name}</Cell>
                       <Cell>{product.type}</Cell>
-                      <Cell>{product.service ? "0": product.quantity_stock}</Cell>
+                      <Cell>
+                        {product.service ? "0" : product.quantity_stock}
+                      </Cell>
                       {this.state.edit === product._id &&
                       !disableAllProductos ? (
                         <td>

@@ -38,7 +38,8 @@ class VentasContainer extends React.Component {
     this.state = {
       openModal: false,
       modalLoading: false,
-      edit: false
+      edit: false,
+      manualReference: false,
     };
   }
   optionsPatient = options => {
@@ -173,6 +174,14 @@ class VentasContainer extends React.Component {
     });
   };
 
+  openManualReference=()=>{
+    this.setState({manualReference:true})
+  }
+
+  closeManualReference=()=>{
+    this.setState({manualReference:false})
+  }
+
   discountEditOrSave = (type, values) => {
     switch (type) {
       case 1:
@@ -252,6 +261,9 @@ class VentasContainer extends React.Component {
               closeReferences={this.props.closeModalReferences}
               references={this.props.state.references}
               selectedReferences={this.props.state.selectedReference}
+              manualReference={this.state.manualReference}
+              openManualReference={this.openManualReference}
+              closeManualReference={this.closeManualReference}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -276,6 +288,7 @@ class VentasContainer extends React.Component {
               discount={this.props.discount}
               loaded={this.props.loaded}
               statusSale={this.props.statusSale}
+              manualReference={this.state.manualReference}
             />
 
             <Footer
