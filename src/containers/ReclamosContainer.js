@@ -19,13 +19,15 @@ import ReclamosReceibeList from '../views/Reclamos/ReclamosReceibeList'
 import ReclamosAtendidosList from '../views/Reclamos/ReclamosAtendidosList'
 import { connect } from 'react-redux';
 import Chat from '../views/Reclamos/Chat';
-import { LoadSelectReclamosFuction,
+import {
+  LoadSelectReclamosFuction,
   queryOneReclamos,
   deleteReclamos,
   deleteReclamosFuction,
   transferClaimsFunction,
   acceptReclamosFunction,
-  rejectReclamosFunction } from '../actions/reclamosAction';
+  rejectReclamosFunction
+} from '../actions/reclamosAction';
 
 import { loadMessageFunction, setStatusMessageFunction } from '../actions/actionsChat'
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -43,8 +45,8 @@ class ReclamosContainer extends Component {
       activeTab: "1",
       master: false,
       permitsRealizados: [],
-      permitsRecibidos:[],
-      permitsAtendidos:[]
+      permitsRecibidos: [],
+      permitsAtendidos: []
     }
   }
   componentDidMount() {
@@ -72,7 +74,7 @@ class ReclamosContainer extends Component {
           permitsAtendidos: permisos.permits
         });
       }
-    });   
+    });
   }
 
   toggleTab(tab) {
@@ -93,67 +95,67 @@ class ReclamosContainer extends Component {
               <CardBody>
                 {
                   this.props.reclamos.loading === 'show' ?
-                  <div>
-                    <Nav tabs>
+                    <div>
+                      <Nav tabs>
                         <NavItem>
-                            <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                              Reclamos Realizados
+                          <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
+                            Reclamos Realizados
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
-                                Reclamos Recibidos
+                          <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
+                            Reclamos Recibidos
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
+                          <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
                             Atender Reclamos
                             </NavLink>
                         </NavItem>
                       </Nav>
                       <TabContent activeTab={this.state.activeTab}>
-                          <TabPane tabId="1">
-                            <ReclamosList
-                              reclamos={this.props.reclamos.brachOffices}
-                              list={this.props.reclamos.listAll}
-                              queryOneReclamos={this.props.queryOneReclamos}
-                              deleteReclamosFuction ={this.props.deleteReclamosFuction}
-                              confirm={this.props.confirm}
-                              loadMessageFunction={this.props.loadMessageFunction}
-                              setStatusMessageFunction={this.props.setStatusMessageFunction}
-                              token={this.props.reclamos}
-                              permits={this.state.permitsRealizados}
-                            />
-                          </TabPane>
-                          <TabPane tabId="2">
-                            <ReclamosReceibeList
-                              reclamos={this.props.reclamos.reclamosReceibe}
-                              queryOneReclamos={this.props.queryOneReclamos}
-                              transferClaimsFunction={this.props.transferClaimsFunction}
-                              confirm={this.props.confirm}
-                              loadMessageFunction={this.props.loadMessageFunction}
-                              setStatusMessageFunction={this.props.setStatusMessageFunction}
-                              token={this.props.reclamos}
-                              permits={this.state.permitsRecibidos}
-                              master={this.props.aplication.dataGeneral.permission[0].name}
-                              />
-                          </TabPane>
-                          <TabPane tabId="3">
-                            <ReclamosAtendidosList
-                              reclamos={this.props.reclamos.reclamosAll}
-                              queryOneReclamos={this.props.queryOneReclamos}
-                              acceptReclamosFunction={this.props.acceptReclamosFunction}
-                              rejectReclamosFunction={this.props.rejectReclamosFunction}
-                              confirm={this.props.confirm}
-                              permits={this.state.permitsAtendidos}
-                              master={this.props.aplication.dataGeneral.permission[0].name}
-                              />
-                          </TabPane>
+                        <TabPane tabId="1">
+                          <ReclamosList
+                            reclamos={this.props.reclamos.brachOffices}
+                            list={this.props.reclamos.listAll}
+                            queryOneReclamos={this.props.queryOneReclamos}
+                            deleteReclamosFuction={this.props.deleteReclamosFuction}
+                            confirm={this.props.confirm}
+                            loadMessageFunction={this.props.loadMessageFunction}
+                            setStatusMessageFunction={this.props.setStatusMessageFunction}
+                            token={this.props.reclamos}
+                            permits={this.state.permitsRealizados}
+                          />
+                        </TabPane>
+                        <TabPane tabId="2">
+                          <ReclamosReceibeList
+                            reclamos={this.props.reclamos.reclamosReceibe}
+                            queryOneReclamos={this.props.queryOneReclamos}
+                            transferClaimsFunction={this.props.transferClaimsFunction}
+                            confirm={this.props.confirm}
+                            loadMessageFunction={this.props.loadMessageFunction}
+                            setStatusMessageFunction={this.props.setStatusMessageFunction}
+                            token={this.props.reclamos}
+                            permits={this.state.permitsRecibidos}
+                            master={this.props.reclamos.permission[0]._id}
+                          />
+                        </TabPane>
+                        <TabPane tabId="3">
+                          <ReclamosAtendidosList
+                            reclamos={this.props.reclamos.reclamosAll}
+                            queryOneReclamos={this.props.queryOneReclamos}
+                            acceptReclamosFunction={this.props.acceptReclamosFunction}
+                            rejectReclamosFunction={this.props.rejectReclamosFunction}
+                            confirm={this.props.confirm}
+                            permits={this.state.permitsAtendidos}
+                            master={this.props.reclamos.permission[0]._id}
+                          />
+                        </TabPane>
                       </TabContent>
-                  </div>:
-                  <div style={{height: "60vh"}}>
-                    <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}} />
-                  </div>
+                    </div> :
+                    <div style={{ height: "60vh" }}>
+                      <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
+                    </div>
                 }
               </CardBody>
             </Card>
@@ -165,14 +167,14 @@ class ReclamosContainer extends Component {
 }
 const mapDispatchToProps = dispatch => ({
   LoadSelectReclamosFuction: () => dispatch(LoadSelectReclamosFuction()),
-  queryOneReclamos: (id_receiber, id_transmitter) => dispatch(queryOneReclamos(id_receiber,id_transmitter)),
-  confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
-  deleteReclamosFuction: (id_receiber,id_transmitter) =>dispatch(deleteReclamosFuction(id_receiber,id_transmitter)),
-  transferClaimsFunction: (id_receiber,id_transmitter) => dispatch(transferClaimsFunction(id_receiber,id_transmitter)),
+  queryOneReclamos: (id_receiber, id_transmitter) => dispatch(queryOneReclamos(id_receiber, id_transmitter)),
+  confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
+  deleteReclamosFuction: (id_receiber, id_transmitter) => dispatch(deleteReclamosFuction(id_receiber, id_transmitter)),
+  transferClaimsFunction: (id_receiber, id_transmitter) => dispatch(transferClaimsFunction(id_receiber, id_transmitter)),
   acceptReclamosFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(acceptReclamosFunction(id_claim_receiver, id_claim_transmitter, time)),
   rejectReclamosFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(rejectReclamosFunction(id_claim_receiver, id_claim_transmitter, time)),
 
-  loadMessageFunction:(id_claim_receiver, id_claim_transmitter)=>dispatch(loadMessageFunction(id_claim_receiver, id_claim_transmitter)),
+  loadMessageFunction: (id_claim_receiver, id_claim_transmitter) => dispatch(loadMessageFunction(id_claim_receiver, id_claim_transmitter)),
   setStatusMessageFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time))
 })
 
