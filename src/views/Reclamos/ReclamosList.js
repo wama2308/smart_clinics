@@ -1,4 +1,4 @@
- import React, { Component } from 'react';
+import React, { Component } from 'react';
 import { Table } from 'reactstrap';
 import { Visibility, QuestionAnswer } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
@@ -71,14 +71,15 @@ class ReclamosList extends Component {
         id_transmitter: id_claim_transmitter
       })
     } else if (option === 4) {
+      const time = jstz.determine().name()
       this.props.loadMessageFunction(id_claim_receiver, id_claim_transmitter)
-     this.setState({
-       collapse: true,
-       id_receiber: id_claim_receiver,
-       id_transmitter: id_claim_transmitter
-     });
-     const time =  jstz.determine().name()
-     this.props.setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time)
+      this.props.setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time)
+      this.setState({
+        collapse: true,
+        id_receiber: id_claim_receiver,
+        id_transmitter: id_claim_transmitter
+      });
+
     }
   }
 
@@ -120,16 +121,17 @@ class ReclamosList extends Component {
   }
 
   render() {
-   
-   const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
-   const disabledUpdate = GetDisabledPermits(this.props.permits, "Update")
-   const disabledActive = GetDisabledPermits(this.props.permits, "Active")
-   const disabledDelete = GetDisabledPermits(this.props.permits, "Delete")
-   const disabledDetails = GetDisabledPermits(this.props.permits, "Details")
+
+    const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
+    const disabledUpdate = GetDisabledPermits(this.props.permits, "Update")
+    const disabledActive = GetDisabledPermits(this.props.permits, "Active")
+    const disabledDelete = GetDisabledPermits(this.props.permits, "Delete")
+    const disabledDetails = GetDisabledPermits(this.props.permits, "Details")
 
     return (
       <div>
-        {this.state.modal === true &&
+        {
+          this.state.modal === true &&
           <ModalReclamos
             option={this.state.option}
             modal={this.state.modal}
@@ -141,9 +143,11 @@ class ReclamosList extends Component {
             id_transmitter={this.state.id_transmitter}
             branchOffices={this.props.reclamos}
             valorCloseModal={this.valorCloseModal}
-          />}
+          />
+        }
 
-        { this.state.collapse === true &&
+        {
+          this.state.collapse === true &&
           <Chat show={this.state.collapse}
             hide={this.closeChat}
             option={this.state.option}
@@ -154,7 +158,8 @@ class ReclamosList extends Component {
         }
         <div style={{ "marginBottom": "1.8%" }}>
           <Button color="success"
-            onClick={() => this.openModal(1)}>
+            onClick={() => this.openModal(1)}
+            disabled={disabledCreate}>
             Agregar
         </Button>
         </div>
@@ -168,7 +173,7 @@ class ReclamosList extends Component {
                   <th style={{ width: "10%" }}>Sucursal que Emite</th>
                   <th style={{ width: "10%" }}>Sucursal que Recive</th>
                   <th style={{ width: "10%" }}>Visitador</th>
-                    <th style={{ width: "10%" }}>Estatus</th>
+                  <th style={{ width: "10%" }}>Estatus</th>
                   <th style={{ width: "10%" }}>Acciones</th>
                 </tr>
               </thead>
@@ -212,12 +217,12 @@ class ReclamosList extends Component {
                               <Delete className="iconTable" />
                             </IconButton>
 
-                            <IconButton 
-                            onClick={() => this.openModal(4,list.id_claim_receiver, list.id_claim_transmitter)} 
-                            className="iconButtons"
-                            disabled={disabledActive}
+                            <IconButton
+                              onClick={() => this.openModal(4, list.id_claim_receiver, list.id_claim_transmitter)}
+                              className="iconButtons"
+                              disabled={disabledActive}
                             >
-                              <StyledBadge badgeContent={list.unread_messages > 0 ? list.unread_messages: null } color="primary">
+                              <StyledBadge badgeContent={list.unread_messages > 0 ? list.unread_messages : null} color="primary">
                                 <QuestionAnswer className="iconTable" />
                               </StyledBadge>
                             </IconButton>
@@ -244,7 +249,7 @@ const StyledBadge = withStyles(theme => ({
     right: -3,
     border: `2px solid ${
       theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[900]
-    }`,
+      }`,
   },
 }))(Badge);
 
