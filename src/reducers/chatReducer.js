@@ -9,6 +9,7 @@ const loadDataMessage = (state, payload) =>{
 }
 
 const  setStoreChatSavePusher = (state, payload) =>{
+  
   let estado = state.toJS();
   estado.dataMessage.push(payload);
   return Map(estado);

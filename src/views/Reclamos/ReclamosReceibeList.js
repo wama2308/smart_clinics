@@ -130,23 +130,7 @@ class ReclamosReceibeList extends Component {
     });
   }
 
-
-  validat = (data) => {
-    if (data === undefined) {
-      const datos = data[0].hasOwnProperty('visitor')
-      if (datos === true) {
-        return true
-      } else {
-        return false
-      }
-    } else {
-
-    }
-  }
-
   render() {
-    const visitador = this.validat(this.props.reclamos)
-
     const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
     const disabledUpdate = GetDisabledPermits(this.props.permits, "Update")
     const disabledActive = GetDisabledPermits(this.props.permits, "Active")
@@ -177,6 +161,8 @@ class ReclamosReceibeList extends Component {
             id_receiber={this.state.id_receiber}
             id_transmitter={this.state.id_transmitter}
             transmiter={this.props.token.transmiter._id}
+            collapse={this.state.collapse}
+
           />
         }
 

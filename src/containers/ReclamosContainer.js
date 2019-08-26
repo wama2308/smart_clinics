@@ -138,6 +138,7 @@ class ReclamosContainer extends Component {
                             token={this.props.reclamos}
                             permits={this.state.permitsRecibidos}
                             master={this.props.reclamos.permission[0]._id}
+                            reclamosSelect={this.props.reclamos.brachOffices}
                           />
                         </TabPane>
                         <TabPane tabId="3">

@@ -8,9 +8,10 @@ import { Input } from 'reactstrap';
 import "../../components/style.css";
 import LightBox from '../../components/LightBox';
 import { connect } from 'react-redux';
-import { loadMessageFunction, registerMessageFunction, messageFunction, cleanMessage, registerFotoFunction,setStatusMessageFunction } from '../../actions/actionsChat';
+import { loadMessageFunction, registerMessageFunction, messageFunction, cleanMessage, registerFotoFunction, setStatusMessageFunction } from '../../actions/actionsChat';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import jstz from 'jstz';
+import store from './../../store'
 
 class Chat extends Component {
   constructor(props) {
@@ -158,18 +159,12 @@ class Chat extends Component {
       show: "show"
     })
     if (props.collapse === true) {
-      console.log("haciendo peticion");
-      
       const time = jstz.determine().name()
       this.props.setStatusMessageFunction(this.props.id_receiber, this.props.id_transmitter, time)
     }
   }
 
- 
-
   render() {
-    console.log(this.state.data);
-
     return (
       <div>
         {
@@ -182,6 +177,7 @@ class Chat extends Component {
             id_transmitter={this.state.id_transmitter}
             registerMessageFunction={this.props.registerMessageFunction}
             option={this.state.option}
+            box={this.state.box}
           />
         }
 
@@ -205,7 +201,7 @@ class Chat extends Component {
               {this.state.show === "show" ?
                 <div>
                   {
-                    this. props.chat.dataMessage ? this. props.chat.dataMessage.map((list, key) => {
+                    this.props.chat.dataMessage ? this.props.chat.dataMessage.map((list, key) => {
                       if (list.transmitter === this.props.transmiter && list.is_image === 0) {
                         return (
                           <div key={key}>
@@ -264,16 +260,14 @@ class Chat extends Component {
                             </div>
                           </div>
                         )
-                      } else {
-                        return null
                       }
 
                     }) :
                       null
                   }
                 </div> :
-                <div style={{ height: "10vh" }}>
-                  <CircularProgress style={{ position: "absolute", height: 40, top: "45%", right: "40%", zIndex: 2 }} />
+                <div style={{ "display": "flex", "justifyContent":"center" }}>
+                  <CircularProgress style={{ position: "absolute", height: 40, top: "45%", right: "42%", zIndex: 2 }} />
                 </div>
               }
             </CardBody>
@@ -424,7 +418,7 @@ const style = {
   foto: {
     "height": "91px",
     "margin": "1px",
-    "cursor": "pointer"
+    "cursor": "pointer",
   },
   done: {
     "fontSize": "12px"

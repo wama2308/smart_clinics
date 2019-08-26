@@ -253,7 +253,6 @@ const atenderReclamosFuntion = (datos, execute) =>{
     });
 }
 
-
 const reclamosAllFuntion = (datos, execute) =>{
  axios
    .get(reclamosAll, datos)
