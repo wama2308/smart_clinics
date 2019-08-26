@@ -247,7 +247,7 @@ const atenderReclamosFuntion = (datos, execute) =>{
     })
     .catch(error => {
       console.log(
-        "Error consultando la api para consultar los productos",
+        "Error consultando la api para consultar los reclamos atendidos",
         error.toString()
       );
     });
@@ -261,7 +261,7 @@ const reclamosAllFuntion = (datos, execute) =>{
    })
    .catch(error => {
      console.log(
-       "Error consultando la api para consultar los productos",
+       "Error consultando la api para consultar listar reclamos",
        error.toString()
      );
    });
@@ -275,7 +275,7 @@ const queryAllReceibeFunction = (datos, execute) => {
     })
     .catch(error => {
       console.log(
-        "Error consultando la api para consultar los productos",
+        "Error consultando la api para consultar los reclamos recibidos",
         error.toString()
       );
     });

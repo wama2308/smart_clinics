@@ -165,6 +165,13 @@ class ReclamosReceibeList extends Component {
 
           />
         }
+        <div style={{ "marginBottom": "1.8%" }}>
+          <Button color="success"
+            onClick={() => this.openModal(1)}
+            disabled={disabledCreate}>
+            Agregar
+        </Button>
+        </div>
 
         <div className="row">
           <div className="form-group col-sm-12">
