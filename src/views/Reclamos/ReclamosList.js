@@ -169,10 +169,10 @@ class ReclamosList extends Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th style={{ width: "12%" }}>Centro Medico Emitente</th>
-                  <th style={{ width: "12%" }}>Centro Medico Receptor</th>
-                  <th style={{ width: "10%" }}>Sucursal que Emite</th>
-                  <th style={{ width: "10%" }}>Sucursal que Recive</th>
+                  <th style={{ width: "12%" }}>C.M Emitente</th>
+                  <th style={{ width: "12%" }}>C.M Receptor</th>
+                  <th style={{ width: "10%" }}>Sucursal Emitente</th>
+                  <th style={{ width: "10%" }}>Sucursal Receptora</th>
                   <th style={{ width: "10%" }}>Visitador</th>
                   <th style={{ width: "10%" }}>Estatus</th>
                   <th style={{ width: "10%" }}>Acciones</th>
