@@ -59,12 +59,12 @@ export default class DiscountRequest extends React.Component {
   render() {
     const type = [
       {
-        value: "%",
-        type: "porcentaje"
-      },
-      {
         value: "BSF",
         type: "valor"
+      },
+      {
+        value: "%",
+        type: "porcentaje"
       }
     ];
 

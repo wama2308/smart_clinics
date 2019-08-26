@@ -97,7 +97,8 @@ const orderReferences = (reference, dispatch) => {
   } else {
     dispatch({
       type: "SEARCH_ARRAY_PRODUCTS",
-      payload: reference[0].products
+      payload:
+        reference[0].products.length > 0 ? reference[0].products : undefined
     });
     dispatch({
       type: "SELECTED_REFERENCE",

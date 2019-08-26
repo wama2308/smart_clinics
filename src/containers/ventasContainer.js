@@ -39,7 +39,7 @@ class VentasContainer extends React.Component {
       openModal: false,
       modalLoading: false,
       edit: false,
-      manualReference: false,
+      manualReference: false
     };
   }
   optionsPatient = options => {
@@ -64,11 +64,13 @@ class VentasContainer extends React.Component {
   };
 
   optionsProducts = (options, products) => {
+    console.log("aca", options, products);
     if (!options) {
       return [];
     }
 
     if (!products) {
+      console.log("entro en el primero if");
       const data = [];
       const result = [];
       options.map(option => {
@@ -82,10 +84,14 @@ class VentasContainer extends React.Component {
       const obj = {};
       let data = [];
 
+      console.log("else");
       products.map((product, key) => {
         obj[product._id] = product._id;
       });
+
+      console.log("antes del tercer if", Object.keys(obj));
       if (Object.keys(obj).length > 0) {
+        console.log("despues del tercer if");
         const result = options.map(option => {
           if (option._id !== obj[option._id]) {
             data.push({
@@ -94,6 +100,8 @@ class VentasContainer extends React.Component {
             });
           }
         });
+
+        console.log("en la funcion", data);
 
         return data;
       }
@@ -174,13 +182,13 @@ class VentasContainer extends React.Component {
     });
   };
 
-  openManualReference=()=>{
-    this.setState({manualReference:true})
-  }
+  openManualReference = () => {
+    this.setState({ manualReference: true });
+  };
 
-  closeManualReference=()=>{
-    this.setState({manualReference:false})
-  }
+  closeManualReference = () => {
+    this.setState({ manualReference: false });
+  };
 
   discountEditOrSave = (type, values) => {
     switch (type) {

@@ -78,12 +78,12 @@ class Products extends React.Component {
   };
 
   render() {
-
-    console.log("products",this.props.manualReference)
     const { patient, products, aplication } = this.props;
     const disableAllProductos =
       this.props.discount || this.props.statusSale === "BILLED" ? true : false;
     const totalData = this.props.getTotal(products, aplication);
+
+    console.log("ACA", this.props.options);
 
     const dataHead = [
       { label: "CODIGO" },
@@ -108,10 +108,9 @@ class Products extends React.Component {
         <Header>
           <div>Productos</div>
           <div style={{ width: "40%" }}>
-            {patient && !this.props.manualReference &&
-              (!this.state.edit ||
-                disableAllProductos
-               ) && (
+            {patient &&
+              !this.props.manualReference &&
+              (!this.state.edit || disableAllProductos) && (
                 <Search
                   disabled={disableAllProductos}
                   pressKey={true}
