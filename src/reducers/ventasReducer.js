@@ -23,12 +23,12 @@ const remove = (state, node, payload) => {
   return state.set(node, result);
 };
 
-const setIn = (state, node, payload) => {
+const setIn = (state, node, objectName,  payload) => {
   const result = state.get(node).findIndex(data => {
     return data._id === payload.id;
   });
 
-  return state.setIn(["array_products", result, "quantity"], payload.value);
+  return state.setIn(["array_products", result,  objectName ], payload.value);
 };
 
 const setField = (state, node, field, payload) => {
@@ -133,7 +133,7 @@ const VentasReducer = (state = initialState, action) => {
     }
 
     case "CHANGE_QUANTY_TO_SELL": {
-      return setIn(state, "array_products", action.payload);
+      return setIn(state, "array_products", "quantity", action.payload);
     }
 
     case "APPROVERS_DISCOUNT": {
@@ -169,6 +169,10 @@ const VentasReducer = (state = initialState, action) => {
 
     case "SELECTED_REFERENCE": {
       return setData(state, "selectedReference", action.payload);
+    }
+
+    case "CHANGE_DISCOUNT":{
+      return setIn(state, "array_products", "discountP", action.payload);
     }
 
     default:

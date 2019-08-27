@@ -20,7 +20,8 @@ class Products extends React.Component {
     this.state = {
       edit: false,
       delete: false,
-      quantyToSell: 0
+      quantyToSell: 0,
+      discountP: false
     };
   }
 
@@ -37,6 +38,13 @@ class Products extends React.Component {
     });
   };
 
+  handleDiscount = (event, product) => {
+    this.props.changeDiscount({
+      value: parseInt(event.target.value),
+      id: product._id
+    });
+  };
+
   componentDidUpdate = prevProps => {
     let lastData = undefined;
     let lastPrevData = undefined;
@@ -48,11 +56,21 @@ class Products extends React.Component {
       ? (lastPrevData = prevProps.products[prevProps.products.length - 1])
       : null;
 
-    if (lastData && lastData.searched && lastData !== lastPrevData) {
+    if (
+      lastData &&
+      lastData.searched &&
+      lastData !== lastPrevData &&
+      !this.state.discountP
+    ) {
       this.setState({ edit: lastData._id });
     }
 
-    if (this.state.edit) {
+    console.log(this.props.modalDiscount);
+    if (
+      this.state.edit &&
+      !this.state.discountP &&
+      this.props.modalDiscount === false
+    ) {
       const result = document.getElementsByClassName(`${this.state.edit}`);
       if (result[0]) {
         result[0].focus();
@@ -77,6 +95,12 @@ class Products extends React.Component {
     }
   };
 
+  keyDiscount = (e, discount) => {
+    if (e.key === "Enter") {
+      this.setState({ discountP: false });
+    }
+  };
+
   render() {
     const { patient, products, aplication } = this.props;
     const disableAllProductos =
@@ -86,12 +110,12 @@ class Products extends React.Component {
     console.log("ACA", this.props.options);
 
     const dataHead = [
-      { label: "CODIGO" },
       { label: "NOMBRE" },
       { label: "TIPO" },
       { label: "DISPONIBLE" },
       { label: "CANTIDAD" },
       { label: "PRECIO/U" },
+      { label: "DESCUENTO" },
       { label: "PRECIO/T" },
       { label: "ACTION" }
     ];
@@ -147,8 +171,7 @@ class Products extends React.Component {
                       : false;
                   return (
                     <RowTable key={key}>
-                      <Cell className="cellStyle">{product.code}</Cell>
-                      <Cell>{product.name}</Cell>
+                      <Cell className="cellStyle">{product.name}</Cell>
                       <Cell>{product.type}</Cell>
                       <Cell>
                         {product.service ? "0" : product.quantity_stock}
@@ -176,6 +199,32 @@ class Products extends React.Component {
                         </Cell>
                       )}
                       <Cell>{formatNumber(product.price)}</Cell>
+                      {this.state.discountP === product._id &&
+                      !disableAllProductos ? (
+                        <td>
+                          <Input
+                            type="number"
+                            className={product._id}
+                            value={product.discountP}
+                            onKeyDown={e => this.keyDiscount(e, product)}
+                            onChange={event =>
+                              this.handleDiscount(event, product)
+                            }
+                            style={{
+                              height: 48,
+                              borderRadius: 0
+                            }}
+                          />
+                        </td>
+                      ) : (
+                        <Cell
+                          onClick={() =>
+                            this.setState({ discountP: product._id })
+                          }
+                        >
+                          {product.discountP ? product.discountP : 0}
+                        </Cell>
+                      )}
                       <Cell>
                         {product.quantity
                           ? formatNumber(product.quantity * product.price)
@@ -206,9 +255,7 @@ class Products extends React.Component {
           </div>
 
           <div className="totalStyle">
-            <span className="titleBol">{` Impuesto (${
-              aplication.tax_rate
-            }%) `}</span>
+            <span className="titleBol">{` Impuesto (${aplication.tax_rate}%) `}</span>
             {formatNumber(totalData.iva)}
             {<span className="titleBol">{aplication.current_simbol}</span>}
           </div>

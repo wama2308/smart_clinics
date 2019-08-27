@@ -21,6 +21,7 @@ import {
   cancelledBill,
   cancelDiscount,
   editDiscount,
+  addDiscount,
   createSale,
   closeModalReferences
 } from "../actions/ventasAction";
@@ -64,13 +65,11 @@ class VentasContainer extends React.Component {
   };
 
   optionsProducts = (options, products) => {
-    console.log("aca", options, products);
     if (!options) {
       return [];
     }
 
     if (!products) {
-      console.log("entro en el primero if");
       const data = [];
       const result = [];
       options.map(option => {
@@ -84,14 +83,11 @@ class VentasContainer extends React.Component {
       const obj = {};
       let data = [];
 
-      console.log("else");
       products.map((product, key) => {
         obj[product._id] = product._id;
       });
 
-      console.log("antes del tercer if", Object.keys(obj));
       if (Object.keys(obj).length > 0) {
-        console.log("despues del tercer if");
         const result = options.map(option => {
           if (option._id !== obj[option._id]) {
             data.push({
@@ -100,8 +96,6 @@ class VentasContainer extends React.Component {
             });
           }
         });
-
-        console.log("en la funcion", data);
 
         return data;
       }
@@ -236,9 +230,6 @@ class VentasContainer extends React.Component {
       this.props.products
     );
     const totalData = this.getTotal(this.props.products, this.props.aplication);
-
-    console.log("container de ventas!!!!", this.props.state);
-
     return (
       <Container>
         {!this.props.saleLoading && <Spinner />}
@@ -252,6 +243,8 @@ class VentasContainer extends React.Component {
             loading={this.state.modalLoading}
             edit={this.state.edit}
             total={totalData}
+            products={this.props.products}
+            changeDiscount={this.props.addDiscount}
           />
         )}
         <div style={{ height: "38%" }}>
@@ -297,6 +290,8 @@ class VentasContainer extends React.Component {
               loaded={this.props.loaded}
               statusSale={this.props.statusSale}
               manualReference={this.state.manualReference}
+              changeDiscount={this.props.addDiscount}
+              modalDiscount = {this.state.openModal}
             />
 
             <Footer
@@ -351,6 +346,7 @@ export default connect(
   {
     searchPatient,
     clean,
+    addDiscount,
     searchProduct,
     searchOnePatient,
     searchOneSuppplie,

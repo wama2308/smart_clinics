@@ -302,6 +302,13 @@ export const changeQuantytoSell = obj => dispatch => {
   }
 };
 
+export const addDiscount = data => dispatch => {
+  dispatch({
+    type: "CHANGE_DISCOUNT",
+    payload: data
+  });
+};
+
 export const cancelToSell = () => dispatch => {
   dispatch(clean());
   dispatch({
