@@ -1,12 +1,19 @@
 import React from "react";
-import { Card, CardHeader, CardBody, Button } from "reactstrap";
+import { Card, CardHeader, CardBody, Button, Input } from "reactstrap";
 import { Typography, IconButton } from "@material-ui/core";
 import Popover from "@material-ui/core/Popover";
 import Search from "../../components/DefaultSearch";
+import UserRegister from "./userRegister";
 import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import UserRegister from "./userRegister";
-import { Delete } from "@material-ui/icons";
+import { connect } from "react-redux";
+import {
+  getOptionsPersonal,
+  cleanSearch,
+  getOneReference,
+  createReference
+} from "../../actions/ventasAction";
+import { Delete, PersonAdd } from "@material-ui/icons";
 import ModalReferences from "./ModalReferences";
 
 class Client extends React.Component {
@@ -16,11 +23,25 @@ class Client extends React.Component {
     disabled: false,
     openReference: false,
     anchorEl: null,
-    manualReference: false
+    referencia: "Personal interno",
+    searched: null
   };
 
   close = () => {
     this.setState({ openModal: false, disabled: false });
+  };
+
+  searchAction = values => {
+    this.props.getOneReference(values.value, res => {
+      console.log("res de la accion", res);
+      this.setState({
+        searched: {
+          ...res,
+          name: res.names ? `${res.names} ${res.surnames}` : undefined
+        }
+      });
+      this.props.cleanSearch();
+    });
   };
 
   view = () => {
@@ -35,6 +56,66 @@ class Client extends React.Component {
     this.setState({ openReference: false });
   };
 
+  orderOptions = value => {
+    if (!value) {
+      return;
+    }
+    const array = [];
+    value.map(val => {
+      array.push({
+        label: `${val.names} ${val.surnames}  ${val.type_identity}-${val.dni} `,
+        value: val._id
+      });
+    });
+
+    return array;
+  };
+
+  getOptions = value => {
+    const staff = this.state.referencia === "Personal interno" ? 0 : 1;
+    this.props.getOptionsPersonal(staff, value);
+  };
+
+  orderExternalOptions = value => {
+    if (!value) {
+      return;
+    }
+    const array = [];
+    value.map(val => {
+      array.push({
+        label: val.branchoffices_name,
+        value: val._id
+      });
+    });
+
+    return array;
+  };
+
+  saveReference = () => {
+    console.log(this.state.searched);
+    console.log(this.props.patient);
+    const staff = this.state.referencia === "Personal interno" ? 0 : 1;
+    let obj = {};
+    if (staff === 0) {
+      obj = {
+        patient_id: this.props.patient._id,
+        staff: staff,
+        staff_id: this.state.searched._id
+      };
+    } else {
+      obj = {
+        patient_id: this.props.patient._id,
+        staff: staff,
+        medical_center: this.state.searched._id,
+        branchoffice: this.state.searched.branchoffices_id
+      };
+    }
+    this.props.createReference(obj, () => {
+      this.setState({ searched: null });
+      this.props.closeManualReference();
+    });
+  };
+
   render() {
     const { patient, selectedReferences } = this.props;
     const disabled = this.props.isSaved ? this.props.isSaved : false;
@@ -44,8 +125,19 @@ class Client extends React.Component {
       PAID: "POR PAGAR"
     };
 
-    const definePatient = selectedReferences ? selectedReferences : [];
+    console.log("aca", this.state.searched);
 
+    const optionsReferences =
+      this.state.referencia === "Personal interno"
+        ? this.orderOptions(this.props.optionsInternal)
+        : this.orderExternalOptions(this.props.optionsExternal);
+
+    const reference = [
+      { label: "Personal interno", value: "Personal interno" },
+      { label: "Centro medico externo", value: "Centro medico externo" }
+    ];
+
+    const definePatient = selectedReferences ? selectedReferences : [];
 
     const disabledForPatient = selectedReferences ? true : false;
 
@@ -136,11 +228,19 @@ class Client extends React.Component {
           >
             {!patient && (
               <Search
+                placeholder="Buscar paciente"
                 searchAction={this.props.searchAction}
                 getOptions={this.props.getOptions}
-                placeholder="Buscar paciente"
                 options={this.props.options}
               />
+            )}
+            {patient && (
+              <IconButton
+                disabled={disabled || disabledForPatient}
+                onClick={this.props.openManualReference}
+              >
+                <PersonAdd />
+              </IconButton>
             )}
             {patient && (
               <IconButton
@@ -160,7 +260,7 @@ class Client extends React.Component {
           )}
           {this.props.loaded && (
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              {patient && !this.state.manualReference && (
+              {patient && !this.props.manualReference && (
                 <div className="infoUser">
                   <div className="list" style={{ borderTop: "none" }}>
                     <div className="list-body">
@@ -215,13 +315,6 @@ class Client extends React.Component {
                       {message[this.props.statusSale]}
                     </div>
                     <div>
-                      {/* <Button
-                        color="success"
-                        onClick={() => this.setState({ manualReference: true })}
-                      >
-                        Referenciar
-                      </Button> */}
-                      &nbsp;
                       <Button color="success" onClick={() => this.view()}>
                         Ver detalles
                       </Button>
@@ -230,7 +323,7 @@ class Client extends React.Component {
                 </div>
               )}
 
-              {patient && this.state.manualReference && (
+              {patient && this.props.manualReference && (
                 <div
                   className="infoUser"
                   style={{
@@ -241,11 +334,88 @@ class Client extends React.Component {
                 >
                   <div
                     style={{
-                      flex: 1
+                      flex: 1,
+                      display: "flex",
+                      alignItems: "center"
                     }}
                   >
-                    hello world
+                    <Input
+                      type="select"
+                      value={this.state.referencia}
+                      onChange={event =>
+                        this.setState({ referencia: event.target.value , searched: null })
+                      }
+                      style={{
+                        width: "45%"
+                      }}
+                    >
+                      {reference.map(ref => {
+                        return <option value={ref.value}>{ref.label}</option>;
+                      })}
+                    </Input>
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row-reverse"
+                      }}
+                    >
+                      <div style={{ width: "65%" }}>
+                        <Search
+                          placeholder={`Buscar ${this.state.referencia}`}
+                          getOptions={this.getOptions}
+                          options={optionsReferences}
+                          searchAction={this.searchAction}
+                        />
+                      </div>
+                    </div>
                   </div>
+
+                  <div>
+                    <div className="list" style={{ borderTop: "none" }}>
+                      {this.state.searched &&
+                        this.state.searched.medical_center && (
+                          <div className="list-body">
+                            <Typography variant="subtitle1">
+                              Centro Medico:
+                            </Typography>
+                            <Typography variant="body1" className="textSpace">
+                              {this.state.searched.medical_center}
+                            </Typography>
+                          </div>
+                        )}
+                      {this.state.searched  && this.state.referencia === "Personal interno" &&  (
+                        <div className="list-body">
+                          <Typography variant="subtitle1">Sucursal:</Typography>
+                          <Typography variant="body1" className="textSpace">
+                            {this.state.searched.branchoffices}
+                          </Typography>
+                        </div>
+                      )}
+                    </div>
+                    <div className="list" style={{ marginBottom: 15 }}>
+                      {this.state.referencia !== "Personal interno" &&
+                        this.state.searched && (
+                          <div className="list-body">
+                            <Typography variant="subtitle1">
+                              Sucursal:
+                            </Typography>
+                            <Typography variant="body1" className="textSpace">
+                              {this.state.searched.branchoffices}
+                            </Typography>
+                          </div>
+                        )}
+                      {this.state.referencia === "Personal interno" && this.state.searched && this.state.searched.name && (
+                        <div className="list-body">
+                          <Typography variant="subtitle1">Nombre:</Typography>
+                          <Typography variant="body1" className="textSpace">
+                            {this.state.searched.name}
+                          </Typography>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <div
                     style={{
                       justifyContent: "flex-end",
@@ -254,12 +424,12 @@ class Client extends React.Component {
                   >
                     <Button
                       color="danger"
-                      onClick={() => this.setState({ manualReference: true })}
+                      onClick={this.props.closeManualReference}
                     >
                       Cancelar
                     </Button>
-                    &nbsp;
-                    <Button color="success" onClick={() => this.view()}>
+                    &nbsp; &nbsp;
+                    <Button color="success" onClick={this.saveReference}>
                       Guardar
                     </Button>
                   </div>
@@ -297,7 +467,16 @@ class Client extends React.Component {
   }
 }
 
-export default Client;
+const mapStateToProps = state => ({
+  aplication: state.global.dataGeneral,
+  optionsInternal: state.ventas.get("options_internal"),
+  optionsExternal: state.ventas.get("options_external")
+});
+
+export default connect(
+  mapStateToProps,
+  { getOptionsPersonal, cleanSearch, getOneReference, createReference }
+)(Client);
 
 const Header = styled(CardHeader)`
   display: flex;
@@ -321,13 +500,11 @@ const Body = styled(CardBody)`
     color: inherit;
     font-family: sans-serif;
   }
-
   .saveButton {
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
   }
-
   .list {
     display: flex;
     align-items: center;
@@ -344,7 +521,6 @@ const Body = styled(CardBody)`
   .textSpace {
     padding-left: 10px;
   }
-
   .loading {
     flex: 1;
     display: flex;

@@ -214,7 +214,7 @@ class ModalReferences extends React.Component {
           })}
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" onClick={() => this.props.close}>
+          <Button color="danger" onClick={this.props.close}>
             Cancelar
           </Button>
           <Button color="success" onClick={this.addReferences}>

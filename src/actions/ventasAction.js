@@ -17,6 +17,8 @@ const cancelInvoice = `${url}/api/cancelInvoice`;
 const editCashierDiscount = `${url}/api/editCashierDiscount`;
 const referencePersonnelUrl = `${url}/api/referencePersonnel`;
 const deleteReferencePersonnel = `${url}/api/deleteReferencePersonnel`;
+const queryOneReferencePersonnel = `${url}/api/queryOneReferencePersonnel`;
+const createManualPersonnelReference = `${url}/api/createManualPersonnelReference`;
 
 export const searchPatient = search => dispatch => {
   if (search.length < 1) {
@@ -95,7 +97,8 @@ const orderReferences = (reference, dispatch) => {
   } else {
     dispatch({
       type: "SEARCH_ARRAY_PRODUCTS",
-      payload: reference[0].products
+      payload:
+        reference[0].products.length > 0 ? reference[0].products : undefined
     });
     dispatch({
       type: "SELECTED_REFERENCE",
@@ -467,6 +470,13 @@ export const cleanSearch = () => {
   };
 };
 
+const filterSearchReferences = values => {
+  console.log("dios mio", values);
+  const result = values.split(" ");
+
+  console.log("actions", result);
+};
+
 export const getOptionsPersonal = (staff, value) => dispatch => {
   dispatch({
     type: "SEARCH_DATA",
@@ -493,6 +503,40 @@ export const getOptionsPersonal = (staff, value) => dispatch => {
           payload: Object.values(res.data)
         });
       }
+    });
+  });
+};
+
+export const getOneReference = (data, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: queryOneReferencePersonnel,
+      data: {
+        _id: data
+      },
+      ...token
+    }).then(res => {
+      callback(res.data);
+    });
+  });
+};
+
+export const createReference = (obj, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: createManualPersonnelReference,
+      data: obj,
+      ...token
+    }).then(res => {
+      dispatch({
+        type: "SELECTED_REFERENCE",
+        payload: {
+          ...res.data.referencer[0]
+        }
+      });
+      callback();
     });
   });
 };

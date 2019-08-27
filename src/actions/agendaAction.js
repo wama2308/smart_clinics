@@ -38,7 +38,6 @@ export const getAgent = () => async dispatch => {
     .onSnapshot(querySnaphot => {
       let event = [];
       querySnaphot.forEach((values, key) => {
-        console.log(values.id);
         if (values.data()) {
           event.push({ id: values.id, ...values.data() });
         }

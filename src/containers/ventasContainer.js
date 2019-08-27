@@ -38,7 +38,8 @@ class VentasContainer extends React.Component {
     this.state = {
       openModal: false,
       modalLoading: false,
-      edit: false
+      edit: false,
+      manualReference: false
     };
   }
   optionsPatient = options => {
@@ -63,11 +64,13 @@ class VentasContainer extends React.Component {
   };
 
   optionsProducts = (options, products) => {
+    console.log("aca", options, products);
     if (!options) {
       return [];
     }
 
     if (!products) {
+      console.log("entro en el primero if");
       const data = [];
       const result = [];
       options.map(option => {
@@ -81,10 +84,14 @@ class VentasContainer extends React.Component {
       const obj = {};
       let data = [];
 
+      console.log("else");
       products.map((product, key) => {
         obj[product._id] = product._id;
       });
+
+      console.log("antes del tercer if", Object.keys(obj));
       if (Object.keys(obj).length > 0) {
+        console.log("despues del tercer if");
         const result = options.map(option => {
           if (option._id !== obj[option._id]) {
             data.push({
@@ -93,6 +100,8 @@ class VentasContainer extends React.Component {
             });
           }
         });
+
+        console.log("en la funcion", data);
 
         return data;
       }
@@ -171,6 +180,14 @@ class VentasContainer extends React.Component {
       this.setState({ modalLoading: true });
       this.close();
     });
+  };
+
+  openManualReference = () => {
+    this.setState({ manualReference: true });
+  };
+
+  closeManualReference = () => {
+    this.setState({ manualReference: false });
   };
 
   discountEditOrSave = (type, values) => {
@@ -252,6 +269,9 @@ class VentasContainer extends React.Component {
               closeReferences={this.props.closeModalReferences}
               references={this.props.state.references}
               selectedReferences={this.props.state.selectedReference}
+              manualReference={this.state.manualReference}
+              openManualReference={this.openManualReference}
+              closeManualReference={this.closeManualReference}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -276,6 +296,7 @@ class VentasContainer extends React.Component {
               discount={this.props.discount}
               loaded={this.props.loaded}
               statusSale={this.props.statusSale}
+              manualReference={this.state.manualReference}
             />
 
             <Footer
