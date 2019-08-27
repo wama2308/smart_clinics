@@ -32,11 +32,12 @@ class ReclamosList extends Component {
       sucursal_id_now: '',
       collapse: false,
       id_receiber: '',
-      id_transmitter: ''
+      id_transmitter: '',
+      visitor: null
     }
   }
 
-  openModal = (option, id_claim_receiver, id_claim_transmitter) => {
+  openModal = (option, id_claim_receiver, id_claim_transmitter, made_by_visitor, status) => {
     if (option === 1) {
       this.setState({
         modal: true,
@@ -56,20 +57,25 @@ class ReclamosList extends Component {
         disabled: true,
         showHide: 'hide',
         id_receiber: id_claim_receiver,
-        id_transmitter: id_claim_transmitter
+        id_transmitter: id_claim_transmitter,
+        visitor: made_by_visitor
       })
     } else if (option === 3) {
       this.props.queryOneReclamos(id_claim_receiver, id_claim_transmitter)
-      this.setState({
-        modal: true,
-        option: option,
-        modalHeader: 'Registrar Reclamo',
-        modalFooter: 'Guardar',
-        disabled: false,
-        showHide: 'show',
-        id_receiber: id_claim_receiver,
-        id_transmitter: id_claim_transmitter
-      })
+      if (status === "Aprobado") {
+        this.props.messageErrorFunction()
+      } else {
+        this.setState({
+          modal: true,
+          option: option,
+          modalHeader: 'Registrar Reclamo',
+          modalFooter: 'Guardar',
+          disabled: false,
+          showHide: 'show',
+          id_receiber: id_claim_receiver,
+          id_transmitter: id_claim_transmitter
+        })
+      }
     } else if (option === 4) {
       const time = jstz.determine().name()
       this.props.setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time)
@@ -143,6 +149,7 @@ class ReclamosList extends Component {
             id_transmitter={this.state.id_transmitter}
             branchOffices={this.props.reclamos}
             valorCloseModal={this.valorCloseModal}
+            visitor={this.state.visitor}
           />
         }
 
@@ -190,45 +197,69 @@ class ReclamosList extends Component {
                         <td>{list.visitor}</td>
                         <td>{list.status}</td>
                         <td style={{ 'minWidth': "205px" }}>
-                          <div className="float-left" >
-                            <IconButton aria-label="Delete"
-                              title="Ver Reclamo"
-                              className="iconButtons"
-                              onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter); }}
-                              disabled={disabledDetails}
-                            >
-                              <Visibility className="iconTable" />
-                            </IconButton>
+                          {list.made_by_visitor === 0 ?
+                            <div className="float-left" >
+                              <IconButton aria-label="Delete"
+                                title="Ver Reclamo"
+                                className="iconButtons"
+                                onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor); }}
+                                disabled={disabledDetails}
+                              >
+                                <Visibility className="iconTable" />
+                              </IconButton>
 
-                            <IconButton aria-label="Delete"
-                              title="Editar Reclamo"
-                              className="iconButtons"
-                              onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter); }}
-                              disabled={disabledUpdate}
-                            >
-                              <Edit className="iconTable" />
-                            </IconButton>
 
-                            <IconButton aria-label="Delete"
-                              title="Eliminar Reclamo"
-                              className="iconButtons"
-                              onClick={() => { this.deleteRegister(list.id_claim_receiver, list.id_claim_transmitter); }}
-                              disabled={disabledDelete}
-                            >
-                              <Delete className="iconTable" />
-                            </IconButton>
+                              <IconButton aria-label="Delete"
+                                title="Editar Reclamo"
+                                className="iconButtons"
+                                onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter,list.made_by_visitor, list.status); }}
+                                disabled={disabledUpdate}
+                              >
+                                <Edit className="iconTable" />
+                              </IconButton>
 
-                            <IconButton
-                              onClick={() => this.openModal(4, list.id_claim_receiver, list.id_claim_transmitter)}
-                              className="iconButtons"
-                              disabled={disabledActive}
-                            >
-                              <StyledBadge badgeContent={list.unread_messages > 0 ? list.unread_messages : null} color="primary">
-                                <QuestionAnswer className="iconTable" />
-                              </StyledBadge>
-                            </IconButton>
+                              <IconButton aria-label="Delete"
+                                title="Eliminar Reclamo"
+                                className="iconButtons"
+                                onClick={() => { this.deleteRegister(list.id_claim_receiver, list.id_claim_transmitter); }}
+                                disabled={disabledDelete}
+                              >
+                                <Delete className="iconTable" />
+                              </IconButton>
 
-                          </div>
+                              <IconButton
+                                onClick={() => this.openModal(4, list.id_claim_receiver, list.id_claim_transmitter)}
+                                className="iconButtons"
+                                disabled={disabledActive}
+                              >
+                                <StyledBadge badgeContent={list.unread_messages > 0 ? list.unread_messages : null} color="primary">
+                                  <QuestionAnswer className="iconTable" />
+                                </StyledBadge>
+                              </IconButton>
+
+                            </div> :
+                            <div className="float-left" >
+                              <IconButton aria-label="Delete"
+                                title="Ver Reclamo"
+                                className="iconButtons"
+                                onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor); }}
+                                disabled={disabledDetails}
+                              >
+                                <Visibility className="iconTable" />
+                              </IconButton>
+
+                              <IconButton
+                                onClick={() => this.openModal(4, list.id_claim_receiver, list.id_claim_transmitter)}
+                                className="iconButtons"
+                                disabled={disabledActive}
+                              >
+                                <StyledBadge badgeContent={list.unread_messages > 0 ? list.unread_messages : null} color="primary">
+                                  <QuestionAnswer className="iconTable" />
+                                </StyledBadge>
+                              </IconButton>
+
+                            </div>
+                          }
                         </td>
                       </tr>
                     )
