@@ -22,11 +22,11 @@ class ModalReclamos extends Component {
     }
   }
   componentDidMount() {
-    if (this.props.option !== 1 ) {
+    if (this.props.option !== 1) {
       this.setState({ loading: 'hide' })
     }
   }
-  
+
 
   componentWillReceiveProps(props) {
     if (props.option === 2 || props.option === 3) {
@@ -299,6 +299,7 @@ class ModalReclamos extends Component {
                         placeholder="Titulo" />
                       <FormFeedback tooltip>{this.state.motivoError}</FormFeedback>
                     </FormGroup>
+
                     <FormGroup className="top form-group col-sm-12">
                       <Label for="descripcion">Descripcion:</Label>
                       <Input

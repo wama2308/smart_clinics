@@ -180,7 +180,8 @@ class ReclamosAtendidosList extends Component {
                 <tr>
                   <th >Centro Medico Emitente</th>
                   <th >Sucursal que Emite</th>
-                  {this.props.master === "MASTER" && <th >Visitador</th>}
+                  <th >Visitador</th>
+                  <th >Estatus</th>
                   <th >Acciones</th>
                 </tr>
               </thead>
@@ -192,6 +193,7 @@ class ReclamosAtendidosList extends Component {
                         <td>{list.medical_center_transmitter}</td>
                         <td>{list.branchoffice_transmitter}</td>
                         {list.visitor && <td>{list.visitor}</td>}
+                        <td>{list.status}</td>
                         <td style={{ 'minWidth': "205px" }}>
                           <div className="float-left" >
                             <IconButton aria-label="Delete"

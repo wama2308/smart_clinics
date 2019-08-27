@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { ModalFooter } from 'reactstrap';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { cleanReclamos, saveReclamosAction, updateReclamosFuction } from '../../../actions/reclamosAction';
+import { cleanReclamos, saveReclamosAction, updateReclamosFuction, cancelVisitorClaimFunction, registerVisitorClaimFunction, updateReclamosVisitorFuction } from '../../../actions/reclamosAction';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
@@ -16,28 +16,7 @@ class ModalVisitador extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      arrayCentroMedicoSelect: null,
-      divCentroMedicoSelect: '',
-      divCentroMedicoSelectError: '',
-      arrayCentroMedico: [],
-
-      arraySucursalesSelect: null,
-      divSucursalesSelect: '',
-      divSucursalesSelectError: '',
-      arraySucursales: [],
-
-      arrayVisitadorSelect: null,
-      divVisitadorSelect: '',
-      divVisitadorSelectError: '',
-      arrayVisitador: [],
-
-      descripcion: '',
-      descripcionError: '',
-      descripcionInvalid: false,
-
-      action: 0,
-      collapse: false,
-      loading: 'show',
+      ...InitalState,
 
       motivo: '',
       motivoError: '',
@@ -118,12 +97,64 @@ class ModalVisitador extends Component {
       descripcionError = "¡Ingrese la descripcion!";
       descripcionInvalid = true;
     }
+    if (this.state.arrayVisitadorSelect === null || this.state.arrayVisitadorSelect.length === 0) {
+      divVisitadorSelectError = "¡Seleccione el Visitador!";
+      divVisitadorSelect = "borderColor"
+    }
     if (this.state.motivo === "") {
       motivoError = "¡Ingrese el Motivo!";
       motivoInvalid = true;
     }
 
-    if (divCentroMedicoSelectError || divSucursalesSelectError || descripcionError || motivoError) {
+    if (divCentroMedicoSelectError || divSucursalesSelectError || descripcionError || divVisitadorSelectError || motivoError) {
+      this.setState({
+        divSucursalesSelectError,
+        divSucursalesSelect,
+        descripcionError,
+        descripcionInvalid,
+        divVisitadorSelectError,
+        divVisitadorSelect,
+        divCentroMedicoSelect,
+        divCentroMedicoSelectError,
+        motivoError,
+        motivoInvalid
+      });
+      return false;
+    }
+    return true;
+  }
+
+  validateVisitor = () => {
+    let divSucursalesSelect = "";
+    let divSucursalesSelectError = "";
+
+    let divCentroMedicoSelect = "";
+    let divCentroMedicoSelectError = "";
+
+    let descripcionError = "";
+    let descripcionInvalid = false;
+
+    let motivoError = "";
+    let motivoInvalid = false;
+
+    if (this.state.arraySucursalesSelect === null || this.state.arraySucursalesSelect.length === 0) {
+      divSucursalesSelectError = "¡Seleccione la sucursal!";
+      divSucursalesSelect = "borderColor";
+    }
+    if (this.state.arrayCentroMedicoSelect === null || this.state.arrayCentroMedicoSelect.length === 0) {
+      divCentroMedicoSelectError = "¡Seleccione el Centro Medico!";
+      divCentroMedicoSelect = "borderColor"
+    }
+    if (this.state.descripcion === "") {
+      descripcionError = "¡Ingrese la descripcion!";
+      descripcionInvalid = true;
+    }
+    if (this.state.motivo === "") {
+      motivoError = "¡Ingrese el Motivo!";
+      motivoInvalid = true;
+    }
+
+    if (divCentroMedicoSelectError || divSucursalesSelectError || descripcionError  || motivoError) {
       this.setState({
         divSucursalesSelectError,
         divSucursalesSelect,
@@ -166,17 +197,24 @@ class ModalVisitador extends Component {
     });
   };
 
+  handleVisitadorSelect = arrayVisitadorSelect => {
+    this.setState({
+      arrayVisitadorSelect,
+      divVisitadorSelect: '',
+      divVisitadorSelectError: '',
+    });
+  }
+
   handleSaveUser = (event) => {
     event.preventDefault();
-    const isValid = this.validate();
+    const isValid = this.validateVisitor();
     if (isValid) {
       if (this.props.option === 1) {
         this.setState({ loading: 'hide' })
-        this.props.saveReclamosAction(
+        this.props.registerVisitorClaimFunction(
           {
             medical_center_id: this.state.arrayCentroMedicoSelect.value,
             branchoffice_id: this.state.arraySucursalesSelect.value,
-            visitor_id: this.state.arrayVisitadorSelect.value,
             rason: this.state.motivo,
             claim: this.state.descripcion
 
@@ -193,13 +231,12 @@ class ModalVisitador extends Component {
         )
       } else if (this.props.option === 3) {
         this.setState({ loading: 'hide' })
-        this.props.updateReclamosFuction(
+        this.props.updateReclamosVisitorFuction(
           {
             id_claim_transmitter: this.props.id_transmitter,
             id_claim_receiver: this.props.id_receiber,
             medical_center_id: this.state.arrayCentroMedicoSelect.value,
             branchoffice_id: this.state.arraySucursalesSelect.value,
-            visitor_id: this.state.arrayVisitadorSelect.value,
             rason: this.state.motivo,
             claim: this.state.descripcion
 
@@ -226,6 +263,8 @@ class ModalVisitador extends Component {
   }
 
   render() {
+    console.log(this.props.reclamos.visitor_id);
+    
     return (
       <span>
         <Modal
@@ -275,6 +314,26 @@ class ModalVisitador extends Component {
                         {this.state.divSucursalesSelectError}
                       </div>
                     </FormGroup>
+
+                    {this.props.visitor_disable === true &&
+                      <FormGroup className="top form-group col-sm-6">
+                        <Label for="visitador">Visitador</Label>
+                        <div className={this.state.divVisitadorSelect}>
+                          <Select
+                            isSearchable="true"
+                            isDisabled={this.props.disabled}
+                            name="visitador"
+                            value={this.state.arrayVisitadorSelect}
+                            onChange={this.handleVisitadorSelect}
+                            options={this.state.arrayVisitador}
+                            id="visitador"
+                          />
+                        </div>
+                        <div className="errorSelect">
+                          {this.state.divVisitadorError}
+                        </div>
+                      </FormGroup>
+                    }
 
                     <FormGroup className="top form-group col-sm-6">
                       <Label for="motivo">Titulo:</Label>
@@ -337,6 +396,8 @@ const mapDispatchToProps = dispatch => ({
   cleanReclamos: () => dispatch(cleanReclamos()),
   saveReclamosAction: (data, callback) => dispatch(saveReclamosAction(data, callback)),
   updateReclamosFuction: (data, callback) => dispatch(updateReclamosFuction(data, callback)),
+  registerVisitorClaimFunction: (data, callback) => dispatch(registerVisitorClaimFunction(data, callback)),
+  updateReclamosVisitorFuction: (data, callback) => dispatch(updateReclamosVisitorFuction(data, callback))
 })
 const mapStateToProps = state => ({
   reclamos: state.reclamos.toJS()

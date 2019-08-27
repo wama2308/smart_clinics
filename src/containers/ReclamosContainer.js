@@ -26,7 +26,8 @@ import {
   deleteReclamosFuction,
   transferClaimsFunction,
   acceptReclamosFunction,
-  rejectReclamosFunction
+  rejectReclamosFunction,
+  messageErrorFunction
 } from '../actions/reclamosAction';
 
 import { loadMessageFunction, setStatusMessageFunction } from '../actions/actionsChat'
@@ -125,6 +126,7 @@ class ReclamosContainer extends Component {
                             setStatusMessageFunction={this.props.setStatusMessageFunction}
                             token={this.props.reclamos}
                             permits={this.state.permitsRealizados}
+                            messageErrorFunction={this.props.messageErrorFunction}
                           />
                         </TabPane>
                         <TabPane tabId="2">
@@ -139,6 +141,8 @@ class ReclamosContainer extends Component {
                             permits={this.state.permitsRecibidos}
                             master={this.props.reclamos.permission[0]._id}
                             reclamosSelect={this.props.reclamos.brachOffices}
+                            deleteReclamosFuction={this.props.deleteReclamosFuction}
+                            messageErrorFunction={this.props.messageErrorFunction}
                           />
                         </TabPane>
                         <TabPane tabId="3">
@@ -176,7 +180,8 @@ const mapDispatchToProps = dispatch => ({
   rejectReclamosFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(rejectReclamosFunction(id_claim_receiver, id_claim_transmitter, time)),
 
   loadMessageFunction: (id_claim_receiver, id_claim_transmitter) => dispatch(loadMessageFunction(id_claim_receiver, id_claim_transmitter)),
-  setStatusMessageFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time))
+  setStatusMessageFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time)),
+  messageErrorFunction: () => dispatch(messageErrorFunction())
 })
 
 const mapStateToProps = state => ({
