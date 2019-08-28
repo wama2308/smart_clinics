@@ -64,18 +64,18 @@ export default class MedicalCenter extends React.Component {
     };
     valid
       ? this.props.editAction(
-          {
-            name: this.state.name,
-            idCountry: this.state.selectedCountry,
-            provinceid: this.state.provinceid,
-            timeZ: jstz.determine().name()
-          },
-          () => {
-            this.setState({
-              loading: true
-            });
-          }
-        )
+        {
+          name: this.state.name,
+          idCountry: this.state.selectedCountry,
+          provinceid: this.state.provinceid,
+          timeZ: jstz.determine().name()
+        },
+        () => {
+          this.setState({
+            loading: true
+          });
+        }
+      )
       : this.setState({ loading: true });
   };
 

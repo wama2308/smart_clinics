@@ -9,7 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Products from './Products.js';
 import ModalDistributor from '../Distributor/ModalDistributor.js';
-import { openConfirmDialog } from "../../actions/aplicantionActions";
+import { openConfirmDialog, search } from "../../actions/aplicantionActions";
 import { cleanProducts, saveShopAction, editShopAction, deleteProductsFunction, removeProductAction, actionProps } from "../../actions/ShopActions";
 import { InitalState } from './InitialState.js';
 import IconButton from "@material-ui/core/IconButton";
@@ -362,6 +362,11 @@ class ModalShop extends React.Component {
           option: 0,
         });
     }
+    componentWillUnmount() {
+        let set = ""
+        this.props.search(set)
+    }
+    
 
     render() {
         return (
@@ -576,6 +581,7 @@ const mapDispatchToProps = dispatch => ({
     removeProductAction: (shopId, productId, loteId) =>dispatch(removeProductAction(shopId, productId, loteId)),
     cleanProducts: () =>dispatch(cleanProducts()),
     actionProps: () =>dispatch(actionProps()),
+    search: (set)=>dispatch(search(set))
 });
 
 export default connect(

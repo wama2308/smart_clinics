@@ -28,7 +28,7 @@ import {
 }
   from "../actions/ShopActions";
 import { LoadDistributorFunction } from "../actions/DistributorActions";
-import { openConfirmDialog, openSnackbars } from "../actions/aplicantionActions";
+import { openConfirmDialog, openSnackbars, search } from "../actions/aplicantionActions";
 import classnames from "classnames";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -77,8 +77,15 @@ class ShopContainers extends Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set) 
     }
   }
+  componentWillUnmount() {
+    let set = ""
+    this.props.search(set)
+  }
+  
 
   render() {
     //console.log("props shop container", this.props.shop);
@@ -194,6 +201,7 @@ const mapDispatchToProps = dispatch => ({
   queryOneSupplieWithLotFunction: (productId) => dispatch(queryOneSupplieWithLotFunction(productId)),
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
   alert: (type, message) => dispatch(openSnackbars(type, message)),
+  search: (set) =>dispatch(search(set))
 });
 
 export default connect(

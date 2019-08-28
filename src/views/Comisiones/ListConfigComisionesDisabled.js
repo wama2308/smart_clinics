@@ -5,6 +5,7 @@ import { CheckCircle } from "@material-ui/icons";
 import Pagination from '../../components/Pagination';
 import { getArray } from '../../core/utils'
 import { number_format } from "../../core/utils";
+import Search from "../../components/Select";
 
 class ListStoreInactivos extends React.Component {
   constructor(props) {
@@ -50,18 +51,36 @@ class ListStoreInactivos extends React.Component {
     const { rowsPerPage, page } = this.state;
     const ArrayData = getArray(this.props.data.commissions_disabled);
 
+    const result = this.props.search
+      ? ArrayData.filter(users => {
+        return (
+          users.type_staff.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          users.time.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          users.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          users.payment_type.toLowerCase().includes(this.props.search.toLowerCase())
+        );
+      })
+      : ArrayData;
+
     return (
       <div>
+        <div className="containerGeneral">
+          <div className="container-button">
+          </div>
+          <div className="containerSearch">
+            <Search value={ArrayData} />
+          </div>
+        </div>
         <br />
         <Table hover responsive borderless>
           <thead className="thead-light">
-             <tr>
+            <tr>
               <th className="text-left">Nro</th>
               <th className="text-left">Personal</th>
               <th className="text-left">Tiempo(dias)</th>
               <th className="text-left">Tipo</th>
-              <th className="text-left">Condicion</th>              
-              <th className="text-left">Forma de pago</th>              
+              <th className="text-left">Condicion</th>
+              <th className="text-left">Forma de pago</th>
               <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
             </tr>
           </thead>
@@ -69,8 +88,8 @@ class ListStoreInactivos extends React.Component {
             {ArrayData ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               let condition = "";
               data.type_id === "5d1776e3b0d4a50b23931122" ?
-              condition = data.condition :
-              condition = number_format(data.condition, 2)+" "+this.props.current_simbol
+                condition = data.condition :
+                condition = number_format(data.condition, 2) + " " + this.props.current_simbol
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
@@ -78,7 +97,7 @@ class ListStoreInactivos extends React.Component {
                   <td>{data.time}</td>
                   <td>{data.type}</td>
                   <td>{condition}</td>
-                  <td>{data.payment_type}</td>           
+                  <td>{data.payment_type}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
@@ -98,11 +117,11 @@ class ListStoreInactivos extends React.Component {
           </tbody>
           {
             this.props.data.commissions_disabled.length > 10 &&
-              <Pagination contador={this.props.data.commissions_disabled}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
+            <Pagination contador={this.props.data.commissions_disabled}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
           }
         </Table>
       </div>

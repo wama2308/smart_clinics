@@ -48,8 +48,16 @@ class PersonalInterno extends Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set)
     }
   }
+
+  componentWillUnmount() {
+    let set = ""
+    this.props.search(set)
+  }
+
 
   render() {
     return (
@@ -162,6 +170,7 @@ const mapDispatchToProps = dispatch => ({
   disabledPositionAction: (id) => dispatch(disabledPositionAction(id)),
   enabledPositionAction: (id) => dispatch(enabledPositionAction(id)),
   loadUsersRoles: () => dispatch(LoadAllUsersNoMasterFunction()),
+  search: (set) => dispatch(search(set))
 });
 export default connect(
   mapStateToProps,

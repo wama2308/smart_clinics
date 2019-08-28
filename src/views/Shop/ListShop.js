@@ -14,13 +14,13 @@ class ListShop extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modal:false,
+      modal: false,
       modalHeader: '',
       modalFooter: '',
       action: '',
       disabled: '',
       showHide: '',
-      option:0,
+      option: 0,
       position: 0,
       isClearable: false,
       shop_id: '0',
@@ -29,57 +29,57 @@ class ListShop extends React.Component {
     };
   }
 
-  componentDidMount(){}
+  componentDidMount() { }
 
   openModal = (option, pos, id) => {
-    if(!this.props.provider){
+    if (!this.props.provider) {
       this.props.alert("warning", "¡Antes de agregar una compra, debe agregar un proveedor!");
-    }else{
-      if(option === 1){
-      this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Registrar Compras-Productos',
-        modalFooter:'Guardar',
-        disabled: false,
-        showHide: 'show',
-        isClearable: true,
-      })
-    }else if(option === 2){
-      this.props.LoadShopIdFunction(id);
-      this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Ver Compras-Productos',
-        modalFooter:'Guardar',
-        disabled: true,
-        showHide: 'hide',
-      })
-    }else if(option === 3){
-      this.props.LoadShopIdFunction(id);
-      this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Editar Compras-Productos',
-        modalFooter:'Editar',
-        disabled: false,
-        showHide: 'show',
-        position: pos,
-        shop_id:id
-      })
-    }else if(option === 4){
-      this.props.LoadShopIdFunction(id);
-      this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Transferir Compras-Productos',
-        modalFooter:'Guardar',
-        disabled: false,
-        showHide: 'show',
-        position: pos,
-        shop_id:id
-      })
-    }
+    } else {
+      if (option === 1) {
+        this.setState({
+          modal: true,
+          option: option,
+          modalHeader: 'Registrar Compras-Productos',
+          modalFooter: 'Guardar',
+          disabled: false,
+          showHide: 'show',
+          isClearable: true,
+        })
+      } else if (option === 2) {
+        this.props.LoadShopIdFunction(id);
+        this.setState({
+          modal: true,
+          option: option,
+          modalHeader: 'Ver Compras-Productos',
+          modalFooter: 'Guardar',
+          disabled: true,
+          showHide: 'hide',
+        })
+      } else if (option === 3) {
+        this.props.LoadShopIdFunction(id);
+        this.setState({
+          modal: true,
+          option: option,
+          modalHeader: 'Editar Compras-Productos',
+          modalFooter: 'Editar',
+          disabled: false,
+          showHide: 'show',
+          position: pos,
+          shop_id: id,
+        })
+      } else if (option === 4) {
+        this.props.LoadShopIdFunction(id);
+        this.setState({
+          modal: true,
+          option: option,
+          modalHeader: 'Transferir Compras-Productos',
+          modalFooter: 'Guardar',
+          disabled: false,
+          showHide: 'show',
+          position: pos,
+          shop_id: id
+        })
+      }
     }
   }
 
@@ -97,8 +97,8 @@ class ListShop extends React.Component {
 
   valorCloseModal = (valor) => {
     this.setState({
-        modal: valor,
-        option: 0,
+      modal: valor,
+      option: 0,
     });
   }
 
@@ -111,54 +111,58 @@ class ListShop extends React.Component {
   };
 
   render() {
-      const createDisabled = GetDisabledPermits(this.props.permitsBuy , "Create")
-      const updateDisabled = GetDisabledPermits(this.props.permitsBuy , "Update")
-      const deleteDisabled = GetDisabledPermits(this.props.permitsBuy , "Delete")
-      const detailsDisabled = GetDisabledPermits(this.props.permitsBuy , "Details")
+    const createDisabled = GetDisabledPermits(this.props.permitsBuy, "Create")
+    const updateDisabled = GetDisabledPermits(this.props.permitsBuy, "Update")
+    const deleteDisabled = GetDisabledPermits(this.props.permitsBuy, "Delete")
+    const detailsDisabled = GetDisabledPermits(this.props.permitsBuy, "Details")
 
-      const { rowsPerPage, page } = this.state;
-      const arrayData = getArray(this.props.data)
+    const { rowsPerPage, page } = this.state;
+    const arrayData = getArray(this.props.data)
 
-      const result = this.props.search
-        ? arrayData.filter(shop => {
-            return (
-                shop.number_invoice.toLowerCase().includes(this.props.search.toLowerCase()) ||
-                shop.number_controll.toLowerCase().includes(this.props.search.toLowerCase())||
-                shop.type_shop.toLowerCase().includes(this.props.search.toLowerCase())
-            );
-          })
-        : arrayData;
+    const result = this.props.search
+      ? arrayData.filter(shop => {
+       if(this.state.modal === true){
+         return arrayData
+       }else{
+        return (
+          shop.number_invoice.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          shop.number_controll.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          shop.type_shop.toLowerCase().includes(this.props.search.toLowerCase())
+        );
+       }
+      })
+      : arrayData;
 
-     return (
+    return (
       <div>
         {
           (this.state.option === 1 || this.state.option === 2 || this.state.option === 3) &&
           <ModalShop
-            option = {this.state.option}
-            modal = {this.state.modal}
-            modalHeader = {this.state.modalHeader}
-            modalFooter = {this.state.modalFooter}
-            disabled = {this.state.disabled}
-            showHide = {this.state.showHide}
-            isClearable = {this.state.isClearable}
-            shop_id = {this.state.shop_id}
+            option={this.state.option}
+            modal={this.state.modal}
+            modalHeader={this.state.modalHeader}
+            modalFooter={this.state.modalFooter}
+            disabled={this.state.disabled}
+            showHide={this.state.showHide}
+            isClearable={this.state.isClearable}
+            shop_id={this.state.shop_id}
             branchOfficces={this.props.branchOfficces}
-            valorCloseModal = {this.valorCloseModal}
+            valorCloseModal={this.valorCloseModal}
           />
         }
         {
           (this.state.option === 4) &&
           <ModalTransferencias
-            option = {this.state.option}
-            modal = {this.state.modal}
-            modalHeader = {this.state.modalHeader}
-            modalFooter = {this.state.modalFooter}
-            disabled = {this.state.disabled}
-            showHide = {this.state.showHide}
-            isClearable = {this.state.isClearable}
-            shop_id = {this.state.shop_id}
+            option={this.state.option}
+            modal={this.state.modal}
+            modalHeader={this.state.modalHeader}
+            modalFooter={this.state.modalFooter}
+            disabled={this.state.disabled}
+            showHide={this.state.showHide}
+            isClearable={this.state.isClearable}
+            shop_id={this.state.shop_id}
             branchOfficces={this.props.branchOfficces}
-            valorCloseModal = {this.valorCloseModal}
+            valorCloseModal={this.valorCloseModal}
           />
         }
 
@@ -170,37 +174,39 @@ class ListShop extends React.Component {
               Agregar
             </Button>
           </div>
-          <div className="containerSearch">
-            <Search value={arrayData} />
-          </div>
+          
+            <div className="containerSearch">
+              <Search disabled={true} />
+            </div>
+      
         </div>
         <br />
         <br />
-          <Table hover responsive borderless>
-            <thead className="thead-light">
-              <tr>
-                <th className="text-left">Nro</th>
-                <th className="text-left">Compra</th>
-                <th className="text-left">Control</th>
-                <th className="text-left">Tipo</th>
-                <th className="text-left">SubTotal</th>
-                <th className="text-left">IGV</th>
-                <th className="text-left">Total</th>
-                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-             {this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((shop) => {
+        <Table hover responsive borderless>
+          <thead className="thead-light">
+            <tr>
+              <th className="text-left">Nro</th>
+              <th className="text-left">Compra</th>
+              <th className="text-left">Control</th>
+              <th className="text-left">Tipo</th>
+              <th className="text-left">SubTotal</th>
+              <th className="text-left">IGV</th>
+              <th className="text-left">Total</th>
+              <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((shop) => {
               return (
-                <tr key={ shop.number } className="text-left">
-                  <td>{ shop.number }</td>
-                  <td>{ shop.number_invoice }</td>
-                  <td>{ shop.number_controll }</td>
-                  <td>{ shop.type_shop }</td>
-                  <td>{ number_format(shop.subtotal, 2) }</td>
-                  <td>{ number_format(shop.igv, 2) }</td>
-                  <td>{ number_format(shop.total, 2) }</td>
-                  <td style={{'minWidth':"205px"}}>
+                <tr key={shop.number} className="text-left">
+                  <td>{shop.number}</td>
+                  <td>{shop.number_invoice}</td>
+                  <td>{shop.number_controll}</td>
+                  <td>{shop.type_shop}</td>
+                  <td>{number_format(shop.subtotal, 2)}</td>
+                  <td>{number_format(shop.igv, 2)}</td>
+                  <td>{number_format(shop.total, 2)}</td>
+                  <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
                         title="Ver Compra"
@@ -210,12 +216,12 @@ class ListShop extends React.Component {
                       </IconButton>
 
                       <IconButton aria-label="Delete"
-                         title="Editar Compra"
-                         disabled={updateDisabled}
-                         className="iconButtons"
-                         onClick={() => { this.openModal(3, shop.number, shop._id); }}>
-                         <Edit className="iconTable" />
-                       </IconButton>
+                        title="Editar Compra"
+                        disabled={updateDisabled}
+                        className="iconButtons"
+                        onClick={() => { this.openModal(3, shop.number, shop._id); }}>
+                        <Edit className="iconTable" />
+                      </IconButton>
 
                       <IconButton aria-label="Delete"
                         title="Eliminar Compra"
@@ -236,20 +242,20 @@ class ListShop extends React.Component {
                   </td>
                 </tr>
               );
-             })
+            })
               :
-                null
-              }
-            </tbody>
-            {
-              this.props.data.length > 10 &&
-              <Pagination contador={this.props.data}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
+              null
             }
-          </Table>
+          </tbody>
+          {
+            this.props.data.length > 10 &&
+            <Pagination contador={this.props.data}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          }
+        </Table>
       </div>
     );
   }
