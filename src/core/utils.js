@@ -273,7 +273,6 @@ export const getArray = (props) => {
   if(!props){
     return []
   }
-
   const ArrayData = []
   props.map((data, key) => {
     ArrayData.push({

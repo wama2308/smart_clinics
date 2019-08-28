@@ -42,19 +42,13 @@ class DistributorContainers extends Component {
     });
   };
 
-  
-  componentWillUnmount() {
-    let set = ""
-    this.props.search(set)
-  }
-
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
         activeTab: tab
       });
       let set = ""
-      this.props.search(set) 
+      this.props.search(set)
     }
   }
 
@@ -163,7 +157,7 @@ const mapDispatchToProps = dispatch => ({
   DeleteDistributorAction: (distrbutorId) => dispatch(DeleteDistributorAction(distrbutorId)),
   enableProviderFunction: (distrbutorId) => dispatch(enableProviderFunction(distrbutorId)),
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
-  search: (set)=>dispatch(search(set))
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

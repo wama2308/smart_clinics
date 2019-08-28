@@ -21,7 +21,8 @@ import {
   cancelledBill,
   cancelDiscount,
   editDiscount,
-  createSale
+  createSale,
+  closeModalReferences
 } from "../actions/ventasAction";
 import {
   openConfirmDialog,
@@ -37,7 +38,8 @@ class VentasContainer extends React.Component {
     this.state = {
       openModal: false,
       modalLoading: false,
-      edit: false
+      edit: false,
+      manualReference: false
     };
   }
   optionsPatient = options => {
@@ -62,11 +64,13 @@ class VentasContainer extends React.Component {
   };
 
   optionsProducts = (options, products) => {
+    console.log("aca", options, products);
     if (!options) {
       return [];
     }
 
     if (!products) {
+      console.log("entro en el primero if");
       const data = [];
       const result = [];
       options.map(option => {
@@ -80,10 +84,14 @@ class VentasContainer extends React.Component {
       const obj = {};
       let data = [];
 
+      console.log("else");
       products.map((product, key) => {
         obj[product._id] = product._id;
       });
+
+      console.log("antes del tercer if", Object.keys(obj));
       if (Object.keys(obj).length > 0) {
+        console.log("despues del tercer if");
         const result = options.map(option => {
           if (option._id !== obj[option._id]) {
             data.push({
@@ -92,6 +100,8 @@ class VentasContainer extends React.Component {
             });
           }
         });
+
+        console.log("en la funcion", data);
 
         return data;
       }
@@ -172,6 +182,14 @@ class VentasContainer extends React.Component {
     });
   };
 
+  openManualReference = () => {
+    this.setState({ manualReference: true });
+  };
+
+  closeManualReference = () => {
+    this.setState({ manualReference: false });
+  };
+
   discountEditOrSave = (type, values) => {
     switch (type) {
       case 1:
@@ -218,6 +236,9 @@ class VentasContainer extends React.Component {
       this.props.products
     );
     const totalData = this.getTotal(this.props.products, this.props.aplication);
+
+    console.log("container de ventas!!!!", this.props.state);
+
     return (
       <Container>
         {!this.props.saleLoading && <Spinner />}
@@ -244,6 +265,13 @@ class VentasContainer extends React.Component {
               options={optionsPatient}
               isSaved={this.props.isSaved}
               statusSale={this.props.statusSale}
+              modalReference={this.props.state.modalReference}
+              closeReferences={this.props.closeModalReferences}
+              references={this.props.state.references}
+              selectedReferences={this.props.state.selectedReference}
+              manualReference={this.state.manualReference}
+              openManualReference={this.openManualReference}
+              closeManualReference={this.closeManualReference}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -268,6 +296,7 @@ class VentasContainer extends React.Component {
               discount={this.props.discount}
               loaded={this.props.loaded}
               statusSale={this.props.statusSale}
+              manualReference={this.state.manualReference}
             />
 
             <Footer
@@ -289,6 +318,7 @@ class VentasContainer extends React.Component {
               createSale={this.props.createSale}
               dataGeneral={this.props.dataGeneral}
               code_bill={this.props.code_bill}
+              reference={this.props.state.selectedReference}
             />
           </div>
         </div>
@@ -337,7 +367,8 @@ export default connect(
     cancelDiscount,
     editDiscount,
     openSnackbars,
-    createSale
+    createSale,
+    closeModalReferences
   }
 )(VentasContainer);
 

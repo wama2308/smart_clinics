@@ -30,7 +30,12 @@ import { connect } from "react-redux";
 import { loadTypes } from "../../actions/configAction";
 import Validator from "../../views/Configurations/utils";
 import { openSnackbars } from "../../actions/aplicantionActions";
-import { setDataSucursal, branchEdit } from "../../actions/configAction";
+import {
+  setDataSucursal,
+  branchEdit,
+  getInitialService,
+  addCheck
+} from "../../actions/configAction";
 import Autocomplete from "react-google-autocomplete";
 import Geosuggest from "react-geosuggest";
 import MapComponent from "./map.js";
@@ -38,6 +43,7 @@ import { MedicalInitialValues, MedicalValidacion } from "../constants";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete } from "@material-ui/icons";
 import jstz from "jstz";
+import InitialService from "./initialService";
 import { Formik } from "formik";
 import { filterProvinces } from "../../core/utils";
 
@@ -47,6 +53,7 @@ class ModalComponent extends React.Component {
     contactos: false,
     multimedia: false,
     sociales: false,
+    servicios: false,
     localizacion: false,
     dataContactos: [],
     isMarkerShown: false,
@@ -62,11 +69,14 @@ class ModalComponent extends React.Component {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      this.setState({
-        ...obj,
-        initialLocation: {
-          ...obj
-        }
+
+      this.props.getService(() => {
+        this.setState({
+          ...obj,
+          initialLocation: {
+            ...obj
+          }
+        });
       });
     });
   };
@@ -74,7 +84,7 @@ class ModalComponent extends React.Component {
   componentWillReceiveProps(props) {
     props.dataEdit
       ? this.setState({
-          dataContactos: props.dataEdit.contacto,
+          dataContactos: props.dataEdit.contact,
           isMarkerShown: true
         })
       : null;
@@ -104,7 +114,9 @@ class ModalComponent extends React.Component {
     const obj = {
       ...values,
       sucursal: values.name,
-      contactos: this.state.dataContactos,
+      contact: this.state.dataContactos,
+      posicion: !this.props.dataEdit,
+      services: this.props.medicalCenter.allService,
       posicion: !this.props.dataEdit
         ? this.state.initialLocation
         : this.props.dataEdit.key,
@@ -112,6 +124,8 @@ class ModalComponent extends React.Component {
       log: this.state.lng,
       timeZ: jstz.determine().name()
     };
+
+    console.log("nuevo", obj);
 
     if (!this.props.dataEdit) {
       this.props.setDataSucursal(obj, () => {
@@ -205,7 +219,6 @@ class ModalComponent extends React.Component {
       aplication
     } = this.props;
 
-    console.log("desde aqui", this.props);
     const values = this.props.dataEdit
       ? this.props.dataEdit
       : MedicalInitialValues;
@@ -215,10 +228,10 @@ class ModalComponent extends React.Component {
       contactoN: "",
       telefono: "",
       email: "",
-      // idCountry: dataEdit ? dataEdit.countryId : countrys[0].id.toString(),
-      type: dataEdit ? dataEdit.type : "0",
-      // provincesid: dataEdit ? dataEdit.provinceId : "0",
-      sector: dataEdit ? dataEdit.sector : "0"
+      idCountry: values.idCountry,
+      type: values.type_id,
+      provincesid: values.provincesid,
+      sector: values.sector_id
     };
 
     return (
@@ -442,8 +455,34 @@ class ModalComponent extends React.Component {
                         </FormGroup>
                       </div>
                       <hr />
-
                       {/* ---------------------------------------------------------divider---------------------------- */}
+                      <div className="form-group col-lg-12 Widht">
+                        <Button
+                          color="primary"
+                          onClick={() =>
+                            this.setState({
+                              servicios: !this.state.servicios
+                            })
+                          }
+                          style={{ marginBottom: "1rem" }}
+                        >
+                          Servicios Iniciales
+                        </Button>
+
+                        <Collapse isOpen={this.state.servicios}>
+                          <InitialService
+                            data={
+                              this.props.medicalCenter.allService
+                                ? this.props.medicalCenter.allService
+                                : []
+                            }
+                            addCheck={this.props.addCheck}
+                            search={this.props.search}
+                          />
+                        </Collapse>
+                      </div>
+
+                      <hr />
 
                       <div className="form-group col-lg-12 Widht">
                         <Button
@@ -877,13 +916,13 @@ class ModalComponent extends React.Component {
                           >
                             Localizacion
                           </Button>
-                          {/* <Collapse isOpen={this.state.localizacion}>
-                            <Card>
-                              {this.state.lat && (
-                                <CardBody>
-                                  <div>
-                                    {
-                                      !this.props.disabled &&(
+                          {
+                            <Collapse isOpen={this.state.localizacion}>
+                              <Card>
+                                {this.state.lat && (
+                                  <CardBody>
+                                    <div>
+                                      {!this.props.disabled && (
                                         <Geosuggest
                                           placeholder="Buscar en el mapa"
                                           onSuggestSelect={this.onSuggestSelect}
@@ -899,40 +938,42 @@ class ModalComponent extends React.Component {
                                           }
                                           radius="20"
                                         />
-                                      )
-                                    }
-                                  </div>
+                                      )}
+                                    </div>
 
-                                  <MapComponent
-                                    lat={
-                                      this.state.lat
-                                        ? this.state.lat
-                                        : this.props.dataEdit.lat
-                                    }
-                                    lng={
-                                      this.state.lng
-                                        ? this.state.lng
-                                        : this.props.dataEdit.log
-                                    }
-                                    onMarkerClick={this.handleMarkerClick}
-                                    isMarkerShown={this.state.isMarkerShown}
-                                    initialLocation={this.state.initialLocation}
-                                    currentLocation={this.state.currentLatLng}
-                                    handleClickmap={this.handleClickmap}
-                                    ref={cd => (this.map = cd)}
-                                    zoom={this.state.zoom}
-                                  />
-                                  <br />
-                                  <Button
-                                    color="success"
-                                    onClick={this.refrescarMapa}
-                                  >
-                                    Refrescar
-                                  </Button>
-                                </CardBody>
-                              )}
-                            </Card>
-                          </Collapse> */}
+                                    <MapComponent
+                                      lat={
+                                        this.state.lat
+                                          ? this.state.lat
+                                          : this.props.dataEdit.lat
+                                      }
+                                      lng={
+                                        this.state.lng
+                                          ? this.state.lng
+                                          : this.props.dataEdit.log
+                                      }
+                                      onMarkerClick={this.handleMarkerClick}
+                                      isMarkerShown={this.state.isMarkerShown}
+                                      initialLocation={
+                                        this.state.initialLocation
+                                      }
+                                      currentLocation={this.state.currentLatLng}
+                                      handleClickmap={this.handleClickmap}
+                                      ref={cd => (this.map = cd)}
+                                      zoom={this.state.zoom}
+                                    />
+                                    <br />
+                                    <Button
+                                      color="success"
+                                      onClick={this.refrescarMapa}
+                                    >
+                                      Refrescar
+                                    </Button>
+                                  </CardBody>
+                                )}
+                              </Card>
+                            </Collapse>
+                          }
                         </div>
                         <hr />
                         <div>
@@ -1002,13 +1043,16 @@ class ModalComponent extends React.Component {
 
 const mapStateToProps = state => ({
   medicalCenter: state.config.toJS(),
-  aplication: state.global.dataGeneral
+  aplication: state.global.dataGeneral,
+  search: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({
   openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
   setDataSucursal: (data, cb) => dispatch(setDataSucursal(data, cb)),
-  branchEdit: (data, callback) => dispatch(branchEdit(data, callback))
+  branchEdit: (data, callback) => dispatch(branchEdit(data, callback)),
+  getService: callback => dispatch(getInitialService(callback)),
+  addCheck: id => dispatch(addCheck(id))
 });
 
 export default connect(

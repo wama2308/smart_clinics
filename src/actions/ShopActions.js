@@ -30,44 +30,44 @@ const defectiveSupplie = `${url}/api/defectiveSupplie`;
 export const LoadShopFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
-    	axios.get(queryAllShop, datos)
-    	.then(res => {
-        LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {
-          queryAllSuppliesFunction(datos, allProducts => {
-            queryAllTransferFunction(datos, allTransfer => {
-              queryAllTransferReceivedFunction(datos, allTransferRecibidas => {
-                dispatch({
-                  type: "LOAD_COMPRAS",
-                  payload: {
-                    loading: "hide",
-                    data: res.data,
-                    allTransfer:allTransfer,
-                    allTransferRecibidas:allTransferRecibidas,
-                    transferId:{},
-                    //dataProducts: arrayProducts,
-                    products: [],
-                    subTotal: 0,
-                    impuesto: 0,
-                    total: 0,
-                    dataProductId: {},
-                    searchProduct: 0,
-                    dataProductPrice: [],
-                    branchOfficces: arrayBranchOffices,
-                    dataShopId: {},
-                    allProducts: allProducts,
-                    ProductLoteId: {},
-                    action: 0,
-                    newProvider: {}
-                  }
+      axios.get(queryAllShop, datos)
+        .then(res => {
+          LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {
+            queryAllSuppliesFunction(datos, allProducts => {
+              queryAllTransferFunction(datos, allTransfer => {
+                queryAllTransferReceivedFunction(datos, allTransferRecibidas => {
+                  dispatch({
+                    type: "LOAD_COMPRAS",
+                    payload: {
+                      loading: "hide",
+                      data: res.data,
+                      allTransfer: allTransfer,
+                      allTransferRecibidas: allTransferRecibidas,
+                      transferId: {},
+                      //dataProducts: arrayProducts,
+                      products: [],
+                      subTotal: 0,
+                      impuesto: 0,
+                      total: 0,
+                      dataProductId: {},
+                      searchProduct: 0,
+                      dataProductPrice: [],
+                      branchOfficces: arrayBranchOffices,
+                      dataShopId: {},
+                      allProducts: allProducts,
+                      ProductLoteId: {},
+                      action: 0,
+                      newProvider: {}
+                    }
+                  });
                 });
               });
             });
           });
+        })
+        .catch(error => {
+          console.log("Error consultando la api de compras", error.toString());
         });
-  	   })
-      .catch(error => {
-			console.log("Error consultando la api de compras",error.toString());
-      });
 
     })
     .catch(() => {
@@ -601,15 +601,15 @@ export const removeProductAction = (shopId, productId, loteId) => dispatch => {
         headers: datos.headers
       })
         .then((res) => {
-          if(res.data === 1){
+          if (res.data === 1) {
             dispatch(openSnackbars("warning", "¡Este producto ya se encuentra en el inventario, no puede ser eliminado!"));
-          }else{
+          } else {
             dispatch(openSnackbars("success", "¡Producto eliminado con exito!"));
           }
 
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error eliminando el almacen"));
+          dispatch(openSnackbars("error", "Error eliminando el producto"));
         });
     })
     .catch(() => {
@@ -627,7 +627,7 @@ export const verificationSuppliesAction = (data, callback) => dispatch => {
         headers: datos.headers
       })
         .then((res) => {
-          if(res.data === 1){
+          if (res.data === 1) {
             dispatch(openSnackbars("warning", "¡Este producto ya se encuentra registrado!"));
             callback();
           }

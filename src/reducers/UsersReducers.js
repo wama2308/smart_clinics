@@ -94,6 +94,24 @@ const setStoreAddEmail = (state, payload) => {
   return Map(estado);
 };
 
+const setStoreAddNombres = (state, payload) => {
+  let estado = state.toJS();
+  estado.userIdView.names = payload;
+  return Map(estado);
+};
+
+const setStoreAddApellidos = (state, payload) => {
+  let estado = state.toJS();
+  estado.userIdView.surnames = payload;
+  return Map(estado);
+};
+
+const setStoreAddUserName = (state, payload) => {
+  let estado = state.toJS();
+  estado.userIdView.username = payload;
+  return Map(estado);
+};
+
 const setStoreUserId = (state, payload) => {
   let estado = state.toJS();
   estado.userId = payload.userId;
@@ -157,7 +175,6 @@ const userReducer = (state = Map(), action) => {
 	  }
 
 	  case 'DELETE_DATA_INFO_USER': {
-	  	//console.log("store",state.toJS());
 	  	return setStoreDeleteInfoEmailUser(state, action.payload)
 	  }
 
@@ -179,6 +196,18 @@ const userReducer = (state = Map(), action) => {
 
 	  case 'ADD_EMAIL_STORE': {
 	  	return setStoreAddEmail(state, action.payload)
+	  }
+
+	  case 'ADD_NOMBRES_STORE': {
+	  	return setStoreAddNombres(state, action.payload)
+	  }
+
+	  case 'ADD_APELLIDOS_STORE': {
+	  	return setStoreAddApellidos(state, action.payload)
+	  }
+
+	  case 'ADD_USERNAME_STORE': {
+	  	return setStoreAddUserName(state, action.payload)
 	  }
 
 	  case 'LOAD_USUARIO_REGISTRADO_PERSONAL': {

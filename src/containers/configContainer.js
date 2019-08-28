@@ -24,7 +24,8 @@ import {
 } from "../actions/configAction";
 import {
   openConfirmDialog,
-  openSnackbars
+  openSnackbars,
+  search
 } from "../actions/aplicantionActions";
 import Sucursales from "../views/Configurations/Sucursal";
 import Licencias from "../views/Configurations/Licencias";
@@ -59,6 +60,8 @@ class configContainer extends Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set)
     }
   }
 
@@ -68,31 +71,8 @@ class configContainer extends Component {
       : null;
   };
 
-  numberSucursales = data => {
-    if (!data.branchoffices) {
-      return;
-    }
-
-    const trueBranches = data.branchoffices.filter(sucursal => {
-      sucursal.status === true;
-    });
-
-    let allowedBranches = 0;
-    let countSucursals = 0;
-    data.licenses.map((license, key) => {
-      countSucursals =
-        license.numberbranchOffices === null ? 0 : license.numberbranchOffices;
-      if (key === 1) {
-        allowedBranches = countSucursals;
-      }
-      allowedBranches = allowedBranches + countSucursals;
-    });
-
-    return true;
-  };
-
   render() {
-    const permits = this.numberSucursales(this.props.medicalCenter.toJS());
+    const permits = true;
     const symbol = "$";
     return (
       <div className="animated fadeIn">
@@ -139,7 +119,7 @@ class configContainer extends Component {
                         Sucursales inactivas
                       </NavLink>
                     </NavItem>
-                    <NavItem>
+                    {/* <NavItem>
                       <NavLink
                         className={classnames({
                           active: this.state.activeTab === 4
@@ -150,7 +130,7 @@ class configContainer extends Component {
                       >
                         Licencias
                       </NavLink>
-                    </NavItem>
+                    </NavItem> */}
                   </Nav>
                 </div>
                 {this.state.loading === "hide" && (
@@ -201,13 +181,13 @@ class configContainer extends Component {
                       />
                     </TabPane>
 
-                    <TabPane tabId={4}>
+                    {/* <TabPane tabId={4}>
                       <Licencias
                         licenses={this.props.medicalCenter.get("licenses")}
                         symbol={symbol}
                         search={this.props.searchData}
                       />
-                    </TabPane>
+                    </TabPane> */}
                   </TabContent>
                 )}
 
@@ -253,7 +233,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(openConfirmDialog(message, callback)),
   deleteSucursal: (key, time) => dispatch(deleteSucursal(key, time)),
   openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
-  activeBranch: obj => dispatch(activeBranch(obj))
+  activeBranch: obj => dispatch(activeBranch(obj)),
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

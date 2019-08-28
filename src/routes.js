@@ -17,6 +17,7 @@ import ConfigComisionesContainer from "./containers/ConfigComisionesContainer";
 import Calendar from "./containers/CalendarContainer";
 
 import Dashboard from "./views/Dashboard";
+import ReclamosContainer from "./containers/ReclamosContainer";
 
 function Loading() {
   return <div>Loading...</div>;
@@ -254,6 +255,13 @@ const routes = [
     name: "Informacion de paciente",
     component: PatientContainer
   },
+  {
+    name: "Reclamos",
+    url: "/reclamos",
+    icon: "fa fa-bullhorn",
+    component: ReclamosContainer
+  },
+
   { path: "/theme", exact: true, name: "Theme", component: Colors },
   { path: "/theme/colors", name: "Colors", component: Colors },
   { path: "/theme/typography", name: "Typography", component: Typography },

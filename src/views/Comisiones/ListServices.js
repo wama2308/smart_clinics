@@ -1,11 +1,11 @@
 import React from "react";
-import { Table, Button, FormGroup, Input } from "reactstrap";
+import { Table, Button, FormGroup, Input, Label } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
 import Switch from '@material-ui/core/Switch';
 import "./Commissions.css";
 import Pagination from '../../components/Pagination';
-import { getArray, GetDisabledPermits } from '../../core/utils'
+import { getArray, GetDisabledPermits } from '../../core/utils';
 
 class ListServices extends React.Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class ListServices extends React.Component {
       searchService:'',
       page: 0,
       rowsPerPage: 10,
-      arrayTest:getArray(this.props.data)
+      arrayTest:getArray(this.props.data)      
     };
   }
 
@@ -52,34 +52,42 @@ class ListServices extends React.Component {
 
   handleChangeInputTable = (pos) => e => {
     const { name, value } = e.target;
-    let valor = 0;
-    valor = parseFloat(value);
-    /*if(value === "0"){
-        valor = 0;
-        var elemento = document.getElementById("divQuantity_"+pos);
-        elemento.className += " borderColorInputTable";            
-    }
-    else if(value === ""){
-        valor = 0;            
-        var elemento = document.getElementById("divQuantity_"+pos);
-        elemento.className += " borderColorInputTable";            
-    }else{
-        valor = parseFloat(value);
-        var elemento = document.getElementById("divQuantity_"+pos);
-        elemento.className += " borderColorInputTableWhite";             
-    }*/
-    this.props.setPorcentajeTable(pos, valor);
+    /*let valor = 0;
+    valor = parseFloat(value);*/    
+    this.props.setPorcentajeTable(pos, value);    
+    this.props.seteardivSeleccioneServiciosComision();
   }
 
   handleChangeSwitch = pos => event => {
-    this.props.setSwitchTableComisiones(pos, event.target.checked);        
+    this.props.setSwitchTableComisiones(pos, event.target.checked, this.props.tab, this.props.typePersonal);     
+    this.props.seteardivSeleccioneServiciosComision();   
+  };
+
+  handleChangeSwitchAll = name => event => {        
+      this.setState({ 
+          [name]: event.target.checked 
+      });
+      this.props.setSwitchAllTableComisiones(event.target.checked, this.props.tab, this.props.typePersonal);      
+      this.props.seteardivSeleccioneServiciosComision();
   };
 
   componentWillReceiveProps = props => {
     this.setState({
-      arrayTest: getArray(props.data)
+      arrayTest: getArray(props.data)      
     })
   };
+
+  eventoBlurAplicarTodos = (pos) => e => {
+    if(document.getElementById("inputQuantity_"+pos).value === '' || document.getElementById("inputQuantity_"+pos).value === '0'){
+        document.getElementById("inputQuantity_"+pos).value = '0';
+    }        
+  }
+
+  eventoFocusAplicarTodos = (pos) => e => {        
+    if(document.getElementById("inputQuantity_"+pos).value === '0'){
+        document.getElementById("inputQuantity_"+pos).value = '';
+    }        
+  }  
 
   render() {
     const { rowsPerPage, page } = this.state;
@@ -92,7 +100,7 @@ class ListServices extends React.Component {
             disabled={this.props.disabled} 
             name="searchService" 
             id="searchService" 
-            onKeyUp={this.handlekeyCargo} 
+            onKeyUp={this.handlekeySearchService} 
             onChange={this.handleChange} 
             value={this.state.searchService} 
             type="text"             
@@ -101,7 +109,22 @@ class ListServices extends React.Component {
           />
         </FormGroup>  
       </div>
-      <div>              
+      <div>         
+        <div className="errorSelect" style={{width: "100%"}}>{this.props.divSeleccioneServiciosComision}</div>
+        <div className="errorSelect" style={{width: "100%"}}>{this.props.divSeleccioneServiciosPayment}</div>
+        {
+          this.props.typePersonal !== "5d1776e3b0d4a50b23936710" &&
+          <div align="right">      
+            <Label for="seleccionarTodos"><b>Seleccionar Todos:</b></Label>
+            <Switch
+              checked={this.state.checked?this.state.checked:false}
+              onChange={this.handleChangeSwitchAll("checked")}
+              value={this.state.checked}
+              color="primary"
+              disabled={this.props.disabled} 
+            />        
+          </div>     
+        }
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
@@ -135,6 +158,8 @@ class ListServices extends React.Component {
                           onChange={this.handleChangeInputTable(i)}
                           style={{width: "40%"}}
                           disabled={this.props.disabled} 
+                          onBlur ={this.eventoBlurAplicarTodos(i)} 
+                          onFocus = {this.eventoFocusAplicarTodos(i)} 
                         />
                       </div>
                     </td>
@@ -153,13 +178,14 @@ class ListServices extends React.Component {
                   }
                   
                 </tr>
-              );
-            })
+              );              
+            })            
               :
               null
-            }
-          </tbody>
+            } 
+          </tbody>    
           {
+
             this.props.data.lenght > 10 &&
               <Pagination contador={this.props.data}
                 page={page}
@@ -167,7 +193,7 @@ class ListServices extends React.Component {
                 handleChangeRowsPerPage={this.handleChangeRowsPerPage}
                 handleChangePage={this.handleChangePage} />
           }
-        </Table>
+        </Table>        
       </div>  
       </span>    
     );

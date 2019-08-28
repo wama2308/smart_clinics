@@ -16,6 +16,9 @@ const queryBillurl = `${url}/api/queryBill`;
 const cancelInvoice = `${url}/api/cancelInvoice`;
 const editCashierDiscount = `${url}/api/editCashierDiscount`;
 const referencePersonnelUrl = `${url}/api/referencePersonnel`;
+const deleteReferencePersonnel = `${url}/api/deleteReferencePersonnel`;
+const queryOneReferencePersonnel = `${url}/api/queryOneReferencePersonnel`;
+const createManualPersonnelReference = `${url}/api/createManualPersonnelReference`;
 
 export const searchPatient = search => dispatch => {
   if (search.length < 1) {
@@ -81,6 +84,69 @@ const orderData = data => {
   }
 };
 
+const orderReferences = (reference, dispatch) => {
+  dispatch({
+    type: "SET_REFERENCES",
+    payload: reference
+  });
+  if (reference.length > 1) {
+    dispatch({
+      type: "OPEN_MODAL_REFERENCE",
+      payload: true
+    });
+  } else {
+    dispatch({
+      type: "SEARCH_ARRAY_PRODUCTS",
+      payload:
+        reference[0].products.length > 0 ? reference[0].products : undefined
+    });
+    dispatch({
+      type: "SELECTED_REFERENCE",
+      payload: {
+        ...reference[0],
+        products: (reference[0].products = undefined)
+      }
+    });
+  }
+};
+
+export const selectedReferences = (data, callback) => dispatch => {
+  dispatch({
+    type: "SEARCH_ARRAY_PRODUCTS",
+    payload: data.products
+  });
+
+  dispatch({
+    type: "SELECTED_REFERENCE",
+    payload: {
+      ...data,
+      products: (data.products = undefined)
+    }
+  });
+
+  callback();
+};
+
+export const deleteReferences = (data, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: deleteReferencePersonnel,
+      data: data,
+      ...token
+    }).then(() => {
+      callback();
+    });
+  });
+};
+
+export const closeModalReferences = () => {
+  return {
+    type: "OPEN_MODAL_REFERENCE",
+    payload: false
+  };
+};
+
 export const searchOnePatient = search => dispatch => {
   if (search.length === 0) {
     dispatch(openSnackbars("warning", "Ingrese nombre o dni del paciente!"));
@@ -98,8 +164,15 @@ export const searchOnePatient = search => dispatch => {
       .then(res => {
         dispatch({
           type: "SEARCH_PATIENT",
-          payload: res.data
+          payload: res.data.patient
         });
+        if (res.data.referencer.length > 0) {
+          orderReferences(res.data.referencer, dispatch);
+          // dispatch({
+          //   type: "SEARCH_ARRAY_PRODUCTS",
+          //   payload: res.data.array_products
+          // });
+        }
         dispatch(searchLoaded(true));
         dispatch({
           type: "SEARCH_DATA",
@@ -364,7 +437,7 @@ export const editDiscount = (obj, callback) => dispatch => {
 };
 
 export const createSale = (obj, typeBill, callback) => dispatch => {
-  console.log(obj);
+  console.log("actions", obj);
   getDataToken().then(token => {
     axios({
       method: "POST",
@@ -397,6 +470,13 @@ export const cleanSearch = () => {
   };
 };
 
+const filterSearchReferences = values => {
+  console.log("dios mio", values);
+  const result = values.split(" ");
+
+  console.log("actions", result);
+};
+
 export const getOptionsPersonal = (staff, value) => dispatch => {
   dispatch({
     type: "SEARCH_DATA",
@@ -423,6 +503,40 @@ export const getOptionsPersonal = (staff, value) => dispatch => {
           payload: Object.values(res.data)
         });
       }
+    });
+  });
+};
+
+export const getOneReference = (data, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: queryOneReferencePersonnel,
+      data: {
+        _id: data
+      },
+      ...token
+    }).then(res => {
+      callback(res.data);
+    });
+  });
+};
+
+export const createReference = (obj, callback) => dispatch => {
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: createManualPersonnelReference,
+      data: obj,
+      ...token
+    }).then(res => {
+      dispatch({
+        type: "SELECTED_REFERENCE",
+        payload: {
+          ...res.data.referencer[0]
+        }
+      });
+      callback();
     });
   });
 };

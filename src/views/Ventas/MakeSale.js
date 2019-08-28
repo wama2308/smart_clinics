@@ -106,12 +106,12 @@ export default class MakeSale extends React.Component {
   getSubmitedValues = async allValues => {
     const pay = this.props.aplication.way_to_pay;
     const way_to_pay = [];
+
     pay.map(pay => {
       if (allValues[pay.label].value > 0) {
         way_to_pay.push(allValues[pay.label]);
       }
     });
-
     return way_to_pay;
   };
 
@@ -136,7 +136,8 @@ export default class MakeSale extends React.Component {
       sub_total: this.props.total.subTotal,
       igv: this.props.total.iva,
       total: this.props.total.total,
-      payment_type: completed.value
+      payment_type: completed.value,
+      reference_id: this.props.reference ? this.props.reference._id : undefined
     };
 
     const info = {
@@ -313,113 +314,6 @@ export default class MakeSale extends React.Component {
                 )}
                 {this.state.loading && this.state.step === 2 && (
                   <div style={{ padding: "0px 20px 20px" }}>
-                    {typePay.map((pay, key) => {
-                      return (
-                        <div key={key}>
-                          <div className="titleInfo">
-                            <Label
-                              style={{ marginTop: 10 }}
-                              for="Sucursal"
-                              className="mr-sm-2"
-                            >
-                              {pay.label}
-                            </Label>
-                            <div>
-                              <div className="total">
-                                <span style={{ fontWeight: "bold" }}>
-                                  Total:
-                                </span>
-                                &nbsp;
-                                {formatNumber(values[pay.label].value)}
-                                &nbsp;
-                                <span style={{ fontWeight: "bold" }}>
-                                  {total.currency}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="inputIfoBank">
-                            <div className="inputGroups">
-                              <Label for="codigo" className="mr-sm-2">
-                                Banco emisor
-                              </Label>
-                              <Input
-                                type="select"
-                                value={values[pay.label].issuingbank}
-                                onChange={event => {
-                                  setFieldValue(pay.label, {
-                                    ...values[pay.label],
-                                    issuingbank: event.target.value
-                                  });
-                                }}
-                                className="inputStyle"
-                                maxLength="40"
-                              >
-                                {aplication.banking.map(banking => {
-                                  return (
-                                    <option
-                                      key={banking.value}
-                                      value={banking.value}
-                                    >
-                                      {banking.value}
-                                    </option>
-                                  );
-                                })}
-                              </Input>
-                            </div>
-
-                            <div className="inputGroups">
-                              <Label for="codigo" className="mr-sm-2">
-                                Banco Receptor
-                              </Label>
-                              <Input
-                                type="select"
-                                value={values[pay.label].receivingbank}
-                                onChange={event => {
-                                  console.log("dios mio",pay.label)
-                                  setFieldValue(pay.label, {
-                                    ...values[pay.label],
-                                    receivingbank: event.target.value
-                                  });
-                                }}
-                                className="inputStyle"
-                                maxLength="40"
-                              >
-                                {aplication.banking.map(banking => {
-                                  return (
-                                    <option
-                                      key={banking.value}
-                                      value={banking.value}
-                                    >
-                                      {banking.value}
-                                    </option>
-                                  );
-                                })}
-                              </Input>
-                            </div>
-
-                            <div className="inputGroups">
-                              <Label for="codigo" className="mr-sm-2">
-                                Numero de operacion
-                              </Label>
-                              <Input
-                                placeholder="Numero de operacion"
-                                value={values[pay.label].operation_number}
-                                onChange={event => {
-                                  setFieldValue(pay.label, {
-                                    ...values[pay.label],
-                                    way_to_pay: pay.label,
-                                    operation_number: event.target.value
-                                  });
-                                }}
-                                className="inputStyle"
-                                maxLength="40"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
                     <div
                       style={{
                         padding: "20px 10px",
@@ -474,7 +368,6 @@ export default class MakeSale extends React.Component {
                         </Button>
                         <Button
                           color="success"
-                          disabled={disabled}
                           onClick={handleSubmit}
                         >
                           Completar venta

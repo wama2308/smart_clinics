@@ -13,26 +13,26 @@ export const LoadDistributorFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
     	axios.get(listCountryProvider, datos)
-    	.then(res => {		   
-        listCountryProviderDisabledFunction(datos, proveedoresInactivos => {        
+    	.then(res => {
+        listCountryProviderDisabledFunction(datos, proveedoresInactivos => {
           dispatch({
             type: "LOAD_DISTRIBUTOR",
             payload: {
               loading: "hide",
-              data: res.data,        
-              proveedoresInactivos: proveedoresInactivos,        
+              data: res.data,
+              proveedoresInactivos: proveedoresInactivos,
               contacs: [],
               tableContac: 0,
               distributorId: {},
-              action: 0,              
+              action: 0,
             }
-          });          		
+          });
         });
     	})
       .catch(error => {
 			console.log("Error consultando la api de usuarios no master",error.toString());
       });
-      
+
     })
     .catch(() => {
       console.log("Problemas con el token");
@@ -115,7 +115,7 @@ export const cleanContacs = () => dispatch => {
     .then(datos => {
       dispatch({
         type: "CLEAN_CONTACS",
-        payload: {          
+        payload: {
           contacs: []
         }
       });
@@ -138,13 +138,13 @@ export const saveDistributorAction = (data, callback, option) => dispatch => {
           if(option === 4){
             dispatch({
               type: "ADD_NEW_PROVIDER_SELECT",
-              payload: {          
+              payload: {
                 provider: res.data
               }
             });
           }
           callback();
-          dispatch(openSnackbars("success", "Operacion Exitosa"));          
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error guardando el proveedor"));

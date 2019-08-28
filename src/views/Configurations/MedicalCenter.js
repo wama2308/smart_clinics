@@ -64,18 +64,18 @@ export default class MedicalCenter extends React.Component {
     };
     valid
       ? this.props.editAction(
-          {
-            name: this.state.name,
-            idCountry: this.state.selectedCountry,
-            provinceid: this.state.provinceid,
-            timeZ: jstz.determine().name()
-          },
-          () => {
-            this.setState({
-              loading: true
-            });
-          }
-        )
+        {
+          name: this.state.name,
+          idCountry: this.state.selectedCountry,
+          provinceid: this.state.provinceid,
+          timeZ: jstz.determine().name()
+        },
+        () => {
+          this.setState({
+            loading: true
+          });
+        }
+      )
       : this.setState({ loading: true });
   };
 
@@ -109,8 +109,6 @@ export default class MedicalCenter extends React.Component {
       this.state.selectedCountry
     );
     const disabled2 = GetDisabledPermits(this.props.medicalPermits, "Update");
-
-    console.log("permisos", this.props.medicalPermits);
     const disabled = this.state.loading === false || disabled2 ? true : false;
     return (
       <div>
