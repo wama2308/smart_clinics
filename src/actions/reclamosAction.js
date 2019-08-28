@@ -259,8 +259,8 @@ export const registerVisitorClaimFunction = (data, callback) => dispatch => {
   })
 }
 
-export const messageErrorFunction = () => dispatch => {
-  dispatch(openSnackbars("warning", "Su Reclamo esta siendo procesado"))
+export const messageErrorFunction = (status) => dispatch => {
+  dispatch(openSnackbars("warning", `Este reclamo no puede ser editado, su estatus es: ${status}`))
 }
 
 export const updateReclamosVisitorFuction = (data, callback) => dispatch => {
