@@ -53,26 +53,26 @@ class ReclamosContainer extends Component {
   componentDidMount() {
     this.props.LoadSelectReclamosFuction()
 
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+    this.props.aplication.dataGeneral.permission.map(permisos => {
       if (permisos.name === "Reclamos Realizados") {
         this.setState({
-          permitsRealizados: permisos.permits
+          permitsRealizados: permisos.modules[0].permits
         });
       }
     });
 
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+    this.props.aplication.dataGeneral.permission.map(permisos => {
       if (permisos.name === "Reclamos Recibidos") {
         this.setState({
-          permitsRecibidos: permisos.permits
+          permitsRecibidos:permisos.modules[0].permits
         });
       }
     });
 
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
+    this.props.aplication.dataGeneral.permission.map(permisos => {
       if (permisos.name === "Reclamos Atendidos") {
         this.setState({
-          permitsAtendidos: permisos.permits
+          permitsAtendidos: permisos.modules[0].permits
         });
       }
     });
