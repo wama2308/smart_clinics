@@ -13,31 +13,32 @@ class LightBox extends Component {
     super(props);
     this.state = {
       toggle: false,
-      img: this.props.foto,
+      img: null,
+      show: "show"
     }
   }
 
   acceptImage = () => {
     const time = jstz.determine().name()
+    this.setState({
+      show: "hide"
+    })
     this.props.registerMessageFunction(this.props.id_receiber, this.props.id_transmitter, this.props.foto, time, 1, () => {
       this.props.hide()
     });
   }
 
-  componentWillReceiveProps(props) {
-    if (props.foto !== null) {
+  componentDidMount() {
+    if (this.props.box === true) {
       this.setState({
-        img: props.foto
+        show: "show"
       })
     }
   }
 
+
   render() {
-    console.log(this.props.foto);
-
-
     return (
-
       <span>
         <Modal
           isOpen={this.props.hola}
@@ -48,11 +49,16 @@ class LightBox extends Component {
 
             </ModalHeader>
             <ModalBody>
-              <div style={{ "display": "flex", "justifyContent": "center" }}>
-                {
-                  this.props.foto != null && <img alt="foto" style={{ height: 544 }} className="image" src={"data:image/jpeg;" + this.props.foto} />
-                }
-              </div>
+              {this.state.show === "show" ?
+                <div style={{ "display": "flex", "justifyContent": "center" }}>
+                  {
+                    this.props.foto != null && <img alt="foto" style={{ height: 344 }} className="image" src={"data:image/jpeg;" + this.props.foto} />
+                  }
+                </div> :
+                <div style={{ "display": "flex", "justifyContent": "center" }}>
+                  <CircularProgress />
+                </div>
+              }
             </ModalBody>
             <ModalFooter>
               {
@@ -68,35 +74,6 @@ class LightBox extends Component {
         </Modal>
       </span>
     );
-  }
-}
-
-const style = {
-  paper: {
-    "width": "95%",
-    "outline": "none",
-    "right": "2%",
-    "height": "14.5cm",
-    "top": "7%",
-    "display": "flex",
-    "justifyContent": "center"
-  },
-  close: {
-    "fontSize": "3rem",
-    "cursor": "hand",
-    "color": "white"
-  },
-  header: {
-    "display": "flex",
-    "justifyContent": "flex-end"
-  },
-  modal: {
-    "backgroundColor": "black"
-  },
-  button: {
-    "display": "flex",
-    "justifyContent": "center",
-    "margin": "5px",
   }
 }
 

@@ -65,7 +65,6 @@ export const registerMessageFunction = (id_claim_receiver, id_claim_transmitter,
 }
 
 export const registerFotoFunction = (id_claim_receiver, id_claim_transmitter, foto, time, option, callback) => dispatch => {
-  console.log(id_claim_receiver, id_claim_transmitter, foto, time, option, callback)
   getDataToken().then(datos => {
     axios({
       method: "post",

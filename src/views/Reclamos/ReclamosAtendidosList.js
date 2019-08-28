@@ -10,7 +10,6 @@ import { Button } from 'reactstrap';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
 import LightBox from '../../components/LightBox';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { GetDisabledPermits } from "../../core/utils";
 import jstz from 'jstz';
 
@@ -117,7 +116,7 @@ class ReclamosAtendidosList extends Component {
 
   acceptReclamos = (id_claim_receiver, id_claim_transmitter, time) => {
     const message = {
-      title: "Eliminar Registro",
+      title: "Aceptar Reclamo",
       info: "¿Esta seguro que desea Aceptar este Reclamo?"
     };
     this.props.confirm(message, res => {
@@ -129,7 +128,7 @@ class ReclamosAtendidosList extends Component {
 
   rejectReclamos = (id_claim_receiver, id_claim_transmitter, time) => {
     const message = {
-      title: "Eliminar Registro",
+      title: "Rechazar Reclamo",
       info: "¿Esta seguro que desea Rechazar este Reclamo?"
     };
     this.props.confirm(message, res => {
@@ -139,29 +138,9 @@ class ReclamosAtendidosList extends Component {
     });
   }
 
-  validat = (data) => {
-    if (data === undefined) {
-      const datos = data[0].hasOwnProperty('visitor')
-      if (datos === true) {
-        return true
-      } else {
-        return false
-      }
-    } else {
-      const datos = data[0] ? data[0].hasOwnProperty('visitor') : false
-      if (datos === true) {
-        return true
-      } else {
-        return false
-      }
-    }
-  }
-
   render() {
-    const visitador = this.validat(this.props.reclamos)
     const time = jstz.determine().name()
 
-    console.log(this.props.permits)
     const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
     const disabledUpdate = GetDisabledPermits(this.props.permits, "Update")
     const disabledActive = GetDisabledPermits(this.props.permits, "Active")
@@ -201,7 +180,8 @@ class ReclamosAtendidosList extends Component {
                 <tr>
                   <th >Centro Medico Emitente</th>
                   <th >Sucursal que Emite</th>
-                  {this.props.master === "MASTER" && <th >Visitador</th>}
+                  <th >Visitador</th>
+                  <th >Estatus</th>
                   <th >Acciones</th>
                 </tr>
               </thead>
@@ -213,6 +193,7 @@ class ReclamosAtendidosList extends Component {
                         <td>{list.medical_center_transmitter}</td>
                         <td>{list.branchoffice_transmitter}</td>
                         {list.visitor && <td>{list.visitor}</td>}
+                        <td>{list.status}</td>
                         <td style={{ 'minWidth': "205px" }}>
                           <div className="float-left" >
                             <IconButton aria-label="Delete"
