@@ -53,28 +53,22 @@ class ReclamosContainer extends Component {
   componentDidMount() {
     this.props.LoadSelectReclamosFuction()
 
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
-      if (permisos.name === "Reclamos Realizados") {
-        this.setState({
-          permitsRealizados: permisos.permits
-        });
-      }
-    });
-
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
-      if (permisos.name === "Reclamos Recibidos") {
-        this.setState({
-          permitsRecibidos: permisos.permits
-        });
-      }
-    });
-
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
-      if (permisos.name === "Reclamos Atendidos") {
-        this.setState({
-          permitsAtendidos: permisos.permits
-        });
-      }
+    this.props.aplication.dataGeneral.permission.map(permisos => {
+      permisos.modules.map(modulos => {
+        if (modulos.name === "Reclamos Realizados") {
+          this.setState({
+            permitsRealizados: modulos.permits
+          });
+        } else if (modulos.name === "Reclamos Recibidos") {
+          this.setState({
+            permitsRecibidos: modulos.permits
+          });
+        } else if (modulos.name === "Reclamos Atendidos") {
+          this.setState({
+            permitsAtendidos: modulos.permits
+          });
+        }
+      });
     });
   }
 
@@ -87,6 +81,9 @@ class ReclamosContainer extends Component {
   }
 
   render() {
+
+    console.log(this.props.aplication.permission);
+
     return (
       <div className="animated fadeIn">
         <Row>
@@ -186,7 +183,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   reclamos: state.reclamos.toJS(),
-  aplication: state.global,
+  aplication: state.global
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReclamosContainer)
