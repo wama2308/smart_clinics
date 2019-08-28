@@ -5,7 +5,7 @@ import classnames from "classnames";
 import "../views/Configurations/modal.css";
 import { connect } from "react-redux";
 import { } from "../actions/PersonalInternoActions";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog, search } from "../actions/aplicantionActions";
 import { LoadPersonalCargosFunction, DeletePersonalInternoAction, LoadPersonalIdFunction, enabledInternalStaffAction, disabledPositionAction, enabledPositionAction } from "../actions/PersonalInternoActions";
 import { LoadAllUsersNoMasterFunction } from "../actions/UserAction";
 import ListCargos from "../views/Personal/ListCargos";
