@@ -32,13 +32,15 @@ class DistributorContainers extends Component {
   componentDidMount = () => {
     this.props.LoadDistributorFunction();
 
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
-      if (permisos.name === "Proveedor") {
-        this.setState({
-          distributorPermits: permisos.permits
-        });
-      }
-    });
+    this.props.aplication.dataGeneral.permission.map(permisos=>{
+      permisos.modules.map(modulos=>{
+        if (modulos.name === "Proveedor") {
+          this.setState({
+            distributorPermits: modulos.permits
+          });
+        }
+      })
+    })
   };
 
   toggleTab(tab) {
