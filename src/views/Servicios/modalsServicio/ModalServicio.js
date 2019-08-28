@@ -300,6 +300,40 @@ class ModalServicio extends React.Component {
                       </FormFeedback>
                     </FormGroup>
 
+
+                    <FormGroup
+                      className={
+                        "top form-group col-sm-12 " + this.state.labelMonto
+                      }
+                    >
+                      <Label for="monto">Monto maximo de Descuento</Label>
+                      <InputGroup style={{ flexWrap: "nowrap" }}>
+                        <InputGroupAddon addonType="prepend">
+                          {data.currencySymbol}
+                        </InputGroupAddon>
+                        <Cleave
+                          style={{
+                            width: "95%",
+                            height: 35,
+                            border: "1.5px solid",
+                            borderColor: "#e4e7ea",
+                            borderRadius: 5
+                          }}
+                          options={{
+                            numeral: true,
+                            numeralThousandsGroupStyle: "thousand"
+                          }}
+                          value={values.amount}
+                          onChange={e => {
+                            setFieldValue("amount", e.target.value);
+                          }}
+                        />
+                      </InputGroup>
+                      <FormFeedback tooltip>
+                        {this.state.montoError}
+                      </FormFeedback>
+                    </FormGroup>
+
                     <h4>Campos Modificables del servicio</h4>
                     <Nav tabs>
                       <NavItem>

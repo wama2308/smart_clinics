@@ -53,12 +53,14 @@ class UsersContainer extends Component {
   componentDidMount = () => {
     this.props.loadUsersRoles();
 
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
-      if (permisos.name === "Usuarios") {
-        this.setState({
-          permitsUsers: permisos.permits
-        });
-      }
+    this.props.aplication.dataGeneral.permission.map(permisos => {
+      permisos.modules.map(modulos => {
+        if (modulos.name === "Usuarios") {
+          this.setState({
+            permitsUsers: modulos.permits
+          });
+        } 
+      });
     });
   };
 

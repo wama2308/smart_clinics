@@ -40,12 +40,14 @@ class ServicesContainer extends React.Component {
   componentDidMount = () => {
     this.props.getData();
 
-    this.props.aplication.permission[0].modules.map(permisos => {
-      if (permisos.name === "Servicios") {
-        this.setState({
-          serviciosPermits: permisos.permits
-        });
-      }
+    this.props.aplication.dataGeneral.permission.map(permisos => {
+      permisos.modules.map(modulos => {
+        if (modulos.name === "Servicios") {
+          this.setState({
+            serviciosPermits: modulos.permits
+          });
+        }
+      });
     });
   };
 
@@ -182,7 +184,7 @@ const mapStateToProps = state => ({
   service: state.service.get("servicios"),
   plantilla: state.service.get("plantillas"),
   serviceModalData: state.service.get("ModalService"),
-  aplication: state.global.dataGeneral,
+  aplication: state.global,
   searchData: state.global.search
 });
 const mapDispatchToProps = dispatch => ({

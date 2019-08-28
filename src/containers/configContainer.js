@@ -46,13 +46,15 @@ class configContainer extends Component {
       ? this.setState({ loading: "hide" })
       : this.props.loadMedicalCenter();
 
-    this.props.aplication.permission[0].modules.map(permisos => {
-      if (permisos.name === "Centro Medico") {
-        this.setState({
-          permitsMedical: permisos.permits
-        });
-      }
-    });
+    this.props.aplication.permission.map(permisos => {
+      permisos.modules.map(modulos => {
+        if (modulos.name === "Centro Medico") {
+          this.setState({
+            permitsMedical: modulos.permits
+          });
+        }
+      })
+    })
   };
 
   toggleTab(tab) {

@@ -45,14 +45,15 @@ class EnternalContainer extends React.Component {
   componentDidMount = () => {
     this.props.allExternalStaff();
 
-
-    this.props.aplication.permission[0].modules.map(permisos => {
-      if (permisos.name === "Personal Externo") {
-        this.setState({
-          serviciosPermits: permisos.permits
-        });
-      }
-    });
+    this.props.aplication.dataGeneral.permission.map(permisos=>{
+      permisos.modules.map(modules=>{
+        if (modules.name === "Personal Externo") {
+          this.setState({
+            externalPermits: modules.permits
+          });
+        }
+      })
+    })
   };
 
   close = () => {
@@ -233,7 +234,7 @@ class EnternalContainer extends React.Component {
 
 const mapStateToProps = state => ({
   externalStaff: state.external.get("allExternalStaff"),
-  aplication: state.global.dataGeneral,
+  aplication: state.global,
   searchData: state.global.search
 });
 

@@ -5,7 +5,7 @@ import classnames from "classnames";
 import "../views/Configurations/modal.css";
 import { connect } from "react-redux";
 import { } from "../actions/PersonalInternoActions";
-import { openConfirmDialog, search } from "../actions/aplicantionActions";
+import { openConfirmDialog } from "../actions/aplicantionActions";
 import { LoadPersonalCargosFunction, DeletePersonalInternoAction, LoadPersonalIdFunction, enabledInternalStaffAction, disabledPositionAction, enabledPositionAction } from "../actions/PersonalInternoActions";
 import { LoadAllUsersNoMasterFunction } from "../actions/UserAction";
 import ListCargos from "../views/Personal/ListCargos";
@@ -28,21 +28,19 @@ class PersonalInterno extends Component {
     this.props.LoadPersonalCargosFunction();
     this.props.loadUsersRoles();
 
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
-      if (permisos.name === "Personal") {
-        this.setState({
-          permitsPersonal: permisos.permits
-        });
-      }
-    });
-
-    this.props.aplication.dataGeneral.permission[0].modules.map(permisos => {
-      if (permisos.name === "Cargos") {
-        this.setState({
-          permitsCargos: permisos.permits
-        });
-      }
-    });
+    this.props.aplication.dataGeneral.permission.map(permisos => {
+      permisos.modules.map(modulos => {
+        if (modulos.name === "Personal") {
+          this.setState({
+            permitsPersonal: modulos.permits
+          });
+        } else if (modulos.name === "Cargos") {
+          this.setState({
+            permitsCargos: modulos.permits
+          });
+        }
+      })
+    })
   };
 
   toggleTab(tab) {

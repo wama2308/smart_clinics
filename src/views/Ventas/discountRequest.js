@@ -10,7 +10,16 @@ import {
   Label,
   FormFeedback
 } from "reactstrap";
+import {
+  Table,
+  TableCell,
+  TableBody,
+  TableRow,
+  TableHead,
+  IconButton
+} from "@material-ui/core";
 import { Formik } from "formik";
+import styled from "styled-components";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { formatNumber } from "../../core/utils";
 
@@ -18,7 +27,8 @@ export default class DiscountRequest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      discountP: false
     };
   }
 
@@ -56,6 +66,19 @@ export default class DiscountRequest extends React.Component {
     }
   };
 
+  handleDiscount = (event, product) => {
+    this.props.changeDiscount({
+      value: parseInt(event.target.value),
+      id: product._id
+    });
+  };
+
+  keyDiscount = (e, discount) => {
+    if (e.key === "Enter") {
+      this.setState({ discountP: false });
+    }
+  };
+
   render() {
     const type = [
       {
@@ -68,32 +91,64 @@ export default class DiscountRequest extends React.Component {
       }
     ];
 
+    const discountType = [
+      {
+        value: "1",
+        type: "Factura completa"
+      },
+      {
+        value: "0",
+        type: "Por Productos"
+      }
+    ];
+
+    const dataHead = [
+      { label: "NOMBRE" },
+      { label: "TIPO" },
+      { label: "DISPONIBLE" },
+      { label: "CANTIDAD" },
+      { label: "PRECIO/U" },
+      { label: "DESCUENTO" },
+      { label: "PRECIO/T" }
+    ];
+
     const InitialValue = {
       discountType: type[0].type,
       value: "",
+      selectedDiscount: "1",
       approver: this.props.approvers ? this.props.approvers[0].value : null
     };
 
+    const { products } = this.props;
     return (
       <Formik
         onSubmit={this.handleSubmit}
         initialValues={InitialValue}
         render={({ values, setFieldValue, touched, errors, handleSubmit }) => {
+          console.log("values", values);
           const disabled = values.value.length < 1 ? true : false;
           return (
-            <Modal isOpen={this.props.open} toggle={this.props.close}>
+            <Modal
+              isOpen={this.props.open}
+              toggle={this.props.close}
+              style={
+                values.selectedDiscount === "0"
+                  ? { minWidth: "60%" }
+                  : { width: "auto" }
+              }
+            >
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   padding: 20,
                   borderBottom: "1px solid #c8ced3",
-                  alignItems: "flex-end"
+                  alignItems: "center"
                 }}
               >
                 <h5 style={{ margin: 0 }}>Peticion de descuento</h5>
                 <div>
-                  <div className="total">
+                  {/* <div className="total">
                     <span style={{ fontWeight: "bold" }}>Total:</span>
                     &nbsp;
                     {formatNumber(this.props.total.total)}
@@ -101,6 +156,25 @@ export default class DiscountRequest extends React.Component {
                     <span style={{ fontWeight: "bold" }}>
                       {this.props.total.currency}
                     </span>
+                  </div> */}
+
+                  <div>
+                    <Input
+                      type="select"
+                      name="discountType"
+                      value={values.selectedDiscount}
+                      onChange={event =>
+                        setFieldValue("selectedDiscount", event.target.value)
+                      }
+                    >
+                      {discountType.map((type, key) => {
+                        return (
+                          <option key={type.type} value={type.value}>
+                            {type.type}
+                          </option>
+                        );
+                      })}
+                    </Input>
                   </div>
                 </div>
               </div>
@@ -114,7 +188,7 @@ export default class DiscountRequest extends React.Component {
                     <CircularProgress />
                   </div>
                 )}
-                {this.props.loading && (
+                {this.props.loading && values.selectedDiscount === "1" && (
                   <div>
                     <div style={{ display: "flex", justifyContent: "center" }}>
                       <FormGroup
@@ -206,6 +280,81 @@ export default class DiscountRequest extends React.Component {
                     </div>
                   </div>
                 )}
+                {this.props.loading && values.selectedDiscount === "0" && (
+                  <div style={{ overflow: "auto", height: "70%" }}>
+                    <Table>
+                      <TableHead>
+                        <TableRow style={{ height: 35 }}>
+                          {dataHead.map((head, key) => {
+                            return (
+                              <TableCell
+                                key={key}
+                                style={{ border: "1px solid #c8ced3" }}
+                              >
+                                {head.label}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {products &&
+                          products.map((product, key) => {
+                            return (
+                              <RowTable key={key}>
+                                <Cell className="cellStyle">
+                                  {product.name}
+                                </Cell>
+                                <Cell>{product.type}</Cell>
+                                <Cell>
+                                  {product.service
+                                    ? "0"
+                                    : product.quantity_stock}
+                                </Cell>
+
+                                <Cell>{product.quantity}</Cell>
+                                <Cell>{formatNumber(product.price)}</Cell>
+                                {this.state.discountP === product._id ? (
+                                  <td>
+                                    <Input
+                                      type="number"
+                                      className={product._id}
+                                      value={product.discountP}
+                                      onKeyDown={e =>
+                                        this.keyDiscount(e, product)
+                                      }
+                                      onChange={event =>
+                                        this.handleDiscount(event, product)
+                                      }
+                                      style={{
+                                        height: 48,
+                                        borderRadius: 0
+                                      }}
+                                    />
+                                  </td>
+                                ) : (
+                                  <Cell
+                                    onClick={() =>
+                                      this.setState({ discountP: product._id })
+                                    }
+                                  >
+                                    {product.discountP ? product.discountP : 0}
+                                  </Cell>
+                                )}
+                                <Cell>
+                                  {product.quantity
+                                    ? formatNumber(
+                                        product.quantity * product.price
+                                      )
+                                    : formatNumber(product.price)}
+                                </Cell>
+                              </RowTable>
+                            );
+                          })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </ModalBody>
               <ModalFooter>
                 <Button color="secondary" onClick={this.props.close}>
@@ -226,3 +375,15 @@ export default class DiscountRequest extends React.Component {
     );
   }
 }
+
+const Cell = styled(TableCell)`
+  border: 1px solid #c8ced3;
+`;
+
+const RowTable = styled(TableRow)`
+  && {
+    &:hover {
+      background: #eeeeee;
+    }
+  }
+`;
