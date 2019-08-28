@@ -178,7 +178,7 @@ const mapDispatchToProps = dispatch => ({
 
   loadMessageFunction: (id_claim_receiver, id_claim_transmitter) => dispatch(loadMessageFunction(id_claim_receiver, id_claim_transmitter)),
   setStatusMessageFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time)),
-  messageErrorFunction: () => dispatch(messageErrorFunction())
+  messageErrorFunction: (status) => dispatch(messageErrorFunction(status))
 })
 
 const mapStateToProps = state => ({

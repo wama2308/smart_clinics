@@ -62,8 +62,8 @@ class ReclamosList extends Component {
       })
     } else if (option === 3) {
       this.props.queryOneReclamos(id_claim_receiver, id_claim_transmitter)
-      if (status === "Aprobado") {
-        this.props.messageErrorFunction()
+      if (status !== "Activo") {
+        this.props.messageErrorFunction(status)
       } else {
         this.setState({
           modal: true,
@@ -246,16 +246,6 @@ class ReclamosList extends Component {
                                 disabled={disabledDetails}
                               >
                                 <Visibility className="iconTable" />
-                              </IconButton>
-
-                              <IconButton
-                                onClick={() => this.openModal(4, list.id_claim_receiver, list.id_claim_transmitter)}
-                                className="iconButtons"
-                                disabled={disabledActive}
-                              >
-                                <StyledBadge badgeContent={list.unread_messages > 0 ? list.unread_messages : null} color="primary">
-                                  <QuestionAnswer className="iconTable" />
-                                </StyledBadge>
                               </IconButton>
 
                             </div>
