@@ -32,12 +32,14 @@ import {
   saveConfigCommissionsAction,
   editConfigCommissionsAction,
   setSwitchAllTableComisiones,
-  setPorcentajeAllTable
+  setPorcentajeAllTable,
+  searchPatientAll,
 } from "../../actions/CommissionsActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { number_format } from "../../core/utils";
 import classnames from "classnames";
+import DefaultSearch from "../../components/DefaultSearch.js";
 
 class ModalConfigCommissions extends React.Component {
   constructor(props) {
@@ -78,11 +80,11 @@ class ModalConfigCommissions extends React.Component {
 
   componentDidMount() {
     if(this.props.option === 1){
-        this.setState({            
-            loading: 'hide',
-        })
-    }
-  }
+      this.setState({            
+          loading: 'hide',            
+      })        
+    }    
+  } 
 
   handleChange = e => {
     const { name, value } = e.target;
@@ -429,6 +431,8 @@ class ModalConfigCommissions extends React.Component {
     let hidePorcentajeComision = "";
     let hidePersonalExterno = "";    
     let hideAplicarPorcentajeTodos = "";    
+    let hideCargos = "hide";    
+    let hideBuscador = "hide";    
     if(arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){
       hideModoPago = "hide";
       hideEspecifique = 'hide';
@@ -454,42 +458,61 @@ class ModalConfigCommissions extends React.Component {
       montoComision:'0.00',
       porcentajeComision:'0',
       especifique:'',
+      arrayOpciones: null,
+      arrayCargos:null,
+      labelsBuscador: arrayTipoPersonaSelect.label,
       hideEspecifique: hideEspecifique,
       hideMontoComision: hideMontoComision,
       hidePorcentajeComision: hidePorcentajeComision,
       hidePersonalExterno: hidePersonalExterno,
       hideAplicarPorcentajeTodos: hideAplicarPorcentajeTodos,
+      hideCargos: hideCargos,
+      hideBuscador: hideBuscador,
     });
     this.props.cleanListServicesTab(this.state.activeTab);
   };
 
-   handleChangeTipo = arrayTipo => {
-    let hideTipoNroPersonas = "";    
-    let hideTipoMontoMinimo = "";    
-    if(arrayTipo.value === "5d1776e3b0d4a50b23931122"){
-      hideTipoNroPersonas = "Show";
-      hideTipoMontoMinimo = 'hide';      
-    }else{
-      hideTipoNroPersonas = "hide";
-      hideTipoMontoMinimo = 'show';      
-    }  
-    this.setState({
-      arrayTipo,
-      divTipo: "",
-      divTipoError: "",
-      hideTipoNroPersonas: hideTipoNroPersonas,
-      hideTipoMontoMinimo: hideTipoMontoMinimo,
-      montoMinimoComision: '0.00',
-      nroPersonasReferenciadas: '0',
-    });
-
+   handleChangeTipo = arrayTipo => {    
+    if(arrayTipo){
+      let hideTipoNroPersonas = "";    
+      let hideTipoMontoMinimo = "";    
+      if(arrayTipo.value === "5d1776e3b0d4a50b23931122"){
+        hideTipoNroPersonas = "Show";
+        hideTipoMontoMinimo = 'hide';      
+      }else{
+        hideTipoNroPersonas = "hide";
+        hideTipoMontoMinimo = 'show';      
+      }  
+      this.setState({
+        arrayTipo,
+        divTipo: "",
+        divTipoError: "",
+        hideTipoNroPersonas: hideTipoNroPersonas,
+        hideTipoMontoMinimo: hideTipoMontoMinimo,
+        montoMinimoComision: '0.00',
+        nroPersonasReferenciadas: '0',
+      });
+    }
   }
+
   handleChangeTiempo = arrayTiempoSelect => {
     this.setState({
       arrayTiempoSelect,
       divTiempo: "",
       divTiempoError: ""
     });
+  };  
+  
+  handleChangeTipoReglaComision = arrayTipoReglaComision => {
+    if(arrayTipoReglaComision){
+      this.setState({
+        arrayTipoReglaComision,
+        divTipoReglaComision: "",
+        divTipoReglaComisionError: "",
+        arrayTipo:null,
+        arrayTipoPersonaSelect:null,
+      });    
+    }    
   };  
 
   handleChangePersonalExterno = arrayPersonalExterno => {
@@ -498,6 +521,50 @@ class ModalConfigCommissions extends React.Component {
       divPersonalExterno: "",
       divPersonalExternoError: ""
     });
+  };  
+
+  handleChangeOpciones = arrayOpciones => {
+    let hideCargos = "";    
+    let hideBuscador = "";    
+    if(arrayOpciones){
+      if(arrayOpciones.value === "5d1776e3b0d4a50b23930033"){
+        hideCargos = "show";    
+        hideBuscador = "hide";    
+      }else if(arrayOpciones.value === "5d1776e3b0d4a50b23930022"){
+        hideCargos = "hide";    
+        hideBuscador = "show";    
+      }else{
+        hideCargos = "hide";    
+        hideBuscador = "hide";    
+      }
+      this.setState({
+        arrayOpciones,
+        arrayCargos:null,
+        divOpciones: "",
+        divOpcionesError: "",
+        hideCargos:hideCargos,
+        hideBuscador:hideBuscador,
+      });
+    }
+    
+  };  
+
+  handleChangeCargos = arrayCargos => {
+    console.log(arrayCargos)
+    if(arrayCargos){
+      this.setState({
+        arrayCargos,
+        divCargos: "",
+        divCargosError: ""
+      });
+    }else{
+      this.setState({
+        arrayCargos: null,
+        divCargos: "",
+        divCargosError: ""
+      });
+    }
+    
   };  
   
   handleChangeModoPago = arrayModoPagoSelect => {
@@ -535,7 +602,8 @@ class ModalConfigCommissions extends React.Component {
     this.props.cleanListServicesTab(this.state.activeTab);
   };  
 
-  componentWillReceiveProps = props => {    
+  componentWillReceiveProps = props => {  
+    console.log("componentWillReceiveProps ", props.configCommissions);  
     if(props.option === 1){
       this.setState({
         loading:'hide'
@@ -753,7 +821,27 @@ class ModalConfigCommissions extends React.Component {
     
   }
 
-  render() {    
+  typeIdentityOnchange = event =>{    
+    this.setState({
+        arrayTipo:event.target.value,            
+    })
+  } 
+
+  optionsPatientsAll = options => {
+    if (!options) {
+      return [];
+    }
+    const data = [];
+    options.map(option => {
+      data.push({
+        label: `${option.type_identity}-${option.dni}  ${option.names}`
+      });
+    });
+    return data;
+  };
+
+  render() {         
+    const optionsPatientsAll = this.optionsPatientsAll(this.props.configCommissions.dataPatientsAll);      
     return (
       <span>
         <Modal
@@ -788,19 +876,19 @@ class ModalConfigCommissions extends React.Component {
                       <TabPane tabId="1">
                         <div className="row">
                           <FormGroup className="top form-group col-sm-6">
-                            <Label for="tipoPersona">Tipo de Persona</Label>
-                            <div className={this.state.divTipoPersona}>
-                              <Select
-                                isSearchable="true"
+                            <Label for="tipoPersona">Tipo de regla para comision</Label>
+                            <div className={this.state.divTipoReglaComision}>
+                              <Select                            
+                                isSearchable={true}                                
                                 isDisabled={this.props.disabled}
-                                name="tipoPersona"
-                                value={this.state.arrayTipoPersonaSelect}
-                                onChange={this.handleChangeTipoPersona}
-                                options={this.props.type_staff}
+                                name="tipoReglaComision"
+                                value={this.state.arrayTipoReglaComision}
+                                onChange={this.handleChangeTipoReglaComision}
+                                options={this.props.commission_type}                      
                               />
                             </div>
                             <div className="errorSelect">
-                              {this.state.divTipoPersonaError}
+                              {this.state.divTipoReglaComisionError}
                             </div>
                           </FormGroup>
                           <FormGroup className="top form-group col-sm-6">
@@ -824,19 +912,37 @@ class ModalConfigCommissions extends React.Component {
                           <FormGroup className="top form-group col-sm-6">
                             <Label for="tipo">Tipo</Label>
                             <div className={this.state.divTipo}>
-                              <Select
-                                isSearchable="true"
-                                isDisabled={this.props.disabled}
-                                name="tipo"
-                                value={this.state.arrayTipo}
-                                onChange={this.handleChangeTipo}
-                                options={this.props.commission_rule}
-                              />
+                              {
+                                (this.state.arrayTipoReglaComision && 
+                                this.state.arrayTipoReglaComision.value === "5d1776e3b0d4a50b23931100") &&
+                                <Select
+                                  isSearchable="true"
+                                  isDisabled={this.props.disabled}
+                                  name="tipo"
+                                  value={this.state.arrayTipo}
+                                  onChange={this.handleChangeTipo}
+                                  options={this.props.commission_rule.filter(
+                                    option => option.value !== "5d1776e3b0d4a50b23931133"
+                                  )}                                
+                                />                              
+                              }
+                              {
+                                (this.state.arrayTipoReglaComision === null || 
+                                this.state.arrayTipoReglaComision.value === "5d1776e3b0d4a50b23931199") &&
+                                <Select
+                                  isSearchable="true"
+                                  isDisabled={this.props.disabled}
+                                  name="tipo"
+                                  value={this.state.arrayTipo}
+                                  onChange={this.handleChangeTipo}
+                                  options={this.props.commission_rule}                                
+                                />                              
+                              }
                             </div>
                             <div className="errorSelect">
                               {this.state.divTipoError}
                             </div>
-                          </FormGroup>                   
+                          </FormGroup>  
                           <FormGroup className={`top form-group col-sm-6 ${this.state.hideTipoMontoMinimo}`}>                                                             
                               <Label for="montoMinimoComision">Monto Minimo para Comision:</Label> 
                               <div className={this.state.divMontoMinimoComision}>                               
@@ -874,7 +980,92 @@ class ModalConfigCommissions extends React.Component {
                               {this.state.divNroPersonasReferenciadasError}
                             </div>
                           </FormGroup> 
-                          <FormGroup className={`top form-group col-sm-6 ${this.state.hidePersonalExterno}`}>
+                          <FormGroup className="top form-group col-sm-6">
+                            <Label for="tipoPersona">Tipo de Persona</Label>
+                            <div className={this.state.divTipoPersona}>
+                              {
+                                (this.state.arrayTipoReglaComision && 
+                                this.state.arrayTipoReglaComision.value === "5d1776e3b0d4a50b23931100") &&
+                                  <Select
+                                    isSearchable={true}                                
+                                    isDisabled={this.props.disabled}
+                                    name="tipoPersona"
+                                    value={this.state.arrayTipoPersonaSelect}
+                                    onChange={this.handleChangeTipoPersona}
+                                    options={this.props.type_staff.filter(
+                                      option => option.value === "5d1776e3b0d4a50b23936711"
+                                    )}
+                                  />
+                              }
+                              {
+                                (this.state.arrayTipoReglaComision === null || 
+                                this.state.arrayTipoReglaComision.value === "5d1776e3b0d4a50b23931199") &&
+                                  <Select
+                                    isSearchable={true}                                
+                                    isDisabled={this.props.disabled}
+                                    name="tipoPersona"
+                                    value={this.state.arrayTipoPersonaSelect}
+                                    onChange={this.handleChangeTipoPersona}
+                                    options={this.props.type_staff}
+                                  />
+                              }
+                            </div>
+                            <div className="errorSelect">
+                              {this.state.divTipoPersonaError}
+                            </div>
+                          </FormGroup>      
+                          <FormGroup className={`top form-group col-sm-6`}>
+                            <Label for="tipo">Opciones</Label>
+                            <div className={this.state.divOpciones}>
+                              <Select
+                                isSearchable="true"
+                                isDisabled={this.props.disabled}
+                                name="tipo"
+                                value={this.state.arrayOpciones}
+                                onChange={this.handleChangeOpciones}
+                                options={this.props.commission_select_staff}
+                              />
+                            </div>
+                            <div className="errorSelect">
+                              {this.state.divOpcionesError}
+                            </div>
+                          </FormGroup>      
+                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideCargos}`}>
+                            <Label for="tipo">Cargo</Label>
+                            <div className={this.state.divCargos}>
+                              <Select
+                                isSearchable={true}
+                                isClearable={true}
+                                isDisabled={this.props.disabled}
+                                name="tipo"
+                                value={this.state.arrayCargos}
+                                onChange={this.handleChangeCargos}
+                                options={this.props.configCommissions.cargos}
+                              />
+                            </div>
+                            <div className="errorSelect">
+                              {this.state.divCargosError}
+                            </div>
+                          </FormGroup>                              
+                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideBuscador}`}>
+                            <div 
+                              style={{
+                                width: "100%", 
+                                margin: "10px 0px 1rem",
+                                height: "10rem",
+                                alignItems: "start"
+                              }}>
+                                <DefaultSearch 
+                                  pressKey={true}
+                                  placeholder={`Buscar ${this.state.labelsBuscador}`}
+                                  getOptions={this.props.searchPatientAll}
+                                  options={optionsPatientsAll}
+                                  // searchAction={this.props.searchOneSuppplie}
+                                />                                    
+                            </div>
+                          </FormGroup>          
+                          
+                          {/* <FormGroup className={`top form-group col-sm-6 ${this.state.hidePersonalExterno}`}>
                             <Label for="tipo">Personal Externo</Label>
                             <div className={this.state.divPersonalExterno}>
                               <Select
@@ -889,7 +1080,7 @@ class ModalConfigCommissions extends React.Component {
                             <div className="errorSelect">
                               {this.state.divPersonalExternoError}
                             </div>
-                          </FormGroup>                   
+                          </FormGroup>                    */}
                         </div>       
                         {
                           (this.state.arrayTipo &&
@@ -1075,8 +1266,10 @@ const mapStateToProps = state => ({
   configCommissions: state.configCommissions.toJS(),  
   commission_time: state.global.dataGeneral.dataGeneral.commission_time,
   type_staff: state.global.dataGeneral.dataGeneral.type_staff,
+  commission_type: state.global.dataGeneral.dataGeneral.commission_type,
   payment_mode_commission: state.global.dataGeneral.dataGeneral.payment_mode_commission,
   commission_rule: state.global.dataGeneral.dataGeneral.commission_rule,
+  commission_select_staff: state.global.dataGeneral.dataGeneral.commission_select_staff,
   authData: state.auth,
   aplication: state.global
 });
@@ -1087,11 +1280,12 @@ const mapDispatchToProps = dispatch => ({
   cleanListServices: () => dispatch(cleanListServices()),
   cleanListServicesTab: (tab) => dispatch(cleanListServicesTab(tab)),
   setPorcentajeTable: (pos, value) =>dispatch(setPorcentajeTable(pos, value)),
-  setPorcentajeAllTable: (value) =>dispatch(setPorcentajeAllTable(value)),
+  setPorcentajeAllTable: (value) =>dispatch(setPorcentajeAllTable(value)),  
   setSwitchTableComisiones: (pos, value, tab, typePersonal) =>dispatch(setSwitchTableComisiones(pos, value, tab, typePersonal)),
   setSwitchAllTableComisiones: (value, tab, typePersonal) =>dispatch(setSwitchAllTableComisiones(value, tab, typePersonal)),
   saveConfigCommissionsAction: (data, callback) =>dispatch(saveConfigCommissionsAction(data, callback)),
   editConfigCommissionsAction: (data, callback) =>dispatch(editConfigCommissionsAction(data, callback)),
+  searchPatientAll: (data) =>dispatch(searchPatientAll(data)),
 });
 
 export default connect(

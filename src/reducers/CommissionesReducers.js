@@ -91,6 +91,12 @@ const setPorcentajeAllTable = (state, payload) => {
 	return Map(estado);
 }
 
+const searchPatientAll = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataPatientsAll = payload;		
+	return Map(estado);
+}
+
 const ConfigCommissionsReducer = (state = Map(), action) => {
   switch (action.type) {
 
@@ -120,6 +126,9 @@ const ConfigCommissionsReducer = (state = Map(), action) => {
 
 	case "SET_PORCENTAJE_ALL_COMISIONES":
   		return setPorcentajeAllTable(state, action.payload);		  
+	
+	case "SEARCH_PATIENTS_ALL":
+  		return searchPatientAll(state, action.payload);		  
 
 	default:
 	  	return state;

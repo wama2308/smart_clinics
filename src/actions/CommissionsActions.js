@@ -10,6 +10,8 @@ const queryOneCommissionsGeneral = `${url}/api/queryOneCommissionsGeneral`;
 const disabledCommissionsGeneral = `${url}/api/disabledCommissionsGeneral`;
 const enabledCommissionsGeneral = `${url}/api/enabledCommissionsGeneral`;
 const selectExternalStaff = `${url}/api/selectExternalStaff`;
+const queryPosition = `${url}/api/queryPosition`;
+const searchPatientUrl = `${url}/api/queryPatients`;
 
 export const LoadConfigCommissionsFunction = () => dispatch => {
   getDataToken()
@@ -18,18 +20,22 @@ export const LoadConfigCommissionsFunction = () => dispatch => {
     	.then(res => {	
     		LoadServicesFunction(datos, arrayServices => {   	 
           LoadExternalStaffFunction(datos, arrayExternalStaff => {     
-  	        dispatch({
-  	          type: "LOAD_CONFIG_COMMISSIONS",
-  	          payload: {
-  	            loading: "hide",
-  	            data: res.data,		            
-                dataId:{},                                                        
-  	            servicesCommission: arrayServices,
-                servicesPayment: arrayServices,
-                externalStaff: arrayExternalStaff,
-  	            action:0
-  			      }
-  	        });
+            LoadCargosFunction(datos, arrayCargos => {     
+              dispatch({
+                type: "LOAD_CONFIG_COMMISSIONS",
+                payload: {
+                  loading: "hide",
+                  data: res.data,		            
+                  dataId:{},                                                        
+                  servicesCommission: arrayServices,
+                  servicesPayment: arrayServices,
+                  externalStaff: arrayExternalStaff,
+                  cargos: arrayCargos,
+                  dataPatientsAll:[],
+                  action:0
+                }
+              });
+            });  
           });  
         });
   	   })
@@ -40,6 +46,17 @@ export const LoadConfigCommissionsFunction = () => dispatch => {
     })
     .catch(() => {
       console.log("Problemas con el token");
+    });
+};
+
+const LoadCargosFunction = (datos, execute) => {
+  axios
+    .get(queryPosition, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de cargos", error.toString());
     });
 };
 
@@ -304,4 +321,33 @@ export const enableConfigCommissionsAction = (id) => dispatch => {
     .catch(() => {
       console.log("Problemas con el token");
     });
+};
+
+export const searchPatientAll = search => dispatch => {  
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: searchPatientUrl,
+      data: {
+        value: search
+      },
+      ...token
+    })
+      .then(res => {
+        dispatch({
+          type: "SEARCH_PATIENTS_ALL",
+          payload: Object.values(res.data)
+        });
+      })
+      .catch(err => {
+        const result = converToJson(err);
+        dispatch(openSnackbars("error", result.message));
+      });
+  });
+};
+
+const converToJson = data => {
+  const stringify = JSON.stringify(data);
+  const parse = JSON.parse(stringify);
+  return parse.response.data;
 };
