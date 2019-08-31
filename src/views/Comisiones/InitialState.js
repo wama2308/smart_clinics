@@ -54,6 +54,7 @@ export const InitalState = {
     hideAplicarPorcentajeTodos:'hide',
     hideCargos:'hide',
     hideBuscador:'hide',
+    hideOpciones:'hide',
     divSeleccioneServiciosComision: '',
     divSeleccioneServiciosPayment: '',
     collapse: false,

@@ -296,6 +296,7 @@ class ModalShop extends React.Component {
     };
 
     componentWillReceiveProps=(props)=>{
+        //console.log("modal shop", props.shop);
         if(this.props.shop.products.length > 0){
             this.setState({divTableProductos:''})
         }

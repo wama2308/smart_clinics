@@ -12,6 +12,9 @@ const enabledCommissionsGeneral = `${url}/api/enabledCommissionsGeneral`;
 const selectExternalStaff = `${url}/api/selectExternalStaff`;
 const queryPosition = `${url}/api/queryPosition`;
 const searchPatientUrl = `${url}/api/queryPatients`;
+const searchOnePatientUrl = `${url}/api/queryOnePatients`;
+const referencePersonnelUrl = `${url}/api/referencePersonnel`;
+const queryOneReferencePersonnel = `${url}/api/queryOneReferencePersonnel`;
 
 export const LoadConfigCommissionsFunction = () => dispatch => {
   getDataToken()
@@ -31,7 +34,14 @@ export const LoadConfigCommissionsFunction = () => dispatch => {
                   servicesPayment: arrayServices,
                   externalStaff: arrayExternalStaff,
                   cargos: arrayCargos,
-                  dataPatientsAll:[],
+                  dataStaffPatientAll:[],
+                  dataStaffPatientId:{},
+
+                  dataInternalStaffAll:[],
+                  dataInternalStaffId:[],                  
+
+                  dataExternalStaffAll:[],
+                  dataExternalStaffId:[],
                   action:0
                 }
               });
@@ -323,7 +333,73 @@ export const enableConfigCommissionsAction = (id) => dispatch => {
     });
 };
 
-export const searchPatientAll = search => dispatch => {  
+// export const searchPatientAll = data => dispatch => {
+//   getDataToken().then(token => {
+//     dispatch({
+//       type: "SEARCH_DATA",
+//       payload: data
+//     });
+//     axios({
+//       method: "POST",
+//       url: searchPatientUrl,
+//       data: {
+//         name: data
+//       },
+//       ...token
+//     }).then(res => {
+//       dispatch({
+//         type: "SEARCH_PATIENTS_ALL",
+//         payload: Object.values(res.data)
+//       });
+//     });
+//   });
+// };
+
+// export const searchOneStaffPatient = data => dispatch => {
+//   if (data.length === 0) {
+//     dispatch(
+//       openSnackbars("warning", "Debe ingresar el nombre o dni!")
+//     );
+//     return;
+//   }
+//   dispatch({
+//     type: "SEARCH_DATA",
+//     payload: ""
+//   });
+//   getDataToken().then(token => {
+//     axios({
+//       method: "POST",
+//       url: queryOneSupplie,
+//       data: {
+//         supplie_id: data.value
+//       },
+//       ...token
+//     })
+//       .then(res => {
+//         dispatch({
+//           type: "SEARCH_ONE_STAFF_PATIENT",
+//           payload: {
+//             ...res.data
+//           }
+//         });
+//       })
+//       .catch(err => {
+//         const result = converToJson(err);
+//         dispatch(openSnackbars("error", "persona no encontrada"));
+//       });
+//   });
+// };
+
+export const searchPatientStaffAll = search => dispatch => {
+  if (search.length < 1) {
+    dispatch(searchLoaded(true));
+  } else {
+    dispatch(searchLoaded(false));
+  }
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: search
+  });
   getDataToken().then(token => {
     axios({
       method: "POST",
@@ -335,7 +411,7 @@ export const searchPatientAll = search => dispatch => {
     })
       .then(res => {
         dispatch({
-          type: "SEARCH_PATIENTS_ALL",
+          type: "SEARCH_PATIENTS_STAFF_ALL",
           payload: Object.values(res.data)
         });
       })
@@ -346,8 +422,139 @@ export const searchPatientAll = search => dispatch => {
   });
 };
 
+export const searchOnePatientStaff = search => dispatch => {
+  if (search.length === 0) {
+    dispatch(openSnackbars("warning", "Ingrese nombre o dni del paciente!"));
+    return;
+  }
+
+  const result = orderData(search.label);
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: searchOnePatientUrl,
+      data: result,
+      ...token
+    })
+      .then(res => {
+        dispatch({
+          type: "SEARCH_ONE_PATIENT_STAFF",
+          payload: res.data.patient
+        });        
+        dispatch(searchLoaded(true));
+        dispatch({
+          type: "SEARCH_DATA",
+          payload: ""
+        });
+      })
+      .catch(err => {
+        dispatch(searchLoaded(true));
+        dispatch(openSnackbars("error", "Paciente no registrado!"));
+        dispatch({
+          type: "SEARCH_PATIENT",
+          payload: null
+        });
+      });
+  });
+};
+
+export const getOptionsPersonal = (staff, value) => dispatch => {
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: value
+  });
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: referencePersonnelUrl,
+      data: {
+        staff: staff,
+        value: value
+      },
+      ...token
+    }).then(res => {
+      if (staff === 0) {
+        dispatch({
+          type: "OPTIONS_INTERNALS",
+          payload: Object.values(res.data)
+        });
+      } else {
+        dispatch({
+          type: "OPTIONS_EXTERNAL",
+          payload: Object.values(res.data)
+        });
+      }
+    });
+  });
+};
+
+export const getOneReference = (staff, data) => dispatch => {
+  console.log("staff ", staff)
+  console.log("data ", data.value)
+  if (data.length === 0) {
+    dispatch(
+      openSnackbars("warning", "Debe ingresar nombre o dni del personal!")
+    );
+    return;
+  }
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: ""
+  });
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: queryOneReferencePersonnel,
+      data: {
+        _id: data.value
+      },
+      ...token
+    })
+      .then(res => {
+        if (staff === 0) {
+          dispatch({
+            type: "SEARCH_STAFF_INTERNAL_ONE",
+            payload: {
+              ...res.data
+            }
+          });
+        }else{
+          dispatch({
+            type: "SEARCH_STAFF_EXTERNAL_ONE",
+            payload: {
+              ...res.data
+            }
+          });
+        }
+      })
+      .catch(err => {
+        const result = converToJson(err);
+        dispatch(openSnackbars("error", "personal no encontrado"));
+      });
+  });
+};
+
+const searchLoaded = data => {
+  return {
+    type: "SEARCH_LOADED",
+    payload: data
+  };
+};
+
 const converToJson = data => {
   const stringify = JSON.stringify(data);
   const parse = JSON.parse(stringify);
   return parse.response.data;
+};
+
+const orderData = data => {
+  try {
+    const result = data.split(" ");
+    const typeIdentify = result[0].substr(0, 1);
+    const dni = result[0].substr(2);
+
+    return { type_identity: typeIdentify, dni: dni };
+  } catch (err) {
+    return data;
+  }
 };

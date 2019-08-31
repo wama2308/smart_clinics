@@ -33,13 +33,16 @@ import {
   editConfigCommissionsAction,
   setSwitchAllTableComisiones,
   setPorcentajeAllTable,
-  searchPatientAll,
+  searchPatientStaffAll,
+  searchOnePatientStaff,
+  getOptionsPersonal,
+  getOneReference
 } from "../../actions/CommissionsActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { number_format } from "../../core/utils";
 import classnames from "classnames";
-import DefaultSearch from "../../components/DefaultSearch.js";
+import Search from "../../components/DefaultSearch";
 
 class ModalConfigCommissions extends React.Component {
   constructor(props) {
@@ -433,43 +436,50 @@ class ModalConfigCommissions extends React.Component {
     let hideAplicarPorcentajeTodos = "";    
     let hideCargos = "hide";    
     let hideBuscador = "hide";    
-    if(arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){
-      hideModoPago = "hide";
-      hideEspecifique = 'hide';
-      hideMontoComision = "hide";
-      hidePorcentajeComision = "hide";
-      hidePersonalExterno = "show";
-      hideAplicarPorcentajeTodos = "show";
+    if(arrayTipoPersonaSelect){
+      if(arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){
+        hideModoPago = "hide";
+        hideEspecifique = 'hide';
+        hideMontoComision = "hide";
+        hidePorcentajeComision = "hide";
+        hidePersonalExterno = "show";
+        hideAplicarPorcentajeTodos = "show";
+      }else{
+        hideModoPago = "show";
+        hideEspecifique = 'hide';
+        hideMontoComision = "hide";
+        hidePorcentajeComision = "hide";
+        hidePersonalExterno = "hide";
+        hideAplicarPorcentajeTodos = "hide";
+      }
+  
+      this.setState({
+        arrayTipoPersonaSelect,
+        arrayModoPagoSelect: null,
+        divTipoPersona: "",
+        divTipoPersonaError: "",
+        hideModoPago:hideModoPago,
+        montoComision:'0.00',
+        porcentajeComision:'0',
+        especifique:'',
+        arrayOpciones: null,
+        arrayCargos:null,
+        labelsBuscador: arrayTipoPersonaSelect.label,
+        hideEspecifique: hideEspecifique,
+        hideMontoComision: hideMontoComision,
+        hidePorcentajeComision: hidePorcentajeComision,
+        hidePersonalExterno: hidePersonalExterno,
+        hideAplicarPorcentajeTodos: hideAplicarPorcentajeTodos,
+        hideCargos: hideCargos,
+        hideBuscador: hideBuscador,
+        hideOpciones: 'show',
+      });
+      this.props.cleanListServicesTab(this.state.activeTab);
     }else{
-      hideModoPago = "show";
-      hideEspecifique = 'hide';
-      hideMontoComision = "hide";
-      hidePorcentajeComision = "hide";
-      hidePersonalExterno = "hide";
-      hideAplicarPorcentajeTodos = "hide";
-    }
-
-    this.setState({
-      arrayTipoPersonaSelect,
-      arrayModoPagoSelect: null,
-      divTipoPersona: "",
-      divTipoPersonaError: "",
-      hideModoPago:hideModoPago,
-      montoComision:'0.00',
-      porcentajeComision:'0',
-      especifique:'',
-      arrayOpciones: null,
-      arrayCargos:null,
-      labelsBuscador: arrayTipoPersonaSelect.label,
-      hideEspecifique: hideEspecifique,
-      hideMontoComision: hideMontoComision,
-      hidePorcentajeComision: hidePorcentajeComision,
-      hidePersonalExterno: hidePersonalExterno,
-      hideAplicarPorcentajeTodos: hideAplicarPorcentajeTodos,
-      hideCargos: hideCargos,
-      hideBuscador: hideBuscador,
-    });
-    this.props.cleanListServicesTab(this.state.activeTab);
+      this.setState({        
+        hideOpciones: 'hide',
+      });
+    }   
   };
 
    handleChangeTipo = arrayTipo => {    
@@ -511,6 +521,9 @@ class ModalConfigCommissions extends React.Component {
         divTipoReglaComisionError: "",
         arrayTipo:null,
         arrayTipoPersonaSelect:null,
+        hideOpciones:'hide',
+        hideCargos:'hide',
+        hideBuscador:'hide',
       });    
     }    
   };  
@@ -527,7 +540,7 @@ class ModalConfigCommissions extends React.Component {
     let hideCargos = "";    
     let hideBuscador = "";    
     if(arrayOpciones){
-      if(arrayOpciones.value === "5d1776e3b0d4a50b23930033"){
+      if(arrayOpciones.value === "5d1776e3b0d4a50b23440033"){
         hideCargos = "show";    
         hideBuscador = "hide";    
       }else if(arrayOpciones.value === "5d1776e3b0d4a50b23930022"){
@@ -550,7 +563,6 @@ class ModalConfigCommissions extends React.Component {
   };  
 
   handleChangeCargos = arrayCargos => {
-    console.log(arrayCargos)
     if(arrayCargos){
       this.setState({
         arrayCargos,
@@ -827,7 +839,7 @@ class ModalConfigCommissions extends React.Component {
     })
   } 
 
-  optionsPatientsAll = options => {
+  optionsPatientsStaffAll = options => {
     if (!options) {
       return [];
     }
@@ -838,10 +850,64 @@ class ModalConfigCommissions extends React.Component {
       });
     });
     return data;
+  }; 
+
+  getOptions = value => {
+    const staff = this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936711" ? 0 : 1;
+    this.props.getOptionsPersonal(staff, value);
   };
 
+  getOneOptionsStaff = value => {
+    const staff = this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936711" ? 0 : 1;
+    this.props.getOneReference(staff, value);
+  };
+
+  orderOptions = value => {
+    if (!value) {
+      return;
+    }
+    const array = [];
+    value.map(val => {
+      array.push({
+        label: `${val.names} ${val.surnames}  ${val.type_identity}-${val.dni} `,
+        value: val._id
+      });
+    });
+
+    return array;
+  };
+
+  orderExternalOptions = value => {
+    if (!value) {
+      return;
+    }
+    const array = [];
+    value.map(val => {
+      array.push({
+        label: val.branchoffices_name,
+        value: val._id
+      });
+    });
+
+    return array;
+  }; 
+
   render() {         
-    const optionsPatientsAll = this.optionsPatientsAll(this.props.configCommissions.dataPatientsAll);      
+    const optionsPatientsStaffAll = this.optionsPatientsStaffAll(this.props.dataPatientsAll);       
+    let optionsReferences = [];
+    if(this.state.arrayTipoPersonaSelect){
+      if(this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936711"){
+        optionsReferences = this.orderOptions(this.props.optionsInternal) 
+      }else{
+        optionsReferences =this.orderExternalOptions(this.props.optionsExternal);
+      }
+    }
+    
+    
+    console.log("this.props.configCommissions ", this.props.configCommissions);
+    console.log("optionsPatientsStaffAll ", optionsPatientsStaffAll);
+    console.log("optionsReferences ", optionsReferences);
+    
     return (
       <span>
         <Modal
@@ -990,6 +1056,7 @@ class ModalConfigCommissions extends React.Component {
                                     isSearchable={true}                                
                                     isDisabled={this.props.disabled}
                                     name="tipoPersona"
+                                    id="tipoPersona"
                                     value={this.state.arrayTipoPersonaSelect}
                                     onChange={this.handleChangeTipoPersona}
                                     options={this.props.type_staff.filter(
@@ -1004,6 +1071,7 @@ class ModalConfigCommissions extends React.Component {
                                     isSearchable={true}                                
                                     isDisabled={this.props.disabled}
                                     name="tipoPersona"
+                                    name="tipoPersona"
                                     value={this.state.arrayTipoPersonaSelect}
                                     onChange={this.handleChangeTipoPersona}
                                     options={this.props.type_staff}
@@ -1014,17 +1082,40 @@ class ModalConfigCommissions extends React.Component {
                               {this.state.divTipoPersonaError}
                             </div>
                           </FormGroup>      
-                          <FormGroup className={`top form-group col-sm-6`}>
+                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideOpciones}`}>
                             <Label for="tipo">Opciones</Label>
                             <div className={this.state.divOpciones}>
-                              <Select
-                                isSearchable="true"
-                                isDisabled={this.props.disabled}
-                                name="tipo"
-                                value={this.state.arrayOpciones}
-                                onChange={this.handleChangeOpciones}
-                                options={this.props.commission_select_staff}
-                              />
+                              {
+                                ((this.state.arrayTipoPersonaSelect) &&
+                                (this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936712" ||
+                                this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710")) &&
+                                <Select
+                                  isSearchable="true"
+                                  isDisabled={this.props.disabled}
+                                  name="arrayOpciones"
+                                  id="arrayOpciones"
+                                  value={this.state.arrayOpciones}
+                                  onChange={this.handleChangeOpciones}
+                                  options={this.props.commission_select_staff}
+                                  options={this.props.commission_select_staff.filter(
+                                    option => option.value !== "5d1776e3b0d4a50b23440033"
+                                  )}
+                                />                                                                
+                              }
+                              {
+                                this.state.arrayTipoPersonaSelect &&
+                                this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936711"  &&
+                                <Select
+                                  isSearchable="true"
+                                  isDisabled={this.props.disabled}
+                                  name="arrayOpciones"
+                                  id="arrayOpciones"
+                                  value={this.state.arrayOpciones}
+                                  onChange={this.handleChangeOpciones}
+                                  options={this.props.commission_select_staff}                                  
+                                />                                                                
+                              }
+                              
                             </div>
                             <div className="errorSelect">
                               {this.state.divOpcionesError}
@@ -1034,10 +1125,12 @@ class ModalConfigCommissions extends React.Component {
                             <Label for="tipo">Cargo</Label>
                             <div className={this.state.divCargos}>
                               <Select
+                                isMulti={true} 
                                 isSearchable={true}
                                 isClearable={true}
                                 isDisabled={this.props.disabled}
-                                name="tipo"
+                                name="arrayCargos"
+                                id="arrayCargos"
                                 value={this.state.arrayCargos}
                                 onChange={this.handleChangeCargos}
                                 options={this.props.configCommissions.cargos}
@@ -1055,15 +1148,31 @@ class ModalConfigCommissions extends React.Component {
                                 height: "10rem",
                                 alignItems: "start"
                               }}>
-                                <DefaultSearch 
-                                  pressKey={true}
-                                  placeholder={`Buscar ${this.state.labelsBuscador}`}
-                                  getOptions={this.props.searchPatientAll}
-                                  options={optionsPatientsAll}
-                                  // searchAction={this.props.searchOneSuppplie}
-                                />                                    
+                                {
+                                  this.state.arrayTipoPersonaSelect &&
+                                  this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936712" &&
+                                  <Search 
+                                    pressKey={true}
+                                    placeholder={`Buscar ${this.state.labelsBuscador}...`}
+                                    getOptions={this.props.searchPatientStaffAll}
+                                    options={optionsPatientsStaffAll}
+                                    searchAction={this.props.searchOnePatientStaff}
+                                  />    
+                                }
+                                {
+                                  this.state.arrayTipoPersonaSelect &&
+                                  this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936712" &&
+                                  <Search 
+                                    pressKey={true}
+                                    placeholder={`Buscar ${this.state.labelsBuscador}...`}
+                                    getOptions={this.getOptions}
+                                    options={optionsReferences}
+                                    searchAction={this.getOneOptionsStaff}
+                                  />    
+                                }
+                                
                             </div>
-                          </FormGroup>          
+                          </FormGroup>                             
                           
                           {/* <FormGroup className={`top form-group col-sm-6 ${this.state.hidePersonalExterno}`}>
                             <Label for="tipo">Personal Externo</Label>
@@ -1271,7 +1380,11 @@ const mapStateToProps = state => ({
   commission_rule: state.global.dataGeneral.dataGeneral.commission_rule,
   commission_select_staff: state.global.dataGeneral.dataGeneral.commission_select_staff,
   authData: state.auth,
-  aplication: state.global
+  aplication: state.global,
+  dataPatientsAll: state.configCommissions.get('dataStaffPatientAll'),  
+  optionsInternal: state.configCommissions.get("dataInternalStaffAll"),
+  optionsExternal: state.configCommissions.get("dataExternalStaffAll")
+  
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -1285,10 +1398,14 @@ const mapDispatchToProps = dispatch => ({
   setSwitchAllTableComisiones: (value, tab, typePersonal) =>dispatch(setSwitchAllTableComisiones(value, tab, typePersonal)),
   saveConfigCommissionsAction: (data, callback) =>dispatch(saveConfigCommissionsAction(data, callback)),
   editConfigCommissionsAction: (data, callback) =>dispatch(editConfigCommissionsAction(data, callback)),
-  searchPatientAll: (data) =>dispatch(searchPatientAll(data)),
+  searchPatientStaffAll: (data) =>dispatch(searchPatientStaffAll(data)),
+  searchOnePatientStaff: (data) =>dispatch(searchOnePatientStaff(data)),
+  getOptionsPersonal: (staff, data) =>dispatch(getOptionsPersonal(staff, data)),
+  getOneReference: (staff, data) =>dispatch(getOneReference(staff, data)),
+  
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps  
 )(ModalConfigCommissions);

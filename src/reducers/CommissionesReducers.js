@@ -1,4 +1,5 @@
 import { Map } from 'immutable'
+const setData = (state, node , payload)=> state.set(node, payload)
 
 const LoadConfigCommissionIdFunction = (state, payload) => {
 	let estado = state.toJS();
@@ -91,9 +92,38 @@ const setPorcentajeAllTable = (state, payload) => {
 	return Map(estado);
 }
 
-const searchPatientAll = (state, payload) => {
+const searchPatientStaffAll = (state, payload) => {
 	let estado = state.toJS();
-	estado.dataPatientsAll = payload;		
+	estado.dataStaffPatientAll = payload;		
+	return Map(estado);
+}
+
+const searchOnePatientStaff = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataStaffPatientId = payload;		
+	return Map(estado);
+}
+
+const searchOneInternalStaff = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataInternalStaffAll = payload;		
+	return Map(estado);
+}
+const searchOneExternalStaff = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataExternalStaffAll = payload;		
+	return Map(estado);
+}
+
+const getOneReferenceInternal = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataInternalStaffId = payload;		
+	return Map(estado);
+}
+
+const getOneReferenceExternal = (state, payload) => {
+	let estado = state.toJS();
+	estado.dataExternalStaffId = payload;		
 	return Map(estado);
 }
 
@@ -127,8 +157,23 @@ const ConfigCommissionsReducer = (state = Map(), action) => {
 	case "SET_PORCENTAJE_ALL_COMISIONES":
   		return setPorcentajeAllTable(state, action.payload);		  
 	
-	case "SEARCH_PATIENTS_ALL":
-  		return searchPatientAll(state, action.payload);		  
+	case "SEARCH_PATIENTS_STAFF_ALL":
+		return searchPatientStaffAll(state, action.payload);	
+		
+	case "SEARCH_ONE_PATIENT_STAFF": 
+		return searchOnePatientStaff(state, action.payload);	
+		
+	case "OPTIONS_INTERNALS":
+		return searchOneInternalStaff(state, action.payload);
+	
+	case "OPTIONS_EXTERNAL":
+		return searchOneExternalStaff(state, action.payload);
+	
+	case "SEARCH_STAFF_INTERNAL_ONE":
+		return getOneReferenceInternal(state, action.payload);
+	
+	case "SEARCH_STAFF_EXTERNAL_ONE":
+		return getOneReferenceExternal(state, action.payload);
 
 	default:
 	  	return state;
