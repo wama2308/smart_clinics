@@ -81,9 +81,6 @@ class ReclamosContainer extends Component {
   }
 
   render() {
-
-    console.log(this.props.aplication.permission);
-
     return (
       <div className="animated fadeIn">
         <Row>
