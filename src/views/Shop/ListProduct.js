@@ -27,7 +27,7 @@ class ListProduct extends React.Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   openModal = (option, pos, id) => {
     if (option === 1) {
@@ -79,22 +79,22 @@ class ListProduct extends React.Component {
   };
 
   render() {
-    const detailsDisabled = GetDisabledPermits(this.props.permitsProducts , "Details")
-    const updateDisabled = GetDisabledPermits(this.props.permitsProducts , "Update")
+    const detailsDisabled = GetDisabledPermits(this.props.permitsProducts, "Details")
+    const updateDisabled = GetDisabledPermits(this.props.permitsProducts, "Update")
     const { rowsPerPage, page } = this.state;
     const arrayProduct = getArray(this.props.allProducts)
 
     const result = this.props.search
       ? arrayProduct.filter(product => {
-          return (
-            product.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            product.code.toLowerCase().includes(this.props.search.toLowerCase())||
-            product.type.toLowerCase().includes(this.props.search.toLowerCase())
-          );
-        })
+        return (
+          product.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          product.code.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          product.type.toLowerCase().includes(this.props.search.toLowerCase())
+        );
+      })
       : arrayProduct;
 
-     return (
+    return (
       <div>
         <ModalProduct
           option={this.state.option}
@@ -106,31 +106,31 @@ class ListProduct extends React.Component {
           productoId={this.state.productoId}
           valorCloseModal={this.valorCloseModal}
         />
-      <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
+        <div className="containerGeneral" style={{ "justifyContent": "flex-end" }}>
           <div className="containerSearch">
             <Search value={arrayProduct} />
           </div>
         </div>
         <br />
-          <Table hover responsive borderless>
-            <thead className="thead-light">
-              <tr>
-                <th className="text-left">Nro</th>
-                <th className="text-left">Producto</th>
-                <th className="text-left">Codigo</th>
-                <th className="text-left">Tipo</th>
-                <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-             {this.props.allProducts? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => {
+        <Table hover responsive borderless>
+          <thead className="thead-light">
+            <tr>
+              <th className="text-left">Nro</th>
+              <th className="text-left">Producto</th>
+              <th className="text-left">Codigo</th>
+              <th className="text-left">Tipo</th>
+              <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.allProducts ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => {
               return (
-                <tr key={ product.number } className="text-left">
-                  <td>{ product.number }</td>
-                  <td>{ product.name }</td>
-                  <td>{ product.code }</td>
-                  <td>{ product.type }</td>
-                  <td style={{'minWidth':"205px"}}>
+                <tr key={product.number} className="text-left">
+                  <td>{product.number}</td>
+                  <td>{product.name}</td>
+                  <td>{product.code}</td>
+                  <td>{product.type}</td>
+                  <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
                         title="Ver Producto"
@@ -153,19 +153,19 @@ class ListProduct extends React.Component {
                   </td>
                 </tr>
               );
-             })
+            })
               :
-                null
-              }
-            </tbody>
-            {this.props.allProducts.length > 10 &&
-              <Pagination contador={this.props.allProducts}
+              null
+            }
+          </tbody>
+          {this.props.allProducts.length > 10 &&
+            <Pagination contador={this.props.allProducts}
               page={page}
               rowsPerPage={rowsPerPage}
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage} />
-            }
-          </Table>
+          }
+        </Table>
       </div>
     );
   }

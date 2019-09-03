@@ -133,6 +133,7 @@ class ShopContainers extends Component {
                             alert={this.props.alert}
                             permitsBuy={this.state.permitsBuy}
                             search={this.props.searchData}
+                            setSearch={this.props.search}
                           />
                         </TabPane>
                         <TabPane tabId="2">

@@ -36,6 +36,8 @@ class ListShop extends React.Component {
       this.props.alert("warning", "¡Antes de agregar una compra, debe agregar un proveedor!");
     } else {
       if (option === 1) {
+        let set = ""
+        this.props.setSearch(set)
         this.setState({
           modal: true,
           option: option,
@@ -121,15 +123,15 @@ class ListShop extends React.Component {
 
     const result = this.props.search
       ? arrayData.filter(shop => {
-       if(this.state.modal === true){
-         return arrayData
-       }else{
-        return (
-          shop.number_invoice.toLowerCase().includes(this.props.search.toLowerCase()) ||
-          shop.number_controll.toLowerCase().includes(this.props.search.toLowerCase()) ||
-          shop.type_shop.toLowerCase().includes(this.props.search.toLowerCase())
-        );
-       }
+        if (this.state.modal === true) {
+          return arrayData
+        } else {
+          return (
+            shop.number_invoice.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            shop.number_controll.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            shop.type_shop.toLowerCase().includes(this.props.search.toLowerCase())
+          );
+        }
       })
       : arrayData;
 
@@ -174,11 +176,11 @@ class ListShop extends React.Component {
               Agregar
             </Button>
           </div>
-          
-            <div className="containerSearch">
-              <Search disabled={true} />
-            </div>
-      
+
+          <div className="containerSearch">
+            <Search disabled={true} />
+          </div>
+
         </div>
         <br />
         <br />
