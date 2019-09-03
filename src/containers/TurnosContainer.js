@@ -15,6 +15,7 @@ import classnames from "classnames";
 import TurnosConfiguration from '../views/Turnos/TurnosConfiguration';
 import { connect } from 'react-redux';
 import AtencionTurnos from '../views/Turnos/AtencionTurnos';
+import { openConfirmDialog } from '../actions/aplicantionActions';
 
 class TurnosContainer extends Component {
   constructor(props) {
@@ -70,7 +71,7 @@ class TurnosContainer extends Component {
                   <TabContent activeTab={this.state.activeTab}>
                     <TabPane tabId="1">
                       <TurnosConfiguration
-                       
+                        confirm={this.props.confirm}
                       />
                     </TabPane>
                     <TabPane tabId="2">
@@ -90,5 +91,12 @@ class TurnosContainer extends Component {
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
+})
 
-export default connect(null, null) (TurnosContainer);
+const mapStateToProps = state => ({
+  turnos: state.configTurnos
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TurnosContainer);

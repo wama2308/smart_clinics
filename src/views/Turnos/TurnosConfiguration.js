@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Form, FormGroup, Label, Input, FormFeedback, InputGroupAddon, InputGroupText, InputGroup, Button, Table } from 'reactstrap'
 import TurnosModal from './TurnosModa/TurnosModal';
+import { IconButton } from '@material-ui/core';
+import { Visibility, Edit } from '@material-ui/icons';
 
 class TurnosConfiguration extends Component {
   constructor(props) {
@@ -45,7 +47,7 @@ class TurnosConfiguration extends Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Registrar Reclamo',
+        modalHeader: 'Editar Reclamo',
         modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
@@ -65,6 +67,24 @@ class TurnosConfiguration extends Component {
 
 
   render() {
+
+    const obj = [
+      {
+        sucursal: "sucursal1",
+        width: "10",
+        height: "10"
+      },
+      {
+        sucursal: "sucursal2",
+        width: "10",
+        height: "10"
+      },
+      {
+        sucursal: "sucursal2",
+        width: "10",
+        height: "10"
+      }
+    ]
 
     return (
       <div>
@@ -96,18 +116,47 @@ class TurnosConfiguration extends Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th style={{ width: "12%" }}>C.M Emitente</th>
-                  <th style={{ width: "12%" }}>C.M Receptor</th>
-                  <th style={{ width: "10%" }}>Sucursal Emitente</th>
-                  <th style={{ width: "10%" }}>Sucursal Receptora</th>
-                  <th style={{ width: "10%" }}>Visitador</th>
-                  <th style={{ width: "10%" }}>Estatus</th>
+                  <th style={{ width: "10%" }}>Sucursal</th>
+                  <th style={{ width: "10%" }}>Ancho</th>
+                  <th style={{ width: "10%" }}>Largo</th>
                   <th style={{ width: "10%" }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
+                {
+                  obj ? obj.map((list, key) => {
 
+                    return (
+                      <tr key={key}>
+                        <td>{list.sucursal}</td>
+                        <td>{list.width}</td>
+                        <td>{list.height}</td>
+                        <td>
+                          <div className="float-left" >
+                            <IconButton aria-label="Delete"
+                              title="Ver Reclamo"
+                              className="iconButtons"
+                              onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor); }}
 
+                            >
+                              <Visibility className="iconTable" />
+                            </IconButton>
+
+                            <IconButton aria-label="Delete"
+                              title="Editar Reclamo"
+                              className="iconButtons"
+                              onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor, list.status); }}
+                              
+                            >
+                              <Edit className="iconTable" />
+                            </IconButton>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  }) :
+                    null
+                }
               </tbody>
             </Table>
           </div>
