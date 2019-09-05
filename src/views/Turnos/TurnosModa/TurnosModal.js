@@ -91,11 +91,11 @@ class TurnosModal extends Component {
       [name]: event.target.checked
     });
 
-    // if(this.state.checked === false && this.state !== ""){
-    //   this.setState({
-    //    foto: null
-    //   });
-    // }
+    if(this.state.checked === false && this.state !== ""){
+      this.setState({
+       foto: null
+      });
+    }
   };
 
   disabledfoto = () => {
@@ -280,7 +280,7 @@ class TurnosModal extends Component {
                           <InputGroupAddon addonType="append">
                             <div>
                               {
-                                this.state.foto != null && <img alt="foto" style={{ width: 200, height: 150 }} className="image" src={"data:image/jpeg;" + this.state.foto} />
+                                this.state.foto != null && this.state.foto != "" && <img alt="foto" style={{ width: 200, height: 150 }} className="image" src={"data:image/jpeg;" + this.state.foto} />
                               }
                             </div>
                           </InputGroupAddon>
