@@ -62,7 +62,8 @@ class ModalTabla extends Component {
                                   type="number"
                                   placeholder="Titulo"
                                   disabled={this.props.disabled}
-
+                                  min={1}
+                                  max={100}
                                 />
                               </div>
                             </td>
@@ -74,7 +75,8 @@ class ModalTabla extends Component {
                                   type="number"
                                   placeholder="Titulo"
                                   disabled={this.props.disabled}
-
+                                  min={1}
+                                  max={100}
                                 />
                               </div>
                             </td>
@@ -86,7 +88,8 @@ class ModalTabla extends Component {
                                   type="number"
                                   placeholder="Titulo"
                                   disabled={this.props.disabled}
-
+                                  min={1}
+                                  max={100}
                                 />
                               </div>
                             </td>

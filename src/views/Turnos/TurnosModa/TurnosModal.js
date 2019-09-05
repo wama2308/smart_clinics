@@ -91,9 +91,9 @@ class TurnosModal extends Component {
       [name]: event.target.checked
     });
 
-    if(this.state.checked === false && this.state !== ""){
+    if (this.state.checked === false && this.state !== "") {
       this.setState({
-       foto: null
+        foto: null
       });
     }
   };
@@ -233,6 +233,8 @@ class TurnosModal extends Component {
                         type="number"
                         placeholder="Ancho"
                         disabled={this.props.disabled}
+                        min={1}
+                        max={100}
                       />
                       <FormFeedback tooltip>{this.state.widthError}</FormFeedback>
                     </FormGroup>
@@ -249,6 +251,8 @@ class TurnosModal extends Component {
                         type="number"
                         placeholder="Largo"
                         disabled={this.props.disabled}
+                        min={1}
+                        max={100}
                       />
                       <FormFeedback tooltip>{this.state.heightError}</FormFeedback>
                     </FormGroup>
