@@ -14,8 +14,9 @@ import {
 import classnames from "classnames";
 import TurnosConfiguration from '../views/Turnos/TurnosConfiguration';
 import { connect } from 'react-redux';
-import AtencionTurnos from '../views/Turnos/AtencionTurnos';
 import { openConfirmDialog } from '../actions/aplicantionActions';
+import { LoadConfigTurnosFuction, queryOneTicketFunction, loadOriginalTurnos } from '../actions/TurnosAction';
+import  CircularProgress  from '@material-ui/core/CircularProgress';
 
 class TurnosContainer extends Component {
   constructor(props) {
@@ -27,11 +28,12 @@ class TurnosContainer extends Component {
       master: false,
       permitsRealizados: [],
       permitsRecibidos: [],
-      permitsAtendidos: []
+      permitsAtendidos: [],
+      loading:  'hide'
     }
   }
   componentDidMount() {
-
+    this.props.LoadConfigTurnosFuction()
   }
 
   toggleTab(tab) {
@@ -50,38 +52,30 @@ class TurnosContainer extends Component {
             <Card>
               <CardHeader>Turnos</CardHeader>
               <CardBody>
-                <div>
-                  <Nav tabs>
-                    <NavItem>
-                      <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                        Configuracion de Ticket
+                {this.props.turnos.loading === 'show' ?
+                  <div>
+                    <Nav tabs>
+                      <NavItem>
+                        <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
+                          Configuracion de Ticket
                       </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
-                        Reclamos Recibidos
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
-                        Atender Reclamos
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
-                  <TabContent activeTab={this.state.activeTab}>
-                    <TabPane tabId="1">
-                      <TurnosConfiguration
-                        confirm={this.props.confirm}
-                      />
-                    </TabPane>
-                    <TabPane tabId="2">
-                      <AtencionTurnos />
-                    </TabPane>
-                    <TabPane tabId="3">
-
-                    </TabPane>
-                  </TabContent>
+                      </NavItem>
+                    </Nav>
+                    <TabContent activeTab={this.state.activeTab}>
+                      <TabPane tabId="1">
+                        <TurnosConfiguration
+                          confirm={this.props.confirm}
+                          turnos={this.props.turnos.LoadTurnos}
+                          queryOneTicketFunction={this.props.queryOneTicketFunction}
+                          loadOriginalTurnos={this.props.loadOriginalTurnos}
+                        />
+                      </TabPane>
+                    </TabContent>
+                  </div>:
+                <div style={{ height: "60vh" }}>
+                  <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
                 </div>
+                }
               </CardBody>
             </Card>
           </Col>
@@ -93,10 +87,13 @@ class TurnosContainer extends Component {
 
 const mapDispatchToProps = dispatch => ({
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
+  LoadConfigTurnosFuction: () => dispatch(LoadConfigTurnosFuction()),
+  queryOneTicketFunction: (data) => dispatch(queryOneTicketFunction(data)),
+  loadOriginalTurnos: () => dispatch(loadOriginalTurnos())
 })
 
 const mapStateToProps = state => ({
-  turnos: state.configTurnos
+  turnos: state.configTurnos.toJS()
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TurnosContainer);

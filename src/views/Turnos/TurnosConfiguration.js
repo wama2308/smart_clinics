@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Form, FormGroup, Label, Input, FormFeedback, InputGroupAddon, InputGroupText, InputGroup, Button, Table } from 'reactstrap'
+import { Table } from 'reactstrap'
 import TurnosModal from './TurnosModa/TurnosModal';
 import { IconButton } from '@material-ui/core';
 import { Visibility, Edit } from '@material-ui/icons';
+import { FaFileAlt } from 'react-icons/fa';
 
 class TurnosConfiguration extends Component {
   constructor(props) {
@@ -16,10 +17,11 @@ class TurnosConfiguration extends Component {
       showHide: '',
       option: 0,
       position: 0,
+      branchoffices_id: ''
     }
   }
 
-  openModal = (option, id_claim_receiver, id_claim_transmitter, made_by_visitor, status) => {
+  openModal = (option, branchoffices_id) => {
     if (option === 1) {
       this.setState({
         modal: true,
@@ -30,31 +32,38 @@ class TurnosConfiguration extends Component {
         showHide: 'show',
       })
     } else if (option === 2) {
-      //this.props.queryOneReclamos(id_claim_receiver, id_claim_transmitter)
+      this.props.queryOneTicketFunction(branchoffices_id)
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Reclamo',
+        modalHeader: 'Ver Configuracion',
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'hide',
-        id_receiber: id_claim_receiver,
-        id_transmitter: id_claim_transmitter,
-        visitor: made_by_visitor
+        branchoffices_id: branchoffices_id
       })
     } else if (option === 3) {
-      //this.props.queryOneReclamos(id_claim_receiver, id_claim_transmitter)
+      this.props.queryOneTicketFunction(branchoffices_id)
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Reclamo',
+        modalHeader: 'Editar Configuracion',
         modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
-        id_receiber: id_claim_receiver,
-        id_transmitter: id_claim_transmitter
+        branchoffices_id: branchoffices_id
       })
-
+    } else if (option === 4) {
+      this.props.loadOriginalTurnos()
+      this.setState({
+        modal: true,
+        option: option,
+        modalHeader: 'Configuracion Original',
+        modalFooter: 'Guardar',
+        disabled: true,
+        showHide: 'hide',
+        branchoffices_id: branchoffices_id
+      })
     }
   }
 
@@ -65,26 +74,7 @@ class TurnosConfiguration extends Component {
     });
   }
 
-
   render() {
-
-    const obj = [
-      {
-        sucursal: "sucursal1",
-        width: "10",
-        height: "10"
-      },
-      {
-        sucursal: "sucursal2",
-        width: "10",
-        height: "10"
-      },
-      {
-        sucursal: "sucursal2",
-        width: "10",
-        height: "10"
-      }
-    ]
 
     return (
       <div>
@@ -102,15 +92,9 @@ class TurnosConfiguration extends Component {
             branchOffices={this.props.reclamos}
             valorCloseModal={this.valorCloseModal}
             visitor={this.state.visitor}
+            branchoffices_id={this.state.branchoffices_id}
           />
         }
-
-        <div style={{ "marginBottom": "1.8%" }}>
-          <Button color="success"
-            onClick={() => this.openModal(1)}>
-            Agregar
-        </Button>
-        </div>
         <div className="row">
           <div className="form-group col-sm-12">
             <Table hover responsive borderless>
@@ -124,29 +108,40 @@ class TurnosConfiguration extends Component {
               </thead>
               <tbody>
                 {
-                  obj ? obj.map((list, key) => {
+                  this.props.turnos ? this.props.turnos.map((list, key) => {
 
                     return (
                       <tr key={key}>
-                        <td>{list.sucursal}</td>
+                        <td>{list.branchoffices_name}</td>
                         <td>{list.width}</td>
                         <td>{list.height}</td>
                         <td>
                           <div className="float-left" >
-                            <IconButton aria-label="Delete"
-                              title="Ver Reclamo"
+
+                            <IconButton
+                              aria-label="Delete"
+                              title="Ver Configuracion Original"
                               className="iconButtons"
-                              onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor); }}
+                              onClick={() => {
+                                this.openModal(4, list.branchoffices_id);
+                              }}
+                            >
+                              <FaFileAlt className="iconTable" />
+                            </IconButton>
+                            <IconButton aria-label="Delete"
+                              title="Ver Configuracion Editada"
+                              className="iconButtons"
+                              onClick={() => { this.openModal(2, list.branchoffices_id); }}
 
                             >
                               <Visibility className="iconTable" />
                             </IconButton>
 
                             <IconButton aria-label="Delete"
-                              title="Editar Reclamo"
+                              title="Editar Configuracion"
                               className="iconButtons"
-                              onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor, list.status); }}
-                              
+                              onClick={() => { this.openModal(3, list.branchoffices_id); }}
+
                             >
                               <Edit className="iconTable" />
                             </IconButton>
