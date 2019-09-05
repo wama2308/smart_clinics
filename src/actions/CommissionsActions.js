@@ -35,13 +35,12 @@ export const LoadConfigCommissionsFunction = () => dispatch => {
                   externalStaff: arrayExternalStaff,
                   cargos: arrayCargos,
                   dataStaffPatientAll:[],
-                  dataStaffPatientId:{},
-
+                  //dataStaffPatientId:{},
                   dataInternalStaffAll:[],
-                  dataInternalStaffId:[],                  
-
+                  //dataInternalStaffId:[],                  
                   dataExternalStaffAll:[],
-                  dataExternalStaffId:[],
+                  //dataExternalStaffId:[],
+                  dataPatientsStaff:[],
                   action:0
                 }
               });
@@ -177,13 +176,13 @@ export const cleanListServicesTab = (tab) => dispatch => {
     });
 };
 
-export const setPorcentajeTable = (pos, value) => dispatch => {
+export const setPorcentajeTable = (id, value) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_PORCENTAJE_COMISIONES",
         payload: {
-          pos: pos,
+          id: id,
           value: value,          
         }
       });
@@ -208,13 +207,13 @@ export const setPorcentajeAllTable = (value) => dispatch => {
     });
 };
 
-export const setSwitchTableComisiones = (pos, value, tab, typePersonal) => dispatch => {
+export const setSwitchTableComisiones = (id, value, tab, typePersonal) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_SWITCH_COMISIONES",
         payload: {
-          pos: pos,
+          id: id,
           value: value, 
           tab: tab,
           typePersonal:typePersonal          
@@ -333,63 +332,6 @@ export const enableConfigCommissionsAction = (id) => dispatch => {
     });
 };
 
-// export const searchPatientAll = data => dispatch => {
-//   getDataToken().then(token => {
-//     dispatch({
-//       type: "SEARCH_DATA",
-//       payload: data
-//     });
-//     axios({
-//       method: "POST",
-//       url: searchPatientUrl,
-//       data: {
-//         name: data
-//       },
-//       ...token
-//     }).then(res => {
-//       dispatch({
-//         type: "SEARCH_PATIENTS_ALL",
-//         payload: Object.values(res.data)
-//       });
-//     });
-//   });
-// };
-
-// export const searchOneStaffPatient = data => dispatch => {
-//   if (data.length === 0) {
-//     dispatch(
-//       openSnackbars("warning", "Debe ingresar el nombre o dni!")
-//     );
-//     return;
-//   }
-//   dispatch({
-//     type: "SEARCH_DATA",
-//     payload: ""
-//   });
-//   getDataToken().then(token => {
-//     axios({
-//       method: "POST",
-//       url: queryOneSupplie,
-//       data: {
-//         supplie_id: data.value
-//       },
-//       ...token
-//     })
-//       .then(res => {
-//         dispatch({
-//           type: "SEARCH_ONE_STAFF_PATIENT",
-//           payload: {
-//             ...res.data
-//           }
-//         });
-//       })
-//       .catch(err => {
-//         const result = converToJson(err);
-//         dispatch(openSnackbars("error", "persona no encontrada"));
-//       });
-//   });
-// };
-
 export const searchPatientStaffAll = search => dispatch => {
   if (search.length < 1) {
     dispatch(searchLoaded(true));
@@ -489,8 +431,6 @@ export const getOptionsPersonal = (staff, value) => dispatch => {
 };
 
 export const getOneReference = (staff, data) => dispatch => {
-  console.log("staff ", staff)
-  console.log("data ", data.value)
   if (data.length === 0) {
     dispatch(
       openSnackbars("warning", "Debe ingresar nombre o dni del personal!")
@@ -533,6 +473,40 @@ export const getOneReference = (staff, data) => dispatch => {
       });
   });
 };
+
+export const removerRegisterFunction = (key) => dispatch => {  
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "REMOVE_REGISTER",
+        payload: {
+          key: key          
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const cleanDataPatientsStaffs = () => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "CLEAN_DATA_PATIENTS_STAFFS",
+        payload: {
+          data: []
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const messageErrorFunction = (message) => dispatch => {
+  dispatch(openSnackbars("warning", `${message}`))
+}
 
 const searchLoaded = data => {
   return {

@@ -55,6 +55,7 @@ export const InitalState = {
     hideCargos:'hide',
     hideBuscador:'hide',
     hideOpciones:'hide',
+    hideTablePatientsStaff:'show',
     divSeleccioneServiciosComision: '',
     divSeleccioneServiciosPayment: '',
     collapse: false,

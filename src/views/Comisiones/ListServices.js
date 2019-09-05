@@ -50,16 +50,16 @@ class ListServices extends React.Component {
     this.setState({ page });
   };  
 
-  handleChangeInputTable = (pos) => e => {
+  handleChangeInputTable = (id) => e => {
     const { name, value } = e.target;
     /*let valor = 0;
     valor = parseFloat(value);*/    
-    this.props.setPorcentajeTable(pos, value);    
+    this.props.setPorcentajeTable(id, value);    
     this.props.seteardivSeleccioneServiciosComision();
   }
 
-  handleChangeSwitch = pos => event => {
-    this.props.setSwitchTableComisiones(pos, event.target.checked, this.props.tab, this.props.typePersonal);     
+  handleChangeSwitch = (id) => event => {    
+    this.props.setSwitchTableComisiones(id, event.target.checked, this.props.tab, this.props.typePersonal);     
     this.props.seteardivSeleccioneServiciosComision();   
   };
 
@@ -77,15 +77,15 @@ class ListServices extends React.Component {
     })
   };
 
-  eventoBlurAplicarTodos = (pos) => e => {
-    if(document.getElementById("inputQuantity_"+pos).value === '' || document.getElementById("inputQuantity_"+pos).value === '0'){
-        document.getElementById("inputQuantity_"+pos).value = '0';
+  eventoBlurAplicarTodos = (id) => e => {
+    if(document.getElementById("inputQuantity_"+id).value === '' || document.getElementById("inputQuantity_"+id).value === '0'){
+        document.getElementById("inputQuantity_"+id).value = '0';
     }        
   }
 
-  eventoFocusAplicarTodos = (pos) => e => {        
-    if(document.getElementById("inputQuantity_"+pos).value === '0'){
-        document.getElementById("inputQuantity_"+pos).value = '';
+  eventoFocusAplicarTodos = (id) => e => {        
+    if(document.getElementById("inputQuantity_"+id).value === '0'){
+        document.getElementById("inputQuantity_"+id).value = '';
     }        
   }  
 
@@ -105,7 +105,7 @@ class ListServices extends React.Component {
             value={this.state.searchService} 
             type="text"             
             placeholder="Buscar Servicio..." 
-            style={{ height: "7vh", borderRadius: "1.25rem" }}
+            style={{ height: "5vh", borderRadius: "1.25rem" }}
           />
         </FormGroup>  
       </div>
@@ -149,24 +149,24 @@ class ListServices extends React.Component {
                   {
                     this.props.typePersonal === "5d1776e3b0d4a50b23936710" ?
                     <td style={{padding: "9px"}}>
-                      <div id={`divQuantity_${i}`} className="">
+                      <div id={`divQuantity_${data.serviceId}`} className="">
                         <Input 
-                          name={`inputQuantity_${i}`}
-                          id={`inputQuantity_${i}`}
+                          name={`inputQuantity_${data.serviceId}`}
+                          id={`inputQuantity_${data.serviceId}`}
                           type="number"                                                                    
                           value={data.percentage}
-                          onChange={this.handleChangeInputTable(i)}
+                          onChange={this.handleChangeInputTable(data.serviceId)}
                           style={{width: "40%"}}
                           disabled={this.props.disabled} 
-                          onBlur ={this.eventoBlurAplicarTodos(i)} 
-                          onFocus = {this.eventoFocusAplicarTodos(i)} 
+                          onBlur ={this.eventoBlurAplicarTodos(data.serviceId)} 
+                          onFocus = {this.eventoFocusAplicarTodos(data.serviceId)} 
                         />
                       </div>
                     </td>
                     :
                     <td style={{padding: "1px"}}>
                       <Switch
-                          onChange={this.handleChangeSwitch(i)} 
+                          onChange={this.handleChangeSwitch(data.serviceId)} 
                           value= {data.confirm}                                             
                           id= {`checked_${i}`}
                           name= {`checked_${i}`}
