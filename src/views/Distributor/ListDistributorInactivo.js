@@ -68,19 +68,22 @@ class ListDistributorInactivo extends React.Component {
 
     const result = this.props.search.toLowerCase()
       ? arrayDistributor.filter(distributor => {
-          return (
-            distributor.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            distributor.phone[0].includes(this.props.search)||
-            distributor.typeIdentity.toLowerCase().includes(this.props.search.toLowerCase())||
-            distributor.tin.toString().includes(this.props.search)||
-            distributor.email[0].toLowerCase().includes(this.props.search.toLowerCase())
-          );
-        })
+        return (
+          distributor.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          distributor.phone[0].includes(this.props.search) ||
+          distributor.typeIdentity.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          distributor.tin.toString().includes(this.props.search) ||
+          distributor.email[0].toLowerCase().includes(this.props.search.toLowerCase())
+        );
+      })
       : arrayDistributor;
 
     return (
       <div>
-        <div className="containerGeneral" style={{"justifyContent": "flex-end"}}>
+
+        <div className="containerGeneral">
+          <div className="container-button">
+          </div>
           <div className="containerSearch">
             <Search value={arrayDistributor} />
           </div>
@@ -98,7 +101,7 @@ class ListDistributorInactivo extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {arrayDistributor ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
+            {arrayDistributor ? arrayDistributor.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((distributor) => {
               return (
                 <tr key={distributor.number} className="text-left">
                   <td>{distributor.number}</td>
@@ -124,14 +127,14 @@ class ListDistributorInactivo extends React.Component {
               null
             }
           </tbody>
-            {
-              arrayDistributor.length > 10 &&
-              <Pagination contador={this.props.listDistributor}
+          {
+            arrayDistributor.length > 10 &&
+            <Pagination contador={this.props.listDistributor}
               page={page}
               rowsPerPage={rowsPerPage}
               handleChangeRowsPerPage={this.handleChangeRowsPerPage}
               handleChangePage={this.handleChangePage} />
-            }
+          }
         </Table>
       </div>
     );

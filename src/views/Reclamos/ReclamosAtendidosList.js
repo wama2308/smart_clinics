@@ -10,8 +10,10 @@ import { Button } from 'reactstrap';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
 import LightBox from '../../components/LightBox';
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import jstz from 'jstz';
+import Search from "../../components/Select";
+import Pagination from '../../components/Pagination';
 
 class ReclamosAtendidosList extends Component {
   constructor(props) {
@@ -29,7 +31,9 @@ class ReclamosAtendidosList extends Component {
       sucursal_id_now: '',
       collapse: false,
       id_receiber: '',
-      id_transmitter: ''
+      id_transmitter: '',
+      page: 0,
+      rowsPerPage: 10
     }
   }
 
@@ -138,6 +142,14 @@ class ReclamosAtendidosList extends Component {
     });
   }
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
   render() {
     const time = jstz.determine().name()
 
@@ -146,6 +158,19 @@ class ReclamosAtendidosList extends Component {
     const disabledActive = GetDisabledPermits(this.props.permits, "Active")
     const disabledDelete = GetDisabledPermits(this.props.permits, "Delete")
     const disabledDetails = GetDisabledPermits(this.props.permits, "Details")
+
+    const arrayList = getArray(this.props.reclamos);
+    const { rowsPerPage, page } = this.state;
+
+    const result = this.props.search
+      ? arrayList.filter(list => {
+        return (
+          list.medical_center_transmitter.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          list.branchoffice_transmitter.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          list.visitor.toLowerCase().includes(this.props.search.toLowerCase())
+        );
+      })
+      : arrayList;
 
     return (
       <div>
@@ -173,6 +198,14 @@ class ReclamosAtendidosList extends Component {
           />
         }
 
+        <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
+          <div className="container-button">
+          </div>
+          <div className="containerSearch" >
+            <Search value={arrayList} />
+          </div>
+        </div>
+
         <div className="row">
           <div className="form-group col-sm-12">
             <Table hover responsive borderless>
@@ -187,7 +220,7 @@ class ReclamosAtendidosList extends Component {
               </thead>
               <tbody>
                 {
-                  this.props.reclamos ? this.props.reclamos.map((list, key) => {
+                  this.props.reclamos ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                     return (
                       <tr key={key}>
                         <td>{list.medical_center_transmitter}</td>
@@ -232,10 +265,20 @@ class ReclamosAtendidosList extends Component {
                 }
               </tbody>
 
+              {
+                this.props.reclamos.length > 10 && (
+                  <Pagination
+                    contador={this.props.reclamos}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage}
+                  />
+                )}
             </Table>
           </div>
         </div>
-      </div>
+      </div >
     );
   }
 }

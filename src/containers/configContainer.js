@@ -24,7 +24,8 @@ import {
 } from "../actions/configAction";
 import {
   openConfirmDialog,
-  openSnackbars
+  openSnackbars,
+  search
 } from "../actions/aplicantionActions";
 import Sucursales from "../views/Configurations/Sucursal";
 import Licencias from "../views/Configurations/Licencias";
@@ -61,6 +62,8 @@ class configContainer extends Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set)
     }
   }
 
@@ -232,7 +235,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(openConfirmDialog(message, callback)),
   deleteSucursal: (key, time) => dispatch(deleteSucursal(key, time)),
   openSnackbars: (type, message) => dispatch(openSnackbars(type, message)),
-  activeBranch: obj => dispatch(activeBranch(obj))
+  activeBranch: obj => dispatch(activeBranch(obj)),
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

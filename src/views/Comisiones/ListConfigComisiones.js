@@ -6,6 +6,7 @@ import ModalConfigCommissions from './ModalConfigComisiones.js';
 import Pagination from '../../components/Pagination';
 import { getArray, GetDisabledPermits } from '../../core/utils'
 import { number_format } from "../../core/utils";
+import Search from "../../components/Select";
 
 class ListStore extends React.Component {
   constructor(props) {
@@ -56,8 +57,8 @@ class ListStore extends React.Component {
         modalHeader: 'Editar Regla para Comision',
         modalFooter: 'Editar',
         disabled: false,
-        showHide: 'show',        
-        id: id,        
+        showHide: 'show',
+        id: id,
       })
     }
   }
@@ -93,24 +94,43 @@ class ListStore extends React.Component {
     const { rowsPerPage, page } = this.state;
     const ArrayData = getArray(this.props.data.commissions)
 
+    const result = this.props.search
+      ? ArrayData.filter(users => {
+        return (
+          users.type_staff.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          users.time.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          users.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          users.payment_type.toLowerCase().includes(this.props.search.toLowerCase())
+        );
+      })
+      : ArrayData;
+
     return (
-      <div>      
+      <div>
         {
           (this.state.option === 1 ||
-          this.state.option === 2 ||
-          this.state.option === 3) && (
-          <ModalConfigCommissions
-            option={this.state.option}
-            modal={this.state.modal}
-            modalHeader={this.state.modalHeader}
-            modalFooter={this.state.modalFooter}
-            disabled={this.state.disabled}
-            showHide={this.state.showHide}
-            valorCloseModal={this.valorCloseModal}
-            id={this.state.id}
-          />
-        )}
-        <Button color="success"  onClick={() => { this.openModal(1); }}>Agregar</Button>
+            this.state.option === 2 ||
+            this.state.option === 3) && (
+            <ModalConfigCommissions
+              option={this.state.option}
+              modal={this.state.modal}
+              modalHeader={this.state.modalHeader}
+              modalFooter={this.state.modalFooter}
+              disabled={this.state.disabled}
+              showHide={this.state.showHide}
+              valorCloseModal={this.valorCloseModal}
+              id={this.state.id}
+            />
+          )}
+        <div className="containerGeneral">
+          <div className="container-button">
+            <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
+          </div>
+          <div className="containerSearch">
+            <Search value={ArrayData} />
+          </div>
+        </div>
+
         <br />
         <br />
         <Table hover responsive borderless>
@@ -120,17 +140,17 @@ class ListStore extends React.Component {
               <th className="text-left">Personal</th>
               <th className="text-left">Tiempo(dias)</th>
               <th className="text-left">Tipo</th>
-              <th className="text-left">Condicion</th>              
-              <th className="text-left">Forma de pago</th>              
+              <th className="text-left">Condicion</th>
+              <th className="text-left">Forma de pago</th>
               <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {ArrayData ? ArrayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+            {ArrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               let condition = "";
               data.type_id === "5d1776e3b0d4a50b23931122" ?
-              condition = data.condition :
-              condition = number_format(data.condition, 2)+" "+this.props.current_simbol
+                condition = data.condition :
+                condition = number_format(data.condition, 2) + " " + this.props.current_simbol
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
@@ -138,7 +158,7 @@ class ListStore extends React.Component {
                   <td>{data.time}</td>
                   <td>{data.type}</td>
                   <td>{condition}</td>
-                  <td>{data.payment_type}</td>                  
+                  <td>{data.payment_type}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"
@@ -152,7 +172,7 @@ class ListStore extends React.Component {
                         title="Editar Comision"
                         className="iconButtons"
                         onClick={() => { this.openModal(3, data._id); }}
-                        >
+                      >
                         <Edit className="iconTable" />
                       </IconButton>
 
@@ -160,7 +180,7 @@ class ListStore extends React.Component {
                         title="Eliminar Comision"
                         className="iconButtons"
                         onClick={() => { this.deleteRegister(data._id); }}
-                        >
+                      >
                         <Delete className="iconTable" />
                       </IconButton>
                     </div>
@@ -174,11 +194,11 @@ class ListStore extends React.Component {
           </tbody>
           {
             this.props.data.commissions.length > 10 &&
-              <Pagination contador={this.props.data.commissions}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
+            <Pagination contador={this.props.data.commissions}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
           }
         </Table>
       </div>

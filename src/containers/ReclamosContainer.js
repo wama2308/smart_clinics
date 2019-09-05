@@ -32,7 +32,7 @@ import {
 
 import { loadMessageFunction, setStatusMessageFunction } from '../actions/actionsChat'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { openConfirmDialog } from '../actions/aplicantionActions';
+import { openConfirmDialog, search } from '../actions/aplicantionActions';
 import classnames from "classnames";
 import jstz from 'jstz';
 import { GetDisabledPermits } from "./../core/utils";
@@ -71,12 +71,19 @@ class ReclamosContainer extends Component {
       });
     });
   }
+  componentWillUnmount() {
+    let set = ""
+    this.props.search(set)
+  }
+
 
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set)
     }
   }
 
@@ -121,6 +128,7 @@ class ReclamosContainer extends Component {
                             token={this.props.reclamos}
                             permits={this.state.permitsRealizados}
                             messageErrorFunction={this.props.messageErrorFunction}
+                            search={this.props.searchData}
                           />
                         </TabPane>
                         <TabPane tabId="2">
@@ -137,6 +145,7 @@ class ReclamosContainer extends Component {
                             reclamosSelect={this.props.reclamos.brachOffices}
                             deleteReclamosFuction={this.props.deleteReclamosFuction}
                             messageErrorFunction={this.props.messageErrorFunction}
+                            search={this.props.searchData}
                           />
                         </TabPane>
                         <TabPane tabId="3">
@@ -148,6 +157,7 @@ class ReclamosContainer extends Component {
                             confirm={this.props.confirm}
                             permits={this.state.permitsAtendidos}
                             master={this.props.reclamos.permission[0]._id}
+                            search={this.props.searchData}
                           />
                         </TabPane>
                       </TabContent>
@@ -175,12 +185,14 @@ const mapDispatchToProps = dispatch => ({
 
   loadMessageFunction: (id_claim_receiver, id_claim_transmitter) => dispatch(loadMessageFunction(id_claim_receiver, id_claim_transmitter)),
   setStatusMessageFunction: (id_claim_receiver, id_claim_transmitter, time) => dispatch(setStatusMessageFunction(id_claim_receiver, id_claim_transmitter, time)),
-  messageErrorFunction: (status) => dispatch(messageErrorFunction(status))
+  messageErrorFunction: (status) => dispatch(messageErrorFunction(status)),
+  search: (set) => dispatch(search(set))
 })
 
 const mapStateToProps = state => ({
   reclamos: state.reclamos.toJS(),
-  aplication: state.global
+  aplication: state.global,
+  searchData: state.global.search
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReclamosContainer)

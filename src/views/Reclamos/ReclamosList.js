@@ -14,7 +14,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 import Badge from '@material-ui/core/Badge';
 import jstz from 'jstz';
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
+import Search from "../../components/Select";
+import Pagination from '../../components/Pagination';
 
 class ReclamosList extends Component {
   constructor(props) {
@@ -33,7 +35,9 @@ class ReclamosList extends Component {
       collapse: false,
       id_receiber: '',
       id_transmitter: '',
-      visitor: null
+      visitor: null,
+      page: 0,
+      rowsPerPage: 10
     }
   }
 
@@ -126,6 +130,14 @@ class ReclamosList extends Component {
     });
   }
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
   render() {
 
     const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
@@ -133,6 +145,19 @@ class ReclamosList extends Component {
     const disabledActive = GetDisabledPermits(this.props.permits, "Active")
     const disabledDelete = GetDisabledPermits(this.props.permits, "Delete")
     const disabledDetails = GetDisabledPermits(this.props.permits, "Details")
+    const arrayList = getArray(this.props.list);
+    const { rowsPerPage, page } = this.state;
+
+    const result = this.props.search
+      ? arrayList.filter(list => {
+        return (
+          list.medical_center_transmitter.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          list.medical_center_receiver.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          list.branchoffice_receiver.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          list.visitor.toLowerCase().includes(this.props.search.toLowerCase())
+        );
+      })
+      : arrayList;
 
     return (
       <div>
@@ -164,12 +189,18 @@ class ReclamosList extends Component {
             collapse={this.state.collapse}
           />
         }
-        <div style={{ "marginBottom": "1.8%" }}>
-          <Button color="success"
-            onClick={() => this.openModal(1)}
-            disabled={disabledCreate}>
-            Agregar
-        </Button>
+
+        <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
+          <div className="container-button">
+            <Button color="success"
+              onClick={() => this.openModal(1)}
+              disabled={disabledCreate}>
+              Agregar
+            </Button>
+          </div>
+          <div className="containerSearch" >
+            <Search value={arrayList} />
+          </div>
         </div>
         <div className="row">
           <div className="form-group col-sm-12">
@@ -187,7 +218,7 @@ class ReclamosList extends Component {
               </thead>
               <tbody>
                 {
-                  this.props.list ? this.props.list.map((list, key) => {
+                  this.props.list ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                     return (
                       <tr key={key}>
                         <td>{list.medical_center_transmitter}</td>
@@ -212,7 +243,7 @@ class ReclamosList extends Component {
                               <IconButton aria-label="Delete"
                                 title="Editar Reclamo"
                                 className="iconButtons"
-                                onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter,list.made_by_visitor, list.status); }}
+                                onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor, list.status); }}
                                 disabled={disabledUpdate}
                               >
                                 <Edit className="iconTable" />
@@ -257,7 +288,16 @@ class ReclamosList extends Component {
                     null
                 }
               </tbody>
-
+              {
+                this.props.list.length > 10 && (
+                  <Pagination
+                    contador={this.props.list}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage}
+                  />
+                )}
             </Table>
           </div>
         </div>
