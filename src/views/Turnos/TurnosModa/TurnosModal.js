@@ -40,7 +40,8 @@ class TurnosModal extends Component {
       height: '',
       heightError: '',
       heightInvalid: false,
-      loading: "show"
+      loading: "show",
+      checked: false
     }
   }
 
@@ -89,6 +90,12 @@ class TurnosModal extends Component {
     this.setState({
       [name]: event.target.checked
     });
+
+    // if(this.state.checked === false && this.state !== ""){
+    //   this.setState({
+    //    foto: null
+    //   });
+    // }
   };
 
   disabledfoto = () => {
