@@ -485,7 +485,7 @@ class Products extends React.Component {
     }
 
 	render() {     
-        const optionsProducts = this.optionsProducts(this.props.dataProducts);      
+        const optionsProducts = this.optionsProducts(this.props.dataProducts);           
         return (
             <div>  
                 <Collapse isOpen={this.props.collapse}>

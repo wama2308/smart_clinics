@@ -30,6 +30,8 @@ class ListStore extends React.Component {
   componentDidMount() { }
 
   openModal = (option, id) => {
+    let set = ""
+    this.props.setSearch(set)
     if (option === 1) {
       this.setState({
         modal: true,
@@ -92,8 +94,7 @@ class ListStore extends React.Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const ArrayData = getArray(this.props.data.commissions)
-
+    const ArrayData = getArray(this.props.data.commissions)    
     const result = this.props.search
       ? ArrayData.filter(users => {
         return (
@@ -127,17 +128,20 @@ class ListStore extends React.Component {
             <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
           </div>
           <div className="containerSearch">
-            <Search value={ArrayData} />
+            <Search />
           </div>
         </div>
 
         <br />
         <br />
+        <div style={{ margin: "" }}>
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
               <th className="text-left">Nro</th>
-              <th className="text-left">Personal</th>
+              <th className="text-left">Regla</th>
+              <th className="text-left">Tipo Persona</th>
+              <th className="text-left">Opcion</th>              
               <th className="text-left">Tiempo(dias)</th>
               <th className="text-left">Tipo</th>
               <th className="text-left">Condicion</th>
@@ -154,7 +158,9 @@ class ListStore extends React.Component {
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
+                  <td>{data.type_rule_commission}</td>
                   <td>{data.type_staff}</td>
+                  <td>{data.option}</td>                  
                   <td>{data.time}</td>
                   <td>{data.type}</td>
                   <td>{condition}</td>
@@ -201,6 +207,7 @@ class ListStore extends React.Component {
               handleChangePage={this.handleChangePage} />
           }
         </Table>
+        </div>
       </div>
     );
   }

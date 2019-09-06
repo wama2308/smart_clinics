@@ -22,6 +22,7 @@ import jstz from "jstz";
 import { connect } from "react-redux";
 import { enterDecimal } from "../../core/utils";
 import ListServices from "./ListServices.js";
+import ListPatientsStaff from "./ListPatientsStaff.js";
 import { openConfirmDialog, openSnackbars } from "../../actions/aplicantionActions";
 import {
   setPorcentajeTable,
@@ -32,12 +33,20 @@ import {
   saveConfigCommissionsAction,
   editConfigCommissionsAction,
   setSwitchAllTableComisiones,
-  setPorcentajeAllTable
+  setPorcentajeAllTable,
+  searchPatientStaffAll,
+  searchOnePatientStaff,
+  getOptionsPersonal,
+  getOneReference,
+  removerRegisterFunction,
+  cleanDataPatientsStaffs,
+  messageErrorFunction
 } from "../../actions/CommissionsActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { number_format } from "../../core/utils";
 import classnames from "classnames";
+import Search from "../../components/DefaultSearch";
 
 class ModalConfigCommissions extends React.Component {
   constructor(props) {
@@ -45,18 +54,11 @@ class ModalConfigCommissions extends React.Component {
     this.state = {
       ...InitalState
     };
-  }
-
-  /*toggleTab(tab) {    
-    if (this.state.activeTab !== tab) {
-      this.setState({
-        activeTab: tab
-      });
-    }        
-  }*/
-
+  } 
+    
   toggleTab = tab => {
-    if (tab === "2") {
+    if(tab === "2"){
+      console.log("tab ", tab)
       const isValid = this.validateTabTwo();
       if (isValid) {
         if (this.state.activeTab !== tab) {
@@ -65,8 +67,22 @@ class ModalConfigCommissions extends React.Component {
           });
         }
       }
-
-    } else {
+             
+    }else if(tab === "3"){
+      console.log("tab ", tab)
+      const isValid = this.validateTabThree();
+      console.log("tab 3")
+      if(isValid){
+        console.log("tab 3 isvalid")
+        if (this.state.activeTab !== tab) {
+          this.setState({
+            activeTab: tab
+          });
+        }  
+      }
+             
+    }else{
+      console.log("tab ", tab)
       if (this.state.activeTab !== tab) {
         this.setState({
           activeTab: tab
@@ -77,12 +93,12 @@ class ModalConfigCommissions extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.option === 1) {
-      this.setState({
-        loading: 'hide',
-      })
-    }
-  }
+    if(this.props.option === 1){
+      this.setState({            
+          loading: 'hide',            
+      })        
+    }    
+  } 
 
   handleChange = e => {
     const { name, value } = e.target;
@@ -102,7 +118,7 @@ class ModalConfigCommissions extends React.Component {
       ...InitalState,
       loading: "show"
     });
-    this.props.cleanListServices();
+    this.props.cleanDataPatientsStaffs();
     this.props.valorCloseModal(false);
   };
 
@@ -117,62 +133,190 @@ class ModalConfigCommissions extends React.Component {
     let divNroPersonasReferenciadasError = '';
     let divMontoMinimoComision = '';
     let divMontoMinimoComisionError = '';
-    let divPersonalExterno = '';
-    let divPersonalExternoError = '';
-    let acumConfirms = 0;
-    let divSeleccioneServiciosComision = '';
+    let acumPatiensStaffs = 0;    
+    let divTipoReglaComision = ''; 
+    let divTipoReglaComisionError = ''; 
+    let divOpciones = '';
+    let divOpcionesError = '';
+    let divCargos = '';
+    let divCargosError = '';
 
-    if (!this.state.arrayTipoPersonaSelect) {
-      divTipoPersonaError = "¡Seleccione el tipo de personal!";
-      divTipoPersona = "borderColor";
-    } else {
-      if (this.state.tiempoDias === "" || this.state.tiempoDias === "0" || this.state.tiempoDias === 0) {
-        divTiempoError = "Ingrese el tiempo (dias)!";
-        divTiempo = "borderColor";
-      }
-      if (!this.state.arrayTipo) {
-        divTipoError = "¡Seleccione el tipo!";
-        divTipo = "borderColor";
-      } else {
-        if (this.state.arrayTipo.value === "5d1776e3b0d4a50b23931122") {
-          if (this.state.nroPersonasReferenciadas === "" || this.state.nroPersonasReferenciadas === "0" || this.state.nroPersonasReferenciadas === 0) {
-            divNroPersonasReferenciadasError = "¡Ingrese el numero de personas referenciadas!";
-            divNroPersonasReferenciadas = "borderColor";
-          }
-        } else {
-          if (this.state.montoMinimoComision === "0.00" || this.state.montoMinimoComision === "0.0") {
-            divMontoMinimoComisionError = "¡Ingrese el monto minimo para la comision!";
-            divMontoMinimoComision = "borderColor";
-          }
+    if(!this.state.arrayTipoReglaComision){
+      divTipoReglaComisionError = "¡Seleccione el tipo de regla para la comision!";
+      divTipoReglaComision = "borderColor";
+    }
+    if(this.state.tiempoDias === "" || this.state.tiempoDias === "0" || this.state.tiempoDias === 0){
+      divTiempoError = "Ingrese el tiempo (dias)!";
+      divTiempo = "borderColor";
+    }
+    if(!this.state.arrayTipo){
+      divTipoError = "¡Seleccione el tipo!";
+      divTipo = "borderColor";
+    }else{
+      if(this.state.arrayTipo.value === "5d1776e3b0d4a50b23931122"){
+        if(this.state.nroPersonasReferenciadas === "" || this.state.nroPersonasReferenciadas === "0" || this.state.nroPersonasReferenciadas === 0){
+          divNroPersonasReferenciadasError = "¡Ingrese el numero de personas referenciadas!";
+          divNroPersonasReferenciadas = "borderColor";
         }
-      }
-
-      if (this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710") {
-        if (!this.state.arrayPersonalExterno) {
-          divPersonalExternoError = "¡Seleccione el personal externo!";
-          divPersonalExterno = "borderColor";
-        }
-      } else {
-        const serviceConfirm = this.props.configCommissions.servicesCommission.find(service => service.confirm === true);
-        if (!serviceConfirm) {
-          acumConfirms++;
-          //this.props.alert("warning", "¡Seleccione al menos un servicio para la comision!");
-          divSeleccioneServiciosComision = "¡Seleccione al menos un servicio para la comision!";
+      }else{
+        if(this.state.montoMinimoComision === "0.00" || this.state.montoMinimoComision === "0.0"){
+          divMontoMinimoComisionError = "¡Ingrese el monto minimo para la comision!";
+          divMontoMinimoComision = "borderColor";
         }
       }
     }
 
-    if (divTipoPersonaError ||
-      divTiempoError ||
+    if (!this.state.arrayTipoPersonaSelect) {
+      divTipoPersonaError = "¡Seleccione el tipo de personal!";
+      divTipoPersona = "borderColor";
+    }else{
+      if(!this.state.arrayOpciones){
+        divOpcionesError = "¡Seleccione la opciones para el tipo de personal!";
+        divOpciones = "borderColor";
+      }else{
+        if(this.state.arrayOpciones.value === "5d1776e3b0d4a50b23930022"){
+          if(this.props.configCommissions.dataPatientsStaff.length === 0){
+            acumPatiensStaffs++;
+            this.props.messageErrorFunction(`Debe agregar un ${this.state.arrayTipoPersonaSelect.label}`)
+          }          
+        }
+        else if(this.state.arrayOpciones.value === "5d1776e3b0d4a50b23440033"){          
+          if(!this.state.arrayCargos){
+            divCargosError = "¡Seleccione el cargo!";
+            divCargos = "borderColor";
+          }
+        }
+      }
+    }
+
+    if (divTipoReglaComisionError || 
+      divTiempoError ||         
       divTipoError ||
+      divNroPersonasReferenciadasError ||         
       divMontoMinimoComisionError ||
-      divNroPersonasReferenciadasError ||
-      divPersonalExternoError ||
-      divSeleccioneServiciosComision
-    ) {
+      divTipoPersonaError ||
+      divOpcionesError ||
+      divCargosError
+    ) 
+    {
       this.setState({
+        divTipoReglaComisionError,
+        divTipoReglaComision,
+        divTiempoError,
+        divTiempo,
+        divTipoError, 
+        divTipo,
+        divMontoMinimoComisionError,
+        divMontoMinimoComision,
+        divNroPersonasReferenciadasError,
+        divNroPersonasReferenciadas,        
         divTipoPersonaError,
         divTipoPersona,
+        divOpciones,
+        divOpcionesError,
+        divCargos,
+        divCargosError
+      });
+      return false;
+    }else if(acumPatiensStaffs === 1){
+      return false;
+    }
+    return true;    
+
+  }
+
+  validateTabThree = () => {
+    let divTipoPersona = '';
+    let divTipoPersonaError = '';
+    let divTiempo = '';
+    let divTiempoError = '';
+    let divTipo = '';
+    let divTipoError = '';
+    let divNroPersonasReferenciadas = '';
+    let divNroPersonasReferenciadasError = '';
+    let divMontoMinimoComision = '';
+    let divMontoMinimoComisionError = '';
+    let acumPatiensStaffs = 0;    
+    let acumConfirms = 0;    
+    let divTipoReglaComision = ''; 
+    let divTipoReglaComisionError = ''; 
+    let divOpciones = '';
+    let divOpcionesError = '';
+    let divCargos = '';
+    let divCargosError = '';
+    let divSeleccioneServiciosComision = '';
+
+    if(!this.state.arrayTipoReglaComision){
+      divTipoReglaComisionError = "¡Seleccione el tipo de regla para la comision!";
+      divTipoReglaComision = "borderColor";
+    }
+    if(this.state.tiempoDias === "" || this.state.tiempoDias === "0" || this.state.tiempoDias === 0){
+      divTiempoError = "Ingrese el tiempo (dias)!";
+      divTiempo = "borderColor";
+    }
+    if(!this.state.arrayTipo){
+      divTipoError = "¡Seleccione el tipo!";
+      divTipo = "borderColor";
+    }else{
+      if(this.state.arrayTipo.value === "5d1776e3b0d4a50b23931122"){
+        if(this.state.nroPersonasReferenciadas === "" || this.state.nroPersonasReferenciadas === "0" || this.state.nroPersonasReferenciadas === 0){
+          divNroPersonasReferenciadasError = "¡Ingrese el numero de personas referenciadas!";
+          divNroPersonasReferenciadas = "borderColor";
+        }
+      }else{
+        if(this.state.montoMinimoComision === "0.00" || this.state.montoMinimoComision === "0.0"){
+          divMontoMinimoComisionError = "¡Ingrese el monto minimo para la comision!";
+          divMontoMinimoComision = "borderColor";
+        }
+      }
+    }
+
+    if(!this.state.arrayTipoPersonaSelect){
+      divTipoPersonaError = "¡Seleccione el tipo de personal!";
+      divTipoPersona = "borderColor";
+    }else{
+      if(!this.state.arrayOpciones){
+        divOpcionesError = "¡Seleccione la opciones para el tipo de personal!";
+        divOpciones = "borderColor";
+      }else{
+        if(this.state.arrayOpciones.value === "5d1776e3b0d4a50b23930022"){
+          if(this.props.configCommissions.dataPatientsStaff.length === 0){
+            acumPatiensStaffs++;
+            this.props.messageErrorFunction(`Debe agregar un ${this.state.arrayTipoPersonaSelect.label}`)
+          }          
+        }
+        else if(this.state.arrayOpciones.value === "5d1776e3b0d4a50b23440033"){          
+          if(!this.state.arrayCargos){
+            divCargosError = "¡Seleccione el cargo!";
+            divCargos = "borderColor";
+          }
+        }        
+      }
+      
+      if(this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710"){  
+        console.log("entro");                          
+        const serviceConfirm = this.props.configCommissions.servicesCommission.find(service => service.confirm === true);
+        if(!serviceConfirm){
+          acumConfirms++;          
+          divSeleccioneServiciosComision = "¡Seleccione al menos un servicio para la comision!";
+        }    
+      }
+    }
+
+    if (divTipoReglaComisionError || 
+      divTiempoError ||         
+      divTipoError ||
+      divNroPersonasReferenciadasError ||         
+      divMontoMinimoComisionError ||
+      divTipoPersonaError ||
+      divOpcionesError ||
+      divCargosError ||
+      divSeleccioneServiciosComision
+    ) 
+    {
+      this.setState({
+        divTipoReglaComisionError,
+        divTipoReglaComision,
         divTiempoError,
         divTiempo,
         divTipoError,
@@ -180,79 +324,108 @@ class ModalConfigCommissions extends React.Component {
         divMontoMinimoComisionError,
         divMontoMinimoComision,
         divNroPersonasReferenciadasError,
-        divNroPersonasReferenciadas,
-        divPersonalExternoError,
-        divPersonalExterno,
+        divNroPersonasReferenciadas,        
+        divTipoPersonaError,
+        divTipoPersona,
+        divOpciones,
+        divOpcionesError,
+        divCargos,
+        divCargosError,
         divSeleccioneServiciosComision
       });
       return false;
-    } else if (acumConfirms === 1) {
+    }else if(acumPatiensStaffs === 1){
+      return false;
+    }else if(acumConfirms === 1){
       return false;
     }
-    return true;
-
+    return true;    
   }
+
 
   validate = () => {
     let divTipoPersona = '';
     let divTipoPersonaError = '';
     let divTiempo = '';
     let divTiempoError = '';
-    let divMontoComision = '';
-    let divMontoComisionError = '';
-    let divModoPago = '';
-    let divModoPagoError = '';
-    let divEspecifique = '';
-    let divEspecifiqueError = '';
-    let divPorcentajeComision = '0';
-    let divPorcentajeComisionError = '';
-    let divNroPersonasReferenciadas = '';
-    let divNroPersonasReferenciadasError = '';
     let divTipo = '';
     let divTipoError = '';
+    let divNroPersonasReferenciadas = '';
+    let divNroPersonasReferenciadasError = '';
     let divMontoMinimoComision = '';
     let divMontoMinimoComisionError = '';
-    let divPersonalExterno = '';
-    let divPersonalExternoError = '';
-    let acumPorcentajes = 0;
-    let acumConfirms = 0;
-    let acumConfirmsPayments = 0;
+    let acumPatiensStaffs = 0;    
+    let acumConfirms = 0;    
+    let acumConfirmsPayments = 0;    
+    let acumPorcentajes = 0;    
+    let divTipoReglaComision = ''; 
+    let divTipoReglaComisionError = ''; 
+    let divOpciones = '';
+    let divOpcionesError = '';
+    let divCargos = '';
+    let divCargosError = '';
+    let divModoPagoError = '';
+    let divModoPago = '';
+    let divMontoComisionError = '';
+    let divMontoComision = '';
+    let divPorcentajeComisionError = '';
+    let divPorcentajeComision = '';
+    let divEspecifiqueError = '';
+    let divEspecifique = '';
     let divSeleccioneServiciosComision = '';
     let divSeleccioneServiciosPayment = '';
 
-    if (!this.state.arrayTipoPersonaSelect) {
+    if(!this.state.arrayTipoReglaComision){
+      divTipoReglaComisionError = "¡Seleccione el tipo de regla para la comision!";
+      divTipoReglaComision = "borderColor";
+    }
+    if(this.state.tiempoDias === "" || this.state.tiempoDias === "0" || this.state.tiempoDias === 0){
+      divTiempoError = "Ingrese el tiempo (dias)!";
+      divTiempo = "borderColor";
+    }
+    if(!this.state.arrayTipo){
+      divTipoError = "¡Seleccione el tipo!";
+      divTipo = "borderColor";
+    }else{
+      if(this.state.arrayTipo.value === "5d1776e3b0d4a50b23931122"){
+        if(this.state.nroPersonasReferenciadas === "" || this.state.nroPersonasReferenciadas === "0" || this.state.nroPersonasReferenciadas === 0){
+          divNroPersonasReferenciadasError = "¡Ingrese el numero de personas referenciadas!";
+          divNroPersonasReferenciadas = "borderColor";
+        }
+      }else{
+        if(this.state.montoMinimoComision === "0.00" || this.state.montoMinimoComision === "0.0"){
+          divMontoMinimoComisionError = "¡Ingrese el monto minimo para la comision!";
+          divMontoMinimoComision = "borderColor";
+        }
+      }
+    }
+
+    if(!this.state.arrayTipoPersonaSelect){
       divTipoPersonaError = "¡Seleccione el tipo de personal!";
       divTipoPersona = "borderColor";
-    } else {
-      if (this.state.tiempoDias === "" || this.state.tiempoDias === "0" || this.state.tiempoDias === 0) {
-        divTiempoError = "Ingrese el tiempo (dias)!";
-        divTiempo = "borderColor";
-      }
-      if (!this.state.arrayTipo) {
-        divTipoError = "¡Seleccione el tipo!";
-        divTipo = "borderColor";
-      } else {
-        if (this.state.arrayTipo.value === "5d1776e3b0d4a50b23931122") {
-          if (this.state.nroPersonasReferenciadas === "" || this.state.nroPersonasReferenciadas === "0" || this.state.nroPersonasReferenciadas === 0) {
-            divNroPersonasReferenciadasError = "¡Ingrese el numero de personas referenciadas!";
-            divNroPersonasReferenciadas = "borderColor";
-          }
-        } else {
-          if (this.state.montoMinimoComision === "0.00" || this.state.montoMinimoComision === "0.0") {
-            divMontoMinimoComisionError = "¡Ingrese el monto minimo para la comision!";
-            divMontoMinimoComision = "borderColor";
-          }
+    }else{
+      if(!this.state.arrayOpciones){
+        divOpcionesError = "¡Seleccione la opciones para el tipo de personal!";
+        divOpciones = "borderColor";
+      }else{
+        if(this.state.arrayOpciones.value === "5d1776e3b0d4a50b23930022"){
+          if(this.props.configCommissions.dataPatientsStaff.length === 0){
+            acumPatiensStaffs++;
+            this.props.messageErrorFunction(`Debe agregar un ${this.state.arrayTipoPersonaSelect.label}`)
+          }          
         }
+        else if(this.state.arrayOpciones.value === "5d1776e3b0d4a50b23440033"){          
+          if(!this.state.arrayCargos){
+            divCargosError = "¡Seleccione el cargo!";
+            divCargos = "borderColor";
+          }
+        }        
       }
-
-      if (this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710") {
-        const servicePercentaje = this.props.configCommissions.servicesPayment.find(service => service.percentage !== 0);
-        const servicePercentajeVacios = this.props.configCommissions.servicesPayment.find(service => service.percentage === "");
-        if (!this.state.arrayPersonalExterno) {
-          divPersonalExternoError = "¡Seleccione el personal externo!";
-          divPersonalExterno = "borderColor";
-        }
-        if (!servicePercentaje) {
+      
+      if(this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){  
+        const servicePercentaje = this.props.configCommissions.servicesPayment.find(service => service.percentage !== 0);        
+        const servicePercentajeVacios = this.props.configCommissions.servicesPayment.find(service => service.percentage === "");        
+        if(!servicePercentaje){
           acumPorcentajes++;
           //this.props.alert("warning", "¡Ingrese al menos un porcentaje de ganancia!");
           divSeleccioneServiciosPayment = "¡Ingrese al menos un porcentaje de ganancia!";
@@ -301,24 +474,39 @@ class ModalConfigCommissions extends React.Component {
       }
     }
 
-    if (divTipoPersonaError ||
-      divTiempoError ||
-      divModoPagoError ||
-      divMontoComisionError ||
-      divPorcentajeComisionError ||
-      divEspecifiqueError ||
+    if (divTipoReglaComisionError || 
+      divTiempoError ||         
       divTipoError ||
-      divNroPersonasReferenciadasError ||
+      divNroPersonasReferenciadasError ||         
       divMontoMinimoComisionError ||
-      divPersonalExternoError ||
+      divTipoPersonaError ||
+      divOpcionesError ||
+      divCargosError ||
+      divModoPagoError || 
+      divMontoComisionError || 
+      divPorcentajeComisionError || 
+      divEspecifiqueError ||
       divSeleccioneServiciosComision ||
       divSeleccioneServiciosPayment
-    ) {
+    ) 
+    {
       this.setState({
-        divTipoPersonaError,
-        divTipoPersona,
+        divTipoReglaComisionError,
+        divTipoReglaComision,
         divTiempoError,
         divTiempo,
+        divTipoError, 
+        divTipo,
+        divMontoMinimoComisionError,
+        divMontoMinimoComision,
+        divNroPersonasReferenciadasError,
+        divNroPersonasReferenciadas,        
+        divTipoPersonaError,
+        divTipoPersona,
+        divOpciones,
+        divOpcionesError,
+        divCargos,
+        divCargosError,
         divModoPagoError,
         divModoPago,
         divMontoComisionError,
@@ -327,26 +515,16 @@ class ModalConfigCommissions extends React.Component {
         divPorcentajeComision,
         divEspecifiqueError,
         divEspecifique,
-        divTipoError,
-        divTipo,
-        divNroPersonasReferenciadasError,
-        divNroPersonasReferenciadas,
-        divMontoMinimoComisionError,
-        divMontoMinimoComision,
-        divPersonalExternoError,
-        divPersonalExterno,
         divSeleccioneServiciosComision,
         divSeleccioneServiciosPayment
       });
       return false;
-    } else if (acumPorcentajes === 1) {
-      return false;
-    } else if (acumConfirmsPayments === 1) {
+    }else if(acumPatiensStaffs === 1){
       return false;
     } else if (acumConfirms === 1) {
       return false;
     }
-    return true;
+    return true;   
   };
 
   handleSave = event => {
@@ -355,30 +533,34 @@ class ModalConfigCommissions extends React.Component {
     if (isValid) {
       let amount = 0;
       let modoPago = "";
-      let externalStaffId = "";
-      if (this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710") {
-        if (this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930011") {
+      let charges = [];
+      if(this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710"){        
+        if(this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930011"){
           amount = this.state.montoComision;
         } else if (this.state.arrayModoPagoSelect.value === "5d1776e3b0d4a50b23930022") {
           amount = this.state.porcentajeComision;
         } else {
           amount = 0;
         }
-        modoPago = this.state.arrayModoPagoSelect.value;
-      } else {
-        externalStaffId = this.state.arrayPersonalExterno.value;
+        modoPago = this.state.arrayModoPagoSelect.value;        
+      }      
+      if(this.state.arrayOpciones.value === "5d1776e3b0d4a50b23440033"){        
+        charges = this.state.arrayCargos;
       }
 
       if (this.props.option === 1) {
         this.setState({ loading: 'show' })
         this.props.saveConfigCommissionsAction(
           {
+            type_rule_commission: this.state.arrayTipoReglaComision.value,
             type_staff: this.state.arrayTipoPersonaSelect.value,
             time: this.state.tiempoDias,
             type: this.state.arrayTipo.value,
             amount_min: this.state.montoMinimoComision,
-            number_people: this.state.nroPersonasReferenciadas,
-            external_staff_id: externalStaffId,
+            number_people: this.state.nroPersonasReferenciadas,            
+            options: this.state.arrayOpciones.value,            
+            charges: charges,            
+            dataPatientsStaffs: this.props.configCommissions.dataPatientsStaff,            
             services_commission: this.props.configCommissions.servicesCommission,
             payment_type: modoPago,
             amount: amount,
@@ -397,12 +579,15 @@ class ModalConfigCommissions extends React.Component {
         this.props.editConfigCommissionsAction(
           {
             _id: this.props.id,
+            type_rule_commission: this.state.arrayTipoReglaComision.value,
             type_staff: this.state.arrayTipoPersonaSelect.value,
             time: this.state.tiempoDias,
             type: this.state.arrayTipo.value,
             amount_min: this.state.montoMinimoComision,
             number_people: this.state.nroPersonasReferenciadas,
-            external_staff_id: externalStaffId,
+            options: this.state.arrayOpciones.value,            
+            charges: charges,    
+            dataPatientsStaffs: this.props.configCommissions.dataPatientsStaff,                 
             services_commission: this.props.configCommissions.servicesCommission,
             payment_type: modoPago,
             amount: amount,
@@ -423,79 +608,147 @@ class ModalConfigCommissions extends React.Component {
     let hideEspecifique = "";
     let hideMontoComision = "";
     let hidePorcentajeComision = "";
-    let hidePersonalExterno = "";
-    let hideAplicarPorcentajeTodos = "";
-    if (arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710") {
-      hideModoPago = "hide";
-      hideEspecifique = 'hide';
-      hideMontoComision = "hide";
-      hidePorcentajeComision = "hide";
-      hidePersonalExterno = "show";
-      hideAplicarPorcentajeTodos = "show";
-    } else {
-      hideModoPago = "show";
-      hideEspecifique = 'hide';
-      hideMontoComision = "hide";
-      hidePorcentajeComision = "hide";
-      hidePersonalExterno = "hide";
-      hideAplicarPorcentajeTodos = "hide";
-    }
-
-    this.setState({
-      arrayTipoPersonaSelect,
-      arrayModoPagoSelect: null,
-      divTipoPersona: "",
-      divTipoPersonaError: "",
-      hideModoPago: hideModoPago,
-      montoComision: '0.00',
-      porcentajeComision: '0',
-      especifique: '',
-      hideEspecifique: hideEspecifique,
-      hideMontoComision: hideMontoComision,
-      hidePorcentajeComision: hidePorcentajeComision,
-      hidePersonalExterno: hidePersonalExterno,
-      hideAplicarPorcentajeTodos: hideAplicarPorcentajeTodos,
-    });
-    this.props.cleanListServicesTab(this.state.activeTab);
+    let hidePersonalExterno = "";    
+    let hideAplicarPorcentajeTodos = "";    
+    let hideCargos = "hide";    
+    let hideBuscador = "hide";    
+    if(arrayTipoPersonaSelect){
+      if(arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){
+        hideModoPago = "hide";
+        hideEspecifique = 'hide';
+        hideMontoComision = "hide";
+        hidePorcentajeComision = "hide";
+        hidePersonalExterno = "show";
+        hideAplicarPorcentajeTodos = "show";
+      }else{
+        hideModoPago = "show";
+        hideEspecifique = 'hide';
+        hideMontoComision = "hide";
+        hidePorcentajeComision = "hide";
+        hidePersonalExterno = "hide";
+        hideAplicarPorcentajeTodos = "hide";
+      }
+  
+      this.setState({
+        arrayTipoPersonaSelect,
+        arrayModoPagoSelect: null,
+        divTipoPersona: "",
+        divTipoPersonaError: "",
+        hideModoPago:hideModoPago,
+        montoComision:'0.00',
+        porcentajeComision:'0',
+        especifique:'',
+        arrayOpciones: null,
+        arrayCargos:null,
+        labelsBuscador: arrayTipoPersonaSelect.label,
+        hideEspecifique: hideEspecifique,
+        hideMontoComision: hideMontoComision,
+        hidePorcentajeComision: hidePorcentajeComision,
+        hidePersonalExterno: hidePersonalExterno,
+        hideAplicarPorcentajeTodos: hideAplicarPorcentajeTodos,
+        hideCargos: hideCargos,
+        hideBuscador: hideBuscador,
+        hideOpciones: 'show',
+      });
+      this.props.cleanListServicesTab(this.state.activeTab);
+    }else{
+      this.setState({        
+        hideOpciones: 'hide',
+      });
+    }   
+    this.props.cleanDataPatientsStaffs();
   };
 
-  handleChangeTipo = arrayTipo => {
-    let hideTipoNroPersonas = "";
-    let hideTipoMontoMinimo = "";
-    if (arrayTipo.value === "5d1776e3b0d4a50b23931122") {
-      hideTipoNroPersonas = "Show";
-      hideTipoMontoMinimo = 'hide';
-    } else {
-      hideTipoNroPersonas = "hide";
-      hideTipoMontoMinimo = 'show';
+   handleChangeTipo = arrayTipo => {    
+    if(arrayTipo){
+      let hideTipoNroPersonas = "";    
+      let hideTipoMontoMinimo = "";    
+      if(arrayTipo.value === "5d1776e3b0d4a50b23931122"){
+        hideTipoNroPersonas = "Show";
+        hideTipoMontoMinimo = 'hide';      
+      }else{
+        hideTipoNroPersonas = "hide";
+        hideTipoMontoMinimo = 'show';      
+      }  
+      this.setState({
+        arrayTipo,
+        divTipo: "",
+        divTipoError: "",
+        hideTipoNroPersonas: hideTipoNroPersonas,
+        hideTipoMontoMinimo: hideTipoMontoMinimo,
+        montoMinimoComision: '0.00',
+        nroPersonasReferenciadas: '0',
+      });
     }
-    this.setState({
-      arrayTipo,
-      divTipo: "",
-      divTipoError: "",
-      hideTipoNroPersonas: hideTipoNroPersonas,
-      hideTipoMontoMinimo: hideTipoMontoMinimo,
-      montoMinimoComision: '0.00',
-      nroPersonasReferenciadas: '0',
-    });
-
   }
+
   handleChangeTiempo = arrayTiempoSelect => {
     this.setState({
       arrayTiempoSelect,
       divTiempo: "",
       divTiempoError: ""
     });
-  };
+  };  
+  
+  handleChangeTipoReglaComision = arrayTipoReglaComision => {
+    if(arrayTipoReglaComision){
+      this.setState({
+        arrayTipoReglaComision,
+        divTipoReglaComision: "",
+        divTipoReglaComisionError: "",
+        arrayTipo:null,
+        arrayTipoPersonaSelect:null,
+        hideOpciones:'hide',
+        hideCargos:'hide',
+        hideBuscador:'hide',
+      });    
+    }    
+  };    
 
-  handleChangePersonalExterno = arrayPersonalExterno => {
-    this.setState({
-      arrayPersonalExterno,
-      divPersonalExterno: "",
-      divPersonalExternoError: ""
-    });
-  };
+  handleChangeOpciones = arrayOpciones => {
+    let hideCargos = "";    
+    let hideBuscador = "";    
+    if(arrayOpciones){
+      if(arrayOpciones.value === "5d1776e3b0d4a50b23440033"){
+        hideCargos = "show";    
+        hideBuscador = "hide";    
+      }else if(arrayOpciones.value === "5d1776e3b0d4a50b23930022"){
+        hideCargos = "hide";    
+        hideBuscador = "show";    
+      }else{
+        hideCargos = "hide";    
+        hideBuscador = "hide";    
+      }
+      this.setState({
+        arrayOpciones,
+        arrayCargos:null,
+        divOpciones: "",
+        divOpcionesError: "",
+        hideCargos:hideCargos,
+        hideBuscador:hideBuscador,
+      });
+    }
+    
+  };  
 
+  handleChangeCargos = arrayCargos => {
+    console.log(arrayCargos);
+    if(arrayCargos){
+      this.setState({
+        arrayCargos,
+        divCargos: "",
+        divCargosError: ""
+      });
+    }else{
+      this.setState({
+        arrayCargos: null,
+        divCargos: "",
+        divCargosError: ""
+      });
+    }
+    
+  };  
+  
   handleChangeModoPago = arrayModoPagoSelect => {
     let hideEspecifique = "";
     let hideMontoComision = "";
@@ -531,11 +784,14 @@ class ModalConfigCommissions extends React.Component {
     this.props.cleanListServicesTab(this.state.activeTab);
   };
 
-  componentWillReceiveProps = props => {
-    if (props.option === 1) {
+  componentWillReceiveProps = props => {  
+    console.log("componentWillReceiveProps ", props.configCommissions);  
+    //console.log("props.configCommissions.dataPatientsStaff ", props.configCommissions.dataPatientsStaff);  
+    //console.log("this.props.configCommissions.servicesCommission ", props.configCommissions.servicesCommission);
+    if(props.option === 1){
       this.setState({
-        loading: 'hide'
-      });
+        loading:'hide'
+      });      
     }
     if (props.option === 2 || props.option === 3) {
       if (props.configCommissions.dataId._id && props.configCommissions.action === 0) {
@@ -546,27 +802,28 @@ class ModalConfigCommissions extends React.Component {
         let hidePersonalExterno = "";
         let hideTipoNroPersonas = "";
         let hideTipoMontoMinimo = "";
+        let hideCargos = "";
+        let hideBuscador = "";
         let montoMinimoComision = "0.00";
         let nroPersonasReferenciadas = "0";
         let montoComision = "0.00";
         let porcentajeComision = "0";
         let especifique = "0";
-        let arrayPersonalExterno = null;
-        if (props.configCommissions.dataId.type_staff.value === "5d1776e3b0d4a50b23936710") {
+        let cargosArray = null;
+        
+        if(props.configCommissions.dataId.type_staff.value === "5d1776e3b0d4a50b23936710"){
           hideModoPago = "hide";
           hideEspecifique = 'hide';
           hideMontoComision = "hide";
           hidePorcentajeComision = "hide";
-          hidePersonalExterno = "show";
-          arrayPersonalExterno = props.configCommissions.dataId.external_staff;
-        } else {
+          hidePersonalExterno = "show";          
+        }else{
           hideModoPago = "show";
           hideEspecifique = 'hide';
           hideMontoComision = "hide";
           hidePorcentajeComision = "hide";
-          hidePersonalExterno = "hide";
-          arrayPersonalExterno = null;
-        }
+          hidePersonalExterno = "hide";          
+        }        
 
         if (props.configCommissions.dataId.payment_type.value === "5d1776e3b0d4a50b23930044") {
           hideEspecifique = 'show';
@@ -610,6 +867,20 @@ class ModalConfigCommissions extends React.Component {
           nroPersonasReferenciadas = "0";
         }
 
+        if(props.configCommissions.dataId.option.value === "5d1776e3b0d4a50b23440033"){
+          hideCargos = "show";    
+          hideBuscador = "hide";    
+          cargosArray = props.configCommissions.dataId.data_options;
+        }else if(props.configCommissions.dataId.option.value === "5d1776e3b0d4a50b23930022"){
+          hideCargos = "hide";    
+          hideBuscador = "show";    
+          cargosArray = null;
+        }else{
+          hideCargos = "hide";    
+          hideBuscador = "hide";    
+          cargosArray = null;
+        }
+
         this.setState({
           hideTipoNroPersonas: hideTipoNroPersonas,
           hideTipoMontoMinimo: hideTipoMontoMinimo,
@@ -618,12 +889,16 @@ class ModalConfigCommissions extends React.Component {
           hideEspecifique: hideEspecifique,
           hideMontoComision: hideMontoComision,
           hidePorcentajeComision: hidePorcentajeComision,
+          hideCargos: hideCargos,
+          hideBuscador: hideBuscador,
+          arrayTipoReglaComision: props.configCommissions.dataId.type_rule_commission,
           arrayTipoPersonaSelect: props.configCommissions.dataId.type_staff,
           tiempoDias: props.configCommissions.dataId.time,
           arrayTipo: props.configCommissions.dataId.type,
           montoMinimoComision: montoMinimoComision,
           nroPersonasReferenciadas: nroPersonasReferenciadas,
-          arrayPersonalExterno: arrayPersonalExterno,
+          arrayOpciones: props.configCommissions.dataId.option,
+          arrayCargos: cargosArray,
           arrayModoPagoSelect: props.configCommissions.dataId.payment_type,
           montoComision: montoComision,
           porcentajeComision: porcentajeComision,
@@ -633,6 +908,7 @@ class ModalConfigCommissions extends React.Component {
         this.props.actionProps();
       }
     }
+
   };
 
   handlekeyMontoComision = event => {
@@ -737,7 +1013,7 @@ class ModalConfigCommissions extends React.Component {
   }
 
   seteardivSeleccioneServiciosComision = () => {
-    if (this.state.activeTab === '1') {
+    if(this.state.activeTab === '2'){
       this.setState({
         divSeleccioneServiciosComision: '',
       });
@@ -749,9 +1025,86 @@ class ModalConfigCommissions extends React.Component {
 
   }
 
- 
+  typeIdentityOnchange = event =>{    
+    this.setState({
+        arrayTipo:event.target.value,            
+    })
+  } 
 
-  render() {
+  optionsPatientsStaffAll = options => {
+    if (!options) {
+      return [];
+    }
+    const data = [];
+    options.map(option => {
+      data.push({
+        label: `${option.type_identity}-${option.dni}  ${option.names}`
+      });
+    });
+    return data;
+  }; 
+
+  getOptions = value => {
+    const staff = this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936711" ? 0 : 1;
+    this.props.getOptionsPersonal(staff, value);
+  };
+
+  getOneOptionsStaff = value => {
+    const staff = this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936711" ? 0 : 1;
+    this.props.getOneReference(staff, value);
+  };
+
+  orderOptions = value => {
+    if (!value) {
+      return;
+    }
+    const array = [];
+    value.map(val => {
+      array.push({
+        label: `${val.names} ${val.surnames}  ${val.type_identity}-${val.dni} `,
+        value: val._id
+      });
+    });
+
+    return array;
+  };
+
+  orderExternalOptions = value => {
+    if (!value) {
+      return;
+    }
+    const array = [];
+    value.map(val => {
+      array.push({
+        label: val.branchoffices_name,
+        value: val._id
+      });
+    });
+
+    return array;
+  }; 
+
+  render() {         
+    const optionsPatientsStaffAll = this.optionsPatientsStaffAll(this.props.dataPatientsAll);       
+    let optionsReferences = [];
+    let tabOptionNext = "";
+    let tabOptionLast = "";
+    if(this.state.arrayTipoPersonaSelect){
+      if(this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936711"){
+        optionsReferences = this.orderOptions(this.props.optionsInternal) 
+      }else{
+        optionsReferences =this.orderExternalOptions(this.props.optionsExternal);
+      }
+
+      if(this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710"){
+        tabOptionNext = "3";
+        tabOptionLast = "1";
+      }else{
+        tabOptionNext = "2";
+        tabOptionLast = "2";
+      }
+    }
+
     return (
       <span>
         <Modal
@@ -776,9 +1129,21 @@ class ModalConfigCommissions extends React.Component {
                           Reglas
                           </NavLink>
                       </NavItem>
+                      {
+                        (this.state.arrayTipo &&
+                        this.state.arrayTipo.value !== "" &&
+                        this.state.arrayTipoPersonaSelect &&
+                        this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710") &&
+                        <NavItem>
+                          <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab(tabOptionNext); }} >
+                              Servicios-Comision
+                          </NavLink>
+                        </NavItem>                        
+                      }
+                      
                       <NavItem>
-                        <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
-                          Formas de Pago
+                          <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
+                              Formas de Pago
                           </NavLink>
                       </NavItem>
                     </Nav>
@@ -786,19 +1151,19 @@ class ModalConfigCommissions extends React.Component {
                       <TabPane tabId="1">
                         <div className="row">
                           <FormGroup className="top form-group col-sm-6">
-                            <Label for="tipoPersona">Tipo de Persona</Label>
-                            <div className={this.state.divTipoPersona}>
-                              <Select
-                                isSearchable="true"
+                            <Label for="tipoPersona">Tipo de regla para comision</Label>
+                            <div className={this.state.divTipoReglaComision}>
+                              <Select                            
+                                isSearchable={true}                                
                                 isDisabled={this.props.disabled}
-                                name="tipoPersona"
-                                value={this.state.arrayTipoPersonaSelect}
-                                onChange={this.handleChangeTipoPersona}
-                                options={this.props.type_staff}
+                                name="tipoReglaComision"
+                                value={this.state.arrayTipoReglaComision}
+                                onChange={this.handleChangeTipoReglaComision}
+                                options={this.props.commission_type}                      
                               />
                             </div>
                             <div className="errorSelect">
-                              {this.state.divTipoPersonaError}
+                              {this.state.divTipoReglaComisionError}
                             </div>
                           </FormGroup>
                           <FormGroup className="top form-group col-sm-6">
@@ -822,37 +1187,55 @@ class ModalConfigCommissions extends React.Component {
                           <FormGroup className="top form-group col-sm-6">
                             <Label for="tipo">Tipo</Label>
                             <div className={this.state.divTipo}>
-                              <Select
-                                isSearchable="true"
-                                isDisabled={this.props.disabled}
-                                name="tipo"
-                                value={this.state.arrayTipo}
-                                onChange={this.handleChangeTipo}
-                                options={this.props.commission_rule}
-                              />
+                              {
+                                (this.state.arrayTipoReglaComision && 
+                                this.state.arrayTipoReglaComision.value === "5d1776e3b0d4a50b23931100") &&
+                                <Select
+                                  isSearchable="true"
+                                  isDisabled={this.props.disabled}
+                                  name="tipo"
+                                  value={this.state.arrayTipo}
+                                  onChange={this.handleChangeTipo}
+                                  options={this.props.commission_rule.filter(
+                                    option => option.value !== "5d1776e3b0d4a50b23931133"
+                                  )}                                
+                                />                              
+                              }
+                              {
+                                (this.state.arrayTipoReglaComision === null || 
+                                this.state.arrayTipoReglaComision.value === "5d1776e3b0d4a50b23931199") &&
+                                <Select
+                                  isSearchable="true"
+                                  isDisabled={this.props.disabled}
+                                  name="tipo"
+                                  value={this.state.arrayTipo}
+                                  onChange={this.handleChangeTipo}
+                                  options={this.props.commission_rule}                                
+                                />                              
+                              }
                             </div>
                             <div className="errorSelect">
                               {this.state.divTipoError}
                             </div>
-                          </FormGroup>
-                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideTipoMontoMinimo}`}>
-                            <Label for="montoMinimoComision">Monto Minimo para Comision:</Label>
-                            <div className={this.state.divMontoMinimoComision}>
-                              <Input
-                                disabled={this.props.disabled}
-                                name="montoMinimoComision"
-                                id="montoMinimoComision"
-                                onKeyUp={this.handlekeyMontoMinimoComision}
-                                onChange={this.handleChange}
-                                value={this.state.montoMinimoComision}
-                                type="text"
-                                placeholder="Monto minimo para Comision"
-                                onKeyPress={enterDecimal}
-                                onBlur={this.eventoBlurMontoMinimo}
-                                onFocus={this.eventoFocusMontoMinimo}
-                              />
-                            </div>
-                            <div className="errorSelect">{this.state.divMontoMinimoComisionError}</div>
+                          </FormGroup>  
+                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideTipoMontoMinimo}`}>                                                             
+                              <Label for="montoMinimoComision">Monto Minimo para Comision:</Label> 
+                              <div className={this.state.divMontoMinimoComision}>                               
+                                  <Input 
+                                    disabled={this.props.disabled} 
+                                    name="montoMinimoComision" 
+                                    id="montoMinimoComision" 
+                                    onKeyUp={this.handlekeyMontoMinimoComision} 
+                                    onChange={this.handleChange} 
+                                    value={this.state.montoMinimoComision} 
+                                    type="text" 
+                                    placeholder="Monto minimo para Comision" 
+                                    onKeyPress={ enterDecimal } 
+                                    onBlur ={this.eventoBlurMontoMinimo} 
+                                    onFocus = {this.eventoFocusMontoMinimo} 
+                                  />                                    
+                              </div>
+                              <div className="errorSelect">{this.state.divMontoMinimoComisionError}</div>                                                                                                                                                                                         
                           </FormGroup>
                           <FormGroup className={`top form-group col-sm-6 ${this.state.hideTipoNroPersonas}`}>
                             <Label for="nroPersonasReferenciadas">Cantidad de Personas referenciadas</Label>
@@ -871,44 +1254,165 @@ class ModalConfigCommissions extends React.Component {
                             <div className="errorSelect">
                               {this.state.divNroPersonasReferenciadasError}
                             </div>
-                          </FormGroup>
-                          <FormGroup className={`top form-group col-sm-6 ${this.state.hidePersonalExterno}`}>
-                            <Label for="tipo">Personal Externo</Label>
-                            <div className={this.state.divPersonalExterno}>
+                          </FormGroup> 
+                          <FormGroup className="top form-group col-sm-6">
+                            <Label for="tipoPersona">Tipo de Persona</Label>
+                            <div className={this.state.divTipoPersona}>
+                              {
+                                (this.state.arrayTipoReglaComision && 
+                                this.state.arrayTipoReglaComision.value === "5d1776e3b0d4a50b23931100") &&
+                                  <Select
+                                    isSearchable={true}                                
+                                    isDisabled={this.props.disabled}
+                                    name="tipoPersona"
+                                    id="tipoPersona"
+                                    value={this.state.arrayTipoPersonaSelect}
+                                    onChange={this.handleChangeTipoPersona}
+                                    options={this.props.type_staff.filter(
+                                      option => option.value === "5d1776e3b0d4a50b23936711"
+                                    )}
+                                  />
+                              }
+                              {
+                                (this.state.arrayTipoReglaComision === null || 
+                                this.state.arrayTipoReglaComision.value === "5d1776e3b0d4a50b23931199") &&
+                                  <Select
+                                    isSearchable={true}                                
+                                    isDisabled={this.props.disabled}
+                                    name="tipoPersona"
+                                    name="tipoPersona"
+                                    value={this.state.arrayTipoPersonaSelect}
+                                    onChange={this.handleChangeTipoPersona}
+                                    options={this.props.type_staff}
+                                  />
+                              }
+                            </div>
+                            <div className="errorSelect">
+                              {this.state.divTipoPersonaError}
+                            </div>
+                          </FormGroup>      
+                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideOpciones}`}>
+                            <Label for="tipo">Opciones</Label>
+                            <div className={this.state.divOpciones}>
+                              {
+                                ((this.state.arrayTipoPersonaSelect) &&
+                                (this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936712" ||
+                                this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936710")) &&
+                                <Select
+                                  isSearchable="true"
+                                  isDisabled={this.props.disabled}
+                                  name="arrayOpciones"
+                                  id="arrayOpciones"
+                                  value={this.state.arrayOpciones}
+                                  onChange={this.handleChangeOpciones}
+                                  options={this.props.commission_select_staff}
+                                  options={this.props.commission_select_staff.filter(
+                                    option => option.value !== "5d1776e3b0d4a50b23440033"
+                                  )}
+                                />                                                                
+                              }
+                              {
+                                this.state.arrayTipoPersonaSelect &&
+                                this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936711"  &&
+                                <Select
+                                  isSearchable="true"
+                                  isDisabled={this.props.disabled}
+                                  name="arrayOpciones"
+                                  id="arrayOpciones"
+                                  value={this.state.arrayOpciones}
+                                  onChange={this.handleChangeOpciones}
+                                  options={this.props.commission_select_staff}                                  
+                                />                                                                
+                              }
+                              
+                            </div>
+                            <div className="errorSelect">
+                              {this.state.divOpcionesError}
+                            </div>
+                          </FormGroup>      
+                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideCargos}`}>
+                            <Label for="tipo">Cargo</Label>
+                            <div className={this.state.divCargos}>
                               <Select
-                                isSearchable="true"
+                                isMulti={true} 
+                                isSearchable={true}
+                                isClearable={true}
                                 isDisabled={this.props.disabled}
-                                name="tipo"
-                                value={this.state.arrayPersonalExterno}
-                                onChange={this.handleChangePersonalExterno}
-                                options={this.props.configCommissions.externalStaff}
+                                name="arrayCargos"
+                                id="arrayCargos"
+                                value={this.state.arrayCargos}
+                                onChange={this.handleChangeCargos}
+                                options={this.props.configCommissions.cargos}
                               />
                             </div>
                             <div className="errorSelect">
-                              {this.state.divPersonalExternoError}
+                              {this.state.divCargosError}
                             </div>
-                          </FormGroup>
-                        </div>
+                          </FormGroup>                              
+                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideBuscador}`}>
+                            <div 
+                              style={{
+                                width: "100%", 
+                                margin: "10px 0px 1rem",                                
+                                alignItems: "start"
+                              }}>
+                                {
+                                  this.state.arrayTipoPersonaSelect &&
+                                  this.state.arrayTipoPersonaSelect.value === "5d1776e3b0d4a50b23936712" &&
+                                  <Search 
+                                    pressKey={true}
+                                    placeholder={`Buscar ${this.state.labelsBuscador}...`}
+                                    getOptions={this.props.searchPatientStaffAll}
+                                    options={optionsPatientsStaffAll}
+                                    searchAction={this.props.searchOnePatientStaff}
+                                  />    
+                                }
+                                {
+                                  this.state.arrayTipoPersonaSelect &&
+                                  this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936712" &&
+                                  <Search 
+                                    pressKey={true}
+                                    placeholder={`Buscar ${this.state.labelsBuscador}...`}
+                                    getOptions={this.getOptions}
+                                    options={optionsReferences}
+                                    searchAction={this.getOneOptionsStaff}
+                                  />    
+                                }
+                                
+                            </div>
+                          </FormGroup>                                
+                        </div>      
                         {
-                          (this.state.arrayTipo &&
-                            this.state.arrayTipo.value !== "" &&
-                            this.state.arrayTipoPersonaSelect &&
-                            this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710") &&
-                          <ListServices
-                            data={this.props.configCommissions.servicesCommission}
-                            option={this.props.option}
-                            typePersonal={this.state.arrayTipoPersonaSelect.value}
-                            setPorcentajeTable={this.props.setPorcentajeTable}
-                            setSwitchTableComisiones={this.props.setSwitchTableComisiones}
-                            setSwitchAllTableComisiones={this.props.setSwitchAllTableComisiones}
-                            divSeleccioneServiciosComision={this.state.divSeleccioneServiciosComision}
-                            disabled={this.props.disabled}
-                            tab={this.state.activeTab}
-                            seteardivSeleccioneServiciosComision={this.seteardivSeleccioneServiciosComision}
+                          this.props.configCommissions.dataPatientsStaff.length > 0 &&
+                          <ListPatientsStaff 
+                            data = {this.props.configCommissions.dataPatientsStaff}
+                            typeStaff = {this.state.arrayTipoPersonaSelect}
+                            confirm = {this.props.confirm}
+                            removerRegisterFunction = {this.props.removerRegisterFunction}
                           />
-                        }
+                        }        
                       </TabPane>
-                      <TabPane tabId="2">
+                      {
+                        (this.state.arrayTipo &&
+                        this.state.arrayTipo.value !== "" &&
+                        this.state.arrayTipoPersonaSelect &&
+                        this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710") &&
+                          <TabPane tabId="2">     
+                            <ListServices
+                              data = {this.props.configCommissions.servicesCommission}
+                              option = {this.props.option}
+                              typePersonal = {this.state.arrayTipoPersonaSelect.value}
+                              setPorcentajeTable = {this.props.setPorcentajeTable}
+                              setSwitchTableComisiones = {this.props.setSwitchTableComisiones}
+                              setSwitchAllTableComisiones = {this.props.setSwitchAllTableComisiones}
+                              divSeleccioneServiciosComision = {this.state.divSeleccioneServiciosComision}                            
+                              disabled = {this.props.disabled}
+                              tab = {this.state.activeTab}
+                              seteardivSeleccioneServiciosComision = {this.seteardivSeleccioneServiciosComision}
+                            />
+                          </TabPane>                          
+                      }
+                      <TabPane tabId="3">
                         <div className="row">
                           <FormGroup className={`top form-group col-sm-6 ${this.state.hideModoPago}`}>
                             <Label for="tiempo">Modo de Pago</Label>
@@ -1020,7 +1524,7 @@ class ModalConfigCommissions extends React.Component {
                 </form>
               </ModalBody>
               {
-                this.state.activeTab === "1" ?
+                this.state.activeTab === "1" &&
                   <ModalFooter>
                     <Button className="" color="danger" onClick={this.closeModal}>
                       Cancelar
@@ -1028,12 +1532,14 @@ class ModalConfigCommissions extends React.Component {
                     <Button
                       className={this.props.showHide}
                       color="primary"
-                      onClick={() => { this.toggleTab('2'); }}
+                      onClick={() => { this.toggleTab(tabOptionNext); }}
                     >
                       Siguiente
                     </Button>
                   </ModalFooter>
-                  :
+              }  
+              {
+                this.state.activeTab === "2" &&
                   <ModalFooter>
                     <Button className="" color="danger" onClick={() => { this.toggleTab('1'); }}>
                       Volver
@@ -1041,6 +1547,24 @@ class ModalConfigCommissions extends React.Component {
                     <Button className="" color="danger" onClick={this.closeModal}>
                       Cancelar
                     </Button>
+                    <Button
+                      className={this.props.showHide}
+                      color="primary"
+                      onClick={() => { this.toggleTab('3'); }}
+                    >
+                      Siguiente
+                    </Button>
+                  </ModalFooter>
+              }  
+              {
+                this.state.activeTab === "3" &&
+                  <ModalFooter>
+                    <Button className="" color="danger" onClick={() => { this.toggleTab(tabOptionLast); }}>
+                      Volver
+                    </Button>                
+                    <Button className="" color="danger" onClick={this.closeModal}>
+                      Cancelar
+                    </Button>                
                     <Button
                       className={this.props.showHide}
                       color="primary"
@@ -1073,10 +1597,16 @@ const mapStateToProps = state => ({
   configCommissions: state.configCommissions.toJS(),
   commission_time: state.global.dataGeneral.dataGeneral.commission_time,
   type_staff: state.global.dataGeneral.dataGeneral.type_staff,
+  commission_type: state.global.dataGeneral.dataGeneral.commission_type,
   payment_mode_commission: state.global.dataGeneral.dataGeneral.payment_mode_commission,
   commission_rule: state.global.dataGeneral.dataGeneral.commission_rule,
+  commission_select_staff: state.global.dataGeneral.dataGeneral.commission_select_staff,
   authData: state.auth,
-  aplication: state.global
+  aplication: state.global,
+  dataPatientsAll: state.configCommissions.get('dataStaffPatientAll'),  
+  optionsInternal: state.configCommissions.get("dataInternalStaffAll"),
+  optionsExternal: state.configCommissions.get("dataExternalStaffAll")
+  
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -1084,15 +1614,23 @@ const mapDispatchToProps = dispatch => ({
   actionProps: () => dispatch(actionProps()),
   cleanListServices: () => dispatch(cleanListServices()),
   cleanListServicesTab: (tab) => dispatch(cleanListServicesTab(tab)),
-  setPorcentajeTable: (pos, value) => dispatch(setPorcentajeTable(pos, value)),
-  setPorcentajeAllTable: (value) => dispatch(setPorcentajeAllTable(value)),
-  setSwitchTableComisiones: (pos, value, tab, typePersonal) => dispatch(setSwitchTableComisiones(pos, value, tab, typePersonal)),
-  setSwitchAllTableComisiones: (value, tab, typePersonal) => dispatch(setSwitchAllTableComisiones(value, tab, typePersonal)),
-  saveConfigCommissionsAction: (data, callback) => dispatch(saveConfigCommissionsAction(data, callback)),
-  editConfigCommissionsAction: (data, callback) => dispatch(editConfigCommissionsAction(data, callback)),
+  setPorcentajeTable: (pos, value) =>dispatch(setPorcentajeTable(pos, value)),
+  setPorcentajeAllTable: (value) =>dispatch(setPorcentajeAllTable(value)),  
+  setSwitchTableComisiones: (pos, value, tab, typePersonal) =>dispatch(setSwitchTableComisiones(pos, value, tab, typePersonal)),
+  setSwitchAllTableComisiones: (value, tab, typePersonal) =>dispatch(setSwitchAllTableComisiones(value, tab, typePersonal)),
+  saveConfigCommissionsAction: (data, callback) =>dispatch(saveConfigCommissionsAction(data, callback)),
+  editConfigCommissionsAction: (data, callback) =>dispatch(editConfigCommissionsAction(data, callback)),
+  searchPatientStaffAll: (data) =>dispatch(searchPatientStaffAll(data)),
+  searchOnePatientStaff: (data) =>dispatch(searchOnePatientStaff(data)),
+  getOptionsPersonal: (staff, data) =>dispatch(getOptionsPersonal(staff, data)),
+  getOneReference: (staff, data) =>dispatch(getOneReference(staff, data)),
+  confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
+  removerRegisterFunction: (key) =>dispatch(removerRegisterFunction(key)),  
+  cleanDataPatientsStaffs: () =>dispatch(cleanDataPatientsStaffs()),  
+  messageErrorFunction: (message) =>dispatch(messageErrorFunction(message)),    
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps  
 )(ModalConfigCommissions);

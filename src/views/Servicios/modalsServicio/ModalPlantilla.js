@@ -159,7 +159,7 @@ class ModalPlatinlla extends React.Component {
                       onClick={handleSubmit}
                       disabled={disabled}
                     >
-                      Guadar
+                      Guardar
                     </Button>
                   </ModalFooter>
                 </div>
