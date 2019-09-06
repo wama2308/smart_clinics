@@ -256,8 +256,9 @@ const routes = [
     component: PatientContainer
   },
   {
+    name: "Reclamos",
     path: "/reclamos/reclamos",
-    name: "Reclamos",    
+    icon: "fa fa-bullhorn",
     component: ReclamosContainer
   },
 
