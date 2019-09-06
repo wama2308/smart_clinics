@@ -94,13 +94,10 @@ export const editTurnosFunction = (data, callback) => dispatch => {
 };
 
 
-export const setSwitchTableTurnos = (id, status) => dispatch => {
+export const setSwitchTableTurnos = (obj) => dispatch => {
   dispatch({
     type: "SET_SWITCH_TURNOS",
-    payload: {
-      id: id,
-      status: status
-    }
+    payload: obj
   });
 };
 

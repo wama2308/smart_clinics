@@ -14,9 +14,19 @@ const loadOriginalTurnosFunction = (state, payload) => {
 
 const setSwitchTableTurnos = (state, payload) => {
   let estado = state.toJS();
+
+  estado.oneTurnos.height = payload.height
+  estado.oneTurnos.width = payload.width
+  estado.oneTurnos.logo_status = payload.logoStatus
   estado.oneTurnos.fields.map((list) => {
     if (list._id === payload.id) {
       list.required = payload.status
+      if (payload.status === false) {
+        list.required = payload.status
+        list.group = 1
+        list.position = 1
+        list.size = 1
+      }
     }
   })
   return Map(estado);
