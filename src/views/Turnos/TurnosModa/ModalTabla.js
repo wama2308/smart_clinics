@@ -8,13 +8,20 @@ class ModalTabla extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      campo: '',
+      campo: '1',
       orden: '',
     }
   }
 
-  handleChangeSwitch = (id) => event => {
-    this.props.setSwitchTableTurnos(id, event.target.checked)
+  handleChangeSwitch = (id, width, height,logoStatus) => event => {
+    let obj = {
+      id: id,
+      width:width,
+      logoStatus: logoStatus,
+      status: event.target.checked,
+      height: height
+    }
+    this.props.setSwitchTableTurnos(obj)
   }
 
   handleSize = (event, id) => {
@@ -29,6 +36,7 @@ class ModalTabla extends Component {
   handleGroup = (event, id) => {
     this.props.setGroupTableTurnos(id, event.target.value)
   }
+  
 
   render() {
     return (
@@ -58,12 +66,13 @@ class ModalTabla extends Component {
                               <div>
                                 <Input disabled={this.props.disabled}
                                   onChange={(event) => this.handleGroup(event, list._id)}
-                                  value={list.group}
+                                  value={list.group || 0} 
                                   type="number"
                                   placeholder="Titulo"
                                   disabled={this.props.disabled}
                                   min={1}
                                   max={100}
+                                  style={{"height": "25%"}} 
                                 />
                               </div>
                             </td>
@@ -77,6 +86,7 @@ class ModalTabla extends Component {
                                   disabled={this.props.disabled}
                                   min={1}
                                   max={100}
+                                  style={{"height": "25%"}}
                                 />
                               </div>
                             </td>
@@ -90,6 +100,7 @@ class ModalTabla extends Component {
                                   disabled={this.props.disabled}
                                   min={1}
                                   max={100}
+                                  style={{"height": "25%"}}
                                 />
                               </div>
                             </td>
@@ -97,7 +108,7 @@ class ModalTabla extends Component {
                             <td>
                               <div>
                                 <Switch
-                                  onChange={this.handleChangeSwitch(list._id, list.required)}
+                                  onChange={this.handleChangeSwitch(list._id, this.props.width, this.props.height,this.props.logoStatus)}
                                   value={list.required}
                                   id={`checked_${key}`}
                                   name={`checked_${key}`}

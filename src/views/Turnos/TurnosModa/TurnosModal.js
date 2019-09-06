@@ -41,7 +41,10 @@ class TurnosModal extends Component {
       heightError: '',
       heightInvalid: false,
       loading: "show",
-      checked: false
+      checked: false,
+
+      fotoError: '',
+      fotoInvalid: false
     }
   }
 
@@ -93,7 +96,7 @@ class TurnosModal extends Component {
 
     if (this.state.checked === false && this.state !== "") {
       this.setState({
-        foto: null
+        foto: ""
       });
     }
   };
@@ -120,6 +123,9 @@ class TurnosModal extends Component {
     let heightError = "";
     let heightInvalid = false;
 
+    let fotoError = ""
+    let fotoInvalid = false
+
     if (this.state.width === "" || this.state.width === "e") {
       widthError = "¡Ingrese el largo!";
       widthInvalid = true;
@@ -129,12 +135,21 @@ class TurnosModal extends Component {
       heightInvalid = true;
     }
 
-    if (widthError || heightError) {
+    if (this.state.foto === "" || this.state.foto === null) {
+      if (this.state.logoStatus === true) {
+        fotoError = "¡Ingrese el Logo!";
+        fotoInvalid = true;
+      }
+    }
+
+    if (widthError || heightError || fotoError) {
       this.setState({
         heightError,
         heightInvalid,
         widthError,
-        widthInvalid
+        widthInvalid,
+        fotoError,
+        fotoInvalid
       });
       return false;
     }
@@ -145,7 +160,7 @@ class TurnosModal extends Component {
     event.preventDefault();
     const isValid = this.validate();
 
-    if (isValid === true) {
+    if (isValid) {
 
       if (this.props.option === 3) {
         this.setState({ loading: 'hide' })
@@ -190,14 +205,16 @@ class TurnosModal extends Component {
   componentWillReceiveProps(props) {
     if (props.option === 2 || props.option === 3 || props.option === 4) {
       this.setState({ loading: 'hide' })
-      this.setState({
-        width: props.turnos.oneTurnos.width,
-        height: props.turnos.oneTurnos.height,
-        logoStatus: props.turnos.oneTurnos.logo_status,
-        foto: props.turnos.oneTurnos.logo,
-        tabla: props.turnos.oneTurnos.fields,
-        loading: 'show'
-      })
+      if (props.turnos.oneTurnos.fields !== []) {
+        this.setState({
+          width: props.turnos.oneTurnos.width,
+          height: props.turnos.oneTurnos.height,
+          logoStatus: props.turnos.oneTurnos.logo_status,
+          foto: props.turnos.oneTurnos.logo,
+          tabla: props.turnos.oneTurnos.fields,
+          loading: 'show'
+        })
+      }
     }
   }
 
@@ -209,6 +226,9 @@ class TurnosModal extends Component {
 
 
   render() {
+
+    console.log(this.state);
+
     return (
       <span>
         <Modal
@@ -230,7 +250,7 @@ class TurnosModal extends Component {
                         id="width"
                         onKeyUp={this.handlekeywidth}
                         onChange={this.handleChange}
-                        value={this.state.width}
+                        value={this.state.width  || 0}
                         type="number"
                         placeholder="Ancho"
                         disabled={this.props.disabled}
@@ -246,9 +266,9 @@ class TurnosModal extends Component {
                         invalid={this.state.heightInvalid}
                         name="height"
                         id="height"
-                        onKeyUp={this.handlekeyheight}
+                        onKeyUp={this.handlekeyheight }
                         onChange={this.handleChange}
-                        value={this.state.height}
+                        value={this.state.height || 1}
                         type="number"
                         placeholder="Largo"
                         disabled={this.props.disabled}
@@ -267,6 +287,7 @@ class TurnosModal extends Component {
                         value={this.state.logoStatus}
                         color="primary"
                         disabled={this.props.disabled}
+                        id="logoStatus"
                       />
                     </FormGroup>
 
@@ -300,6 +321,9 @@ class TurnosModal extends Component {
                     setSizeTableTurnos={this.props.setSizeTableTurnos}
                     setPositionTableTurnos={this.props.setPositionTableTurnos}
                     setGroupTableTurnos={this.props.setGroupTableTurnos}
+                    width={this.state.width}
+                    height={this.state.height}
+                    logoStatus={this.state.logoStatus}
                   />
                 </form>
               </ModalBody>
@@ -328,7 +352,7 @@ class TurnosModal extends Component {
 
 const mapDispatchToProps = dispatch => ({
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
-  setSwitchTableTurnos: (id, status) => dispatch(setSwitchTableTurnos(id, status)),
+  setSwitchTableTurnos: (obj) => dispatch(setSwitchTableTurnos(obj)),
   editTurnosFunction: (data, callback) => dispatch(editTurnosFunction(data, callback)),
   setSizeTableTurnos: (id, data) => dispatch(setSizeTableTurnos(id, data)),
   setPositionTableTurnos: (id, data) => dispatch(setPositionTableTurnos(id, data)),
