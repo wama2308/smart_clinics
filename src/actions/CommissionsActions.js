@@ -130,12 +130,12 @@ const LoadExternalStaffFunction = (datos, execute) => {
     });
 };
 
-export const actionProps = () => dispatch => {
+export const actionProps = (value) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "ACTION_PROPS",
-        payload: 1
+        payload: value
       });
     })
     .catch(() => {

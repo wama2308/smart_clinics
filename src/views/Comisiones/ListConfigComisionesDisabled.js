@@ -76,7 +76,9 @@ class ListStoreInactivos extends React.Component {
           <thead className="thead-light">
             <tr>
               <th className="text-left">Nro</th>
-              <th className="text-left">Personal</th>
+              <th className="text-left">Regla</th>
+              <th className="text-left">Tipo Persona</th>
+              <th className="text-left">Opcion</th>
               <th className="text-left">Tiempo(dias)</th>
               <th className="text-left">Tipo</th>
               <th className="text-left">Condicion</th>
@@ -93,7 +95,9 @@ class ListStoreInactivos extends React.Component {
               return (
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
+                  <td>{data.type_rule_commission}</td>
                   <td>{data.type_staff}</td>
+                  <td>{data.option}</td>
                   <td>{data.time}</td>
                   <td>{data.type}</td>
                   <td>{condition}</td>

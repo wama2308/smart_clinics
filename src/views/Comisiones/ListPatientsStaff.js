@@ -99,7 +99,7 @@ class ListPatientsStaff extends React.Component {
                                         <div  className="float-left" >
                                             <IconButton 
                                                 aria-label="Delete" 
-                                                disabled={this.props.option === 2 ? true : false} 
+                                                disabled={this.props.disabled}
                                                 title="Eliminar Producto" 
                                                 className="iconButtons" 
                                                 onClick={() => { this.deleteRegister(i); }}>

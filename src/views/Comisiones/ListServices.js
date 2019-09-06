@@ -105,7 +105,7 @@ class ListServices extends React.Component {
             value={this.state.searchService} 
             type="text"             
             placeholder="Buscar Servicio..." 
-            style={{ height: "5vh", borderRadius: "1.25rem" }}
+            style={{ borderRadius: "1.25rem" }}
           />
         </FormGroup>  
       </div>
