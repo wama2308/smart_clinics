@@ -158,7 +158,6 @@ class TurnosModal extends Component {
         },
           () => {
             this.closeModal();
-
           }
         )
       }
@@ -181,9 +180,11 @@ class TurnosModal extends Component {
 
   handleChange = e => {
     const { name, value } = e.target;
-    this.setState({
-      [name]: value
-    });
+    if (value >= 1 && value <= 100) {
+      this.setState({
+        [name]: value
+      });
+    }
   };
 
   componentWillReceiveProps(props) {

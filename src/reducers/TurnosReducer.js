@@ -24,31 +24,37 @@ const setSwitchTableTurnos = (state, payload) => {
 
 const setSizeTableTurnos = (state, payload) => {
   let estado = state.toJS();
-  estado.oneTurnos.fields.map((list) => {
-    if (list._id === payload.id) {
-      list.size = payload.data
-    }
-  })
+  if (payload.data >= 1 && payload.data <= 100) {
+    estado.oneTurnos.fields.map((list) => {
+      if (list._id === payload.id) {
+        list.size = payload.data
+      }
+    })
+  }
   return Map(estado);
 }
 
 const setPositionTableTurnos = (state, payload) => {
   let estado = state.toJS();
-  estado.oneTurnos.fields.map((list) => {
-    if (list._id === payload.id) {
-      list.position = payload.data
-    }
-  })
+  if (payload.data >= 1 && payload.data <= 100) {
+    estado.oneTurnos.fields.map((list) => {
+      if (list._id === payload.id) {
+        list.position = payload.data
+      }
+    })
+  }
   return Map(estado);
 }
 
 const setGroupTableTurnos = (state, payload) => {
   let estado = state.toJS();
-  estado.oneTurnos.fields.map((list) => {
-    if (list._id === payload.id) {
-      list.group = payload.data
-    }
-  })
+  if (payload.data >= 1 && payload.data <= 100) {
+    estado.oneTurnos.fields.map((list) => {
+      if (list._id === payload.id) {
+        list.group = payload.data
+      }
+    })
+  }
   return Map(estado);
 }
 
