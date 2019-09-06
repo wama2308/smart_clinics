@@ -53,7 +53,7 @@ const setCleanListServices = (state, payload) => {
 
 const setCleanListServicesTab = (state, payload) => {
 	let estado = state.toJS();
-	estado.action = 0;
+	//estado.action = 0;
 	if(payload.tab === "2"){
 		estado.servicesCommission.map((service, i) => {
 			service.percentage = payload.percentaje;
@@ -165,8 +165,7 @@ const cleanDataPatientsStaffs = (state, payload) => {
 	estado.dataStaffPatientAll = payload.data;			
 	estado.dataInternalStaffAll = payload.data;			
 	estado.dataExternalStaffAll = payload.data;			
-	estado.dataPatientsStaff = payload.data;			
-	estado.action = 0;	
+	estado.dataPatientsStaff = payload.data;				
 	return Map(estado);
 }
 

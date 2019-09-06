@@ -72,8 +72,8 @@ class ReclamosList extends Component {
         this.setState({
           modal: true,
           option: option,
-          modalHeader: 'Registrar Reclamo',
-          modalFooter: 'Guardar',
+          modalHeader: 'Editar Reclamo',
+          modalFooter: 'Editar',
           disabled: false,
           showHide: 'show',
           id_receiber: id_claim_receiver,

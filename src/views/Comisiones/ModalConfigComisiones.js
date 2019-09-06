@@ -57,8 +57,7 @@ class ModalConfigCommissions extends React.Component {
   } 
     
   toggleTab = tab => {
-    if(tab === "2"){
-      console.log("tab ", tab)
+    if(tab === "2"){      
       const isValid = this.validateTabTwo();
       if(isValid){
         if (this.state.activeTab !== tab) {
@@ -69,11 +68,8 @@ class ModalConfigCommissions extends React.Component {
       }
              
     }else if(tab === "3"){
-      console.log("tab ", tab)
       const isValid = this.validateTabThree();
-      console.log("tab 3")
       if(isValid){
-        console.log("tab 3 isvalid")
         if (this.state.activeTab !== tab) {
           this.setState({
             activeTab: tab
@@ -82,7 +78,6 @@ class ModalConfigCommissions extends React.Component {
       }
              
     }else{
-      console.log("tab ", tab)
       if (this.state.activeTab !== tab) {
         this.setState({
           activeTab: tab
@@ -120,6 +115,7 @@ class ModalConfigCommissions extends React.Component {
     });
     this.props.cleanDataPatientsStaffs();
     this.props.valorCloseModal(false);
+    this.props.actionProps(0);
   };
 
   validateTabTwo = () => {
@@ -294,7 +290,6 @@ class ModalConfigCommissions extends React.Component {
       }
       
       if(this.state.arrayTipoPersonaSelect.value !== "5d1776e3b0d4a50b23936710"){  
-        console.log("entro");                          
         const serviceConfirm = this.props.configCommissions.servicesCommission.find(service => service.confirm === true);
         if(!serviceConfirm){
           acumConfirms++;          
@@ -698,11 +693,11 @@ class ModalConfigCommissions extends React.Component {
         arrayTipoReglaComision,
         divTipoReglaComision: "",
         divTipoReglaComisionError: "",
-        arrayTipo:null,
-        arrayTipoPersonaSelect:null,
-        hideOpciones:'hide',
-        hideCargos:'hide',
-        hideBuscador:'hide',
+        //arrayTipo:null,
+        //arrayTipoPersonaSelect:null,
+        // hideOpciones:'hide',
+        // hideCargos:'hide',
+        // hideBuscador:'hide',
       });    
     }    
   };    
@@ -734,7 +729,6 @@ class ModalConfigCommissions extends React.Component {
   };  
 
   handleChangeCargos = arrayCargos => {
-    console.log(arrayCargos);
     if(arrayCargos){
       this.setState({
         arrayCargos,
@@ -787,9 +781,7 @@ class ModalConfigCommissions extends React.Component {
   };  
 
   componentWillReceiveProps = props => {  
-    console.log("componentWillReceiveProps ", props.configCommissions);  
-    //console.log("props.configCommissions.dataPatientsStaff ", props.configCommissions.dataPatientsStaff);  
-    //console.log("this.props.configCommissions.servicesCommission ", props.configCommissions.servicesCommission);
+    //console.log("componentWillReceiveProps ", props.configCommissions);      
     if(props.option === 1){
       this.setState({
         loading:'hide'
@@ -804,6 +796,7 @@ class ModalConfigCommissions extends React.Component {
         let hidePersonalExterno = "";
         let hideTipoNroPersonas = "";
         let hideTipoMontoMinimo = "";
+        let hideOpciones = "";
         let hideCargos = "";
         let hideBuscador = "";
         let montoMinimoComision = "0.00";
@@ -893,6 +886,7 @@ class ModalConfigCommissions extends React.Component {
           hidePorcentajeComision: hidePorcentajeComision,
           hideCargos: hideCargos,
           hideBuscador: hideBuscador,
+          hideOpciones: 'show',
           arrayTipoReglaComision: props.configCommissions.dataId.type_rule_commission,
           arrayTipoPersonaSelect: props.configCommissions.dataId.type_staff,
           tiempoDias: props.configCommissions.dataId.time,
@@ -907,7 +901,7 @@ class ModalConfigCommissions extends React.Component {
           especifique: especifique,          
           loading:'hide'
         });
-        this.props.actionProps();
+        this.props.actionProps(1);
       }
     }
 
@@ -1386,11 +1380,15 @@ class ModalConfigCommissions extends React.Component {
                         </div>      
                         {
                           this.props.configCommissions.dataPatientsStaff.length > 0 &&
+                          this.state.arrayOpciones &&
+                          this.state.arrayOpciones.value !== "5d1776e3b0d4a50b23440033" &&
                           <ListPatientsStaff 
                             data = {this.props.configCommissions.dataPatientsStaff}
                             typeStaff = {this.state.arrayTipoPersonaSelect}
                             confirm = {this.props.confirm}
                             removerRegisterFunction = {this.props.removerRegisterFunction}
+                            disabled = {this.props.disabled}
+                            option = {this.props.option}
                           />
                         }        
                       </TabPane>
@@ -1613,7 +1611,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   alert: (type, message) => dispatch(openSnackbars(type, message)),     
-  actionProps: () => dispatch(actionProps()),
+  actionProps: (value) => dispatch(actionProps(value)),
   cleanListServices: () => dispatch(cleanListServices()),
   cleanListServicesTab: (tab) => dispatch(cleanListServicesTab(tab)),
   setPorcentajeTable: (pos, value) =>dispatch(setPorcentajeTable(pos, value)),
