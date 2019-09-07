@@ -85,6 +85,7 @@ class ConfigComisionesContainer extends Component {
                             LoadConfigCommissionIdFunction={this.props.LoadConfigCommissionIdFunction}
                             current_simbol={this.props.aplication.dataGeneral.dataCountries.current_simbol}
                             search={this.props.searchData}
+                            setSearch={this.props.search}
                           />
                         </TabPane>
                         <TabPane tabId="2">
@@ -94,6 +95,7 @@ class ConfigComisionesContainer extends Component {
                             enableConfigCommissionsAction={this.props.enableConfigCommissionsAction}
                             current_simbol={this.props.aplication.dataGeneral.dataCountries.current_simbol}
                             search={this.props.searchData}
+                            setSearch={this.props.search}
                           />
                         </TabPane>
                       </TabContent>
