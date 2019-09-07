@@ -23,7 +23,7 @@ import { connect } from "react-redux";
 import { enterDecimal } from "../../core/utils";
 import ListServices from "./ListServices.js";
 import ListPatientsStaff from "./ListPatientsStaff.js";
-import { openConfirmDialog, openSnackbars } from "../../actions/aplicantionActions";
+import { openConfirmDialog, openSnackbars, search } from "../../actions/aplicantionActions";
 import {
   setPorcentajeTable,
   setSwitchTableComisiones,
@@ -120,6 +120,8 @@ class ModalConfigCommissions extends React.Component {
     });
     this.props.cleanDataPatientsStaffs();
     this.props.valorCloseModal(false);
+    let set = ""
+    this.props.search(set)
   };
 
   validateTabTwo = () => {
@@ -908,7 +910,6 @@ class ModalConfigCommissions extends React.Component {
         this.props.actionProps();
       }
     }
-
   };
 
   handlekeyMontoComision = event => {
@@ -1628,6 +1629,7 @@ const mapDispatchToProps = dispatch => ({
   removerRegisterFunction: (key) =>dispatch(removerRegisterFunction(key)),  
   cleanDataPatientsStaffs: () =>dispatch(cleanDataPatientsStaffs()),  
   messageErrorFunction: (message) =>dispatch(messageErrorFunction(message)),    
+  search: (set) =>dispatch(search(set)),    
 });
 
 export default connect(
