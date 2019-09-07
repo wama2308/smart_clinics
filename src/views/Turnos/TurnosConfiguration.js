@@ -4,6 +4,7 @@ import TurnosModal from './TurnosModa/TurnosModal';
 import { IconButton } from '@material-ui/core';
 import { Visibility, Edit } from '@material-ui/icons';
 import { FaFileAlt } from 'react-icons/fa';
+import ModalTicket from './TurnosModa/ModalTicket';
 
 class TurnosConfiguration extends Component {
   constructor(props) {
@@ -17,7 +18,8 @@ class TurnosConfiguration extends Component {
       showHide: '',
       option: 0,
       position: 0,
-      branchoffices_id: ''
+      branchoffices_id: '',
+      modalView: false
     }
   }
 
@@ -64,6 +66,17 @@ class TurnosConfiguration extends Component {
         showHide: 'hide',
         branchoffices_id: branchoffices_id
       })
+    } else if (option === 5) {
+      this.props.queryOneTicketFunction(branchoffices_id)
+      this.setState({
+        modalView: true,
+        option: option,
+        modalHeader: 'Configuracion Original',
+        modalFooter: 'Guardar',
+        disabled: true,
+        showHide: 'hide',
+        branchoffices_id: branchoffices_id
+      })
     }
   }
 
@@ -74,6 +87,12 @@ class TurnosConfiguration extends Component {
     });
   }
 
+  valorCloseModalView = (valor) => {
+    this.setState({
+      modalView: valor,
+      option: null,
+    });
+  }
   render() {
 
     return (
@@ -95,6 +114,14 @@ class TurnosConfiguration extends Component {
             branchoffices_id={this.state.branchoffices_id}
           />
         }
+        <ModalTicket
+          option={this.state.option}
+          modalView={this.state.modalView}
+          valorCloseModalView={this.valorCloseModalView}
+          modalHeader={this.state.modalHeader}
+          modalFooter={this.state.modalFooter}
+          showHide={this.state.showHide}
+        />
         <div className="row">
           <div className="form-group col-sm-12">
             <Table hover responsive borderless>
@@ -145,6 +172,15 @@ class TurnosConfiguration extends Component {
                             >
                               <Edit className="iconTable" />
                             </IconButton>
+
+                            {/* <IconButton aria-label="Delete"
+                              title="Editar Configuracion"
+                              className="iconButtons"
+                              onClick={() => { this.openModal(5, list.branchoffices_id); }}
+
+                            >
+                              <Visibility className="iconTable" />
+                            </IconButton> */}
                           </div>
                         </td>
                       </tr>
