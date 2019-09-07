@@ -226,9 +226,7 @@ class TurnosModal extends Component {
 
 
   render() {
-
     console.log(this.state);
-
     return (
       <span>
         <Modal
