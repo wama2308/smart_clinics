@@ -105,7 +105,8 @@ class ListStore extends React.Component {
             users.time.toLowerCase().includes(this.props.search.toLowerCase()) ||
             users.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
             users.payment_type.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            users.type_rule_commission.toLowerCase().includes(this.props.search.toLowerCase())
+            users.type_rule_commission.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            users.time.toLowerCase().includes(this.props.search.toLowerCase())
           );
         }
       })
