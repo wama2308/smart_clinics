@@ -43,8 +43,6 @@ class ModalTicket extends Component {
 
 
   render() {
-    console.log(this.props.turnos.oneTurnos);
-
     return (
       <span>
         <Modal
