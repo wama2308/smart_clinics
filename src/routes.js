@@ -18,6 +18,8 @@ import Calendar from "./containers/CalendarContainer";
 
 import Dashboard from "./views/Dashboard";
 import ReclamosContainer from "./containers/ReclamosContainer";
+import TurnosContainer from "./containers/TurnosContainer";
+import TransferContainer from "./containers/TransferContainer";
 
 function Loading() {
   return <div>Loading...</div>;
@@ -240,6 +242,7 @@ const routes = [
   },
   { path: "/administrative/sales", name: "Ventas", component: ventasContainer },
   { path: "/administrative/shops", name: "Compras", component: ShopContainers },
+  { path: "/administrative/transfer", name: "Transferencias", component: TransferContainer },
   {
     path: "/configuration/commissions",
     name: "Comisiones",
@@ -257,9 +260,14 @@ const routes = [
   },
   {
     name: "Reclamos",
-    url: "/reclamos",
+    path: "/reclamos/reclamos",
     icon: "fa fa-bullhorn",
     component: ReclamosContainer
+  },
+  {
+    name: "Turnos",
+    path: "/turnos/turnos",
+    component: TurnosContainer
   },
 
   { path: "/theme", exact: true, name: "Theme", component: Colors },

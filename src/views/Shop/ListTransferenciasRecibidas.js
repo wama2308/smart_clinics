@@ -130,10 +130,7 @@ class ListTransferenciasRecibidas extends React.Component {
               <tr>
                 <th className="text-left">Nro</th>
                 <th className="text-left">Transferencia</th>
-                <th className="text-left">Control</th>
-                <th className="text-left">SubTotal</th>
-                <th className="text-left">IGV</th>
-                <th className="text-left">Total</th>
+                <th className="text-left">Control</th>                
                 <th className="text-left">Emisor</th>
                 <th className="text-left">Estatus</th>
                 <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>
@@ -145,10 +142,7 @@ class ListTransferenciasRecibidas extends React.Component {
                 <tr key={data.number} className="text-left">
                   <td>{data.number}</td>
                   <td>{ data.number_invoice }</td>
-                  <td>{ data.number_controll }</td>
-                  <td>{ number_format(data.subtotal, 2) }</td>
-                  <td>{ number_format(data.igv, 2) }</td>
-                  <td>{ number_format(data.total, 2) }</td>
+                  <td>{ data.number_controll }</td>                  
                   <td>{ data.transmitter }</td>
                   <td>{ data.status }</td>
                   <td style={{'minWidth':"205px"}}>

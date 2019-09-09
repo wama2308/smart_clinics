@@ -10,6 +10,11 @@ const queryOneCommissionsGeneral = `${url}/api/queryOneCommissionsGeneral`;
 const disabledCommissionsGeneral = `${url}/api/disabledCommissionsGeneral`;
 const enabledCommissionsGeneral = `${url}/api/enabledCommissionsGeneral`;
 const selectExternalStaff = `${url}/api/selectExternalStaff`;
+const queryPosition = `${url}/api/queryPosition`;
+const searchPatientUrl = `${url}/api/queryPatients`;
+const searchOnePatientUrl = `${url}/api/queryOnePatients`;
+const referencePersonnelUrl = `${url}/api/referencePersonnel`;
+const queryOneReferencePersonnel = `${url}/api/queryOneReferencePersonnel`;
 
 export const LoadConfigCommissionsFunction = () => dispatch => {
   getDataToken()
@@ -18,18 +23,28 @@ export const LoadConfigCommissionsFunction = () => dispatch => {
     	.then(res => {	
     		LoadServicesFunction(datos, arrayServices => {   	 
           LoadExternalStaffFunction(datos, arrayExternalStaff => {     
-  	        dispatch({
-  	          type: "LOAD_CONFIG_COMMISSIONS",
-  	          payload: {
-  	            loading: "hide",
-  	            data: res.data,		            
-                dataId:{},                                                        
-  	            servicesCommission: arrayServices,
-                servicesPayment: arrayServices,
-                externalStaff: arrayExternalStaff,
-  	            action:0
-  			      }
-  	        });
+            LoadCargosFunction(datos, arrayCargos => {     
+              dispatch({
+                type: "LOAD_CONFIG_COMMISSIONS",
+                payload: {
+                  loading: "hide",
+                  data: res.data,		            
+                  dataId:{},                                                        
+                  servicesCommission: arrayServices,
+                  servicesPayment: arrayServices,
+                  externalStaff: arrayExternalStaff,
+                  cargos: arrayCargos,
+                  dataStaffPatientAll:[],
+                  //dataStaffPatientId:{},
+                  dataInternalStaffAll:[],
+                  //dataInternalStaffId:[],                  
+                  dataExternalStaffAll:[],
+                  //dataExternalStaffId:[],
+                  dataPatientsStaff:[],
+                  action:0
+                }
+              });
+            });  
           });  
         });
   	   })
@@ -40,6 +55,17 @@ export const LoadConfigCommissionsFunction = () => dispatch => {
     })
     .catch(() => {
       console.log("Problemas con el token");
+    });
+};
+
+const LoadCargosFunction = (datos, execute) => {
+  axios
+    .get(queryPosition, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de cargos", error.toString());
     });
 };
 
@@ -104,12 +130,12 @@ const LoadExternalStaffFunction = (datos, execute) => {
     });
 };
 
-export const actionProps = () => dispatch => {
+export const actionProps = (value) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "ACTION_PROPS",
-        payload: 1
+        payload: value
       });
     })
     .catch(() => {
@@ -150,13 +176,13 @@ export const cleanListServicesTab = (tab) => dispatch => {
     });
 };
 
-export const setPorcentajeTable = (pos, value) => dispatch => {
+export const setPorcentajeTable = (id, value) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_PORCENTAJE_COMISIONES",
         payload: {
-          pos: pos,
+          id: id,
           value: value,          
         }
       });
@@ -181,13 +207,13 @@ export const setPorcentajeAllTable = (value) => dispatch => {
     });
 };
 
-export const setSwitchTableComisiones = (pos, value, tab, typePersonal) => dispatch => {
+export const setSwitchTableComisiones = (id, value, tab, typePersonal) => dispatch => {
   getDataToken()
     .then(datos => {
       dispatch({
         type: "SET_SWITCH_COMISIONES",
         payload: {
-          pos: pos,
+          id: id,
           value: value, 
           tab: tab,
           typePersonal:typePersonal          
@@ -304,4 +330,205 @@ export const enableConfigCommissionsAction = (id) => dispatch => {
     .catch(() => {
       console.log("Problemas con el token");
     });
+};
+
+export const searchPatientStaffAll = search => dispatch => {
+  if (search.length < 1) {
+    dispatch(searchLoaded(true));
+  } else {
+    dispatch(searchLoaded(false));
+  }
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: search
+  });
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: searchPatientUrl,
+      data: {
+        value: search
+      },
+      ...token
+    })
+      .then(res => {
+        dispatch({
+          type: "SEARCH_PATIENTS_STAFF_ALL",
+          payload: Object.values(res.data)
+        });
+      })
+      .catch(err => {
+        const result = converToJson(err);
+        dispatch(openSnackbars("error", result.message));
+      });
+  });
+};
+
+export const searchOnePatientStaff = search => dispatch => {
+  if (search.length === 0) {
+    dispatch(openSnackbars("warning", "Ingrese nombre o dni del paciente!"));
+    return;
+  }
+
+  const result = orderData(search.label);
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: searchOnePatientUrl,
+      data: result,
+      ...token
+    })
+      .then(res => {
+        dispatch({
+          type: "SEARCH_ONE_PATIENT_STAFF",
+          payload: res.data.patient
+        });        
+        dispatch(searchLoaded(true));
+        dispatch({
+          type: "SEARCH_DATA",
+          payload: ""
+        });
+      })
+      .catch(err => {
+        dispatch(searchLoaded(true));
+        dispatch(openSnackbars("error", "Paciente no registrado!"));
+        dispatch({
+          type: "SEARCH_PATIENT",
+          payload: null
+        });
+      });
+  });
+};
+
+export const getOptionsPersonal = (staff, value) => dispatch => {
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: value
+  });
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: referencePersonnelUrl,
+      data: {
+        staff: staff,
+        value: value
+      },
+      ...token
+    }).then(res => {
+      if (staff === 0) {
+        dispatch({
+          type: "OPTIONS_INTERNALS",
+          payload: Object.values(res.data)
+        });
+      } else {
+        dispatch({
+          type: "OPTIONS_EXTERNAL",
+          payload: Object.values(res.data)
+        });
+      }
+    });
+  });
+};
+
+export const getOneReference = (staff, data) => dispatch => {
+  if (data.length === 0) {
+    dispatch(
+      openSnackbars("warning", "Debe ingresar nombre o dni del personal!")
+    );
+    return;
+  }
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: ""
+  });
+  getDataToken().then(token => {
+    axios({
+      method: "POST",
+      url: queryOneReferencePersonnel,
+      data: {
+        _id: data.value
+      },
+      ...token
+    })
+      .then(res => {
+        if (staff === 0) {
+          dispatch({
+            type: "SEARCH_STAFF_INTERNAL_ONE",
+            payload: {
+              ...res.data
+            }
+          });
+        }else{
+          dispatch({
+            type: "SEARCH_STAFF_EXTERNAL_ONE",
+            payload: {
+              ...res.data
+            }
+          });
+        }
+      })
+      .catch(err => {
+        const result = converToJson(err);
+        dispatch(openSnackbars("error", "personal no encontrado"));
+      });
+  });
+};
+
+export const removerRegisterFunction = (key) => dispatch => {  
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "REMOVE_REGISTER",
+        payload: {
+          key: key          
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const cleanDataPatientsStaffs = () => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "CLEAN_DATA_PATIENTS_STAFFS",
+        payload: {
+          data: []
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const messageErrorFunction = (message) => dispatch => {
+  dispatch(openSnackbars("warning", `${message}`))
+}
+
+const searchLoaded = data => {
+  return {
+    type: "SEARCH_LOADED",
+    payload: data
+  };
+};
+
+const converToJson = data => {
+  const stringify = JSON.stringify(data);
+  const parse = JSON.parse(stringify);
+  return parse.response.data;
+};
+
+const orderData = data => {
+  try {
+    const result = data.split(" ");
+    const typeIdentify = result[0].substr(0, 1);
+    const dni = result[0].substr(2);
+
+    return { type_identity: typeIdentify, dni: dni };
+  } catch (err) {
+    return data;
+  }
 };

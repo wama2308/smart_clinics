@@ -32,7 +32,17 @@ class ListTransferencias extends React.Component {
   componentDidMount(){}
 
   openModal = (option, pos, id, status) => {
-    if(option === 5){
+    if (option === 1) {
+      this.setState({
+        modal: true,
+        option: option,
+        modalHeader: 'Registrar Transferencia',
+        modalFooter: 'Guardar',
+        disabled: false,
+        showHide: 'show',
+        isClearable: true,
+      })
+    } else if(option === 2){
       this.props.queryOneTransferFunction(id);
       this.setState({
         modal:true,
@@ -42,7 +52,7 @@ class ListTransferencias extends React.Component {
         disabled: true,
         showHide: 'hide',
       })
-    }else if(option === 6){
+    }else if(option === 3){
       this.props.queryOneTransferFunction(id);
       this.setState({
         modal:true,
@@ -92,6 +102,7 @@ class ListTransferencias extends React.Component {
   };
 
   render() {
+    const createDisabled = GetDisabledPermits(this.props.permitsTransfer , "Create")
     const updateDisabled = GetDisabledPermits(this.props.permitsTransfer , "Update")
     const deleteDisabled = GetDisabledPermits(this.props.permitsTransfer , "Delete")
     const detailsDisabled = GetDisabledPermits(this.props.permitsTransfer , "Details")
@@ -110,7 +121,9 @@ class ListTransferencias extends React.Component {
      return (
       <div>
         {
-          (this.state.option === 5 || this.state.option === 6) &&
+          (this.state.option === 1 || 
+            this.state.option === 2 || 
+            this.state.option === 3) &&
           <ModalTransferencias
             option = {this.state.option}
             modal = {this.state.modal}
@@ -126,6 +139,13 @@ class ListTransferencias extends React.Component {
           />
         }
         <div className="containerGeneral" style={{"justifyContent":"flex-end"}}>
+          <div className="container-button" >
+            <Button color="success"
+              disabled={createDisabled}
+              onClick={() => { this.openModal(1); }}>
+              Agregar
+            </Button>
+          </div>
           <div className="containerSearch">
             <Search value={arrayData} />
           </div>
@@ -136,10 +156,7 @@ class ListTransferencias extends React.Component {
               <tr>
                 <th className="text-left">Nro</th>
                 <th className="text-left">Transferencia</th>
-                <th className="text-left">Control</th>
-                <th className="text-left">SubTotal</th>
-                <th className="text-left">IGV</th>
-                <th className="text-left">Total</th>
+                <th className="text-left">Control</th>                
                 <th className="text-left">Receptor</th>
                 <th className="text-left">Estatus</th>
                 <th className="text-left" style={{'minWidth':"105px"}}>Acciones</th>
@@ -152,10 +169,7 @@ class ListTransferencias extends React.Component {
                 <tr key={ data.number } className="text-left">
                   <td>{ data.number }</td>
                   <td>{ data.number_invoice }</td>
-                  <td>{ data.number_controll }</td>
-                  <td>{ number_format(data.subtotal, 2) }</td>
-                  <td>{ number_format(data.igv, 2) }</td>
-                  <td>{ number_format(data.total, 2) }</td>
+                  <td>{ data.number_controll }</td>                  
                   <td>{ data.receiver }</td>
                   <td>{ data.status }</td>
                   <td style={{'minWidth':"205px"}}>
@@ -163,7 +177,7 @@ class ListTransferencias extends React.Component {
                       <IconButton aria-label="Delete"
                         title="Ver Transferencia"
                         className="iconButtons"
-                        onClick={() => { this.openModal(5, data.number, data._id, data.status); }}
+                        onClick={() => { this.openModal(2, data.number, data._id, data.status); }}
                         disabled={detailsDisabled}>
                         <Visibility className="iconTable" />
                       </IconButton>
@@ -171,7 +185,7 @@ class ListTransferencias extends React.Component {
                       <IconButton aria-label="Delete"
                         title="Editar Transferencia"
                         className="iconButtons"
-                        onClick={() => { this.openModal(6, data.number, data._id, data.status); }}
+                        onClick={() => { this.openModal(3, data.number, data._id, data.status); }}
                         disabled={updateDisabled}>
                         <Edit className="iconTable" />
                       </IconButton>

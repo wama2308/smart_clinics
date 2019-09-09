@@ -14,8 +14,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 import Badge from '@material-ui/core/Badge';
 import jstz from 'jstz';
-import { GetDisabledPermits } from "../../core/utils";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import ModalVisitador from './ModalReclamos/ModalVisitador';
+import Search from "../../components/Select";
+import Pagination from '../../components/Pagination';
 
 class ReclamosReceibeList extends Component {
   constructor(props) {
@@ -34,7 +36,9 @@ class ReclamosReceibeList extends Component {
       collapse: false,
       id_receiber: '',
       id_transmitter: '',
-      visitor_disable: null
+      visitor_disable: null,
+      page: 0,
+      rowsPerPage: 10
     }
   }
 
@@ -169,12 +173,39 @@ class ReclamosReceibeList extends Component {
     });
   }
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
   render() {
     const disabledCreate = GetDisabledPermits(this.props.permits, "Create")
     const disabledUpdate = GetDisabledPermits(this.props.permits, "Update")
     const disabledActive = GetDisabledPermits(this.props.permits, "Active")
     const disabledDelete = GetDisabledPermits(this.props.permits, "Delete")
     const disabledDetails = GetDisabledPermits(this.props.permits, "Details")
+
+    const arrayList = getArray(this.props.reclamos);
+    const { rowsPerPage, page } = this.state;
+    const result = this.props.search
+      ? arrayList.filter(list => {
+        if (this.props.master === "MASTER") {
+          return (
+            list.medical_center_transmitter.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            list.branchoffice_transmitter.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            list.visitor.toLowerCase().includes(this.props.search.toLowerCase())
+          );
+        } else {
+          return (
+            list.medical_center_transmitter.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            list.branchoffice_transmitter.toLowerCase().includes(this.props.search.toLowerCase()) 
+          );
+        }
+      })
+      : arrayList;
 
     return (
       <div>
@@ -206,14 +237,18 @@ class ReclamosReceibeList extends Component {
 
           />
         }
-        <div style={{ "marginBottom": "1.8%" }}>
-          <Button color="success"
-            onClick={() => this.openModal(1)}
-            disabled={disabledCreate}>
-            Agregar
-        </Button>
+        <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
+          <div className="container-button">
+            <Button color="success"
+              onClick={() => this.openModal(1)}
+              disabled={disabledCreate}>
+              Agregar
+            </Button>
+          </div>
+          <div className="containerSearch" >
+            <Search value={arrayList} />
+          </div>
         </div>
-
         <div className="row">
           <div className="form-group col-sm-12">
             <Table hover responsive borderless>
@@ -228,7 +263,7 @@ class ReclamosReceibeList extends Component {
               </thead>
               <tbody>
                 {
-                  this.props.reclamos ? this.props.reclamos.map((list, key) => {
+                  this.props.reclamos ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                     return (
                       <tr key={key}>
                         <td>{list.medical_center_transmitter}</td>
@@ -312,6 +347,16 @@ class ReclamosReceibeList extends Component {
                     null
                 }
               </tbody>
+              {
+                this.props.reclamos.length > 10 && (
+                  <Pagination
+                    contador={this.props.reclamos}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage}
+                  />
+                )}
             </Table>
           </div>
         </div>

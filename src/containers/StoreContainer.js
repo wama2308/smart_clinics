@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import ListStore from "../views/Store/ListStore";
 import ListStoreInactivos from "../views/Store/ListStoreInactivos";
 import { LoadStoreFunction, LoadStoreIdFunction, DeleteStoreAction, enableStoreBranchOfficesAction } from "../actions/StoreActions";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog, search } from "../actions/aplicantionActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import classnames from "classnames";
 
@@ -32,6 +32,8 @@ class StoreContainer extends Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set) 
     }
   }
 
@@ -39,6 +41,11 @@ class StoreContainer extends Component {
     this.props.LoadStoreFunction();
   };
 
+  componentWillUnmount() {
+    let set = ""
+    this.props.search(set)
+  }
+  
   render() {
     return (
       <div className="animated fadeIn">
@@ -110,6 +117,7 @@ const mapDispatchToProps = dispatch => ({
   enableStoreBranchOfficesAction: (storeId, sucursalId) => dispatch(enableStoreBranchOfficesAction(storeId, sucursalId)),
   LoadStoreIdFunction: (storeId, sucursalId) => dispatch(LoadStoreIdFunction(storeId, sucursalId)),
   confirm: (message, callback) =>dispatch(openConfirmDialog(message, callback)),
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

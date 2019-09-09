@@ -15,7 +15,7 @@ import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
 import { deleteRequest } from "../actions/externalAction";
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import { openConfirmDialog, search } from "../actions/aplicantionActions";
 import { GetDisabledPermits } from "../core/utils";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { allExternalStaff } from "../actions/externalAction";
@@ -37,20 +37,23 @@ class EnternalContainer extends React.Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set) 
     }
   }
 
   componentDidMount = () => {
     this.props.allExternalStaff();
 
-
-    this.props.aplication.permission[0].modules.map(permisos => {
-      if (permisos.name === "Personal Externo") {
-        this.setState({
-          serviciosPermits: permisos.permits
-        });
-      }
-    });
+    this.props.aplication.dataGeneral.permission.map(permisos=>{
+      permisos.modules.map(modules=>{
+        if (modules.name === "Personal Externo") {
+          this.setState({
+            externalPermits: modules.permits
+          });
+        }
+      })
+    })
   };
 
   close = () => {
@@ -82,6 +85,11 @@ class EnternalContainer extends React.Component {
     }
   };
 
+  componentWillUnmount() {
+    let set = ""  
+    this.props.search(set)
+  }
+  
   render() {
     const value = this.props.externalStaff;
     const result = this.filterData(value);
@@ -226,7 +234,7 @@ class EnternalContainer extends React.Component {
 
 const mapStateToProps = state => ({
   externalStaff: state.external.get("allExternalStaff"),
-  aplication: state.global.dataGeneral,
+  aplication: state.global,
   searchData: state.global.search
 });
 
@@ -234,7 +242,8 @@ const mapDispatchToProps = dispatch => ({
   deleteData: (message, callback) =>
     dispatch(openConfirmDialog(message, callback)),
   allExternalStaff: () => dispatch(allExternalStaff()),
-  delete: obj => dispatch(deleteRequest(obj))
+  delete: obj => dispatch(deleteRequest(obj)),
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(
