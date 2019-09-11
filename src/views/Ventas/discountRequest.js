@@ -133,7 +133,7 @@ export default class DiscountRequest extends React.Component {
               toggle={this.props.close}
               style={
                 values.selectedDiscount === "0"
-                  ? { minWidth: "60%" }
+                  ? { minWidth: "70%" }
                   : { width: "auto" }
               }
             >
@@ -353,6 +353,15 @@ export default class DiscountRequest extends React.Component {
                           })}
                       </TableBody>
                     </Table>
+                    <Footer style={{ flex: 1, display: "flex" }}>
+                      <div className="totalStyle">
+                        <span className="titleBol"> Total</span>{" "}
+                        {`${formatNumber(this.props.total.total)} `}{" "}
+                        <span className="titleBol">
+                          {this.props.total.currency}
+                        </span>
+                      </div>
+                    </Footer>
                   </div>
                 )}
               </ModalBody>
@@ -385,5 +394,27 @@ const RowTable = styled(TableRow)`
     &:hover {
       background: #eeeeee;
     }
+  }
+`;
+
+const Footer = styled.div`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  border-top: 1px solid #c8ced3;
+  border-bottom: 1px solid #c8ced3;
+  .totalStyle {
+    padding-right: 20px;
+    border-left: 1px solid #c8ced3;
+    border-right: 1px solid #c8ced3;
+    display: flex;
+    height: 100%;
+    min-width: 20%;
+    align-items: center;
+  }
+  .titleBol {
+    font-weight: bold;
+    padding: 10px;
   }
 `;

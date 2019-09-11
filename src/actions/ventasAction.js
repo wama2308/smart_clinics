@@ -305,11 +305,12 @@ export const changeQuantytoSell = obj => dispatch => {
 };
 
 export const addDiscount = (data, max) => dispatch => {
-  // console.log("el value", data.value <= 0);
-  // dispatch({
-  //   type: "CHANGE_DISCOUNT",
-  //   payload: data
-  // });
+  if (max >= data.value) {
+    dispatch({
+      type: "CHANGE_DISCOUNT",
+      payload: data
+    });
+  }
 };
 
 export const cancelToSell = () => dispatch => {

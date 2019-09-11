@@ -209,7 +209,7 @@ class Products extends React.Component {
                           <Input
                             type="number"
                             className={product._id}
-                            value={product.discountP ? product.discountP : 0}
+                            value={product.discountP ? product.discountP : ""}
                             onKeyDown={e => this.keyDiscount(e, product)}
                             onChange={event =>
                               this.handleDiscount(event, product)
@@ -252,13 +252,14 @@ class Products extends React.Component {
         </div>
 
         <Footer style={{ flex: 1, display: "flex" }}>
-          {this.props.discountProducts !== undefined && (
-            <div className="totalStyle">
-              <span className="titleBol">Descuento Maximo</span>{" "}
-              {`${formatNumber(this.props.discountProducts)} `}{" "}
-              <span className="titleBol">{aplication.current_simbol}</span>
-            </div>
-          )}
+          {this.props.discountProducts !== undefined &&
+            this.props.discountProducts !== false && (
+              <div className="totalStyle">
+                <span className="titleBol">Descuento Maximo</span>{" "}
+                {`${formatNumber(this.props.discountProducts)} `}{" "}
+                <span className="titleBol">{aplication.current_simbol}</span>
+              </div>
+            )}
           <div className="totalStyle">
             <span className="titleBol"> SubTotal</span>{" "}
             {`${formatNumber(totalData.subTotal)}`}
