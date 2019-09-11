@@ -180,6 +180,8 @@ class ModalServicio extends React.Component {
     const validationSchema = yup.object().shape({
       service: yup.string().required("Este Campo es Requerido")
     });
+   
+    
 
     return (
       <Modal isOpen={open} toggle={close} className="Modal">
@@ -213,6 +215,7 @@ class ModalServicio extends React.Component {
             }) => {
               const group = this.getGroup(values.fields);
               const inactive = serviceModalData.serviceOriginal.fields_disable;
+              console.log(group);
               return (
                 <div>
                   {this.state.openModal && (

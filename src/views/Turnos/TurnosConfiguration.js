@@ -114,14 +114,7 @@ class TurnosConfiguration extends Component {
             branchoffices_id={this.state.branchoffices_id}
           />
         }
-        <ModalTicket
-          option={this.state.option}
-          modalView={this.state.modalView}
-          valorCloseModalView={this.valorCloseModalView}
-          modalHeader={this.state.modalHeader}
-          modalFooter={this.state.modalFooter}
-          showHide={this.state.showHide}
-        />
+       
         <div className="row">
           <div className="form-group col-sm-12">
             <Table hover responsive borderless>
@@ -173,14 +166,6 @@ class TurnosConfiguration extends Component {
                               <Edit className="iconTable" />
                             </IconButton>
 
-                            {/* <IconButton aria-label="Delete"
-                              title="Editar Configuracion"
-                              className="iconButtons"
-                              onClick={() => { this.openModal(5, list.branchoffices_id); }}
-
-                            >
-                              <Visibility className="iconTable" />
-                            </IconButton> */}
                           </div>
                         </td>
                       </tr>

@@ -24,6 +24,9 @@ import Switch from '@material-ui/core/Switch';
 import { openConfirmDialog } from '../../../actions/aplicantionActions';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ModalTicket from './ModalTicket';
+import { Visibility } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
 
 class TurnosModal extends Component {
   constructor(props) {
@@ -33,18 +36,19 @@ class TurnosModal extends Component {
       logoStatus: false,
       tabla: [],
 
-      width: '',
+      width: 1,
       widthError: '',
       widthInvalid: false,
 
-      height: '',
+      height: 1,
       heightError: '',
       heightInvalid: false,
       loading: "show",
       checked: false,
 
       fotoError: '',
-      fotoInvalid: false
+      fotoInvalid: false,
+      modalView: false
     }
   }
 
@@ -114,6 +118,13 @@ class TurnosModal extends Component {
         return true
       }
     }
+  }
+
+  valorCloseModalView = (valor) => {
+    this.setState({
+      modalView: valor,
+      option: null,
+    });
   }
 
   validate = () => {
@@ -223,11 +234,29 @@ class TurnosModal extends Component {
       this.setState({ loading: 'hide' })
     }
   }
+  openModal = () => {
+    this.setState({
+      modalView: true,
+      modalHeader: 'Configuracion Original',
+      modalFooter: 'Guardar',
+      disabled: true,
+      showHide: 'hide',
+    })
+  }
 
 
   render() {
     return (
       <span>
+
+        <ModalTicket
+          modalView={this.state.modalView}
+          valorCloseModalView={this.valorCloseModalView}
+          modalHeader={this.state.modalHeader}
+          modalFooter={this.state.modalFooter}
+          showHide={this.state.showHide}
+          data={this.state.tabla}
+        />
         <Modal
           isOpen={this.props.modal}
           toggle={this.closeModal}
@@ -247,7 +276,7 @@ class TurnosModal extends Component {
                         id="width"
                         onKeyUp={this.handlekeywidth}
                         onChange={this.handleChange}
-                        value={this.state.width  || 0}
+                        value={this.state.width || 0}
                         type="number"
                         placeholder="Ancho"
                         disabled={this.props.disabled}
@@ -263,7 +292,7 @@ class TurnosModal extends Component {
                         invalid={this.state.heightInvalid}
                         name="height"
                         id="height"
-                        onKeyUp={this.handlekeyheight }
+                        onKeyUp={this.handlekeyheight}
                         onChange={this.handleChange}
                         value={this.state.height || 1}
                         type="number"
@@ -322,6 +351,18 @@ class TurnosModal extends Component {
                     height={this.state.height}
                     logoStatus={this.state.logoStatus}
                   />
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}
+                  >
+                    <Button
+                      style={{
+                        margin: 20
+                      }}
+                      color="primary"
+                      onClick={() => { this.openModal(); }}
+                    >
+                      Ver
+                      </Button>
+                  </div>
                 </form>
               </ModalBody>
               <ModalFooter>
@@ -342,7 +383,7 @@ class TurnosModal extends Component {
             </div>
           }
         </Modal>
-      </span>
+      </span >
     );
   }
 }
