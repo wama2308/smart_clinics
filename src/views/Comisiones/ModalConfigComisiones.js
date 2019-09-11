@@ -7,8 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   FormGroup,
-  Label,
-  FormFeedback,
+  Label,  
   TabContent,
   TabPane,
   Nav,
@@ -40,7 +39,8 @@ import {
   getOneReference,
   removerRegisterFunction,
   cleanDataPatientsStaffs,
-  messageErrorFunction
+  messageErrorFunction,
+  filterServicesAction
 } from "../../actions/CommissionsActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -116,6 +116,7 @@ class ModalConfigCommissions extends React.Component {
     this.props.cleanDataPatientsStaffs();
     this.props.valorCloseModal(false);
     this.props.actionProps(0);
+    this.props.cleanListServices();
     let set = ""
     this.props.search(set)
   };
@@ -928,14 +929,7 @@ class ModalConfigCommissions extends React.Component {
         divTiempo: "",
         divTiempoError: "",         
     })
-  }
-
-  handlekeyAplicarPorcentajeTodos= event =>{
-    this.setState({
-        divAplicarPorcentajeTodos: "",
-        divAplicarPorcentajeTodosError: "",         
-    })
-  }
+  }  
 
   handlekeyNroPersonasReferenciadas= event =>{
     this.setState({
@@ -981,34 +975,7 @@ class ModalConfigCommissions extends React.Component {
               montoMinimoComision: ''                      
           }); 
       }        
-  }  
-
-  handleChangeInputTable = e => {    
-    const { name, value } = e.target;    
-    this.setState({
-      [name]: value
-    });    
-    this.props.setPorcentajeAllTable(value);
-    this.setState({
-      divSeleccioneServiciosPayment: '',
-    });
-  };
-
-  eventoBlurAplicarTodos = (e) => {
-        if(this.state.aplicarPorcentajeTodos === '' || this.state.aplicarPorcentajeTodos === '0'){
-            this.setState({
-                aplicarPorcentajeTodos: '0'                      
-            }); 
-        }        
-    }
-
-  eventoFocusAplicarTodos = (e) => {        
-      if(this.state.aplicarPorcentajeTodos === '0'){
-          this.setState({
-              aplicarPorcentajeTodos: ''                      
-          }); 
-      }        
-  }  
+  }      
 
   seteardivSeleccioneServiciosComision = () => {
     if(this.state.activeTab === '2'){
@@ -1411,6 +1378,7 @@ class ModalConfigCommissions extends React.Component {
                               disabled = {this.props.disabled}
                               tab = {this.state.activeTab}
                               seteardivSeleccioneServiciosComision = {this.seteardivSeleccioneServiciosComision}
+                              filterServicesAction = {this.props.filterServicesAction}
                             />
                           </TabPane>                          
                       }
@@ -1482,25 +1450,7 @@ class ModalConfigCommissions extends React.Component {
                                 />
                             </div>
                             <div className="errorSelect">{this.state.divEspecifiqueError}</div>
-                          </FormGroup>
-                          <FormGroup className={`top form-group col-sm-6 ${this.state.hideAplicarPorcentajeTodos}`}>                                                                 
-                            <Label for="aplicarPorcentajeTodos">Aplicar Porcentaje para Todos:</Label> 
-                            <div className={this.state.divAplicarPorcentajeTodos}>                               
-                                <Input 
-                                  disabled={this.props.disabled} 
-                                  name="aplicarPorcentajeTodos" 
-                                  id="aplicarPorcentajeTodos" 
-                                  onKeyUp={this.handlekeyAplicarPorcentajeTodos} 
-                                  onChange={this.handleChangeInputTable}
-                                  value={this.state.aplicarPorcentajeTodos} 
-                                  type="number" 
-                                  placeholder="Aplicar Porcentaje para Todos"   
-                                  onBlur ={this.eventoBlurAplicarTodos} 
-                                  onFocus = {this.eventoFocusAplicarTodos}                             
-                                />                                    
-                            </div>
-                            <div className="errorSelect">{this.state.divAplicarPorcentajeTodosError}</div>                                                                                                                                                                                         
-                          </FormGroup>
+                          </FormGroup>                          
                         </div>
                         {
                            ((this.state.arrayModoPagoSelect &&
@@ -1518,6 +1468,8 @@ class ModalConfigCommissions extends React.Component {
                               tab = {this.state.activeTab}                              
                               divSeleccioneServiciosPayment = {this.state.divSeleccioneServiciosPayment}
                               seteardivSeleccioneServiciosComision = {this.seteardivSeleccioneServiciosComision}
+                              setPorcentajeAllTable = {this.props.setPorcentajeAllTable}
+                              filterServicesAction = {this.props.filterServicesAction}
                             />
                         }
                       </TabPane>                          
@@ -1631,6 +1583,7 @@ const mapDispatchToProps = dispatch => ({
   cleanDataPatientsStaffs: () =>dispatch(cleanDataPatientsStaffs()),  
   messageErrorFunction: (message) =>dispatch(messageErrorFunction(message)),  
   search: (set) =>dispatch(search(set)),    
+  filterServicesAction: (value, tab) =>dispatch(filterServicesAction(value, tab)),    
 });
 
 export default connect(
