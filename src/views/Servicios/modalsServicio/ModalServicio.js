@@ -163,8 +163,6 @@ class ModalServicio extends React.Component {
       serviceId: this.props.serviceID,
       field_id: obj._id
     });
-
-    console.log("field", obj);
   };
 
   render() {
@@ -186,14 +184,14 @@ class ModalServicio extends React.Component {
         {this.state.loading === "show" && (
           <div align="center" className={"show"} style={{ padding: "5%" }}>
             <CircularProgress
-            style={{
-              position: " absolute",
-              height: 40,
-              top: "45%",
-              right: "50%",
-              zIndex: 2
-            }}
-          />
+              style={{
+                position: " absolute",
+                height: 40,
+                top: "45%",
+                right: "50%",
+                zIndex: 2
+              }}
+            />
           </div>
         )}
         {this.state.loading === "hide" && (
@@ -300,7 +298,6 @@ class ModalServicio extends React.Component {
                       </FormFeedback>
                     </FormGroup>
 
-
                     <FormGroup
                       className={
                         "top form-group col-sm-12 " + this.state.labelMonto
@@ -376,9 +373,7 @@ class ModalServicio extends React.Component {
                                   return (
                                     <FormGroup
                                       key={key}
-                                      className={`top "form-group col-sm-${
-                                        field.size
-                                      } groupContainer `}
+                                      className={`top "form-group col-sm-${field.size} groupContainer `}
                                     >
                                       <div
                                         style={{
@@ -434,9 +429,7 @@ class ModalServicio extends React.Component {
                                   return (
                                     <FormGroup
                                       key={key}
-                                      className={`top form-group col-sm-${
-                                        field.size
-                                      } groupContainer`}
+                                      className={`top form-group col-sm-${field.size} groupContainer`}
                                     >
                                       <div
                                         style={{
@@ -497,9 +490,7 @@ class ModalServicio extends React.Component {
                                   return (
                                     <FormGroup
                                       key={key}
-                                      className={`top form-group col-sm-${
-                                        field.size
-                                      } groupContainer`}
+                                      className={`top form-group col-sm-${field.size} groupContainer`}
                                     >
                                       <div
                                         style={{
@@ -554,9 +545,7 @@ class ModalServicio extends React.Component {
                                   return (
                                     <FormGroup
                                       key={key}
-                                      className={`top form-group col-sm-${
-                                        field.size
-                                      } groupContainer`}
+                                      className={`top form-group col-sm-${field.size} groupContainer`}
                                     >
                                       <div
                                         style={{

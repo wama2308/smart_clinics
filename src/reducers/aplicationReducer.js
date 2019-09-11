@@ -1,5 +1,5 @@
 import { search } from "../actions/aplicantionActions";
-import { Map } from 'immutable'
+import { Map } from "immutable";
 
 const InitalState = {
   snackBars: {
@@ -10,44 +10,54 @@ const InitalState = {
   confirm: {
     open: false,
     message: "",
-    callback: undefined,
+    callback: undefined
   },
   openModalExists: false,
   search: "",
   outside: true,
   dataGeneral: null,
   searchloading: true,
-  chat:{
-    message:""
+  chat: {
+    message: ""
   }
 };
 
 const setStoreSaveProviderPusher = (state, payload) => {
   let estado = state;
-  estado.dataGeneral.dataCountries.provider.push({ label: payload.name, value: payload.id });
+  estado.dataGeneral.dataCountries.provider.push({
+    label: payload.name,
+    value: payload.id
+  });
   return estado;
-}
+};
 
 const setStoreEditProviderPusher = (state, payload) => {
   let estado = state;
-  const key = estado.dataGeneral.dataCountries.provider.findIndex(provider => provider.value === payload.id);
+  const key = estado.dataGeneral.dataCountries.provider.findIndex(
+    provider => provider.value === payload.id
+  );
   estado.dataGeneral.dataCountries.provider[key].label = payload.name;
   estado.dataGeneral.dataCountries.provider[key].value = payload.id;
   return estado;
-}
+};
 
 const setStoreDisabledProviderPusher = (state, payload) => {
   let estado = state;
-  const key = estado.dataGeneral.dataCountries.provider.findIndex(provider => provider.value === payload.id);
+  const key = estado.dataGeneral.dataCountries.provider.findIndex(
+    provider => provider.value === payload.id
+  );
   estado.dataGeneral.dataCountries.provider.splice(key, 1);
   return estado;
-}
+};
 
 const setStoreEnabledProviderPusher = (state, payload) => {
   let estado = state;
-  estado.dataGeneral.dataCountries.provider.push({ label: payload.name, value: payload.id });
+  estado.dataGeneral.dataCountries.provider.push({
+    label: payload.name,
+    value: payload.id
+  });
   return estado;
-}
+};
 
 const AplicationReducers = (state = InitalState, action) => {
   switch (action.type) {
@@ -74,7 +84,7 @@ const AplicationReducers = (state = InitalState, action) => {
       return { ...state, confirm: { ...state.confirm, open: false } };
     }
     case "SEARCH_DATA": {
-      return { ...state, search: action.payload };
+      return { ...state, search: action.payload, view: action.view };
     }
 
     case "OUT_CLICK": {
@@ -97,20 +107,20 @@ const AplicationReducers = (state = InitalState, action) => {
       return InitalState;
     }
 
-    case 'LOAD_PROVIDER_NEW_PUSHER': {
-      return setStoreSaveProviderPusher(state, action.payload)
+    case "LOAD_PROVIDER_NEW_PUSHER": {
+      return setStoreSaveProviderPusher(state, action.payload);
     }
 
-    case 'LOAD_PROVIDER_EDIT_PUSHER': {
-      return setStoreEditProviderPusher(state, action.payload)
+    case "LOAD_PROVIDER_EDIT_PUSHER": {
+      return setStoreEditProviderPusher(state, action.payload);
     }
 
-    case 'LOAD_PROVIDER_DISABLED_PUSHER': {
-      return setStoreDisabledProviderPusher(state, action.payload)
+    case "LOAD_PROVIDER_DISABLED_PUSHER": {
+      return setStoreDisabledProviderPusher(state, action.payload);
     }
 
-    case 'LOAD_PROVIDER_ENABLED_PUSHER': {
-      return setStoreEnabledProviderPusher(state, action.payload)
+    case "LOAD_PROVIDER_ENABLED_PUSHER": {
+      return setStoreEnabledProviderPusher(state, action.payload);
     }
 
     default:

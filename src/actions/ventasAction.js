@@ -221,11 +221,12 @@ export const clean = () => {
   };
 };
 
-export const searchProduct = data => dispatch => {
+export const searchProduct = (data, view) => dispatch => {
   getDataToken().then(token => {
     dispatch({
       type: "SEARCH_DATA",
-      payload: data
+      payload: data,
+      view: view
     });
     axios({
       method: "POST",
@@ -243,7 +244,8 @@ export const searchProduct = data => dispatch => {
   });
 };
 
-export const searchOneSuppplie = data => dispatch => {
+export const searchOneSuppplie = (data, view) => dispatch => {
+  console.log("en search product", view);
   if (data.length === 0) {
     dispatch(
       openSnackbars("warning", "Debe ingresar nombre o codigo del producto!")
@@ -302,11 +304,12 @@ export const changeQuantytoSell = obj => dispatch => {
   }
 };
 
-export const addDiscount = data => dispatch => {
-  dispatch({
-    type: "CHANGE_DISCOUNT",
-    payload: data
-  });
+export const addDiscount = (data, max) => dispatch => {
+  // console.log("el value", data.value <= 0);
+  // dispatch({
+  //   type: "CHANGE_DISCOUNT",
+  //   payload: data
+  // });
 };
 
 export const cancelToSell = () => dispatch => {
@@ -484,10 +487,11 @@ const filterSearchReferences = values => {
   console.log("actions", result);
 };
 
-export const getOptionsPersonal = (staff, value) => dispatch => {
+export const getOptionsPersonal = (staff, value, view) => dispatch => {
   dispatch({
     type: "SEARCH_DATA",
-    payload: value
+    payload: value,
+    view: view
   });
   getDataToken().then(token => {
     axios({

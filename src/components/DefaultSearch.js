@@ -144,8 +144,7 @@ class DefaultSearch extends React.Component {
   };
 
   handleChange = name => (event, { newValue }) => {
-    console.log("en el search", this.props);
-    this.props.getOptions(newValue);
+    this.props.getOptions(newValue, this.props.view);
   };
 
   componentWillReceiveProps = props => {

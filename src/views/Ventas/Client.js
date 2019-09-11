@@ -13,7 +13,7 @@ import {
   getOneReference,
   createReference
 } from "../../actions/ventasAction";
-import { Delete, PersonAdd } from "@material-ui/icons";
+import { Delete, PersonAdd, Clear } from "@material-ui/icons";
 import ModalReferences from "./ModalReferences";
 
 class Client extends React.Component {
@@ -33,13 +33,13 @@ class Client extends React.Component {
 
   searchAction = values => {
     this.props.getOneReference(values.value, res => {
-      console.log("res de la accion", res);
       this.setState({
         searched: {
           ...res,
           name: res.names ? `${res.names} ${res.surnames}` : undefined
         }
       });
+      this.props.closeManualReference();
       this.props.cleanSearch();
     });
   };
@@ -73,7 +73,7 @@ class Client extends React.Component {
 
   getOptions = value => {
     const staff = this.state.referencia === "Personal interno" ? 0 : 1;
-    this.props.getOptionsPersonal(staff, value);
+    this.props.getOptionsPersonal(staff, value, "client");
   };
 
   orderExternalOptions = value => {
@@ -92,8 +92,6 @@ class Client extends React.Component {
   };
 
   saveReference = () => {
-    console.log(this.state.searched);
-    console.log(this.props.patient);
     const staff = this.state.referencia === "Personal interno" ? 0 : 1;
     let obj = {};
     if (staff === 0) {
@@ -112,7 +110,6 @@ class Client extends React.Component {
     }
     this.props.createReference(obj, () => {
       this.setState({ searched: null });
-      this.props.closeManualReference();
     });
   };
 
@@ -125,8 +122,6 @@ class Client extends React.Component {
       PAID: "POR PAGAR"
     };
 
-    console.log("aca", this.state.searched);
-
     const optionsReferences =
       this.state.referencia === "Personal interno"
         ? this.orderOptions(this.props.optionsInternal)
@@ -137,10 +132,13 @@ class Client extends React.Component {
       { label: "Centro medico externo", value: "Centro medico externo" }
     ];
 
-    const definePatient = selectedReferences ? selectedReferences : [];
-
+    const definePatient = selectedReferences ? selectedReferences : undefined;
     const disabledForPatient = selectedReferences ? true : false;
 
+    const disabledSelect =
+      this.state.searched && !this.props.manualReference ? true : false;
+
+    const searchReferences = !this.state.searched || this.props.manualReference;
     const color =
       this.props.statusSale !== "PENDING TO APPROVE" ? "#357a38" : "#b2102f";
 
@@ -164,58 +162,14 @@ class Client extends React.Component {
             patient={patient}
           />
         )}
-
-        {definePatient && (
-          <Popover
-            open={this.state.openReference}
-            anchorEl={this.state.anchorEl}
-            onClose={this.handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center"
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center"
-            }}
-          >
-            <div
-              style={{
-                borderRadius: "20%",
-                width: 280
-              }}
-            >
-              <Typography style={{ padding: 10, fontWeight: "bold" }}>
-                Nombres
-              </Typography>
-              <Typography style={{ paddingLeft: 10, paddingRight: 10 }}>
-                {definePatient.names} {definePatient.surnames}
-              </Typography>
-              <Typography style={{ padding: 10, fontWeight: "bold" }}>
-                Identificacion
-              </Typography>
-              <Typography
-                style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}
-              >
-                {definePatient.type_identity}-{definePatient.dni}
-              </Typography>
-            </div>
-          </Popover>
-        )}
         <Header>
           <div style={{ display: "flex", alignItems: "center" }}>
-            Paciente
-            {disabledForPatient && (
-              <div
-                onClick={this.referenceOpen}
-                style={{
-                  marginLeft: 10,
-                  padding: 5,
-                  background: "rgb(87, 214, 92)",
-                  borderRadius: 20
-                }}
-              >
-                Referenciado
+            {!patient && `Paciente`}
+
+            {patient && (
+              <div>
+                {patient.names} {patient.surnames} {patient.type_identity}-
+                {patient.dni}
               </div>
             )}
           </div>
@@ -236,18 +190,30 @@ class Client extends React.Component {
             )}
             {patient && (
               <IconButton
-                disabled={disabled || disabledForPatient}
+                disabled={disabled}
+                onClick={() => {
+                  this.props.clean;
+                  this.setState({ searched: null });
+                }}
+              >
+                <Delete />
+              </IconButton>
+            )}
+            {this.state.searched && !this.props.manualReference && (
+              <IconButton
+                disabled={disabled}
                 onClick={this.props.openManualReference}
               >
                 <PersonAdd />
               </IconButton>
             )}
-            {patient && (
+
+            {this.props.manualReference && (
               <IconButton
-                disabled={disabled || disabledForPatient}
-                onClick={this.props.clean}
+                disabled={disabled}
+                onClick={this.props.closeManualReference}
               >
-                <Delete />
+                <Clear />
               </IconButton>
             )}
           </div>
@@ -260,46 +226,108 @@ class Client extends React.Component {
           )}
           {this.props.loaded && (
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              {patient && !this.props.manualReference && (
-                <div className="infoUser">
-                  <div className="list" style={{ borderTop: "none" }}>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Nombre:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.names} {patient.surnames}
-                      </Typography>
-                    </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">DNI:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.type_identity
-                          ? `${patient.type_identity}-`
-                          : "hello"}
-                        {patient.dni}
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="list">
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Correo:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.email[0]}
-                      </Typography>
-                    </div>
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Telefono:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.phone[0]}
-                      </Typography>
+              {patient && (
+                <div
+                  className="infoUser"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1
+                  }}
+                >
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      alignItems: "center"
+                    }}
+                  >
+                    <Input
+                      type="select"
+                      value={this.state.referencia}
+                      disabled={disabledSelect}
+                      onChange={event =>
+                        this.setState({
+                          referencia: event.target.value,
+                          searched: null
+                        })
+                      }
+                      style={{
+                        width: "45%"
+                      }}
+                    >
+                      {reference.map(ref => {
+                        return <option value={ref.value}>{ref.label}</option>;
+                      })}
+                    </Input>
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row-reverse"
+                      }}
+                    >
+                      <div style={{ width: "65%" }}>
+                        {searchReferences && (
+                          <Search
+                            view="Client"
+                            placeholder={`Buscar ${this.state.referencia}`}
+                            getOptions={this.getOptions}
+                            options={optionsReferences}
+                            searchAction={this.searchAction}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="list">
-                    <div className="list-body">
-                      <Typography variant="subtitle1">Direccion:</Typography>
-                      <Typography variant="body1" className="textSpace">
-                        {patient.address}
-                      </Typography>
+                  <div>
+                    <div className="list" style={{ borderTop: "none" }}>
+                      {this.state.searched &&
+                        this.state.searched.medical_center && (
+                          <div className="list-body">
+                            <Typography variant="subtitle1">
+                              Centro Medico:
+                            </Typography>
+                            <Typography variant="body1" className="textSpace">
+                              {this.state.searched.medical_center}
+                            </Typography>
+                          </div>
+                        )}
+                      {this.state.searched &&
+                        this.state.referencia === "Personal interno" && (
+                          <div className="list-body">
+                            <Typography variant="subtitle1">
+                              Sucursal:
+                            </Typography>
+                            <Typography variant="body1" className="textSpace">
+                              {this.state.searched.branchoffices}
+                            </Typography>
+                          </div>
+                        )}
+                    </div>
+                    <div className="list" style={{ marginBottom: 15 }}>
+                      {this.state.referencia !== "Personal interno" &&
+                        this.state.searched && (
+                          <div className="list-body">
+                            <Typography variant="subtitle1">
+                              Sucursal:
+                            </Typography>
+                            <Typography variant="body1" className="textSpace">
+                              {this.state.searched.branchoffices}
+                            </Typography>
+                          </div>
+                        )}
+                      {this.state.referencia === "Personal interno" &&
+                        this.state.searched &&
+                        this.state.searched.name && (
+                          <div className="list-body">
+                            <Typography variant="subtitle1">Nombre:</Typography>
+                            <Typography variant="body1" className="textSpace">
+                              {this.state.searched.name}
+                            </Typography>
+                          </div>
+                        )}
                     </div>
                   </div>
 
@@ -319,119 +347,6 @@ class Client extends React.Component {
                         Ver detalles
                       </Button>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {patient && this.props.manualReference && (
-                <div
-                  className="infoUser"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flex: 1
-                  }}
-                >
-                  <div
-                    style={{
-                      flex: 1,
-                      display: "flex",
-                      alignItems: "center"
-                    }}
-                  >
-                    <Input
-                      type="select"
-                      value={this.state.referencia}
-                      onChange={event =>
-                        this.setState({ referencia: event.target.value , searched: null })
-                      }
-                      style={{
-                        width: "45%"
-                      }}
-                    >
-                      {reference.map(ref => {
-                        return <option value={ref.value}>{ref.label}</option>;
-                      })}
-                    </Input>
-                    <div
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "row-reverse"
-                      }}
-                    >
-                      <div style={{ width: "65%" }}>
-                        <Search
-                          placeholder={`Buscar ${this.state.referencia}`}
-                          getOptions={this.getOptions}
-                          options={optionsReferences}
-                          searchAction={this.searchAction}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="list" style={{ borderTop: "none" }}>
-                      {this.state.searched &&
-                        this.state.searched.medical_center && (
-                          <div className="list-body">
-                            <Typography variant="subtitle1">
-                              Centro Medico:
-                            </Typography>
-                            <Typography variant="body1" className="textSpace">
-                              {this.state.searched.medical_center}
-                            </Typography>
-                          </div>
-                        )}
-                      {this.state.searched  && this.state.referencia === "Personal interno" &&  (
-                        <div className="list-body">
-                          <Typography variant="subtitle1">Sucursal:</Typography>
-                          <Typography variant="body1" className="textSpace">
-                            {this.state.searched.branchoffices}
-                          </Typography>
-                        </div>
-                      )}
-                    </div>
-                    <div className="list" style={{ marginBottom: 15 }}>
-                      {this.state.referencia !== "Personal interno" &&
-                        this.state.searched && (
-                          <div className="list-body">
-                            <Typography variant="subtitle1">
-                              Sucursal:
-                            </Typography>
-                            <Typography variant="body1" className="textSpace">
-                              {this.state.searched.branchoffices}
-                            </Typography>
-                          </div>
-                        )}
-                      {this.state.referencia === "Personal interno" && this.state.searched && this.state.searched.name && (
-                        <div className="list-body">
-                          <Typography variant="subtitle1">Nombre:</Typography>
-                          <Typography variant="body1" className="textSpace">
-                            {this.state.searched.name}
-                          </Typography>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      justifyContent: "flex-end",
-                      display: "flex"
-                    }}
-                  >
-                    <Button
-                      color="danger"
-                      onClick={this.props.closeManualReference}
-                    >
-                      Cancelar
-                    </Button>
-                    &nbsp; &nbsp;
-                    <Button color="success" onClick={this.saveReference}>
-                      Guardar
-                    </Button>
                   </div>
                 </div>
               )}

@@ -39,10 +39,13 @@ class Products extends React.Component {
   };
 
   handleDiscount = (event, product) => {
-    this.props.changeDiscount({
-      value: parseInt(event.target.value),
-      id: product._id
-    });
+    this.props.changeDiscount(
+      {
+        value: parseInt(event.target.value),
+        id: product._id
+      },
+      this.props.discountProducts
+    );
   };
 
   componentDidUpdate = prevProps => {
@@ -60,15 +63,14 @@ class Products extends React.Component {
       lastData &&
       lastData.searched &&
       lastData !== lastPrevData &&
-      !this.state.discountP
+      !this.props.discountPro
     ) {
       this.setState({ edit: lastData._id });
     }
 
-    console.log(this.props.modalDiscount);
     if (
       this.state.edit &&
-      !this.state.discountP &&
+      !this.props.discountPro &&
       this.props.modalDiscount === false
     ) {
       const result = document.getElementsByClassName(`${this.state.edit}`);
@@ -97,7 +99,7 @@ class Products extends React.Component {
 
   keyDiscount = (e, discount) => {
     if (e.key === "Enter") {
-      this.setState({ discountP: false });
+      this.props.closeDiscount(false);
     }
   };
 
@@ -106,8 +108,6 @@ class Products extends React.Component {
     const disableAllProductos =
       this.props.discount || this.props.statusSale === "BILLED" ? true : false;
     const totalData = this.props.getTotal(products, aplication);
-
-    console.log("ACA", this.props.options);
 
     const dataHead = [
       { label: "NOMBRE" },
@@ -119,6 +119,7 @@ class Products extends React.Component {
       { label: "PRECIO/T" },
       { label: "ACTION" }
     ];
+
     return (
       <Card
         style={{
@@ -133,9 +134,11 @@ class Products extends React.Component {
           <div>Productos</div>
           <div style={{ width: "40%" }}>
             {patient &&
+              (!this.props.viewSearch || this.props.viewSearch !== "client") &&
               !this.props.manualReference &&
               (!this.state.edit || disableAllProductos) && (
                 <Search
+                  view="products"
                   disabled={disableAllProductos}
                   pressKey={true}
                   getOptions={this.props.searchAction}
@@ -165,6 +168,7 @@ class Products extends React.Component {
             <TableBody>
               {products &&
                 products.map((product, key) => {
+                  console.log("discountp", product.discountP);
                   const disabled =
                     this.state.edit === product._id || disableAllProductos
                       ? true
@@ -199,13 +203,13 @@ class Products extends React.Component {
                         </Cell>
                       )}
                       <Cell>{formatNumber(product.price)}</Cell>
-                      {this.state.discountP === product._id &&
+                      {this.props.discountPro === product._id &&
                       !disableAllProductos ? (
                         <td>
                           <Input
                             type="number"
                             className={product._id}
-                            value={product.discountP}
+                            value={product.discountP ? product.discountP : 0}
                             onKeyDown={e => this.keyDiscount(e, product)}
                             onChange={event =>
                               this.handleDiscount(event, product)
@@ -219,7 +223,7 @@ class Products extends React.Component {
                       ) : (
                         <Cell
                           onClick={() =>
-                            this.setState({ discountP: product._id })
+                            this.props.selectedProductDiscount(product._id)
                           }
                         >
                           {product.discountP ? product.discountP : 0}
@@ -248,6 +252,13 @@ class Products extends React.Component {
         </div>
 
         <Footer style={{ flex: 1, display: "flex" }}>
+          {this.props.discountProducts !== undefined && (
+            <div className="totalStyle">
+              <span className="titleBol">Descuento Maximo</span>{" "}
+              {`${formatNumber(this.props.discountProducts)} `}{" "}
+              <span className="titleBol">{aplication.current_simbol}</span>
+            </div>
+          )}
           <div className="totalStyle">
             <span className="titleBol"> SubTotal</span>{" "}
             {`${formatNumber(totalData.subTotal)}`}

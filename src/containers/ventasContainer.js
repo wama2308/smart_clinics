@@ -40,7 +40,8 @@ class VentasContainer extends React.Component {
       openModal: false,
       modalLoading: false,
       edit: false,
-      manualReference: false
+      manualReference: false,
+      discountP: false
     };
   }
   optionsPatient = options => {
@@ -62,6 +63,14 @@ class VentasContainer extends React.Component {
 
   componentDidMount = () => {
     this.props.querySales();
+  };
+
+  selectedProductDiscount = key => {
+    this.setState({ discountP: key });
+  };
+
+  closeDiscount = () => {
+    this.setState({ discountP: null });
   };
 
   optionsProducts = (options, products) => {
@@ -219,8 +228,27 @@ class VentasContainer extends React.Component {
     });
   };
 
+  getMaxDiscount = () => {
+    if (!this.props.products && !this.state.discountP) {
+      console.log("entro en el segundo if");
+      return false;
+    }
+    const result = this.props.products.find(prod => {
+      return prod._id === this.state.discountP;
+    });
+
+    if (result) {
+      return result.discount_max;
+    }
+  };
+
   close = () => {
     this.setState({ openModal: false });
+  };
+
+  clean = () => {
+    this.setState({ manualReference: false });
+    this.props.clean();
   };
 
   render() {
@@ -230,6 +258,8 @@ class VentasContainer extends React.Component {
       this.props.products
     );
     const totalData = this.getTotal(this.props.products, this.props.aplication);
+    const discountProducts = this.getMaxDiscount();
+
     return (
       <Container>
         {!this.props.saleLoading && <Spinner />}
@@ -279,6 +309,7 @@ class VentasContainer extends React.Component {
               className="products"
               patient={this.props.patient}
               searchAction={this.props.searchProduct}
+              viewSearch={this.props.searchView}
               options={optionsProducts}
               getProducts={this.props.searchOneSuppplie}
               products={this.props.products}
@@ -288,10 +319,14 @@ class VentasContainer extends React.Component {
               getTotal={this.getTotal}
               discount={this.props.discount}
               loaded={this.props.loaded}
+              selectedProductDiscount={this.selectedProductDiscount}
+              discountPro={this.state.discountP}
               statusSale={this.props.statusSale}
               manualReference={this.state.manualReference}
               changeDiscount={this.props.addDiscount}
-              modalDiscount = {this.state.openModal}
+              modalDiscount={this.state.openModal}
+              closeDiscount={this.closeDiscount}
+              discountProducts={discountProducts}
             />
 
             <Footer
@@ -338,6 +373,7 @@ const mapStateToProps = state => ({
   dataGeneral: state.global.dataGeneral.dataGeneral,
   code_bill: state.ventas.get("code"),
   statusSale: state.ventas.get("status_sale"),
+  searchView: state.global.view,
   state: state.ventas.toJS()
 });
 
