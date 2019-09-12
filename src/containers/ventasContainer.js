@@ -41,9 +41,15 @@ class VentasContainer extends React.Component {
       modalLoading: false,
       edit: false,
       manualReference: false,
-      discountP: false
+      discountP: false,
+      idsReferences: null
     };
   }
+
+  setReferencesID = key => {
+    this.setState({ idsReferences: key });
+  };
+
   optionsPatient = options => {
     if (!options) {
       return [];
@@ -80,7 +86,6 @@ class VentasContainer extends React.Component {
 
     if (!products) {
       const data = [];
-      const result = [];
       options.map(option => {
         data.push({
           label: `${option.name}`,
@@ -125,7 +130,9 @@ class VentasContainer extends React.Component {
 
     let subtotal = 0;
     let totaldiscount = 0;
+    let discountP = 0;
     array.map(data => {
+      discountP = data.discount_max ? discountP + data.discount_max : 0;
       const result = isNaN(data.quantity)
         ? data.price
         : data.quantity * data.price;
@@ -144,7 +151,7 @@ class VentasContainer extends React.Component {
     const iva =
       (parseFloat(obj.subTotal) * parseFloat(aplication.tax_rate)) / 100;
     obj.total = parseFloat(obj.subTotal) + parseFloat(iva);
-    obj.total = obj.total.toFixed(2);
+    obj.total = obj.total.toFixed(2) - discountP;
     obj.iva = iva.toFixed(2);
     obj.percentageIva = aplication.tax_rate;
     obj.currency = aplication.current_simbol;
@@ -238,7 +245,7 @@ class VentasContainer extends React.Component {
     });
 
     if (result) {
-      return result.discount_max;
+      return result.discount_p;
     }
   };
 
@@ -295,6 +302,7 @@ class VentasContainer extends React.Component {
               manualReference={this.state.manualReference}
               openManualReference={this.openManualReference}
               closeManualReference={this.closeManualReference}
+              setReferencesID={this.setReferencesID}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -349,6 +357,7 @@ class VentasContainer extends React.Component {
               dataGeneral={this.props.dataGeneral}
               code_bill={this.props.code_bill}
               reference={this.props.state.selectedReference}
+              idsReference ={this.state.idsReferences}
             />
           </div>
         </div>

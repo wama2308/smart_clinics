@@ -39,9 +39,24 @@ class Client extends React.Component {
           name: res.names ? `${res.names} ${res.surnames}` : undefined
         }
       });
+
+      this.props.setReferencesID(res._id);
       this.props.closeManualReference();
       this.props.cleanSearch();
     });
+  };
+
+  componentWillReceiveProps = props => {
+    if (props.selectedReferences) {
+      this.setState({
+        searched: {
+          ...props.selectedReferences,
+          name: props.selectedReferences.names
+            ? `${props.selectedReferences.names} ${props.selectedReferences.surnames}`
+            : undefined
+        }
+      });
+    }
   };
 
   view = () => {
@@ -132,9 +147,6 @@ class Client extends React.Component {
       { label: "Centro medico externo", value: "Centro medico externo" }
     ];
 
-    const definePatient = selectedReferences ? selectedReferences : undefined;
-    const disabledForPatient = selectedReferences ? true : false;
-
     const disabledSelect =
       this.state.searched && !this.props.manualReference ? true : false;
 
@@ -192,7 +204,7 @@ class Client extends React.Component {
               <IconButton
                 disabled={disabled}
                 onClick={() => {
-                  this.props.clean;
+                  this.props.clean();
                   this.setState({ searched: null });
                 }}
               >
@@ -245,7 +257,7 @@ class Client extends React.Component {
                     <Input
                       type="select"
                       value={this.state.referencia}
-                      disabled={disabledSelect}
+                      disabled={disabledSelect || disabled}
                       onChange={event =>
                         this.setState({
                           referencia: event.target.value,
@@ -268,7 +280,7 @@ class Client extends React.Component {
                       }}
                     >
                       <div style={{ width: "65%" }}>
-                        {searchReferences && (
+                        {searchReferences && !disabled && (
                           <Search
                             view="Client"
                             placeholder={`Buscar ${this.state.referencia}`}

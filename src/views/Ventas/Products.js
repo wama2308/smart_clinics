@@ -209,7 +209,7 @@ class Products extends React.Component {
                           <Input
                             type="number"
                             className={product._id}
-                            value={product.discountP ? product.discountP : ""}
+                            value={product.discount_max ? product.discount_max : ""}
                             onKeyDown={e => this.keyDiscount(e, product)}
                             onChange={event =>
                               this.handleDiscount(event, product)
@@ -226,7 +226,7 @@ class Products extends React.Component {
                             this.props.selectedProductDiscount(product._id)
                           }
                         >
-                          {product.discountP ? product.discountP : 0}
+                          {product.discount_max ? product.discount_max : 0}
                         </Cell>
                       )}
                       <Cell>
