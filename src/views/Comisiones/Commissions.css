@@ -258,3 +258,15 @@ padding: 1em;
 
 /*PARA LOS TAGS INPUT*/
 
+.flex {
+  display: flex;
+}
+
+.inner-flex {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: auto;
+  margin-top: auto;
+}
+

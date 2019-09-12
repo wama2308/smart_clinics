@@ -15,6 +15,7 @@ const searchPatientUrl = `${url}/api/queryPatients`;
 const searchOnePatientUrl = `${url}/api/queryOnePatients`;
 const referencePersonnelUrl = `${url}/api/referencePersonnel`;
 const queryOneReferencePersonnel = `${url}/api/queryOneReferencePersonnel`;
+const queryOnlySupplies = `${url}/api/queryOnlySupplies`;
 
 export const LoadConfigCommissionsFunction = () => dispatch => {
   getDataToken()
