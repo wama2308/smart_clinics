@@ -23,7 +23,7 @@ class Client extends React.Component {
     disabled: false,
     openReference: false,
     anchorEl: null,
-    referencia: "Personal interno",
+    referencia: "personal",
     searched: null
   };
 
@@ -137,12 +137,20 @@ class Client extends React.Component {
       PAID: "POR PAGAR"
     };
 
+    console.log(
+      "condiciones",
+      this.state.searched && !this.props.manualReference
+    );
+
+    console.log("nueva condificon", this.props.manualReference);
+
     const optionsReferences =
       this.state.referencia === "Personal interno"
         ? this.orderOptions(this.props.optionsInternal)
         : this.orderExternalOptions(this.props.optionsExternal);
 
     const reference = [
+      { label: "personal", value: "personal" },
       { label: "Personal interno", value: "Personal interno" },
       { label: "Centro medico externo", value: "Centro medico externo" }
     ];
@@ -204,8 +212,8 @@ class Client extends React.Component {
               <IconButton
                 disabled={disabled}
                 onClick={() => {
-                  this.props.clean();
                   this.setState({ searched: null });
+                  this.props.clean();
                 }}
               >
                 <Delete />
@@ -280,15 +288,17 @@ class Client extends React.Component {
                       }}
                     >
                       <div style={{ width: "65%" }}>
-                        {searchReferences && !disabled && (
-                          <Search
-                            view="Client"
-                            placeholder={`Buscar ${this.state.referencia}`}
-                            getOptions={this.getOptions}
-                            options={optionsReferences}
-                            searchAction={this.searchAction}
-                          />
-                        )}
+                        {this.state.referencia !== "personal" &&
+                          searchReferences &&
+                          !disabled && (
+                            <Search
+                              view="Client"
+                              placeholder={`Buscar ${this.state.referencia}`}
+                              getOptions={this.getOptions}
+                              options={optionsReferences}
+                              searchAction={this.searchAction}
+                            />
+                          )}
                       </div>
                     </div>
                   </div>

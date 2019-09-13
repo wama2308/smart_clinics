@@ -304,9 +304,9 @@ export const changeQuantytoSell = obj => dispatch => {
   }
 };
 
-export const addDiscount = (data, max) => dispatch => {
+export const addDiscount = (data, max, admin) => dispatch => {
   console.log("action", data, max);
-  if (max >= data.value) {
+  if (max >= data.value || admin) {
     dispatch({
       type: "CHANGE_DISCOUNT",
       payload: data

@@ -130,12 +130,13 @@ class VentasContainer extends React.Component {
 
     let subtotal = 0;
     let totaldiscount = 0;
-    let discountP = 0;
+
     array.map(data => {
-      discountP = data.discount_max ? discountP + data.discount_max : 0;
+      let discountP = data.discount_max ? data.discount_max : 0;
+      console.log("discount", discountP);
       const result = isNaN(data.quantity)
-        ? data.price
-        : data.quantity * data.price;
+        ? data.price - discountP
+        : data.quantity * (data.price - discountP);
       subtotal = parseFloat(obj.subTotal) + parseFloat(result);
       obj.subTotal = subtotal.toFixed(2);
     });
@@ -151,7 +152,7 @@ class VentasContainer extends React.Component {
     const iva =
       (parseFloat(obj.subTotal) * parseFloat(aplication.tax_rate)) / 100;
     obj.total = parseFloat(obj.subTotal) + parseFloat(iva);
-    obj.total = obj.total.toFixed(2) - discountP;
+    obj.total = obj.total.toFixed(2);
     obj.iva = iva.toFixed(2);
     obj.percentageIva = aplication.tax_rate;
     obj.currency = aplication.current_simbol;
@@ -237,7 +238,6 @@ class VentasContainer extends React.Component {
 
   getMaxDiscount = () => {
     if (!this.props.products && !this.state.discountP) {
-      console.log("entro en el segundo if");
       return false;
     }
     const result = this.props.products.find(prod => {
@@ -245,7 +245,7 @@ class VentasContainer extends React.Component {
     });
 
     if (result) {
-      return result.discount_p;
+      return result.discount_p * result.quantity;
     }
   };
 
@@ -291,7 +291,7 @@ class VentasContainer extends React.Component {
               getOptions={this.props.searchPatient}
               loaded={this.props.loaded}
               patient={this.props.patient}
-              clean={this.props.clean}
+              clean={this.clean}
               options={optionsPatient}
               isSaved={this.props.isSaved}
               statusSale={this.props.statusSale}
@@ -357,7 +357,7 @@ class VentasContainer extends React.Component {
               dataGeneral={this.props.dataGeneral}
               code_bill={this.props.code_bill}
               reference={this.props.state.selectedReference}
-              idsReference ={this.state.idsReferences}
+              idsReference={this.state.idsReferences}
             />
           </div>
         </div>

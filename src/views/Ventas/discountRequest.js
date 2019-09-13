@@ -67,10 +67,15 @@ export default class DiscountRequest extends React.Component {
   };
 
   handleDiscount = (event, product) => {
-    this.props.changeDiscount({
-      value: parseInt(event.target.value),
-      id: product._id
-    });
+    console.log("dios meooo", "se ejecuto");
+    this.props.changeDiscount(
+      {
+        value: parseInt(event.target.value),
+        id: product._id
+      },
+      null,
+      true
+    );
   };
 
   keyDiscount = (e, discount) => {
@@ -319,7 +324,7 @@ export default class DiscountRequest extends React.Component {
                                     <Input
                                       type="number"
                                       className={product._id}
-                                      value={product.discountP}
+                                      value={product.discount_max}
                                       onKeyDown={e =>
                                         this.keyDiscount(e, product)
                                       }
@@ -338,7 +343,9 @@ export default class DiscountRequest extends React.Component {
                                       this.setState({ discountP: product._id })
                                     }
                                   >
-                                    {product.discountP ? product.discountP : 0}
+                                    {product.discount_max
+                                      ? product.discount_max
+                                      : 0}
                                   </Cell>
                                 )}
                                 <Cell>
