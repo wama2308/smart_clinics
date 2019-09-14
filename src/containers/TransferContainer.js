@@ -14,6 +14,8 @@ import {
 import { connect } from "react-redux";
 import ListTransferencias from "../views/Shop/ListTransferencias";
 import ListTransferenciasRecibidas from "../views/Shop/ListTransferenciasRecibidas";
+import listSolicitudesRealizadas from "../views/Shop/listSolicitudesRealizadas";
+import listSolicitudesRecibidas from "../views/Shop/listSolicitudesRecibidas";
 import {
   LoadTransferFunction,    
 }
@@ -81,6 +83,16 @@ class TransferContainer extends Component {
                         <NavItem>
                           <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
                             Tranferencias Recibidas
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                          <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.toggleTab('3'); }} >
+                            Solicitudes Realizadas
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                          <NavLink className={classnames({ active: this.state.activeTab === '4' })} onClick={() => { this.toggleTab('4'); }} >
+                            Solicitudes Recibidas
                             </NavLink>
                         </NavItem>
                       </Nav>
