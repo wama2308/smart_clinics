@@ -19,6 +19,7 @@ import Calendar from "./containers/CalendarContainer";
 import Dashboard from "./views/Dashboard";
 import ReclamosContainer from "./containers/ReclamosContainer";
 import TurnosContainer from "./containers/TurnosContainer";
+import BedroomsContainer from "./containers/BedroomsContainer";
 
 function Loading() {
   return <div>Loading...</div>;
@@ -266,6 +267,11 @@ const routes = [
     name: "Turnos",
     path: "/turnos/turnos",
     component: TurnosContainer
+  },
+  {
+    name: "Dispensarios",
+    path: "/dispensarios/habitaciones",
+    component: BedroomsContainer
   },
 
   { path: "/theme", exact: true, name: "Theme", component: Colors },
