@@ -30,6 +30,8 @@ export const LoadConfigCommissionsFunction = () => dispatch => {
                   loading: "hide",
                   data: res.data,		            
                   dataId:{},                                                        
+                  servicesAllCommission: arrayServices,
+                  servicesAllPayment: arrayServices,
                   servicesCommission: arrayServices,
                   servicesPayment: arrayServices,
                   externalStaff: arrayExternalStaff,
@@ -496,6 +498,22 @@ export const cleanDataPatientsStaffs = () => dispatch => {
         type: "CLEAN_DATA_PATIENTS_STAFFS",
         payload: {
           data: []
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const filterServicesAction = (value, tab) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "SET_FILTER_SERVICES",
+        payload: {
+          value: value, 
+          tab: tab,          
         }
       });
     })

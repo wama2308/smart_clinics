@@ -6,6 +6,7 @@ const selectExento =
 ];  
 
 export const InitalState = {
+    activeTab: "1",
     productoId: '0',
     loteId: '0',
     keyProduct: '',
@@ -103,13 +104,20 @@ export const InitalState = {
     especifique: '',
     divEspecifiqueError: '',
     disabledEspecifique: true,
-    divSucursalEnvia: '',
-    arraySucursalEnviaSelect: null,
-    divSucursalEnviaError: '',
+    divTipoTransfer: '',
+    arrayTipoTransfer: null,
+    divTipoTransferError: '',
     divSucursalRecibe: '',
     arraySucursalRecibeSelect: null,
     divSucursalRecibeError: '',
+    divAlmacenRecibe: '',
+    arrayAlmacenRecibe: null,
+    divAlmacenRecibeError: '',
+    divEstanteRecibe: '',
+    arrayEstanteRecibe: null,
+    divEstanteRecibeError: '',
     checked: false,
     option:0,
+    arrayOptionsShelfs: [],
     loading:'show',       
 }

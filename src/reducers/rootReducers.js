@@ -16,6 +16,7 @@ import ReclamosReducer from "./reclamosReducer"
 import ChatReducer from "./chatReducer"
 import TurnosReducer from "./TurnosReducer";
 import bedroomsReducer from "./bedroomsReducers";
+import TransferReducer from "./TransferReducers";
 
 export default combineReducers({
   auth: authReducer,
@@ -34,5 +35,6 @@ export default combineReducers({
   reclamos: ReclamosReducer,
   chat: ChatReducer,
   configTurnos: TurnosReducer,
-  bedrooms: bedroomsReducer
+  bedrooms: bedroomsReducer,
+  transfer: TransferReducer
 });

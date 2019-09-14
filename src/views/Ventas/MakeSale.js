@@ -13,6 +13,7 @@ import { Formik } from "formik";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ElectronicBill from "./ElectronicBill";
 import styled from "styled-components";
+import decode from "jwt-decode";
 
 export default class MakeSale extends React.Component {
   constructor(props) {
@@ -115,9 +116,17 @@ export default class MakeSale extends React.Component {
     return way_to_pay;
   };
 
+  getStorage = async () => {
+    const token = localStorage.getItem("id_token");
+
+    const decoded = decode(token);
+
+    return decoded.id;
+  };
+
   handleSubmit = async values => {
     this.setState({ loading: false });
-
+    const id = await this.getStorage();
     const way_to_pay = await this.getSubmitedValues(values);
     let completed = this.getRemaining(values);
     completed =
@@ -133,12 +142,16 @@ export default class MakeSale extends React.Component {
       patient_id: this.props.patient._id,
       supplie_array: this.props.products,
       way_to_pay: way_to_pay,
+      admin_id: id,
       sub_total: this.props.total.subTotal,
       igv: this.props.total.iva,
       total: this.props.total.total,
+      referencer: this.props.idsReference,
       payment_type: completed.value,
       reference_id: this.props.reference ? this.props.reference._id : undefined
     };
+
+    console.log("el webo", obj);
 
     const info = {
       title: "Completar Venta",
@@ -366,10 +379,7 @@ export default class MakeSale extends React.Component {
                         >
                           Atras
                         </Button>
-                        <Button
-                          color="success"
-                          onClick={handleSubmit}
-                        >
+                        <Button color="success" onClick={handleSubmit}>
                           Completar venta
                         </Button>
                       </div>

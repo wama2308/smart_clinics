@@ -162,7 +162,7 @@ class ListStore extends React.Component {
               {ArrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
                 let condition = "";
                 data.type_id === "5d1776e3b0d4a50b23931122" ?
-                  condition = data.condition :
+                  condition = data.condition+" persona(s)" :
                   condition = number_format(data.condition, 2) + " " + this.props.current_simbol
                 return (
                   <tr key={data.number} className="text-left">

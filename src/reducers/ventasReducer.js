@@ -172,7 +172,7 @@ const VentasReducer = (state = initialState, action) => {
     }
 
     case "CHANGE_DISCOUNT":{
-      return setIn(state, "array_products", "discountP", action.payload);
+      return setIn(state, "array_products", "discount_max", action.payload);
     }
 
     default:

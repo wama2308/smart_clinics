@@ -229,15 +229,7 @@ class ListShop extends React.Component {
                         className="iconButtons"
                         onClick={() => { this.deleteRegister(shop._id); }}>
                         <Delete className="iconTable" />
-                      </IconButton>
-
-                      <IconButton aria-label="Delete"
-                        title="Transferir Compra"
-                        className="iconButtons"
-                        onClick={() => { this.openModal(4, shop.number, shop._id); }}
-                        disabled={createDisabled}>
-                        <SwapHoriz className="iconTable" />
-                      </IconButton>
+                      </IconButton>                      
                     </div>
                   </td>
                 </tr>

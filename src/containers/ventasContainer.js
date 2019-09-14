@@ -40,9 +40,16 @@ class VentasContainer extends React.Component {
       openModal: false,
       modalLoading: false,
       edit: false,
-      manualReference: false
+      manualReference: false,
+      discountP: false,
+      idsReferences: null
     };
   }
+
+  setReferencesID = key => {
+    this.setState({ idsReferences: key });
+  };
+
   optionsPatient = options => {
     if (!options) {
       return [];
@@ -64,6 +71,14 @@ class VentasContainer extends React.Component {
     this.props.querySales();
   };
 
+  selectedProductDiscount = key => {
+    this.setState({ discountP: key });
+  };
+
+  closeDiscount = () => {
+    this.setState({ discountP: null });
+  };
+
   optionsProducts = (options, products) => {
     if (!options) {
       return [];
@@ -71,7 +86,6 @@ class VentasContainer extends React.Component {
 
     if (!products) {
       const data = [];
-      const result = [];
       options.map(option => {
         data.push({
           label: `${option.name}`,
@@ -116,10 +130,13 @@ class VentasContainer extends React.Component {
 
     let subtotal = 0;
     let totaldiscount = 0;
+
     array.map(data => {
+      let discountP = data.discount_max ? data.discount_max : 0;
+      console.log("discount", discountP);
       const result = isNaN(data.quantity)
-        ? data.price
-        : data.quantity * data.price;
+        ? data.price - discountP
+        : data.quantity * (data.price - discountP);
       subtotal = parseFloat(obj.subTotal) + parseFloat(result);
       obj.subTotal = subtotal.toFixed(2);
     });
@@ -219,8 +236,26 @@ class VentasContainer extends React.Component {
     });
   };
 
+  getMaxDiscount = () => {
+    if (!this.props.products && !this.state.discountP) {
+      return false;
+    }
+    const result = this.props.products.find(prod => {
+      return prod._id === this.state.discountP;
+    });
+
+    if (result) {
+      return result.discount_p * result.quantity;
+    }
+  };
+
   close = () => {
     this.setState({ openModal: false });
+  };
+
+  clean = () => {
+    this.setState({ manualReference: false });
+    this.props.clean();
   };
 
   render() {
@@ -230,6 +265,8 @@ class VentasContainer extends React.Component {
       this.props.products
     );
     const totalData = this.getTotal(this.props.products, this.props.aplication);
+    const discountProducts = this.getMaxDiscount();
+
     return (
       <Container>
         {!this.props.saleLoading && <Spinner />}
@@ -254,7 +291,7 @@ class VentasContainer extends React.Component {
               getOptions={this.props.searchPatient}
               loaded={this.props.loaded}
               patient={this.props.patient}
-              clean={this.props.clean}
+              clean={this.clean}
               options={optionsPatient}
               isSaved={this.props.isSaved}
               statusSale={this.props.statusSale}
@@ -265,6 +302,7 @@ class VentasContainer extends React.Component {
               manualReference={this.state.manualReference}
               openManualReference={this.openManualReference}
               closeManualReference={this.closeManualReference}
+              setReferencesID={this.setReferencesID}
             />
             <Ventas
               listSales={this.props.listSales}
@@ -279,6 +317,7 @@ class VentasContainer extends React.Component {
               className="products"
               patient={this.props.patient}
               searchAction={this.props.searchProduct}
+              viewSearch={this.props.searchView}
               options={optionsProducts}
               getProducts={this.props.searchOneSuppplie}
               products={this.props.products}
@@ -288,10 +327,14 @@ class VentasContainer extends React.Component {
               getTotal={this.getTotal}
               discount={this.props.discount}
               loaded={this.props.loaded}
+              selectedProductDiscount={this.selectedProductDiscount}
+              discountPro={this.state.discountP}
               statusSale={this.props.statusSale}
               manualReference={this.state.manualReference}
               changeDiscount={this.props.addDiscount}
-              modalDiscount = {this.state.openModal}
+              modalDiscount={this.state.openModal}
+              closeDiscount={this.closeDiscount}
+              discountProducts={discountProducts}
             />
 
             <Footer
@@ -314,6 +357,7 @@ class VentasContainer extends React.Component {
               dataGeneral={this.props.dataGeneral}
               code_bill={this.props.code_bill}
               reference={this.props.state.selectedReference}
+              idsReference={this.state.idsReferences}
             />
           </div>
         </div>
@@ -338,6 +382,7 @@ const mapStateToProps = state => ({
   dataGeneral: state.global.dataGeneral.dataGeneral,
   code_bill: state.ventas.get("code"),
   statusSale: state.ventas.get("status_sale"),
+  searchView: state.global.view,
   state: state.ventas.toJS()
 });
 
