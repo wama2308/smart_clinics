@@ -7,6 +7,7 @@ import Pagination from '../../components/Pagination';
 import { getArray, GetDisabledPermits } from '../../core/utils'
 import { number_format } from "../../core/utils";
 import Search from "../../components/Select";
+import "./Commissions.css";
 
 class ListStore extends React.Component {
   constructor(props) {
@@ -105,7 +106,7 @@ class ListStore extends React.Component {
             users.time.toLowerCase().includes(this.props.search.toLowerCase()) ||
             users.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
             users.payment_type.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            users.option.toLowerCase().includes(this.props.search.toLowerCase())||
+            users.option.toLowerCase().includes(this.props.search.toLowerCase()) ||
             users.type_rule_commission.toLowerCase().includes(this.props.search.toLowerCase())
           );
         }
@@ -143,79 +144,81 @@ class ListStore extends React.Component {
 
         <br />
         <br />
-        <div style={{ margin: "" }}>
-          <Table hover responsive borderless>
-            <thead className="thead-light">
-              <tr>
-                <th className="text-left">Nro</th>
-                <th className="text-left">Regla</th>
-                <th className="text-left">Tipo Persona</th>
-                <th className="text-left">Opcion</th>
-                <th className="text-left">Tiempo(dias)</th>
-                <th className="text-left">Tipo</th>
-                <th className="text-left">Condicion</th>
-                <th className="text-left">Forma de pago</th>
-                <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ArrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
-                let condition = "";
-                data.type_id === "5d1776e3b0d4a50b23931122" ?
-                  condition = data.condition+" persona(s)" :
-                  condition = number_format(data.condition, 2) + " " + this.props.current_simbol
-                return (
-                  <tr key={data.number} className="text-left">
-                    <td>{data.number}</td>
-                    <td>{data.type_rule_commission}</td>
-                    <td>{data.type_staff}</td>
-                    <td>{data.option}</td>
-                    <td>{data.time}</td>
-                    <td>{data.type}</td>
-                    <td>{condition}</td>
-                    <td>{data.payment_type}</td>
-                    <td style={{ 'minWidth': "205px" }}>
-                      <div className="float-left" >
-                        <IconButton aria-label="Delete"
-                          title="Ver Comision"
-                          className="iconButtons"
-                          onClick={() => { this.openModal(2, data._id); }}>
-                          <Visibility className="iconTable" />
-                        </IconButton>
+        <div className="flex">
+          <div className="inner-flex" style={{width:'100%', height:'31rem',  overflow: 'auto'}}>
+            <Table hover responsive borderless>
+              <thead className="thead-light">
+                <tr>
+                  <th className="text-left">Nro</th>
+                  <th className="text-left">Regla</th>
+                  <th className="text-left">Tipo Persona</th>
+                  <th className="text-left">Opcion</th>
+                  <th className="text-left">Tiempo(dias)</th>
+                  <th className="text-left">Tipo</th>
+                  <th className="text-left">Condicion</th>
+                  <th className="text-left">Forma de pago</th>
+                  <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ArrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
+                  let condition = "";
+                  data.type_id === "5d1776e3b0d4a50b23931122" ?
+                    condition = data.condition + " persona(s)" :
+                    condition = number_format(data.condition, 2) + " " + this.props.current_simbol
+                  return (
+                    <tr key={data.number} className="text-left">
+                      <td>{data.number}</td>
+                      <td>{data.type_rule_commission}</td>
+                      <td>{data.type_staff}</td>
+                      <td>{data.option}</td>
+                      <td>{data.time}</td>
+                      <td>{data.type}</td>
+                      <td>{condition}</td>
+                      <td>{data.payment_type}</td>
+                      <td style={{ 'minWidth': "205px" }}>
+                        <div className="float-left" >
+                          <IconButton aria-label="Delete"
+                            title="Ver Comision"
+                            className="iconButtons"
+                            onClick={() => { this.openModal(2, data._id); }}>
+                            <Visibility className="iconTable" />
+                          </IconButton>
 
-                        <IconButton aria-label="Delete"
-                          title="Editar Comision"
-                          className="iconButtons"
-                          onClick={() => { this.openModal(3, data._id); }}
-                        >
-                          <Edit className="iconTable" />
-                        </IconButton>
+                          <IconButton aria-label="Delete"
+                            title="Editar Comision"
+                            className="iconButtons"
+                            onClick={() => { this.openModal(3, data._id); }}
+                          >
+                            <Edit className="iconTable" />
+                          </IconButton>
 
-                        <IconButton aria-label="Delete"
-                          title="Eliminar Comision"
-                          className="iconButtons"
-                          onClick={() => { this.deleteRegister(data._id); }}
-                        >
-                          <Delete className="iconTable" />
-                        </IconButton>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
-                :
-                null
+                          <IconButton aria-label="Delete"
+                            title="Eliminar Comision"
+                            className="iconButtons"
+                            onClick={() => { this.deleteRegister(data._id); }}
+                          >
+                            <Delete className="iconTable" />
+                          </IconButton>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+                  :
+                  null
+                }
+              </tbody>
+              {
+                this.props.data.commissions.length > 10 &&
+                <Pagination contador={this.props.data.commissions}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  handleChangePage={this.handleChangePage} />
               }
-            </tbody>
-            {
-              this.props.data.commissions.length > 10 &&
-              <Pagination contador={this.props.data.commissions}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                handleChangePage={this.handleChangePage} />
-            }
-          </Table>
+            </Table>
+          </div>
         </div>
       </div>
     );

@@ -9,13 +9,22 @@ import { InitalState } from './InitialState.js';
 import { number_format } from "../../core/utils";
 import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
-import { openSnackbars } from "../../actions/aplicantionActions";
-import { cleanProducts, setCantidadTableTransferencias, setSwitchTableTransferencias, setSelectAllSwitchTransferencias, productTransferAction, editTransferAction, actionProps } from "../../actions/ShopActions";
+import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
+import {
+    cleanQuantityProductsTransferAction,
+    querySelectTransferAction,
+    searchProduct,
+    searchOneSuppplie,
+    setQuantityTranferAction,
+    deleteProductsTransferFunction,
+} from "../../actions/TransferActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import { PlaylistAdd, Edit } from "@material-ui/icons";
 import Switch from '@material-ui/core/Switch';
 import classnames from "classnames";
+import DefaultSearch from "../../components/DefaultSearch.js";
+import ProductsTransfer from "./ProductsTransfer.js";
 
 class ModalTransferencias extends React.Component {
     constructor(props) {
@@ -26,6 +35,7 @@ class ModalTransferencias extends React.Component {
     }
 
     componentDidMount() {
+        this.props.querySelectTransferAction();
         if (this.props.option === 1) {
             this.setState({
                 loading: 'hide',
@@ -77,25 +87,11 @@ class ModalTransferencias extends React.Component {
     }
 
     componentWillReceiveProps = (props) => {
-        //console.log("modal transferencias ", props.shop)                
-        if (props.option === 2 || props.option === 3 || props.option === 7) {
-            if (props.shop.transferId) {
-                if (props.shop.transferId.distribuidor_id && props.shop.action === 0) {
-                    const productConfirm = props.shop.transferId.products.find(product => product.confirm === false);
-                    let selectAll = false;
-                    if (!productConfirm) {
-                        selectAll = true;
-                    }
-                    this.setState({
-                        arraySucursalEnviaSelect: props.shop.transferId.distribuidor_id,
-                        arraySucursalRecibeSelect: props.shop.transferId.sucursal_id,
-                        observacion: props.shop.transferId.observation,
-                        checked: selectAll,
-                        loading: 'hide',
-                    })
-                    this.props.actionProps();
-                }
-            }
+        if (props.transfer.productsToTransfer.length > 0) {
+
+            this.setState({
+                divAviso: ''
+            });
         }
     }
 
@@ -110,34 +106,33 @@ class ModalTransferencias extends React.Component {
 
     handleChangeTipoTransfer = (arrayTipoTransfer) => {
         this.setState({
+            arrayOptionOne: null,
+            arrayOptionTwo: null,
             arrayTipoTransfer,
+            arraySelectOptionOne: arrayTipoTransfer.others,
             divTipoTransfer: '',
-            divTipoTransferError: ''
+            divTipoTransferError: '',
+            divOptionOne: '',
+            divOptionOneError: '',
+            divOptionTwo: '',
+            divOptionTwoError: '',
         });
     }
 
-    handleChangeSucursalRecibe = (arraySucursalRecibeSelect) => {
+    handleChangeOptionOne = (arrayOptionOne) => {
         this.setState({
-            arraySucursalRecibeSelect,
-            divSucursalRecibe: '',
-            divSucursalRecibeError: ''
+            arrayOptionOne,
+            arraySelectOptionTwo: arrayOptionOne.others,
+            divOptionOne: '',
+            divOptionOneError: ''
         });
     }
 
-    handleChangeAlmacenRecibe = (arrayAlmacenRecibe) => {
+    handleChangeOptionTwo = (arrayOptionTwo) => {
         this.setState({
-            arrayAlmacenRecibe,
-            arrayOptionsShelfs: arrayAlmacenRecibe.shelf,
-            divAlmacenRecibe: '',
-            divAlmacenRecibeError: ''
-        });
-    }
-
-    handleChangeEstanteRecibe = (arrayEstanteRecibe) => {
-        this.setState({
-            arrayEstanteRecibe,
-            divEstanteRecibe: '',
-            divEstanteRecibeError: ''
+            arrayOptionTwo,
+            divOptionTwo: '',
+            divOptionTwoError: ''
         });
     }
 
@@ -146,50 +141,77 @@ class ModalTransferencias extends React.Component {
             ...InitalState,
             loading: 'show'
         });
-        this.props.cleanProducts();
+        this.props.cleanQuantityProductsTransferAction();
         this.props.valorCloseModal(false);
     }
 
     validate = () => {
-        let divSucursalRecibe = '';
-        let divSucursalRecibeError = '';
-        let acumCantidades = 0;
-        let acumConfirm = 0;
-        let arrayProducts = [];
-        this.props.option === 4 ? arrayProducts = this.props.shop.products : arrayProducts = this.props.shop.transferId.products;
-        const productConfirm = arrayProducts.find(product => product.confirm === true);
-        const productFind = arrayProducts.find(product => product.quantity_edit === 0);
-        const productFindKey = arrayProducts.findIndex(productKey => productKey.quantity_edit === 0);
+        let divTipoTransfer = '';
+        let divTipoTransferError = '';
+        let divOptionOne = '';
+        let divOptionOneError = '';
+        let divOptionTwo = '';
+        let divOptionTwoError = '';
+        let acumCantidadTransfer = 0;
+        let divAviso = '';
+        let sinProductos = 0;
+        const cantidadCero = this.props.transfer.productsToTransfer.find(product => product.quantity_transfer !== 0);
+        const cantidadVacia = this.props.transfer.productsToTransfer.find(product => product.quantity_transfer === "");
 
-        if (!this.state.arraySucursalRecibeSelect) {
-            divSucursalRecibeError = "¡Seleccione la sucursal que recibe!";
-            divSucursalRecibe = "borderColor";
-        } else if (this.state.arraySucursalRecibeSelect === this.state.arraySucursalEnviaSelect) {
-            divSucursalRecibeError = "¡La sucursal que recibe no puede ser la misma que envia!";
-            divSucursalRecibe = "borderColor";
-        } else if (!productConfirm) {
-            acumConfirm++;
-            this.props.alert("warning", "¡Debe seleccionar al menos un producto para la transferencia!");
-        } else if (productFind) {
-            acumCantidades++;
-            var elemento = document.getElementById("divQuantity_" + productFindKey);
-            elemento.className += " borderColorInputTable";
-            this.props.alert("warning", "¡La cantidad de los productos a transferir no puede ser 0!");
+        if (!this.state.arrayTipoTransfer) {
+            divTipoTransferError = "¡Seleccione el destino de la transferencia!";
+            divTipoTransfer = "borderColor";
+        } else {
+            if (this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939988") {
+                if (!this.state.arrayOptionOne) {
+                    divOptionOneError = "¡Selecione el almacen!";
+                    divOptionOne = "borderColor";
+                }
+            } else if (this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939977") {
+                if (!this.state.arrayOptionOne) {
+                    divOptionOneError = "¡Selecione la sucursal!";
+                    divOptionOne = "borderColor";
+                }
+            } else if (this.state.arrayTipoTransfer.value === "5d780fde6a5e8f0d1b38d68e") {
+                if (!this.state.arrayOptionOne) {
+                    divOptionOneError = "¡Selecione el departamento!";
+                    divOptionOne = "borderColor";
+                }
+                if (!this.state.arrayOptionTwo) {
+                    divOptionTwoError = "¡Selecione oficina/consultorio!";
+                    divOptionTwo = "borderColor";
+                }
+            }
+            if (this.props.transfer.productsToTransfer.length === 0) {
+                sinProductos++;
+                divAviso = "¡Debe agregar al menos un producto!";
+            } else if (!cantidadCero) {
+                acumCantidadTransfer++;
+                //this.props.alert("warning", "¡Las cantidades de los productos no pueden ser 0!");
+                divAviso = "¡Las cantidades de los productos a transferir no pueden ser 0!";
+            } else if (cantidadVacia) {
+                acumCantidadTransfer++;
+                //this.props.alert("warning", "¡Las cantidades de los productos no pueden estar vacias!");
+                divAviso = "¡Los porcentajes de ganancia no pueden estar vacios!";
+            }
         }
-
-        if (divSucursalRecibeError) {
+        if (divTipoTransferError || divOptionOneError || divOptionTwoError || divAviso) {
             this.setState({
-                divSucursalRecibeError,
-                divSucursalRecibe,
+                divTipoTransferError,
+                divTipoTransfer,
+                divOptionOneError,
+                divOptionOne,
+                divOptionTwoError,
+                divOptionTwo,
+                divAviso
             });
             return false;
-        } else if (acumCantidades === 1) {
-            return false;
-        } else if (acumConfirm === 1) {
+        } else if (sinProductos === 1) {
             return false;
         } else {
             return true;
         }
+
 
     };
 
@@ -197,48 +219,41 @@ class ModalTransferencias extends React.Component {
         event.preventDefault();
         const isValid = this.validate();
         if (isValid) {
-            let sucursalEnvia = "";
-            let sucursalRecibe = "";
-            if (this.state.arraySucursalEnviaSelect) {
-                sucursalEnvia = this.state.arraySucursalEnviaSelect.value;
-            }
-            if (this.state.arraySucursalRecibeSelect) {
-                sucursalRecibe = this.state.arraySucursalRecibeSelect.value;
-            }
-            if (this.props.option === 4) {
-                this.setState({ loading: 'show' })
-                this.props.productTransferAction(
-                    {
-                        sucursal_envia: sucursalEnvia,
-                        sucursal_recibe: sucursalRecibe,
-                        observacion: this.state.observacion,
-                        products: this.props.shop.products,
-                    },
-                    () => {
-                        this.closeModal();
-                    }
-                )
-            }
-            if (this.props.option === 6) {
-                if (this.props.status === "Pendiente") {
-                    this.setState({ loading: 'show' })
-                    this.props.editTransferAction(
-                        {
-                            id: this.props.transfer_id,
-                            sucursal_envia: sucursalEnvia,
-                            sucursal_recibe: sucursalRecibe,
-                            observacion: this.state.observacion,
-                            products: this.props.shop.transferId.products,
-                        },
-                        () => {
-                            this.closeModal();
-                        }
-                    )
-                } else {
-                    this.props.alert("warning", "¡No puede editar la transferencia, su estatus es: " + this.props.status + "!");
-                }
+            alert("Exito")
+            // if (this.props.option === 4) {
+            //     this.setState({ loading: 'show' })
+            //     this.props.productTransferAction(
+            //         {
+            //             sucursal_envia: sucursalEnvia,
+            //             sucursal_recibe: sucursalRecibe,
+            //             observacion: this.state.observacion,
+            //             products: this.props.shop.products,
+            //         },
+            //         () => {
+            //             this.closeModal();
+            //         }
+            //     )
+            // }
+            // if (this.props.option === 6) {
+            //     if (this.props.status === "Pendiente") {
+            //         this.setState({ loading: 'show' })
+            //         this.props.editTransferAction(
+            //             {
+            //                 id: this.props.transfer_id,
+            //                 sucursal_envia: sucursalEnvia,
+            //                 sucursal_recibe: sucursalRecibe,
+            //                 observacion: this.state.observacion,
+            //                 products: this.props.shop.transferId.products,
+            //             },
+            //             () => {
+            //                 this.closeModal();
+            //             }
+            //         )
+            //     } else {
+            //         this.props.alert("warning", "¡No puede editar la transferencia, su estatus es: " + this.props.status + "!");
+            //     }
 
-            }
+            // }
         }
     }
 
@@ -251,9 +266,22 @@ class ModalTransferencias extends React.Component {
             [name]: event.target.checked
         });
         this.props.setSelectAllSwitchTransferencias(event.target.checked, this.props.option);
-    };
+    };    
 
     render() {
+        let label = '';
+        let label_children = '';
+        if (this.state.arrayTipoTransfer) {
+            if (this.state.arrayTipoTransfer.value === '5d1776e3b0d4a50b23939988') {
+                label = 'Almacen';
+                label_children = 'Estante';
+            } else if (this.state.arrayTipoTransfer.value === '5d1776e3b0d4a50b23939977') {
+                label = 'Sucursal';
+            } else if (this.state.arrayTipoTransfer.value === '5d780fde6a5e8f0d1b38d68e') {
+                label = 'Departamento';
+                label_children = 'Oficina/consultorio';
+            }
+        }
         return (
             <span>
                 <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalTransfer">
@@ -263,185 +291,86 @@ class ModalTransferencias extends React.Component {
                                 <ModalHeader toggle={this.closeModal}>{this.props.modalHeader}</ModalHeader>
                                 <ModalBody className="Scroll">
                                     <form className="formCodeConfirm" onSubmit={this.handleAction.bind(this)}>
-                                        <div>
-                                            <Nav tabs>
-                                                <NavItem>
-                                                    <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                                                        Datos
-                                                    </NavLink>
-                                                </NavItem>
-                                                <NavItem>
-                                                    <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
-                                                        Productos a Transferir
-                                                    </NavLink>
-                                                </NavItem>
-                                            </Nav>
-                                            <TabContent activeTab={this.state.activeTab}>
-                                                <TabPane tabId="1">
-                                                    <div className="row">
-                                                        <FormGroup className="top form-group col-sm-6">
-                                                            <Label for="tipoTransfer">Transferir a:</Label>
-                                                            <div className={this.state.divTipoTransfer}>
-                                                                <Select
-                                                                    isSearchable="true"
-                                                                    isDisabled={this.props.disabled}
-                                                                    name="tipoTransfer"
-                                                                    value={this.state.arrayTipoTransfer}
-                                                                    onChange={this.handleChangeTipoTransfer}
-                                                                    options={this.props.type_tranfer}
-                                                                />
-                                                            </div>
-                                                            <div className="errorSelect">{this.state.divTipoTransferError}</div>
-                                                        </FormGroup>
-                                                        {
-                                                            this.state.arrayTipoTransfer &&
-                                                            this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939977" &&
-                                                            <FormGroup className="top form-group col-sm-6">
-                                                                <Label for="sucursalRecibe">Sucursal que Recibe:</Label>
-                                                                <div className={this.state.divSucursalRecibe}>
-                                                                    <Select
-                                                                        isSearchable="true"
-                                                                        isDisabled={this.props.disabled}
-                                                                        name="sucursalRecibe"
-                                                                        value={this.state.arraySucursalRecibeSelect}
-                                                                        onChange={this.handleChangeSucursalRecibe}
-                                                                        options={this.props.transfer.branchOfficces}
-                                                                    />
-                                                                </div>
-                                                                <div className="errorSelect">{this.state.divSucursalRecibeError}</div>
-                                                            </FormGroup>
-
-                                                        }
-                                                        {
-                                                            this.state.arrayTipoTransfer &&
-                                                            this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939988" &&
-                                                            <FormGroup className="top form-group col-sm-6">
-                                                                <Label for="arrayAlmacenRecibe">Almacen que Recibe:</Label>
-                                                                <div className={this.state.divAlmacenRecibe}>
-                                                                    <Select
-                                                                        isSearchable="true"
-                                                                        isDisabled={this.props.disabled}
-                                                                        name="arrayAlmacenRecibe"
-                                                                        value={this.state.arrayAlmacenRecibe}
-                                                                        onChange={this.handleChangeAlmacenRecibe}
-                                                                        options={this.props.transfer.storeShelfs}
-                                                                    />
-                                                                </div>
-                                                                <div className="errorSelect">{this.state.divAlmacenRecibeError}</div>
-                                                            </FormGroup>
-                                                        }
-                                                        {
-                                                            this.state.arrayTipoTransfer &&
-                                                            this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939988" &&
-                                                            <FormGroup className="top form-group col-sm-6">
-                                                                <Label for="arrayEstanteRecibe">Estante:</Label>
-                                                                <div className={this.state.divEstanteRecibe}>
-                                                                    <Select
-                                                                        isSearchable="true"
-                                                                        isDisabled={this.props.disabled}
-                                                                        name="arrayEstanteRecibe"
-                                                                        value={this.state.arrayEstanteRecibe}
-                                                                        onChange={this.handleChangeEstanteRecibe}
-                                                                        options={this.state.arrayOptionsShelfs}
-                                                                    />
-                                                                </div>
-                                                                <div className="errorSelect">{this.state.divEstanteRecibeError}</div>
-                                                            </FormGroup>
-
-                                                        }
-                                                        <FormGroup className="top form-group col-sm-6">
-                                                            <Label for="observacion">Observacion:</Label>
-                                                            <div className={this.state.divObservacion}>
-                                                                <Input
-                                                                    disabled={this.props.disabled}
-                                                                    name="observacion"
-                                                                    id="observacion"
-                                                                    onKeyUp={this.handlekeyObservacion}
-                                                                    onChange={this.handleChange}
-                                                                    value={this.state.observacion}
-                                                                    type="textarea"
-                                                                    placeholder="Observacion"
-                                                                />
-                                                            </div>
-                                                            <div className="errorSelect">{this.state.divObservacionError}</div>
-                                                        </FormGroup>
+                                        <div className="row">
+                                            <FormGroup className="top form-group col-sm-6">
+                                                <Label for="tipoTransfer">Transferir a:</Label>
+                                                <div className={this.state.divTipoTransfer}>
+                                                    <Select
+                                                        isSearchable="true"
+                                                        isDisabled={this.props.disabled}
+                                                        name="tipoTransfer"
+                                                        value={this.state.arrayTipoTransfer}
+                                                        onChange={this.handleChangeTipoTransfer}
+                                                        options={this.props.transfer.selectTransfers}
+                                                    />
+                                                </div>
+                                                <div className="errorSelect">{this.state.divTipoTransferError}</div>
+                                            </FormGroup>
+                                            {
+                                                this.state.arrayTipoTransfer &&
+                                                <FormGroup className="top form-group col-sm-6">
+                                                    <Label for="optionOne">{label}</Label>
+                                                    <div className={this.state.divOptionOne}>
+                                                        <Select
+                                                            isSearchable="true"
+                                                            isDisabled={this.props.disabled}
+                                                            name="optionOne"
+                                                            value={this.state.arrayOptionOne}
+                                                            onChange={this.handleChangeOptionOne}
+                                                            options={this.state.arraySelectOptionOne}
+                                                        />
                                                     </div>
-                                                    <div align="center">
-                                                        <FormGroup className={`top form-group col-sm-6`}>
-                                                            <Input
-                                                                disabled={this.props.disabled}
-                                                                name="searchService"
-                                                                id="searchService"
-                                                                onKeyUp={this.handlekeySearchService}
-                                                                onChange={this.handleChange}
-                                                                value={this.state.searchService}
-                                                                type="text"
-                                                                placeholder="Buscar Producto..."
-                                                                style={{ borderRadius: "1.25rem" }}
-                                                            />
-                                                        </FormGroup>
+                                                    <div className="errorSelect">{this.state.divOptionOneError}</div>
+                                                </FormGroup>
+                                            }
+                                            {
+                                                (this.state.arrayTipoTransfer &&
+                                                    (this.state.arrayTipoTransfer.value === '5d1776e3b0d4a50b23939988' ||
+                                                        this.state.arrayTipoTransfer.value === '5d780fde6a5e8f0d1b38d68e')) &&
+                                                <FormGroup className="top form-group col-sm-6">
+                                                    <Label for="optionTwo">{label_children}</Label>
+                                                    <div className={this.state.divOptionTwo}>
+                                                        <Select
+                                                            isSearchable="true"
+                                                            isDisabled={this.props.disabled}
+                                                            name="optionTwo"
+                                                            value={this.state.arrayOptionTwo}
+                                                            onChange={this.handleChangeOptionTwo}
+                                                            options={this.state.arraySelectOptionTwo}
+                                                        />
                                                     </div>
-                                                    <Table hover responsive borderless>
-                                                        <thead className="thead-light">
-                                                            <tr>
-                                                                <th className="text-left">Nro</th>
-                                                                <th className="text-left ">Producto</th>
-                                                                <th className="text-left">Codigo</th>
-                                                                <th className="text-left">Tipo</th>
-                                                                <th className="text-left">Disponible</th>
-                                                                <th className="text-left">Agregar</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                this.props.transfer.allProducts ? this.props.transfer.allProducts.map((list, i) => {
-                                                                    return (
-                                                                        <tr key={i}>
-                                                                            <td>{i + 1}</td>
-                                                                            <td>{list.name}</td>
-                                                                            <td>{list.code}</td>
-                                                                            <td>{list.type}</td>
-                                                                            <td>{list.quantity_stock}</td>
-                                                                            <td>
-                                                                                <IconButton aria-label="Delete"
-                                                                                    title="Agregar Producto"
-                                                                                    className="iconButtons"
-                                                                                    // onClick={() => { this.openModal(3, data.number, data._id, data.status); }}
-                                                                                    disabled={this.props.disabled}>
-                                                                                    <PlaylistAdd className="iconTable" />
-                                                                                </IconButton>
-                                                                            </td>
-                                                                        </tr>
-                                                                    )
-                                                                })
-                                                                    :
-                                                                    null
-                                                            }
-                                                        </tbody>
-                                                    </Table>
-                                                </TabPane>
-                                                <TabPane tabId="2">
-                                                    <div>
-                                                        <Table hover responsive borderless>
-                                                            <thead className="thead-light">
-                                                                <tr>
-                                                                    <th className="text-left">Nro</th>
-                                                                    <th className="text-left ">Producto</th>
-                                                                    <th className="text-left">Codigo</th>
-                                                                    <th className="text-left">Tipo</th>
-                                                                    <th className="text-left">Disponible</th>
-                                                                    <th className="text-left">Cant/transferir</th>
-                                                                    <th className="text-left">Accion</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                
-                                                            </tbody>
-                                                        </Table>
-                                                    </div>
-                                                </TabPane>
-                                            </TabContent>
+                                                    <div className="errorSelect">{this.state.divOptionTwoError}</div>
+                                                </FormGroup>
+                                            }
+                                            <FormGroup className="top form-group col-sm-6">
+                                                <Label for="observacion">Observacion:</Label>
+                                                <div className={this.state.divObservacion}>
+                                                    <Input
+                                                        disabled={this.props.disabled}
+                                                        name="observacion"
+                                                        id="observacion"
+                                                        onKeyUp={this.handlekeyObservacion}
+                                                        onChange={this.handleChange}
+                                                        value={this.state.observacion}
+                                                        type="textarea"
+                                                        placeholder="Observacion"
+                                                    />
+                                                </div>
+                                                <div className="errorSelect">{this.state.divObservacionError}</div>
+                                            </FormGroup>
                                         </div>
+                                        <ProductsTransfer
+                                            searchProduct={this.props.searchProduct}
+                                            dataAllProducts={this.props.dataAllProducts}
+                                            searchOneSuppplie={this.props.searchOneSuppplie}
+                                            productsToTransfer={this.props.transfer.productsToTransfer}
+                                            setQuantityTranferAction={this.props.setQuantityTranferAction}
+                                            deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
+                                            confirm={this.props.confirm}
+                                            alert={this.props.alert}
+                                            divAviso={this.state.divAviso}
+                                        //cleanDivAviso = {this.cleanDivAviso}
+                                        />
                                     </form>
                                 </ModalBody>
                                 <ModalFooter>
@@ -468,21 +397,27 @@ class ModalTransferencias extends React.Component {
 
 const mapStateToProps = state => ({
     transfer: state.transfer.toJS(),
+    dataAllProducts: state.transfer.get('dataAllProducts'),
     authData: state.auth,
     output_supplie: state.global.dataGeneral.dataGeneral.output_supplie,
     aplication: state.global,
-    type_tranfer: state.global.dataGeneral.dataGeneral.type_transfer
 });
 
 const mapDispatchToProps = dispatch => ({
     alert: (type, message) => dispatch(openSnackbars(type, message)),
-    cleanProducts: () => dispatch(cleanProducts()),
-    productTransferAction: (data, callback) => dispatch(productTransferAction(data, callback)),
-    editTransferAction: (data, callback) => dispatch(editTransferAction(data, callback)),
-    setCantidadTableTransferencias: (pos, value, option) => dispatch(setCantidadTableTransferencias(pos, value, option)),
-    setSwitchTableTransferencias: (pos, value, option) => dispatch(setSwitchTableTransferencias(pos, value, option)),
-    setSelectAllSwitchTransferencias: (value, option) => dispatch(setSelectAllSwitchTransferencias(value, option)),
-    actionProps: () => dispatch(actionProps()),
+    confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
+    cleanQuantityProductsTransferAction: () => dispatch(cleanQuantityProductsTransferAction()),
+    //productTransferAction: (data, callback) => dispatch(productTransferAction(data, callback)),
+    //editTransferAction: (data, callback) => dispatch(editTransferAction(data, callback)),
+    // setCantidadTableTransferencias: (pos, value, option) => dispatch(setCantidadTableTransferencias(pos, value, option)),
+    // setSwitchTableTransferencias: (pos, value, option) => dispatch(setSwitchTableTransferencias(pos, value, option)),
+    // setSelectAllSwitchTransferencias: (value, option) => dispatch(setSelectAllSwitchTransferencias(value, option)),
+    //actionProps: () => dispatch(actionProps()),
+    searchProduct: (data) => dispatch(searchProduct(data)),
+    searchOneSuppplie: (data) => dispatch(searchOneSuppplie(data)),
+    querySelectTransferAction: () => dispatch(querySelectTransferAction()),
+    setQuantityTranferAction: (_id, value) => dispatch(setQuantityTranferAction(_id, value)),
+    deleteProductsTransferFunction: (key) => dispatch(deleteProductsTransferFunction(key)),
 });
 
 export default connect(

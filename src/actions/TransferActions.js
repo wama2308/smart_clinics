@@ -28,6 +28,7 @@ const rejectTransfer = `${url}/api/rejectTransfer`;
 const acceptTransfer = `${url}/api/acceptTransfer`;
 const defectiveSupplie = `${url}/api/defectiveSupplie`;
 const queryStoreBranchOfficesSelect = `${url}/api/queryStoreBranchOfficesSelect`;
+const querySelectTransfer = `${url}/api/querySelectTransfer`;
 
 const converToJson = data => {
     const stringify = JSON.stringify(data);
@@ -42,39 +43,38 @@ export const LoadTransferFunction = () => dispatch => {
             axios.get(queryAllShop, datos)
                 .then(res => {
                     LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {
-                        queryAllSuppliesFunction(datos, allProducts => {
-                            queryAllTransferFunction(datos, allTransfer => {
-                                queryAllTransferReceivedFunction(datos, allTransferRecibidas => {
-                                    queryStoreBranchOfficesSelectFunction(datos, arrayStoreShelfs => {
-                                        dispatch({
-                                            type: "LOAD_TRANSFERS_ALL",
-                                            payload: {
-                                                loading: "hide",
-                                                data: res.data,
-                                                allTransfer: allTransfer,
-                                                allTransferRecibidas: allTransferRecibidas,
-                                                transferId: {},
-                                                //dataProducts: arrayProducts,
-                                                products: [],
-                                                subTotal: 0,
-                                                impuesto: 0,
-                                                total: 0,
-                                                dataProductId: {},
-                                                searchProduct: 0,
-                                                dataProductPrice: [],
-                                                branchOfficces: arrayBranchOffices,
-                                                dataShopId: {},
-                                                allProducts: allProducts,
-                                                storeShelfs: arrayStoreShelfs,
-                                                ProductLoteId: {},
-                                                action: 0,
-                                                newProvider: {}
-                                            }
-                                        });
+                        //queryAllSuppliesFunction(datos, allProducts => {
+                        queryAllTransferFunction(datos, allTransfer => {
+                            queryAllTransferReceivedFunction(datos, allTransferRecibidas => {
+                                queryStoreBranchOfficesSelectFunction(datos, arrayStoreShelfs => {
+                                    dispatch({
+                                        type: "LOAD_TRANSFERS_ALL",
+                                        payload: {
+                                            loading: "hide",
+                                            data: res.data,
+                                            allTransfer: allTransfer,
+                                            allTransferRecibidas: allTransferRecibidas,
+                                            transferId: {},
+                                            products: [],
+                                            productsToTransfer: [],
+                                            subTotal: 0,
+                                            impuesto: 0,
+                                            total: 0,
+                                            dataProductId: {},
+                                            searchProduct: 0,
+                                            dataProductPrice: [],
+                                            branchOfficces: arrayBranchOffices,
+                                            dataShopId: {},
+                                            storeShelfs: arrayStoreShelfs,
+                                            ProductLoteId: {},
+                                            action: 0,
+                                            newProvider: {}
+                                        }
                                     });
                                 });
                             });
                         });
+                        //});
                     });
                 })
                 .catch(error => {
@@ -87,17 +87,23 @@ export const LoadTransferFunction = () => dispatch => {
         });
 };
 
-const queryAllSuppliesFunction = (datos, execute) => {
-    axios
-        .get(queryAllSuppliesToTransfer, datos)
-        .then(res => {
-            execute(res.data);
+export const querySelectTransferAction = () => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios.get(querySelectTransfer, datos)
+                .then(res => {
+                    dispatch({
+                        type: "LOAD_SELECT_TRANSFERS",
+                        payload: res.data
+                    });
+                })
+                .catch(error => {
+                    console.log("Error consultando la api para consultar los select del modulo de transferencias", error.toString());
+                });
+
         })
-        .catch(error => {
-            console.log(
-                "Error consultando la api para consultar los productos",
-                error.toString()
-            );
+        .catch(() => {
+            console.log("Problemas con el token");
         });
 };
 
@@ -166,14 +172,14 @@ export const searchProduct = data => dispatch => {
         });
         axios({
             method: "POST",
-            url: querySupplies,
+            url: queryAllSuppliesToTransfer,
             data: {
-                name: data
+                value: data
             },
             ...token
         }).then(res => {
             dispatch({
-                type: "SEARCH_PRODUCT_SHOP",
+                type: "SEARCH_PRODUCT_TRANSFER",
                 payload: Object.values(res.data)
             });
         });
@@ -202,7 +208,7 @@ export const searchOneSuppplie = data => dispatch => {
         })
             .then(res => {
                 dispatch({
-                    type: "SEARCH_ONE_PRODUCTS_SHOP",
+                    type: "SEARCH_ONE_PRODUCTS_TRANSFER",
                     payload: {
                         ...res.data
                     }
@@ -215,16 +221,14 @@ export const searchOneSuppplie = data => dispatch => {
     });
 };
 
-export const addProductsFunction = (obj, subtotal, impuesto, total) => dispatch => {
+export const setQuantityTranferAction = (id, value) => dispatch => {
     getDataToken()
         .then(datos => {
             dispatch({
-                type: "ADD_PRODUCTS",
+                type: "SET_QUANTITY_TRANFSER",
                 payload: {
-                    objProducts: obj,
-                    subTotal: subtotal,
-                    impuesto: impuesto,
-                    total: total
+                    id: id,
+                    value: value,
                 }
             });
         })
@@ -233,16 +237,14 @@ export const addProductsFunction = (obj, subtotal, impuesto, total) => dispatch 
         });
 };
 
-export const deleteProductsFunction = (key, subtotal, impuesto, total) => dispatch => {
+
+export const deleteProductsTransferFunction = (key) => dispatch => {
     getDataToken()
         .then(datos => {
             dispatch({
-                type: "DELETE_PRODUCTS",
+                type: "DELETE_PRODUCT_TRANSFER",
                 payload: {
-                    key: key,
-                    subTotal: subtotal,
-                    impuesto: impuesto,
-                    total: total
+                    key: key                    
                 }
             });
         })
@@ -251,14 +253,12 @@ export const deleteProductsFunction = (key, subtotal, impuesto, total) => dispat
         });
 };
 
-export const cleanProducts = () => dispatch => {
+export const cleanQuantityProductsTransferAction = () => dispatch => {
     getDataToken()
         .then(datos => {
             dispatch({
-                type: "CLEAN_PRODUCTS",
-                payload: {
-                    products: []
-                }
+                type: "CLEAN_TRANSFER_QUANTYTI_PRODUCT",
+                payload: []
             });
         })
         .catch(() => {
