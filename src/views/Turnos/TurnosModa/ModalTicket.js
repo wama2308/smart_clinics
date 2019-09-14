@@ -13,7 +13,8 @@ import {
   InputGroup,
   Card,
   CardBody,
-  CardImg
+  CardImg,
+  CardImgOverlay
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -30,8 +31,6 @@ class ModalTicket extends Component {
     }
   }
 
-
-
   closeModal = () => {
     this.setState({
       loading: "show"
@@ -39,10 +38,19 @@ class ModalTicket extends Component {
     this.props.valorCloseModalView(false);
   };
 
-
-
+  getGroup = fields => {
+    let arrayGroups = [];
+    fields.map(field => {
+      const result = arrayGroups.find(data => data === field.group);
+      if (!result) {
+        arrayGroups.push(field.group);
+      }
+    });
+    return arrayGroups;
+  };
 
   render() {
+    const group = this.getGroup(this.props.data)
     return (
       <span>
         <Modal
@@ -53,23 +61,40 @@ class ModalTicket extends Component {
           {this.props.turnos.oneTurnos ?
             <div>
               <ModalHeader toggle={this.closeModal}>
-                {this.props.modalHeader}</ModalHeader>
+                {this.props.modalHeader}
+              </ModalHeader>
               <ModalBody className="Scroll" style={{ "justifyContent": "center", "display": "flex" }} >
-                <Card style={{ "height": `${this.props.turnos.oneTurnos.height}cm`, "width": `${this.props.turnos.oneTurnos.width}cm` }}>
-                  <Table hover responsive borderless>
-                    <thead className="thead-light">
-                      <tr>
-                       <tr>ss</tr>
-                       <tr>s</tr>
-                       <tr>s</tr>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </Table>
-                  <CardBody>
+                <div>
+                  <Card style={{ "height": `${this.props.turnos.oneTurnos.height}cm`, "width": `${this.props.turnos.oneTurnos.width}cm` }}>
+                    <CardImg style={{ opacity: 0.5 }} width="100%" height="100%" src={this.props.turnos.oneTurnos.logo ? `data:image/jpeg; ${this.props.turnos.oneTurnos.logo}` : null} />
+                    <CardImgOverlay style={{ "height": `${this.props.turnos.oneTurnos.height}cm`, "width": `${this.props.turnos.oneTurnos.width}cm` }} >
+                      <Table responsive borderless>
+                        <tbody >
+                          {
+                            group.sort().map((group) => {
+                              return (
+                                <tr key={group}>
+                                  {
+                                    this.props.data.map((fields) => {
+                                      if (group === fields.group && fields.required === true) {
+                                        return (
+                                          <td colspan="3" key={fields.name}>
+                                            <p style={{ "fontSize": `${fields.size}px` }}>{fields.label}</p>
+                                          </td>
+                                        )
+                                      }
+                                    })
+                                  }
+                                </tr>
+                              )
+                            })
+                          }
 
-                  </CardBody>
-                </Card>
+                        </tbody>
+                      </Table>
+                    </CardImgOverlay>
+                  </Card>
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button className="" color="danger" onClick={this.closeModal}>
@@ -85,7 +110,7 @@ class ModalTicket extends Component {
               </ModalFooter>
             </div> :
             <div style={{ height: "55vh" }}>
-              <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
+              <CircularProgress style={{ position: "absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
             </div>
           }
         </Modal>

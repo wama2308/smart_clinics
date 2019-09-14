@@ -16,10 +16,10 @@ class ModalTabla extends Component {
   handleChangeSwitch = (id, width, height,logoStatus) => event => {
     let obj = {
       id: id,
-      width:width,
+      width: parseInt(width),
       logoStatus: logoStatus,
       status: event.target.checked,
-      height: height
+      height: parseInt(height)
     }
     this.props.setSwitchTableTurnos(obj)
   }
@@ -66,7 +66,7 @@ class ModalTabla extends Component {
                               <div>
                                 <Input disabled={this.props.disabled}
                                   onChange={(event) => this.handleGroup(event, list._id)}
-                                  value={list.group || 0} 
+                                  value={list.group} 
                                   type="number"
                                   placeholder="Titulo"
                                   disabled={this.props.disabled}

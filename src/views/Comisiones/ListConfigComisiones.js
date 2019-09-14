@@ -130,7 +130,7 @@ class ListStore extends React.Component {
             />
           )}
         <div className="containerGeneral">
-          <div className="container-button">
+          <div className="container-button" style={{"height": "5%"}}>
             <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
           </div>
 

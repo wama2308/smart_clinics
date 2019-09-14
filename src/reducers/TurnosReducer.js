@@ -1,4 +1,5 @@
 import { Map } from 'immutable'
+import { parse } from 'date-fns';
 
 const loadOneTurnosFunction = (state, payload) => {
   let estado = state.toJS();
@@ -15,9 +16,10 @@ const loadOriginalTurnosFunction = (state, payload) => {
 const setSwitchTableTurnos = (state, payload) => {
   let estado = state.toJS();
 
-  estado.oneTurnos.height = payload.height
-  estado.oneTurnos.width = payload.width
+  estado.oneTurnos.height = parseInt(payload.height)
+  estado.oneTurnos.width = parseInt(payload.width)
   estado.oneTurnos.logo_status = payload.logoStatus
+
   estado.oneTurnos.fields.map((list) => {
     if (list._id === payload.id) {
       list.required = payload.status
@@ -37,7 +39,7 @@ const setSizeTableTurnos = (state, payload) => {
   if (payload.data >= 1 && payload.data <= 100) {
     estado.oneTurnos.fields.map((list) => {
       if (list._id === payload.id) {
-        list.size = payload.data
+        list.size = parseInt(payload.data)
       }
     })
   }
@@ -49,7 +51,7 @@ const setPositionTableTurnos = (state, payload) => {
   if (payload.data >= 1 && payload.data <= 100) {
     estado.oneTurnos.fields.map((list) => {
       if (list._id === payload.id) {
-        list.position = payload.data
+        list.position = parseInt(payload.data)
       }
     })
   }
@@ -61,7 +63,7 @@ const setGroupTableTurnos = (state, payload) => {
   if (payload.data >= 1 && payload.data <= 100) {
     estado.oneTurnos.fields.map((list) => {
       if (list._id === payload.id) {
-        list.group = payload.data
+        list.group = parseInt(payload.data)
       }
     })
   }
