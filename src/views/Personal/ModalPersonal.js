@@ -1,22 +1,10 @@
 import React from 'react';
-<<<<<<< HEAD
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
-import '../../components/style.css';
-import './Personal.css';
-import { InitalState } from './InitialStatePersonal.js';
-import axios from 'axios';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
-=======
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { Button, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, FormFeedback } from 'reactstrap';
 import '../../components/style.css';
 import './Personal.css';
 import { InitalState } from './InitialStatePersonal.js';
 import { FaUserCircle, } from 'react-icons/fa';
->>>>>>> dev
 import jstz from 'jstz';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
@@ -24,17 +12,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import Select from 'react-select';
-<<<<<<< HEAD
-import { saveCargoAction, editCargoAction, ValidateEmailUsersFunction } from "../../actions/PersonalInternoActions";
-import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
-=======
 import { ValidateEmailUsersFunction, savePersonalInternoAction, editPersonalAction, deleteInfoAction } from "../../actions/PersonalInternoActions";
 import { deleteInfoUserId, saveRolAction, LoadRolIdFunction, saveUserNoMasterAction, editUserNoMasterAction, addSucursalFunction, deleteSucursalFunction, LoadIdUsersNoMasterFunction } from "../../actions/UserAction";
 import { openSnackbars } from "../../actions/aplicantionActions";
 import ModalUser from '../Usuarios/ModalUser.js';
 import Switch from '@material-ui/core/Switch';
 import CircularProgress from "@material-ui/core/CircularProgress";
->>>>>>> dev
 
 class ModalCargos extends React.Component {
 	constructor(props) {
@@ -43,21 +26,11 @@ class ModalCargos extends React.Component {
 			...InitalState                              
 		};
 	}
-<<<<<<< HEAD
-
-	componentDidMount(){       
-        
-        /*this.setState({
-            arrayProvince: this.props.aplication.dataGeneral.dataCountries,
-        })*/
-    }
-=======
 	componentDidMount(){
         //this.props.loadUsersRoles();
     }    
 
     testWamix = () => {}
->>>>>>> dev
 
     handleChange = (e) => {
         const { name, value } = e.target;

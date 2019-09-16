@@ -90,23 +90,11 @@ const setStoreEnabledInternalStaffPusher = (state, payload) => {
 	return Map(estado);
 }
 
-const setStoreEmailsUsers = (state, payload) => {	
-	let estado = state.toJS();
-	estado.emailUsers = payload;	
-	return Map(estado);
-}
-
 const PersonalInternoReducer = (state = Map(), action) => {
   switch (action.type) {
 	  case 'LOAD_PERSONAL_CARGOS': {
 	  	return Map(action.payload)
 	  }	  
-	  case 'LOAD_PERSONAL_ID': {
-	  	return setData(state, 'dataPersonalId', action.payload)
-	  }
-	  case 'VALIDATE_EMAILS_USERS': {
-	  	return setStoreEmailsUsers(state, action.payload)
-	  }
 
 	  case 'LOAD_PERSONAL_ID': {
 	  	return setStorePersonalId(state, action.payload)
