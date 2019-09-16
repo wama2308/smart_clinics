@@ -70,6 +70,7 @@ class BedroomsContainer extends Component {
                         status_room={this.props.status_room}
                         confirm={this.props.confirm}
                         disabledBedroomsFuntion={this.props.disabledBedroomsFuntion}
+                        type_consulting_room={this.props.type_consulting_room}
                       />
                     </TabPane>
                   </TabContent>
@@ -96,7 +97,8 @@ class BedroomsContainer extends Component {
 const mapStateToProps = state => ({
   bedrooms: state.bedrooms.toJS(),
   type_bedrooms: state.global.dataGeneral.dataGeneral.type_bedrooms,
-  status_room: state.global.dataGeneral.dataGeneral.status_room
+  status_room: state.global.dataGeneral.dataGeneral.status_room,
+  type_consulting_room: state.global.dataGeneral.dataGeneral.type_consulting_room
 });
 
 const mapDispatchToProps = dispatch => ({
