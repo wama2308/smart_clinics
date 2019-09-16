@@ -4,10 +4,14 @@ import { Button, Table } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Edit, Visibility, Delete } from "@material-ui/icons";
 import ModalPlantilla from "./modalsServicio/ModalPlantilla";
+import { GetDisabledPermits, getArray } from "../../core/utils";
 import jstz from "jstz";
-
 import "./Services.css";
 import "./loading.css";
+import Pagination from '../../components/Pagination';
+import Search from "../../components/Select";
+import '../../components/style.css'
+
 
 class Plantillas extends React.Component {
   constructor(props) {
@@ -15,7 +19,9 @@ class Plantillas extends React.Component {
     this.state = {
       openModal: false,
       disabled: false,
-      editTemplate: ""
+      editTemplate: "",
+      page: 0,
+      rowsPerPage: 10,
     };
   }
 
@@ -26,7 +32,7 @@ class Plantillas extends React.Component {
     });
   };
 
-  view = (item) => {
+  view = item => {
     this.setState({
       editTemplate: item,
       openModal: true,
@@ -57,10 +63,42 @@ class Plantillas extends React.Component {
     });
   };
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
+  getPlantilla = plantilla => {
+    if (!plantilla) {
+      return [];
+    }
+    return plantilla;
+  };
+
   render() {
     let count = [];
+
+    const createDisabled = GetDisabledPermits(this.props.serviciosPermits, "Create")
+    const updateDisabled = GetDisabledPermits(this.props.serviciosPermits, "Update")
+    const deleteDisabled = GetDisabledPermits(this.props.serviciosPermits, "Delete")
+
+    const { rowsPerPage, page } = this.state;
+    const arrayTemplate = getArray(this.props.template)
+
+      const result = this.props.search
+        ? arrayTemplate.filter(template => {
+            return (
+              template.template.toLowerCase().includes(this.props.search.toLowerCase())
+            );
+          })
+        : arrayTemplate;
+
+
     return (
-      <div className="container">
+      <div>
         {this.state.openModal && (
           <ModalPlantilla
             open={this.state.openModal}
@@ -69,16 +107,26 @@ class Plantillas extends React.Component {
             edit={this.state.editTemplate}
           />
         )}
-        <div className="row">
-          <Button
-            color="success"
-            onClick={() => this.setState({ openModal: true })}
-          >
-            Agregar
-          </Button>
+        <div
+          style={{
+            paddingLeft: 20
+          }}
+        >
+        <div className="containerGeneral">
+          <div className="container-button" >
+            <Button
+              color="success"
+              disabled={createDisabled}
+              onClick={() => this.setState({ openModal: true })}>
+              Agregar
+            </Button>
+         </div>
+          <div className="containerSearch">
+            <Search value={arrayTemplate} />
+          </div>
+        </div>
         </div>
         <br />
-
         <div>
           <Table hover responsive borderless>
             <thead className="thead-light">
@@ -90,12 +138,11 @@ class Plantillas extends React.Component {
             </thead>
             <tbody>
               {this.props.template.length > 0 &&
-                this.props.template.map((template, i) => {
-
+               result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((template) => {
                   if (template.status === true) {
-                    count.push(i)
+                    count.push(template.number);
                     return (
-                      <tr key={i}>
+                      <tr key={template.number - 1}>
                         <td scope="row" style={{ width: "30%" }}>
                           {count.length}
                         </td>
@@ -119,8 +166,9 @@ class Plantillas extends React.Component {
                               <IconButton
                                 aria-label="Delete"
                                 className="iconButtons"
+                                disabled={updateDisabled}
                                 onClick={() => {
-                                  this.edit(template, i);
+                                  this.edit(template, template.number);
                                 }}
                               >
                                 <Edit className="iconTable" />
@@ -130,8 +178,9 @@ class Plantillas extends React.Component {
                               <IconButton
                                 className="iconButtons"
                                 aria-label="Delete"
+                                disabled={deleteDisabled}
                                 onClick={() => {
-                                  this.delete(i);
+                                  this.delete(template.number);
                                 }}
                               >
                                 <Delete className="iconTable" />
@@ -144,6 +193,14 @@ class Plantillas extends React.Component {
                   }
                 })}
             </tbody>
+          {
+            arrayTemplate.length > 10 &&
+            <Pagination contador={this.props.template}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage} />
+          }
           </Table>
         </div>
       </div>

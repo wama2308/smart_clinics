@@ -26,19 +26,13 @@ import {
 import {
   Page404,
   Page500,
-  Register,
-  TestUser,
-  RegisterEmail,
-  TestPage,
-  ConfirmCode,
-  FormData,
-  EnterPassword,
   ResetPassword,
   ConfirmCodeResetPassword,
   EnterResetPassword
 } from "./views/Pages";
 import Snackbars from "./components/Snackbars";
 import { Alert } from "./components/Modals";
+import { getTokenInfo } from "./actions/authActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class App extends Component {
@@ -47,14 +41,27 @@ class App extends Component {
       this.props.ConfigGeneralFunction();
     }
   };
+  componentDidUpdate = prevProps => {
+    if (
+      !prevProps.logged &&
+      this.props.logged &&
+      this.props.aplication === null
+    ) {
+      this.props.getTokenInfo();
+    }
+  };
+
   render() {
-    if (this.props.logged && this.props.location.pathname === "/login") {
-      return <Redirect to="/dasboard" />;
+    console.log(this.props.logged, this.props.location.pathname);
+    if (this.props.logged && this.props.location.pathname === "/auth") {
+      return <Redirect to="/dashboard" />;
     } else if (
       this.props.logged === false &&
-      this.props.location.pathname !== "/login"
+      this.props.location.pathname !== "/auth"
     ) {
-      return <Redirect to="/login" />;
+      return <Redirect to="/auth" />;
+    } else if (this.props.logged && this.props.location.pathname === "/") {
+      return <Redirect to="/dashboard" />;
     }
     return (
       <div>
@@ -74,41 +81,11 @@ class App extends Component {
         <Switch>
           <Route
             exact
-            path="/login"
+            path="/auth"
             name="Login Page"
             component={SessionContainer}
           />
-          <Route
-            exact
-            path="/register"
-            name="Register Page"
-            component={Register}
-          />
-          <Route
-            exact
-            path="/register-email"
-            name="Register Email Page"
-            component={RegisterEmail}
-          />
-          <Route exact path="/testpage" name="TestPage" component={TestPage} />
-          <Route
-            exact
-            path="/confirm-code"
-            name="Confirm Code"
-            component={ConfirmCode}
-          />
-          <Route
-            exact
-            path="/enter-password"
-            name="Confirm Code"
-            component={EnterPassword}
-          />
-          <Route
-            exact
-            path="/form-data"
-            name="Form Data"
-            component={FormData}
-          />
+
           <Route
             exact
             path="/reset-password"
@@ -146,7 +123,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   closeDialog: () => dispatch(closeDialog()),
-  ConfigGeneralFunction: () => dispatch(ConfigGeneralFunction())
+  ConfigGeneralFunction: () => dispatch(ConfigGeneralFunction()),
+  getTokenInfo: () => dispatch(getTokenInfo())
 });
 
 // <Route path="/" name="Home" component={DefaultLayout} />

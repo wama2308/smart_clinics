@@ -9,6 +9,8 @@ const SubmitDataMedicalCenter = `${url}/api/editPerfilMedicalCenter`;
 const saveSucursal = `${url}/api/saveBranchOffices`;
 const deleteSucursalApi = `${url}/api/deleteBranchOffices`;
 const editBranchUrl = `${url}/api/editBranchOffices`;
+const enabledBranchOffices = `${url}/api/enabledBranchOffices`;
+const getAllDServices = `${url}/api/allServices`;
 
 export const loadMedicalcenterAction = () => dispatch => {
   getDataToken().then(datos => {
@@ -19,8 +21,8 @@ export const loadMedicalcenterAction = () => dispatch => {
           type: "LOAD_MEDICAL_CENTER",
           payload: {
             loading: "hide",
-            ...res.data.medical_center,
-            licenses: res.data.licenses_array
+            ...res.data
+
           }
         });
       })
@@ -32,7 +34,6 @@ export const loadMedicalcenterAction = () => dispatch => {
       });
   });
 };
-
 
 export const editMedicalCenter = (data, callback) => dispatch => {
   getDataToken().then(datos => {
@@ -76,7 +77,7 @@ export const deleteSucursal = (key, time) => dispatch => {
       method: "post",
       url: deleteSucursalApi,
       data: {
-        posicion: key,
+        _id: key._id,
         timeZ: time
       },
       ...datos
@@ -88,8 +89,24 @@ export const deleteSucursal = (key, time) => dispatch => {
   });
 };
 
+export const activeBranch = key => dispatch => {
+  getDataToken().then(datos => {
+    axios({
+      method: "post",
+      url: enabledBranchOffices,
+      data: {
+        _id: key._id
+      },
+      ...datos
+    })
+      .then(res => {
+        dispatch(openSnackbars("success", "Operacion Exitosa"));
+      })
+      .catch(res => {});
+  });
+};
+
 export const branchEdit = (data, callback) => dispatch => {
-  console.log("entro en editar");
   getDataToken().then(datos => {
     axios({
       method: "post",
@@ -107,6 +124,14 @@ export const branchEdit = (data, callback) => dispatch => {
   });
 };
 
+export const enableBranchs = data => dispatch => {
+  console.log("enable", data);
+};
+
+export const disabledBranchs = data => dispatch => {
+  console.log("disabled", data);
+};
+
 export const SetDataSave = data => {
   return {
     type: "SET_DATA_BRACHN_OFFICE",
@@ -114,7 +139,21 @@ export const SetDataSave = data => {
   };
 };
 
-//       name: this.state.Sucursal,
-//       idCountry: this.state.pais,
-//       provinceid: this.state.valorProvince,
-//       timeZ: this.state.timeZ
+export const getInitialService = callback => dispatch => {
+  getDataToken().then(token => {
+    axios.get(getAllDServices, token).then(res => {
+      dispatch({
+        type: "GET_ALL_SERVICE",
+        payload: res.data
+      });
+      callback();
+    });
+  });
+};
+
+export const addCheck = id => {
+  return {
+    type: "ADD_SERVICE",
+    payload: id
+  };
+};

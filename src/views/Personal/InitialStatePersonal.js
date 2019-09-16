@@ -4,7 +4,7 @@ const selectRegisterUser =
       { value: 'NO', label: 'NO' },
 
     ];  
-
+	/*CARGOS*/
 export const InitalState = {
 
 	/*CARGOS*/
@@ -32,6 +32,10 @@ export const InitalState = {
     arrayChargesSelect: null,
     divChargesSelect: '',
     chargesSelectError: '',
+
+    arrayPaisSelect: null,
+    divPaisSelect: '',
+    paisSelectError: '',
 
     arrayProvince:[],
     arrayProvinceSelect: null,
@@ -66,6 +70,13 @@ export const InitalState = {
     arrayUsersSelect: null,
     divUsersSelect:'',
     divUsersSelectError:'',
+
+    disabledRegisterUser: false,
+    disabledSelectUser: false,
+
+    divSucursalesSelect:'',
+    divSucursalesSelectError:'',
+    arraySucursalesSelect:null,
 
     /*SELECTS*/   
 
@@ -105,5 +116,18 @@ export const InitalState = {
     fotoInvalid: false,
     fotoError: '',            
     foto: null,
+
+    modal:false,
+    modalHeader: '',
+    modalFooter: '',
+    action: '',
+    disabled: '',
+    disabledEmail: '',
+    showHide: '',
+    option:0,
+    position: 0,
+    emailUserSelect: '',
+    checkedA: false,    
+    userIdEdit: ''
 	/*PERSONAL*/
 }

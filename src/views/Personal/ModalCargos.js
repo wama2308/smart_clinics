@@ -1,16 +1,12 @@
 import React from 'react';
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, } from 'reactstrap';
-import classnames from 'classnames';
+import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, FormFeedback } from 'reactstrap';
 import '../../components/style.css';
 import './Personal.css';
 import { InitalState } from './InitialStatePersonal.js';
-import axios from 'axios';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import { saveCargoAction, editCargoAction } from "../../actions/PersonalInternoActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalCargos extends React.Component {
 	constructor(props) {
@@ -39,24 +35,16 @@ class ModalCargos extends React.Component {
 
     validate = () => {
         let cargoInvalid = false;
-        let cargoError = "";        
-        let descripcionInvalid = false;
-        let descripcionError = "";       
+        let cargoError = "";                
 
         if (this.state.cargo === "") {
             cargoError = "¡Ingrese el cargo!";
             cargoInvalid = true;
-        }
-        if (this.state.descripcion === "") {
-            descripcionError = "¡Ingrese la descripcion!";
-            descripcionInvalid = true;
         }        
-        if (cargoError || descripcionError) {            
+        if (cargoError) {            
             this.setState({ 
                 cargoError,
-                cargoInvalid,                         
-                descripcionError,    
-                descripcionInvalid,                 
+                cargoInvalid
             });                           
             return false;
         }        
@@ -114,22 +102,22 @@ class ModalCargos extends React.Component {
 
     componentWillReceiveProps=(props)=>{        
         this.setState({
-            modal: props.modal,       
-            loading:'show'     
-        });
-
-        this.setState({
-            cargo: props.cargo,
-            descripcion: props.descripcion,             
+            modal: props.modal,                   
             loading:'hide',
-        })
-                 
+        });
+        if(props.cargo){
+            this.setState({
+                cargo: props.cargo,
+                descripcion: props.descripcion,             
+                loading:'hide',
+            })
+        }                         
     }
 
 	render() {   
         return (
             <span>                            
-        		<Modal isOpen={this.props.modal} className="ModalUsersRoles">
+        		<Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalUsersRoles">
                     {
                         this.state.loading === "hide" ?
                             <div className={this.state.divContainer}>
@@ -149,12 +137,14 @@ class ModalCargos extends React.Component {
                             </form>                                                                    
                             </ModalBody>
                             <ModalFooter>
-                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCargos}>{this.props.modalFooter}</Button>
-                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>                                                                                                                                                                                                                                                                                                                           
+                                <Button className="" color="danger" onClick={this.closeModal}>Cancelar</Button>
+                                <Button className={this.props.showHide} color="primary" onClick={this.handleSaveCargos}>{this.props.modalFooter}</Button>                                
                             </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                        </div>
                     }
                 </Modal>                
             </span> 

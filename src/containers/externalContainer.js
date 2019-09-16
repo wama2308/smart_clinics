@@ -14,8 +14,10 @@ import {
 import ExternalModal from "../views/PersonalExterno/ModalExternals/externalModal";
 import BodyExternal from "../views/PersonalExterno/BodyExternal";
 import classnames from "classnames";
-import {deleteRequest} from '../actions/externalAction'
-import { openConfirmDialog } from "../actions/aplicantionActions";
+import { deleteRequest } from "../actions/externalAction";
+import { openConfirmDialog, search } from "../actions/aplicantionActions";
+import { GetDisabledPermits } from "../core/utils";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { allExternalStaff } from "../actions/externalAction";
 
 import { connect } from "react-redux";
@@ -25,7 +27,8 @@ class EnternalContainer extends React.Component {
     this.state = {
       loading: false,
       activeTab: 1,
-      openModal: false
+      openModal: false,
+      externalPermits:[]
     };
   }
 
@@ -34,11 +37,23 @@ class EnternalContainer extends React.Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set) 
     }
   }
 
   componentDidMount = () => {
     this.props.allExternalStaff();
+
+    this.props.aplication.dataGeneral.permission.map(permisos=>{
+      permisos.modules.map(modules=>{
+        if (modules.name === "Personal Externo") {
+          this.setState({
+            externalPermits: modules.permits
+          });
+        }
+      })
+    })
   };
 
   close = () => {
@@ -46,7 +61,6 @@ class EnternalContainer extends React.Component {
   };
 
   componentWillReceiveProps = props => {
-
     props.externalStaff
       ? this.setState({ loading: props.externalStaff.loading })
       : null;
@@ -71,19 +85,31 @@ class EnternalContainer extends React.Component {
     }
   };
 
+  componentWillUnmount() {
+    let set = ""  
+    this.props.search(set)
+  }
+  
   render() {
     const value = this.props.externalStaff;
     const result = this.filterData(value);
+
+    const createDisabled = GetDisabledPermits(this.state.externalPermits, "Create")
     return (
       <Container>
         {this.state.openModal && (
           <ExternalModal open={this.state.openModal} close={this.close} />
         )}
-        <Card>
+        <Card
+          style={{
+            height: "83vh"
+          }}
+        >
           <CardHeader>Centros Medicos Afiliados</CardHeader>
           <CardBody>
             <Button
               color="success"
+              disabled={createDisabled}
               style={{ marginBottom: 10 }}
               disabled={!this.state.loading}
               onClick={() => this.setState({ openModal: true })}
@@ -130,38 +156,72 @@ class EnternalContainer extends React.Component {
               </NavItem>
             </Nav>
             {this.state.loading && (
-              <TabContent activeTab={this.state.activeTab}>
-                <TabPane tabId={1}>
+              <TabContent
+                activeTab={this.state.activeTab}
+                style={{
+                  height: " 65.5vh"
+                }}
+              >
+                <TabPane
+                  tabId={1}
+                  style={{
+                    height: "100%"
+                  }}
+                >
                   <BodyExternal
+                    externalPermits={this.state.externalPermits}
                     deleteData={this.props.deleteData}
                     data={result.approved}
                     delete={this.props.delete}
                     type={"Aprobado"}
+                    search={this.props.searchData}
                   />
                 </TabPane>
-                <TabPane tabId={2}>
+                <TabPane
+                  tabId={2}
+                  style={{
+                    height: "100%"
+                  }}
+                >
                   <BodyExternal
+                    externalPermits={this.state.externalPermits}
                     type={"Rechazado"}
                     data={result.cancelled}
                     delete={this.props.delete}
                     deleteData={this.props.deleteData}
+                    search={this.props.searchData}
                   />
                 </TabPane>
-                <TabPane tabId={3}>
+                <TabPane
+                  tabId={3}
+                  style={{
+                    height: "100%"
+                  }}
+                >
                   <BodyExternal
+                    externalPermits={this.state.externalPermits}
                     deleteData={this.props.deleteData}
                     data={result.pending}
                     delete={this.props.delete}
                     type={"Pendiente"}
+                    search={this.props.searchData}
                   />
                 </TabPane>
               </TabContent>
             )}
             {!this.state.loading && (
-              <TabContent activeTab={this.state.activeTab}>
+              <TabContent
+                activeTab={this.state.activeTab}
+                style={{
+                  height: "65.5vh",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
                 <br />
                 <div align="center">
-                  <img src="assets/loader.gif" width="20%" height="5%" />
+                  <CircularProgress />
                 </div>
               </TabContent>
             )}
@@ -173,14 +233,17 @@ class EnternalContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  externalStaff: state.external.get("allExternalStaff")
+  externalStaff: state.external.get("allExternalStaff"),
+  aplication: state.global,
+  searchData: state.global.search
 });
 
 const mapDispatchToProps = dispatch => ({
   deleteData: (message, callback) =>
     dispatch(openConfirmDialog(message, callback)),
   allExternalStaff: () => dispatch(allExternalStaff()),
-  delete: (obj)=>dispatch(deleteRequest(obj))
+  delete: obj => dispatch(deleteRequest(obj)),
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

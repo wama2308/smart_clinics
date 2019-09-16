@@ -13,6 +13,7 @@ import {
   subcriptionRequest
 } from "../../../actions/externalAction";
 import Geocode from "react-geocode";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { filterDirectionExact, getIdMedicalCenter } from "../../../core/utils";
 
 class ExternalModal extends React.Component {
@@ -109,8 +110,17 @@ class ExternalModal extends React.Component {
     return (
       <Modal isOpen={open} toggle={close} style={{ minWidth: "65%" }}>
         {this.state.loading === "show" && (
-          <div align="center" className={"show"} style={{ padding: "5%" }}>
-            <img src="assets/loader.gif" width="30%" />
+          <div
+            align="center"
+            className={"show"}
+            style={{
+              height: 320,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <CircularProgress />
           </div>
         )}
         {this.state.loading === "hide" && (
@@ -151,7 +161,10 @@ class ExternalModal extends React.Component {
                 />
               )}
               {this.state.seleted && this.props.selectedMarker && (
-                <BodyModal dataSelected={this.props.selectedMarker} search={this.props.searchData} />
+                <BodyModal
+                  dataSelected={this.props.selectedMarker}
+                  search={this.props.searchData}
+                />
               )}
             </ModalBody>
             <ModalFooter>

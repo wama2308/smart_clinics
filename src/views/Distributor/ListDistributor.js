@@ -2,135 +2,244 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit, Visibility } from "@material-ui/icons";
-import ModalDistributor from './ModalDistributor.js';
+import { GetDisabledPermits, getArray } from "../../core/utils";
+import ModalDistributor from "./ModalDistributor.js";
+import Pagination from "../../components/Pagination";
+import TextField from "@material-ui/core/TextField";
+import Search from "../../components/Select";
+import "../../components/style.css";
 
 class ListDistributor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modal:false,
-      modalHeader: '',
-      modalFooter: '',
-      action: '',
-      disabled: '',
-      showHide: '',
-      option:0,
-      position: 0,  
-      userId: '',      
-    };    
+      modal: false,
+      modalHeader: "",
+      modalFooter: "",
+      action: "",
+      disabled: "",
+      showHide: "",
+      option: 0,
+      position: 0,
+      userId: "",
+      page: 0,
+      rowsPerPage: 10,
+      cont: 0,
+      search: ""
+    };
   }
 
-  componentDidMount(){}
-
-  openModal = (option, pos, id) => {  
-    if(option === 1){
+  openModal = (option, pos, id) => {
+    if (option === 1) {
       this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Registrar Proveedor',
-        modalFooter:'Guardar',
+        modal: true,
+        option: option,
+        modalHeader: "Registrar Proveedor",
+        modalFooter: "Guardar",
         disabled: false,
-        showHide: 'show',         
-      })
-    }else if(option === 2){
+        showHide: "show"
+      });
+    } else if (option === 2) {
       this.props.LoadDistributorIdFunction(id);
       this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Ver Proveedor',
-        modalFooter:'Guardar',
+        modal: true,
+        option: option,
+        modalHeader: "Ver Proveedor",
+        modalFooter: "Guardar",
         disabled: true,
-        showHide: 'hide',                
-      })
-    }else if(option === 3){
+        showHide: "hide"
+      });
+    } else if (option === 3) {
       this.props.LoadDistributorIdFunction(id);
       this.setState({
-        modal:true,
-        option:option,
-        modalHeader:'Editar Proveedor',
-        modalFooter:'Editar',
+        modal: true,
+        option: option,
+        modalHeader: "Editar Proveedor",
+        modalFooter: "Editar",
         disabled: false,
-        showHide: 'show',
-        position: pos,        
-        userId:id       
-      })
-    }  
-  }  
+        showHide: "show",
+        position: pos,
+        userId: id
+      });
+    }
+  };
 
-  deleteProveedor = (proveedorId) => {  
+  deleteProveedor = proveedorId => {
     const message = {
-      title: "Eliminar Proveedor",
-      info: "¿Esta seguro que desea eliminar este Proveedor?"
+      title: "Inactivar Proveedor",
+      info: "¿Esta seguro que desea inactivar este Proveedor?"
     };
     this.props.confirm(message, res => {
       if (res) {
         this.props.DeleteDistributorAction(proveedorId);
       }
-    });    
-  } 
+    });
+  };
 
-  valorCloseModal = (valor) => {            
+  valorCloseModal = valor => {
     this.setState({
-        modal: valor,          
-    });                    
-  } 
+      modal: valor,
+      option: 0
+    });
+  };
+
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
 
   render() {
-     return (
-      <div className="container">
-        <ModalDistributor 
-          option = {this.state.option}
-          modal = {this.state.modal}
-          modalHeader = {this.state.modalHeader}
-          modalFooter = {this.state.modalFooter}
-          disabled = {this.state.disabled}
-          showHide = {this.state.showHide}   
-          userId = {this.state.userId}        
-                       
-          valorCloseModal = {this.valorCloseModal}          
+    const updateDisabled = GetDisabledPermits(
+      this.props.distributorPermits,
+      "Update"
+    );
+    const deleteDisabled = GetDisabledPermits(
+      this.props.distributorPermits,
+      "Delete"
+    );
+    const createDisabled = GetDisabledPermits(
+      this.props.distributorPermits,
+      "Create"
+    );
+    const { rowsPerPage, page } = this.state;
+    const arrayDistributor = getArray(this.props.listDistributor);
+
+    const result = this.props.search
+      ? arrayDistributor.filter(distributor => {
+          return (
+            distributor.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            distributor.phone[0].includes(this.props.search)||
+            distributor.typeIdentity.toLowerCase().includes(this.props.search.toLowerCase())||
+            distributor.tin.toString().includes(this.props.search)||
+            distributor.email[0].toLowerCase().includes(this.props.search.toLowerCase())
+          );
+        })
+      : arrayDistributor;
+
+    return (
+      <div>
+        <ModalDistributor
+          option={this.state.option}
+          modal={this.state.modal}
+          modalHeader={this.state.modalHeader}
+          modalFooter={this.state.modalFooter}
+          disabled={this.state.disabled}
+          showHide={this.state.showHide}
+          userId={this.state.userId}
+          valorCloseModal={this.valorCloseModal}
         />
-        <Button color="success" onClick={() => { this.openModal(1); }}>Agregar</Button>
-        <br />
-        <br />
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">DNI</th>
-                  <th className="text-left">Proveedor</th>
-                  <th className="text-left">Email</th>
-                  <th className="text-left">Telefono</th>                                    
-                  <th className="text-left">Acciones</th>                  
-                </tr>
-              </thead>
-              <tbody>
-               {this.props.listDistributor? this.props.listDistributor.map((distributor, i) => {
-                return (
-                  <tr key={i} className="text-left">
-                    <td>{ i + 1 }</td>
-                    <td>{ distributor.typeIdentity } - {distributor.tin}</td>
-                    <td>{ distributor.name }</td>
-                    <td>{ distributor.email[0] }</td>
-                    <td>{ distributor.phone[0] }</td>
-                    <td>
-                      <div  className="float-left" >
-                        <IconButton aria-label="Delete" title="Ver Rol" className="iconButtons" onClick={() => { this.openModal(2, i, distributor.id); }}><Visibility className="iconTable" /></IconButton>
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.openModal(3, i, distributor.id); }}><Edit className="iconTable" /></IconButton>                        
-                        <IconButton aria-label="Delete" title="Editar Rol" className="iconButtons" onClick={() => { this.deleteProveedor(distributor.id); }}><Delete className="iconTable" /></IconButton>                        
-                      </div>
-                    </td>                    
-                  </tr>
-                );
-               })
-                :
-                  null
-                }
-              </tbody>
-            </Table>
+
+        <div className="containerGeneral">
+          <div className="container-button">
+            <Button
+              color="success"
+              disabled={createDisabled}
+              onClick={() => {
+                this.openModal(1);
+              }}
+            >
+              Agregar Proveedor
+            </Button>
+          </div>
+          <div className="containerSearch">
+            <Search value={arrayDistributor} />
           </div>
         </div>
+        <br />
+        <br />
+        <Table hover responsive borderless>
+          <thead className="thead-light">
+            <tr>
+              <th className="text-left">Nro</th>
+              <th className="text-left" style={{ minWidth: "105px" }}>
+                DNI
+              </th>
+              <th className="text-left">Proveedor</th>
+              <th className="text-left">Email</th>
+              <th className="text-left">Telefono</th>
+              <th className="text-left" style={{ minWidth: "205px" }}>
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {arrayDistributor
+              ? result
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(distributor => {
+                    return (
+                      <tr key={distributor.number} className="text-left">
+                        <td>{distributor.number}</td>
+                        <td style={{ minWidth: "105px" }}>
+                          {distributor.typeIdentity}-{distributor.tin}
+                        </td>
+                        <td>{distributor.name}</td>
+                        <td>{distributor.email[0]}</td>
+                        <td>{distributor.phone[0]}</td>
+                        <td style={{ minWidth: "205px" }}>
+                          <div className="float-left">
+                            <IconButton
+                              aria-label="Delete"
+                              title="Ver Rol"
+                              className="iconButtons"
+                              onClick={() => {
+                                this.openModal(
+                                  2,
+                                  distributor.number,
+                                  distributor.id
+                                );
+                              }}
+                            >
+                              <Visibility className="iconTable" />
+                            </IconButton>
+
+                            <IconButton
+                              aria-label="Delete"
+                              title="Editar Rol"
+                              disabled={updateDisabled}
+                              className="iconButtons"
+                              onClick={() => {
+                                this.openModal(
+                                  3,
+                                  distributor.number,
+                                  distributor.id
+                                );
+                              }}
+                            >
+                              <Edit className="iconTable" />
+                            </IconButton>
+
+                            <IconButton
+                              aria-label="Delete"
+                              title="Editar Rol"
+                              disabled={deleteDisabled}
+                              className="iconButtons"
+                              onClick={() => {
+                                this.deleteProveedor(distributor.id);
+                              }}
+                            >
+                              <Delete className="iconTable" />
+                            </IconButton>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+              : null}
+          </tbody>
+          {
+            arrayDistributor.length > 10 &&
+            <Pagination contador={this.props.listDistributor}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+              handleChangePage={this.handleChangePage}
+            />
+          }
+        </Table>
       </div>
     );
   }

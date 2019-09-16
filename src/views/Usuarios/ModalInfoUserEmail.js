@@ -1,17 +1,10 @@
 import React from 'react';
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, Card, CardBody, CardHeader, } from 'reactstrap';
-import classnames from 'classnames';
+import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Card, CardBody, CardHeader, } from 'reactstrap';
 import '../../components/style.css';
 import './Users.css';
-import axios from 'axios';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
-import jstz from 'jstz';
-import { connect } from "react-redux";
-import { testFunction } from "../../actions/UserAction";
+import {FaExclamationCircle} from 'react-icons/fa';
 import PopoverItem from '../../components/PopoverItem.js';
-
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ModalInfoUserEmail extends React.Component {
 	constructor(props) {
@@ -123,12 +116,14 @@ class ModalInfoUserEmail extends React.Component {
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button color="primary" onClick={() => { this.closeModalInfoUserEmail(1, this.state.exist) }}>Aceptar</Button>
                                     <Button color="danger" onClick={() => { this.closeModalInfoUserEmail(0, this.state.exist) }}>Cancelar</Button>
+                                    <Button color="primary" onClick={() => { this.closeModalInfoUserEmail(1, this.state.exist) }}>Aceptar</Button>                                    
                                 </ModalFooter>
                             </div>
                         :
-                            <div align="center" className={this.state.divLoading} style={{padding:"1%"}}><img src="assets/loader.gif" width="30%" /></div>
+                        <div style={{height: "55vh"}}>
+                            <CircularProgress style={{position: " absolute", height: 40, top: "45%", right: "50%",zIndex: 2}}          />
+                        </div>    
                     }
                 </Modal>
             </span>

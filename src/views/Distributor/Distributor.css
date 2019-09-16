@@ -178,12 +178,13 @@ padding: 1em;
   border-radius: 0.25rem;
 }
 
-.react-tagsinput-focusedMy {
-  color: #20a8d8;
-  background-color: #fff;
-  border-color: #8ad4ee;
-  outline: 0;  
-  box-shadow: 0 0 0 0.2rem rgba(32, 168, 216, 0.25);
+.react-tagsinputMy:focus {
+    color: #20a8d8;
+    background-color: #fff;
+    border-color: #20a8d8;
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(32, 168, 216, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(32, 168, 216, 0.25);
 }
 
 .react-tagsinput-tagMy {

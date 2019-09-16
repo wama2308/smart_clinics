@@ -1,5 +1,5 @@
 
-import {createStore, compose , applyMiddleware} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 // import someReduxMiddleware from 'some-redux-middleware';
 // import someOtherReduxMiddleware from 'some-other-redux-middleware';
 import ReduxThunk from 'redux-thunk';
@@ -13,7 +13,7 @@ if (typeof devToolsExtension === 'function') {
   enhancerList.push(devToolsExtension());
 }
 
-//const composedEnhancer = compose( applyMiddleware(logger), ...enhancerList);
+//const composedEnhancer = compose(pplyMiddleware(logger), ...enhancerList);
 
 const middleWare = applyMiddleware( ReduxThunk,logger)(createStore);
 

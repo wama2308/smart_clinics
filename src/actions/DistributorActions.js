@@ -1,36 +1,52 @@
 import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
-const loadCountriesArray = `${url}/api/loadCountriesArray`;
-const queryNationalPayments = `${url}/api/queryNationalPayments`;
 const listCountryProvider = `${url}/api/listCountryProvider`;
 const detailsProvider = `${url}/api/detailsProvider`;
 const createProvider = `${url}/api/createProvider`;
 const editProvider = `${url}/api/editProvider`;
 const disableProvider = `${url}/api/disableProvider`;
+const listCountryProviderDisabled = `${url}/api/listCountryProviderDisabled`;
+const enableProvider = `${url}/api/enableProvider`;
 
 export const LoadDistributorFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
     	axios.get(listCountryProvider, datos)
-    	.then(res => {		    
-        dispatch({
-          type: "LOAD_DISTRIBUTOR",
-          payload: {
-            loading: "hide",
-            data: res.data,                
-            contacs: [],
-            tableContac: 0
-          }
-        });          		
+    	.then(res => {
+        listCountryProviderDisabledFunction(datos, proveedoresInactivos => {
+          dispatch({
+            type: "LOAD_DISTRIBUTOR",
+            payload: {
+              loading: "hide",
+              data: res.data,
+              proveedoresInactivos: proveedoresInactivos,
+              contacs: [],
+              tableContac: 0,
+              distributorId: {},
+              action: 0,
+            }
+          });
+        });
     	})
       .catch(error => {
 			console.log("Error consultando la api de usuarios no master",error.toString());
       });
-      
+
     })
     .catch(() => {
       console.log("Problemas con el token");
+    });
+};
+
+const listCountryProviderDisabledFunction = (datos, execute) => {
+  axios
+    .get(listCountryProviderDisabled, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de proveedores inactivos", error.toString());
     });
 };
 
@@ -99,7 +115,7 @@ export const cleanContacs = () => dispatch => {
     .then(datos => {
       dispatch({
         type: "CLEAN_CONTACS",
-        payload: {          
+        payload: {
           contacs: []
         }
       });
@@ -109,7 +125,7 @@ export const cleanContacs = () => dispatch => {
     });
 };
 
-export const saveDistributorAction = (data, callback) => dispatch => {
+export const saveDistributorAction = (data, callback, option) => dispatch => {
   getDataToken()
     .then(datos => {
       axios({
@@ -118,7 +134,15 @@ export const saveDistributorAction = (data, callback) => dispatch => {
         data: data,
         headers: datos.headers
       })
-        .then(() => {
+        .then(res => {
+          if(option === 4){
+            dispatch({
+              type: "ADD_NEW_PROVIDER_SELECT",
+              payload: {
+                provider: res.data
+              }
+            });
+          }
           callback();
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
@@ -175,3 +199,100 @@ export const DeleteDistributorAction = proveedorId => dispatch => {
       console.log("Problemas con el token");
     });
 };
+
+export const enableProviderFunction = proveedorId => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: enableProvider,
+        data: {
+          id: proveedorId
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Proveedor activado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error activando el proveedor"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const actionProps = () => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "ACTION_PROPS",
+        payload: 1
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+/***************************PUSHER***************************/
+export const loadProviderNewPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_PROVIDER_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadProviderEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_PROVIDER_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadProviderDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_PROVIDER_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadProviderEnabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_PROVIDER_ENABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}

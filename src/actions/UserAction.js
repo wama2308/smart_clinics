@@ -18,6 +18,13 @@ const saveUserNoMaster = `${url}/api/saveUserNoMaster`;
 const LoadIdUsersNoMaster = `${url}/api/LoadIdUsersNoMaster`;
 const editUserNoMaster = `${url}/api/editUserNoMaster`;
 const DeleteUserNoMaster = `${url}/api/DeleteUserNoMaster`;
+const queryUserRegisterLatest = `${url}/api/queryUserRegisterLatest`;
+const loadAllUsersNoMasterDisable = `${url}/api/loadAllUsersNoMasterDisable`;
+const enabledUser = `${url}/api/enabledUser`;
+const consultRolesDisabled = `${url}/api/consultRolesDisabled`;
+const disabledRol = `${url}/api/disabledRol`;
+const enabledRol = `${url}/api/enabledRol`;
+const LoadSelectRoles = `${url}/api/LoadSelectRoles`;
 
 const rolNew = {
   _id: {
@@ -71,22 +78,36 @@ export const LoadAllUsersNoMasterFunction = () => dispatch => {
               const totalBranchOffices = objectBranchOffices.length;
               LoadPermitsMedicalCenterFunction(datos, permits => {
                 LoadModulesMedicalCenterFunction(datos, modules => {
-                  dispatch({
-                    type: "LOAD_USERS_ROLES",
-                    payload: {
-                      loading: "hide",
-                      ...roles,
-                      ...res.data,
-                      totalBranchOffices,
-                      arrayBranchOffices,
-                      permits,
-                      modules,
-                      userIdView: {
-                        loading: "hide",
-                        email: "",
-                        sucursal: []
-                      }
-                    }
+                  loadAllUsersNoMasterDisableFunction(datos, usersInactivos => {
+                    consultRolesDisabledFunction(datos, rolesInactivos => {
+                      LoadSelectRolesFunction(datos, loadSelectRoles => {
+                          dispatch({
+                            type: "LOAD_USERS_ROLES",
+                            payload: {
+                              loading: "hide",
+                              ...roles,
+                              loadSelectRoles: loadSelectRoles,
+                              users:res.data,
+                              usersInactivos:usersInactivos,
+                              rolesInactivos:rolesInactivos,
+                              totalBranchOffices,
+                              arrayBranchOffices,
+                              permits,
+                              modules,
+                              userIdView: {
+                                loading: "hide",
+                                email: "",
+                                names: "",
+                                surnames: "",
+                                username: "",
+                                sucursal: []
+                              },
+                              userId:'',
+                              userEmail:'',                            
+                          }
+                        });
+                      });
+                    });
                   });
                 });
               });
@@ -113,6 +134,39 @@ const LoadRolesFunction = (datos, execute) => {
     })
     .catch(error => {
       console.log("Error consultando la api de roles", error.toString());
+    });
+};
+
+const LoadSelectRolesFunction = (datos, execute) => {
+  axios
+    .get(LoadSelectRoles, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de roles para cargar el select", error.toString());
+    });
+};
+
+const loadAllUsersNoMasterDisableFunction = (datos, execute) => {
+  axios
+    .get(loadAllUsersNoMasterDisable, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de usuarios inactivos", error.toString());
+    });
+};
+
+const consultRolesDisabledFunction = (datos, execute) => {
+  axios
+    .get(consultRolesDisabled, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de roles inactivos", error.toString());
     });
 };
 
@@ -171,7 +225,7 @@ export const saveRolAction = (data, callback) => dispatch => {
       })
         .then(() => {
           callback();
-          dispatch(openSnackbars("success", "Operacion Exitosa"));
+          dispatch(openSnackbars("success", "Operacion Exitosa"));          
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error guardando el rol"));
@@ -291,7 +345,20 @@ export const deleteInfoUser = (clean, exist) => dispatch => {
     });
 };
 
-export const saveUserNoMasterAction = (data, callback) => dispatch => {
+export const deleteInfoUserId = () => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "DELETE_DATA_INFO_USER_ID",
+        payload: ""
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const saveUserNoMasterAction = (data, callback) => dispatch => {  
   getPosts()
     .then(datos => {
       axios({
@@ -351,6 +418,9 @@ export const LoadIdUsersNoMasterFunction = userId => dispatch => {
             type: "LOAD_USER_ID",
             payload: {
               email: res.data.email,
+              names: res.data.names,
+              surnames: res.data.surnames,
+              username: res.data.username,
               sucursal: res.data.sucursal,
               loading: "hide"
             }
@@ -391,13 +461,85 @@ export const DeleteUserNoMasterAction = userId => dispatch => {
     });
 };
 
-export const addSucursalFunction = (email, arraySucursal) => dispatch => {
+export const ActivateUserNoMasterAction = userId => dispatch => {
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: enabledUser,
+        data: {
+          _id: userId
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Usuario activado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error activando el usuario"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const disabledRolAction = rolId => dispatch => {
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: disabledRol,
+        data: {
+          _id: rolId
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Rol eliminado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("warning", "Este rol no puede ser eliminado, se encuentra asignado a un usuario"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const enabledRolAction = rolId => dispatch => {
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: enabledRol,
+        data: {
+          _id: rolId
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Rol activado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error activando el rol"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const addSucursalFunction = (email, names, surnames, username, arraySucursal) => dispatch => {  
   getPosts()
     .then(datos => {
       dispatch({
         type: "ADD_SUCURSAL",
         payload: {
           email: email,
+          names: names,
+          surnames: surnames,
+          username: username,
           arraySucursal: arraySucursal
         }
       });
@@ -427,6 +569,9 @@ export const deleteUserIdView = () => dispatch => {
         type: "DELETE_USER_ID_VIEW",
         payload: {
           email: "",
+          names: "",
+          surnames: "",
+          username: "",
           sucursal: []
         }
       });
@@ -449,14 +594,236 @@ export const addEmailStoreAction = email => dispatch => {
     });
 };
 
- /***************************TEST WAMA***************************/
-export const testFunction = () => dispatch => {
+export const addNombresStoreAction = nombres => dispatch => {
   getPosts()
     .then(datos => {
       dispatch({
-        type: "LOAD_ROL_NEW",
+        type: "ADD_NOMBRES_STORE",
+        payload: nombres
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const addApellidosStoreAction = apellidos => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "ADD_APELLIDOS_STORE",
+        payload: apellidos
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const addUserNameStoreAction = username => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "ADD_USERNAME_STORE",
+        payload: username
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+const UserRegisterLatestFunction = (email, execute) => {
+  getPosts()
+    .then(datos => {
+      axios({
+            method: "post",
+            url: queryUserRegisterLatest,
+            data: {
+                email:email,
+            },
+            headers: datos.headers
+      })
+      .then(res => {
+        execute(res.data);
+      })
+      .catch(error => {
+        console.log("Error consultando la api de para consultar el ultimo usuario registrado por email", error.toString());
+      });
+    })
+  .catch(() => {
+    console.log("Problemas con el token");
+  });
+};
+
+const DeleteUserRegisterFunction = (userId) => {
+  getPosts()
+    .then(datos => {
+      axios({
+            method: "post",
+            url: DeleteUserNoMaster,
+            data: {
+              userId: userId
+            },
+            headers: datos.headers
+      })
+      .then(res => {
+        console.log("Usuario eliminado con exito");
+      })
+      .catch(error => {
+        console.log("Error eliminando el usuario", error.toString());
+      });
+    })
+  .catch(() => {
+    console.log("Problemas con el token");
+  });
+};
+
+export const saveUserNoMasterPersonalAction = (data, email, userId, callback) => dispatch => {
+  getPosts()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: saveUserNoMaster,
+        data: data,
+        headers: datos.headers
+      })
+        .then(() => {
+          callback();
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+          UserRegisterLatestFunction(email, usuario => {
+            dispatch({
+              type: "LOAD_USUARIO_REGISTRADO_PERSONAL",
+              payload: usuario
+            });
+          });          
+          if(userId !== ""){
+            //DeleteUserRegisterFunction(userId);
+          }
+
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error guardando el usuario"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+ /***************************PUSHER***************************/
+export const loadRolNewPusher = rolNew => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_NEW_PUSHER",
         payload: {
           ...rolNew
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadRolEditPusher = rolEdit => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_EDIT_PUSHER",
+        payload: {
+          ...rolEdit
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadRolDisabledPusher = rolDisabled => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_DISABLED_PUSHER",
+        payload: {
+          ...rolDisabled
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadRolEnabledPusher = rolEnabled => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_ROL_ENABLED_PUSHER",
+        payload: {
+          ...rolEnabled
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadUserNoMasterNewPusher = data => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_USER_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadUserNoMasterEditPusher = data => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_USER_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadUserNoMasterDisabledPusher = data => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_USER_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadUserNoMasterEnabledPusher = data => dispatch => {
+  getPosts()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_USER_ENABLED_PUSHER",
+        payload: {
+          ...data
         }
       });
     })

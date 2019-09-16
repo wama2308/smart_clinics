@@ -10,6 +10,11 @@ const editInternalStaff = `${url}/api/editInternalStaff`;
 const queryOneInternalStaff = `${url}/api/queryOneInternalStaff`;
 const deleteInternalStaff = `${url}/api/deleteInternalStaff`;
 const queryEmailInternalStaff = `${url}/api/queryEmailInternalStaff`;
+const enabledInternalStaff = `${url}/api/enabledInternalStaff`;
+const queryListDisabledInternalStaff = `${url}/api/queryListDisabledInternalStaff`;
+const queryPositionDisabled = `${url}/api/queryPositionDisabled`;
+const disabledPosition = `${url}/api/disabledPosition`;
+const enabledPosition = `${url}/api/enabledPosition`;
 
 export const LoadPersonalCargosFunction = () => dispatch => {
   getDataToken()
@@ -17,15 +22,24 @@ export const LoadPersonalCargosFunction = () => dispatch => {
     	axios.get(queryListInternalStaff, datos)
     	.then(res => {
 		    LoadCargosFunction(datos, cargos => {          
-          dispatch({
-            type: "LOAD_PERSONAL_CARGOS",
-            payload: {
-              loading: "hide",
-              personal: res.data,
-              cargos: cargos,     
-              emailUsers: []
-            }
-          });          
+          queryListDisabledInternalStaffFunction(datos, personalInactivo => {                    
+            queryPositionDisabledFunction(datos, cargosInactivos => {                    
+              dispatch({
+                type: "LOAD_PERSONAL_CARGOS",
+                payload: {
+                  loading: "hide",
+                  personal: res.data,
+                  personalInactivo: personalInactivo,
+                  cargos: cargos,     
+                  cargosInactivos: cargosInactivos,     
+                  emailUsers: [],    
+                  userId:'',       
+                  personalId: {},
+                  action: 0
+                }
+              });          
+            });    
+          });  
         });  				
     	})
       .catch(error => {
@@ -46,6 +60,28 @@ const LoadCargosFunction = (datos, execute) => {
     })
     .catch(error => {
       console.log("Error consultando la api de cargos", error.toString());
+    });
+};
+
+const queryPositionDisabledFunction = (datos, execute) => {
+  axios
+    .get(queryPositionDisabled, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de cargos inactivos", error.toString());
+    });
+};
+
+const queryListDisabledInternalStaffFunction = (datos, execute) => {
+  axios
+    .get(queryListDisabledInternalStaff, datos)
+    .then(res => {
+      execute(res.data);
+    })
+    .catch(error => {
+      console.log("Error consultando la api de personal inactivo", error.toString());
     });
 };
 
@@ -71,7 +107,7 @@ export const LoadPersonalIdFunction = id => dispatch => {
         })
         .catch(error => {
           console.log(
-            "Error consultando la api para consultar los detalles del proveedor por id",
+            "Error consultando la api para consultar los detalles del personal por id",
             error.toString()
           );
         });
@@ -147,7 +183,7 @@ export const savePersonalInternoAction = (data, callback) => dispatch => {
     });
 };
 
-export const editDistributorAction = (data, callback) => dispatch => {
+export const editPersonalAction = (data, callback) => dispatch => {
   getDataToken()
     .then(datos => {
       axios({
@@ -176,7 +212,7 @@ export const DeletePersonalInternoAction = id => dispatch => {
         method: "post",
         url: deleteInternalStaff,
         data: {
-          posicion: id
+          id: id
         },
         headers: datos.headers
       })
@@ -185,6 +221,75 @@ export const DeletePersonalInternoAction = id => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error eliminando el personal"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const enabledInternalStaffAction = id => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: enabledInternalStaff,
+        data: {
+          id: id
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Personal activado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error activando el personal"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const disabledPositionAction = id => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: disabledPosition,
+        data: {
+          _id: id
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Cargo eliminado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error eliminando el cargo"));
+        });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+export const enabledPositionAction = id => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: enabledPosition,
+        data: {
+          _id: id
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Cargo activado con exito"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error activando el cargo"));
         });
     })
     .catch(() => {
@@ -225,3 +330,137 @@ export const ValidateEmailUsersFunction = (arrayEmails, callback) => dispatch =>
       console.log("Problemas con el token");
     });
 };
+
+export const deleteInfoAction = () => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "DELETE_INFO_ACTION",
+        payload: ""
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+};
+
+/***************************PUSHER***************************/
+export const loadPositionsNewPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_POSITIONS_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadPositionsEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_POSITIONS_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadPositionsDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_POSITIONS_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadPositionsEnabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_POSITIONS_ENABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadInternalStaffNewPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_INTERNAL_STAFF_NEW_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadInternalStaffEditPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_INTERNAL_STAFF_EDIT_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadInternalStaffDisabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_INTERNAL_STAFF_DISABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}
+
+export const loadInternalStaffEnabledPusher = data => dispatch => {
+  getDataToken()
+    .then(datos => {
+      dispatch({
+        type: "LOAD_INTERNAL_STAFF_ENABLED_PUSHER",
+        payload: {
+          ...data
+        }
+      });
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
+}

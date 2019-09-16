@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Card, CardBody, CardFooter, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
-// import {getLoginData} from '../../../components/LoginData'; 
+import { Button, Card, CardBody, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import axios from 'axios';
-import { HashRouter, Route, Switch, Link, withRoute } from 'react-router-dom';
-
-//import {RegisterEmailToConfirm} from '../../../components/RegisterEmailToConfirm'; 
+import { Link } from 'react-router-dom';
 import {ConfirmCode} from '../ConfirmCode/ConfirmCode';
 import Notifications, {notify} from 'react-notify-toast';
 import HeaderLogo from '../../../components/HeaderLogo';

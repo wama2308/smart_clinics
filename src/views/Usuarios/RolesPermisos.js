@@ -1,12 +1,11 @@
 import React from 'react';
 import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { Button, Col, Row, Table, Input, InputGroup, InputGroupAddon, InputGroupText, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, FormText, FormFeedback, Tooltip, Collapse, Card, CardBody, CardFooter, CardHeader, CardTitle, CardText, Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
+import { Button, Input, InputGroup, FormGroup, Label, FormText, FormFeedback, Collapse, Card, CardBody, Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import classnames from 'classnames';
 import '../../components/style.css';
 import './Users.css';
-import axios from 'axios';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
+import { FaSearch, FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 import jstz from 'jstz';
 import { connect } from "react-redux";
 import { LoadPermitsMedicalCenterFunction, LoadRolIdFunction, testFunction } from "../../actions/UserAction";
@@ -168,7 +167,7 @@ class RolesPermisos extends React.Component {
               {
                 rol:this.state.rol,
                 selected: this.state.selectedNuevoRol,
-                onlyModules: this.state.onlyModules,
+                onlyModules: this.state.onlyModules,                
                 timeZ: jstz.determine().name()
               },
               () => {
@@ -239,14 +238,13 @@ class RolesPermisos extends React.Component {
                     <TabPane tabId="1">
                         <FormGroup className="top form-group col-sm-12">
                             <Label for="rol">Rol</Label>
-                            <div className={this.props.divSelectRol}>                                                                        
-                                <InputGroup className="form-group col-sm-20">                                                                
-                                    <Select isDisabled={this.state.varDisabled} className="selectUsersRoles" name="rol" value={this.props.selectedRolOption} onChange={this.handleChangeSelectRol} options={this.props.rolSelect} />&nbsp;
-                                    <div style={{width:'-2%'}}>
-                                        <Button title="Ver Rol" className={this.state.ocultarBotones} disabled={this.state.varDisabled} onClick={() => { this.openRoles(2, this.state.rolIdView); }}><FaSearch size="1em"/></Button>&nbsp;
-                                        <Button title="Agregar Rol" disabled={this.state.varDisabled} onClick={this.toggleNuevoRol} id="">{this.state.imageButton}</Button>
-                                    </div>
-                                </InputGroup>                                
+                            <div className={this.props.divSelectRol} style={{display:'flex', width:'100%'}}>                                                                        
+                                <div style={{flex:1}}>                                                              
+                                    <Select isSearchable="true" isDisabled={this.state.varDisabled} className="" name="rol" value={this.props.selectedRolOption} onChange={this.handleChangeSelectRol} options={this.props.rolSelect} />
+                                </div>
+                                <Button title="Ver Rol" className={this.state.ocultarBotones} disabled={this.state.varDisabled} onClick={() => { this.openRoles(2, this.state.rolIdView); }}><FaSearch size="1em"/></Button>
+                                &nbsp;
+                                <Button title="Agregar Rol" disabled={this.state.varDisabled} onClick={this.toggleNuevoRol} id="">{this.state.imageButton}</Button>                                                                
                             </div>
                             <div className="errorSelect">{this.props.rolSelectError}</div>                                                                                                                                                                                                        
                         </FormGroup>       
@@ -268,8 +266,8 @@ class RolesPermisos extends React.Component {
                                 </FormGroup>  
                                 <FormGroup className="top form-group col-sm-12">  
                                     <div align="right">
-                                        <Button className="" color="primary" onClick={this.handleSaveRoles}>Guardar</Button>&nbsp;&nbsp; 
-                                        <Button className="" color="danger" onClick={this.cleanNewRol}>Cancelar</Button> 
+                                        <Button className="" color="danger" onClick={this.cleanNewRol}>Cancelar</Button>&nbsp;&nbsp; 
+                                        <Button className="" color="primary" onClick={this.handleSaveRoles}>Guardar</Button>                                         
                                     </div>
                                 </FormGroup>                              
                             </CardBody>

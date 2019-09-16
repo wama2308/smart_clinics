@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Card, CardBody, CardFooter, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { Button, Card, CardBody, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import axios from 'axios';
-import { withRouter } from 'react-router';
 import ValidateCode, {notify} from 'react-notify-toast';
 import HeaderLogo from '../../../components/HeaderLogo';
 import { datosConexion } from '../../../components/Conexion.js'
-import { HashRouter, Route, Switch, Link, withRoute } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../../components/style.css';
 
 class ConfirmCode extends Component {
@@ -30,11 +29,6 @@ class ConfirmCode extends Component {
 
 
 componentDidMount(){
-// Constante email seria vacia porque si alguien ingresa directamente a la direccion sin haber pasado
-// el correo por el registro, el try, catch es porque si this.props.location.state.email es null
-// la pagina explotara.
-
-  const email = "";
   try {
     this.email = this.props.location.state.email;
     console.log(this.email);

@@ -32,7 +32,7 @@ class SelectComponent extends React.Component {
     return (
       <div style={{ minWidth: "40%" }}>
         <Search
-          placeholder="search..."
+          placeholder="Buscar..."
           theme={!this.props.outside ? "yes" : "no"}
           onMouseOver={this.onOver}
           onClick={this.handleClick}

@@ -1,0 +1,272 @@
+.ModalCommissions{
+    max-width: 980px;
+    width:100%;        
+    background: white;    
+    border-radius: 20px;
+    box-shadow: 0 0 10 px rgba(0,0,0, .4);  
+    margin: 2% auto;
+}
+
+.top{
+    margin-bottom: 4%;
+}
+
+.error{
+	background-color: #f87a79;
+	align-content:center;
+	border-radius: 3px;
+	color: #f8f9fa;
+	text-align: center;
+	-weight: bold;
+	margin-top: 2px;
+}
+
+.errorSelect{
+	background-color: #f87a79;
+	align-content:left;
+	border-radius: 3px;
+	color: #f8f9fa;
+	text-align: center;
+	-weight: bold;
+	margin-top: 2px;
+	width: 40%;
+}
+
+.borderColor{
+  border-top: 1px solid #f86c6b;
+	border-right: 1px solid #f86c6b;
+	border-bottom: 1px solid #f86c6b;
+	border-left: 1px solid #f86c6b;
+}
+
+.borderColorInputTable{
+  border-top: 2px solid #f86c6b;
+  border-right: 2px solid #f86c6b;
+  border-bottom: 2px solid #f86c6b;
+  border-left: 2px solid #f86c6b;
+  
+}
+
+.borderColorInputTableWhite{
+  border-top: 0px solid #ffffff;
+  border-right: 0px solid #ffffff;
+  border-bottom:0px solid #ffffff;
+  border-left: 0px solid #ffffff;
+  
+}
+
+.sizeDivGroup{
+    height: 40px;
+}
+
+.hide{
+    display: none;
+}
+
+.show{
+    display: block;    
+}
+
+.sizeDiv{
+    height: 220px;    
+    text-align: center;   
+    margin:0;
+    padding:8%; 
+}
+
+.ModalAlert{
+    max-width: 30%;
+    width:30%;
+    background: white;    
+    border-radius: 10px;
+    box-shadow: 0 0 10 px rgba(0,0,0, .4);
+    text-align: center;
+}
+
+.check{
+  padding: 1em;
+  padding-bottom: 1em;
+  text-align: center;
+  color:green;
+}
+
+.warning{
+padding: 1em;
+  padding-bottom: 1em;
+  text-align: center;
+  color:orange;
+}
+
+.Scroll {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;    
+}
+
+.select {
+    width: 93%;
+    
+}
+
+.ModalInfoEmail{
+    max-width: 700px;
+    width:100%;    
+    background: white;    
+    border-radius: 20px;
+    box-shadow: 0 0 10 px rgba(0,0,0, .4);  
+    margin: 2% auto;
+}
+
+.centrarTabla{
+	text-align: center;
+
+}
+
+.centrarDiv{
+	width: 100%;
+	
+}
+
+.trColor1{
+	background-color:#C6C4C4;
+}
+
+.trColor2{
+	background-color:#DBD8D8;
+}
+
+.trColor3{
+	background-color:#F0EDED;
+}
+
+.disablelinks {
+    pointer-events: none !important;
+    cursor: default;
+}
+
+.tooltip-inner {
+  background-color: #EFFF00 !important;
+  /*!important is not necessary if you place custom.css at the end of your css calls. For the purpose of this demo, it seems to be required in SO snippet*/
+  color: #000;
+}
+
+.tooltip.top .tooltip-arrow {
+  border-top-color: #00acd6;
+}
+
+.tooltip.right .tooltip-arrow {
+  border-right-color: #00acd6;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: #00acd6;
+}
+
+.tooltip.left .tooltip-arrow {
+  border-left-color: #00acd6;
+}
+
+.tooltip .tooltip-arrow {border-top: 5px solid red !important;}
+
+.colorSpan{
+  color:red;
+}
+
+.warning_{
+  color:orange;
+}
+
+.borderColorFecha{
+  border-top: 1px solid #f86c6b;
+  border-right: 1px solid #f86c6b;
+  border-bottom: 1px solid #f86c6b;
+  border-left: 1px solid #f86c6b;
+  width: 45%;
+}
+
+.divFlexRight{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.labelFlexRight{
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.selectBuscarProductos {
+    width: 90%;
+    
+}
+
+/*PARA LOS TAGS INPUT*/
+
+.react-tagsinputMy {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  overflow: hidden;
+  padding-left: 5px;
+  padding-top: 5px;
+  border-radius: 0.25rem;
+}
+
+.react-tagsinputMy:focus {
+    color: #20a8d8;
+    background-color: #fff;
+    border-color: #20a8d8;
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(32, 168, 216, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(32, 168, 216, 0.25);
+}
+
+.react-tagsinput-tagMy {
+  background-color: #20a8d8;
+  border-radius: 2px;
+  border: 1px solid #20a8d8;
+  color: #ffffff;
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  padding: 5px;
+}
+
+.react-tagsinput-removeMy {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.react-tagsinput-tagMy a::before {
+  content: " ×";
+}
+
+.react-tagsinput-inputMy {
+  background: transparent;
+  border: 0;
+  color: #777;
+  font-family: sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-bottom: 6px;
+  margin-top: 1px;
+  outline: none;
+  padding: 5px;
+  width: 80px;
+}
+
+/*PARA LOS TAGS INPUT*/
+
+.flex {
+  display: flex;
+}
+
+.inner-flex {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: auto;
+  margin-top: auto;
+}
+

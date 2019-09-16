@@ -6,11 +6,10 @@ import {
   PopoverBody,
   Table, 
 } from 'reactstrap';
-import classnames from 'classnames';
 import './style.css'
 import { datosConexion } from './Conexion.js'
 import axios from 'axios';
-import {FaTwitter, FaInstagram, FaFacebook, FaExternalLinkAlt, FaSearch, FaUserEdit, FaExclamationCircle,FaMinusCircle, FaCheck, FaCheckCircle, FaPlusCircle, FaSearchPlus, FaSearchMinus, FaSearchDollar} from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 
 class PopoverItem extends React.Component {
   constructor(props) {
@@ -41,11 +40,6 @@ class PopoverItem extends React.Component {
     
     const apiRolesPermisosValidateEmailUserNoMaster = this.state.conexion+"RolesPermisosValidateEmailUserNoMaster";
     const token = window.localStorage.getItem('id_token');
-    const datos={
-      headers:
-      {'access-token' : token }
-    }
-
     axios({
         method: 'post',
         url: apiRolesPermisosValidateEmailUserNoMaster,
