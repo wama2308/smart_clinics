@@ -28,12 +28,9 @@ class TablaSuplies extends Component {
   }
 
   searchData = (event) => {
-    if (this.props.option === 3) {
-      this.props.queryOneBelongingFunction(event, this.props.option)
-    } else {
+    if (this.props.option === 1) {
       this.props.queryOneBelongingFunction(event, this.props.option)
     }
-
   }
 
   render() {
@@ -67,32 +64,17 @@ class TablaSuplies extends Component {
                   < th > Cantidad</th>
                 </tr>
               </thead>
-              <tbody>
-                {this.props.supplies ? this.props.supplies.map((list, key) => {
-                  return (
-                    <tr key={key}>
-                      <td>{list.name}</td>
-                      <td>{list.code}</td>
-                      <td>{list.model}</td>
-                      <td>{list.year}</td>
-                      <td>{list.quantity}</td>
+              {this.props.option !== 1 ?
+                <tbody>
+                  {this.props.supplies ? this.props.supplies.map((list, key) => {
+                    return (
+                      <tr key={key}>
+                        <td>{list.name}</td>
+                        <td>{list.code}</td>
+                        <td>{list.model}</td>
+                        <td>{list.year}</td>
+                        <td>{list.quantity}</td>
 
-                      <td>
-                        <div>
-                          <Input
-                            disabled={this.props.disabled}
-                            name="hasta"
-                            id="hasta"
-                            onKeyUp={this.handlekeyHabitaciones}
-                            onChange={(event) => this.handleChange(event, list._id)}
-                            value={list.cantidad}
-                            type="number"
-                            placeholder="Nro Habitaciones"
-                          />
-                        </div>
-                      </td>
-
-                      {this.props.option === 4 &&
                         <td>
                           <div>
                             <Input
@@ -107,12 +89,75 @@ class TablaSuplies extends Component {
                             />
                           </div>
                         </td>
-                      }
-                    </tr>
-                  )
-                }) : null
-                }
-              </tbody>
+
+                        {this.props.option === 4 &&
+                          <td>
+                            <div>
+                              <Input
+                                disabled={this.props.disabled}
+                                name="hasta"
+                                id="hasta"
+                                onKeyUp={this.handlekeyHabitaciones}
+                                onChange={(event) => this.handleChange(event, list._id)}
+                                value={list.cantidad}
+                                type="number"
+                                placeholder="Nro Habitaciones"
+                              />
+                            </div>
+                          </td>
+                        }
+                      </tr>
+                    )
+                  }) : null
+                  }
+                </tbody> :
+                <tbody>
+                  {this.props.dataAccept ? this.props.dataAccept.map((list, key) => {
+                    return (
+                      <tr key={key}>
+                        <td>{list.name}</td>
+                        <td>{list.code}</td>
+                        <td>{list.model}</td>
+                        <td>{list.year}</td>
+                        <td>{list.quantity}</td>
+
+                        <td>
+                          <div>
+                            <Input
+                              disabled={this.props.disabled}
+                              name="hasta"
+                              id="hasta"
+                              onKeyUp={this.handlekeyHabitaciones}
+                              onChange={(event) => this.handleChange(event, list._id)}
+                              value={list.cantidad}
+                              type="number"
+                              placeholder="Nro Habitaciones"
+                            />
+                          </div>
+                        </td>
+
+                        {this.props.option === 4 &&
+                          <td>
+                            <div>
+                              <Input
+                                disabled={this.props.disabled}
+                                name="hasta"
+                                id="hasta"
+                                onKeyUp={this.handlekeyHabitaciones}
+                                onChange={(event) => this.handleChange(event, list._id)}
+                                value={list.cantidad}
+                                type="number"
+                                placeholder="Nro Habitaciones"
+                              />
+                            </div>
+                          </td>
+                        }
+                      </tr>
+                    )
+                  }) : null
+                  }
+                </tbody>
+              }
             </Table>
           </div>
         </div>

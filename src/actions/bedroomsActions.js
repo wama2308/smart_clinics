@@ -55,6 +55,8 @@ export const queryOneBedroomsFunction = (data) => dispatch => {
 }
 
 export const createBedroomsFunction = (data, callback) => dispatch => {
+  console.log(data);
+  
   getDataToken()
     .then(datos => {
       axios({

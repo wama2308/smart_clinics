@@ -113,9 +113,11 @@ class ModalBedrooms extends Component {
       divBedroomsSelect = "borderColor";
     }
 
-    if (this.state.arrayConsultingRoom === null || this.state.arrayConsultingRoomSelect.length === 0) {
-      divConsultingRoomSelect = "¡Seleccione el Tipo de Habitaciones!";
-      divConsultingRoomSelectError = "borderColor";
+    if (this.state.arrayBedroomsTypeSelect.label === "Oficina") {
+      if (this.state.arrayConsultingRoom === null || this.state.arrayConsultingRoomSelect.length === 0) {
+        divConsultingRoomSelect = "¡Seleccione el Tipo de Habitaciones!";
+        divConsultingRoomSelectError = "borderColor";
+      }
     }
 
     if (this.props.option === 1 && this.state.check === true) {
@@ -129,10 +131,12 @@ class ModalBedrooms extends Component {
       divBedroomsStatusSelectError = "¡Seleccione el Estatus!";
       divBedroomsStatusSelect = "borderColor";
     }
+    if (this.state.check === false) {
+      if (this.state.nombre === "") {
 
-    if (this.state.nombre === "") {
-      nombreError = "¡Ingrese el Nombre!";
-      nombreInvalid = true;
+        nombreError = "¡Ingrese el Nombre!";
+        nombreInvalid = true;
+      }
     }
 
     if (this.state.abreviatura === "") {
@@ -261,68 +265,16 @@ class ModalBedrooms extends Component {
     if (isValid) {
       if (this.props.option === 1) {
         this.props.createBedroomsFunction({
+          input: this.state.check,
           quantity_rooms: this.state.habitaciones,
-          type: this.state.arrayBedroomsTypeSelect.value
-        }, () => {
-          this.closeModal();
-          this.setState({
-            arrayBedroomsTypeSelect: null,
-            divBedroomsSelect: '',
-            divBedroomsSelectError: '',
-            arrayCentroMedico: [],
-
-            arrayBedroomsStatusSelect: null,
-            divBedroomsStatusSelect: '',
-            divBedroomsStatusSelectError: '',
-            arrayBedroomsStatus: [],
-
-            habitaciones: 0,
-            habitacionesError: '',
-            habitacionesInvalid: false,
-            loading: "show"
-          })
-        })
-      } else if (this.props.option === 4) {
-        const bedroomsArray = this.filter(this.props.data)
-        const supplies = this.arrayClean(this.props.bedrooms.dataAccept)
-
-        const prueba = this.arraySupplies(this.props.bedrooms.dataAccept);
-
-
-        this.props.editBedroomsFunction({
-          bedrooms: bedroomsArray,
-          type: this.state.arrayBedroomsTypeSelect.value,
+          name: this.state.nombre,
           status: this.state.arrayBedroomsStatusSelect.value,
-          supplies: prueba
-        }, () => {
-          this.props.deleteDataSupplies()
-          this.closeModal();
-          this.setState({
-            arrayBedroomsTypeSelect: null,
-            divBedroomsSelect: '',
-            divBedroomsSelectError: '',
-            arrayCentroMedico: [],
-
-            arrayBedroomsStatusSelect: null,
-            divBedroomsStatusSelect: '',
-            divBedroomsStatusSelectError: '',
-            arrayBedroomsStatus: [],
-
-            habitaciones: 0,
-            habitacionesError: '',
-            habitacionesInvalid: false,
-            loading: "show"
-          })
-        })
-      } else if (this.props.option === 3) {
-        const bedroomsArray = this.filter(this.props.data)
-        const prueba = this.props.bedrooms.bedroomsOne.supplies ? this.arraySupplies(this.props.bedrooms.bedroomsOne.supplies) : []
-
-        this.props.editOneBedroomsFunction({
           type: this.state.arrayBedroomsTypeSelect.value,
-          status: this.state.arrayBedroomsStatusSelect.value,
-          supplies: prueba,
-          _id: this.props.id
+          type_office: this.state.arrayConsultingRoomSelect,
+          floor: this.state.piso,
+          abbreviation: this.state.abreviatura,
+          photos: this.state.foto,
+          belongings: this.props.bedrooms.dataAccept
         }, () => {
           this.closeModal();
           this.setState({
@@ -343,8 +295,69 @@ class ModalBedrooms extends Component {
           })
         })
       }
+    } else if (this.props.option === 4) {
+      const bedroomsArray = this.filter(this.props.data)
+      const supplies = this.arrayClean(this.props.bedrooms.dataAccept)
+
+      const prueba = this.arraySupplies(this.props.bedrooms.dataAccept);
+
+
+      this.props.editBedroomsFunction({
+        bedrooms: bedroomsArray,
+        type: this.state.arrayBedroomsTypeSelect.value,
+        status: this.state.arrayBedroomsStatusSelect.value,
+        supplies: prueba
+      }, () => {
+        this.props.deleteDataSupplies()
+        this.closeModal();
+        this.setState({
+          arrayBedroomsTypeSelect: null,
+          divBedroomsSelect: '',
+          divBedroomsSelectError: '',
+          arrayCentroMedico: [],
+
+          arrayBedroomsStatusSelect: null,
+          divBedroomsStatusSelect: '',
+          divBedroomsStatusSelectError: '',
+          arrayBedroomsStatus: [],
+
+          habitaciones: 0,
+          habitacionesError: '',
+          habitacionesInvalid: false,
+          loading: "show"
+        })
+      })
+    } else if (this.props.option === 3) {
+      const bedroomsArray = this.filter(this.props.data)
+      const prueba = this.props.bedrooms.bedroomsOne.supplies ? this.arraySupplies(this.props.bedrooms.bedroomsOne.supplies) : []
+
+      this.props.editOneBedroomsFunction({
+        type: this.state.arrayBedroomsTypeSelect.value,
+        status: this.state.arrayBedroomsStatusSelect.value,
+        supplies: prueba,
+        _id: this.props.id
+      }, () => {
+        this.closeModal();
+        this.setState({
+          arrayBedroomsTypeSelect: null,
+          divBedroomsSelect: '',
+          divBedroomsSelectError: '',
+          arrayCentroMedico: [],
+
+          arrayBedroomsStatusSelect: null,
+          divBedroomsStatusSelect: '',
+          divBedroomsStatusSelectError: '',
+          arrayBedroomsStatus: [],
+
+          habitaciones: 0,
+          habitacionesError: '',
+          habitacionesInvalid: false,
+          loading: "show"
+        })
+      })
     }
   }
+
 
   arrayClean = (data) => {
     const clean = []
@@ -464,12 +477,14 @@ class ModalBedrooms extends Component {
   handleNombre = e => {
     const { value, name } = e.target
     this.setState({
-      abreviatura: value
+      nombre: value
     })
   }
 
   render() {
     const disable = this.disabled()
+    console.log(this.props);
+
     return (
       <span>
         <Modal
@@ -639,23 +654,25 @@ class ModalBedrooms extends Component {
                       </div>
                     </FormGroup>
 
-                    <FormGroup className="top form-group col-sm-5">
-                      <Label for="abreviatura">Nombre</Label>
-                      <Input
-                        disabled={this.props.disabled}
-                        invalid={this.state.nombreInvalid}
-                        name="nombre"
-                        id="nombre"
-                        onKeyUp={this.handlekeyHabitaciones}
-                        onChange={this.handleNombre}
-                        value={this.state.nombre}
-                        type="text"
-                        placeholder="nombre"
-                      />
-                      <div className="errorSelect">
-                        {this.state.nombreError}
-                      </div>
-                    </FormGroup>
+                    {this.state.check === false &&
+                      <FormGroup className="top form-group col-sm-5">
+                        <Label for="abreviatura">Nombre</Label>
+                        <Input
+                          disabled={this.props.disabled}
+                          invalid={this.state.nombreInvalid}
+                          name="nombre"
+                          id="nombre"
+                          onKeyUp={this.handlekeyHabitaciones}
+                          onChange={this.handleNombre}
+                          value={this.state.nombre}
+                          type="text"
+                          placeholder="nombre"
+                        />
+                        <div className="errorSelect">
+                          {this.state.nombreError}
+                        </div>
+                      </FormGroup>
+                    }
 
                     {this.props.option === 4 &&
                       <FormGroup className="top form-group col-sm-3">
@@ -712,6 +729,7 @@ class ModalBedrooms extends Component {
                       oneSuppliesSet={this.props.oneSuppliesSet}
                       disabled={this.props.disabled}
                       queryOneBelongingFunction={this.props.queryOneBelongingFunction}
+                      dataAccept={this.props.bedrooms.dataAccept}
                     />
                   }
                 </form>

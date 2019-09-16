@@ -96,33 +96,7 @@ class ListBedrooms extends Component {
 
 
   render() {
-    const obj = [
-      {
-        number: 1,
-        type: "consultorio",
-        status: "Activo",
-        _id: "hfkshg5g4684684"
-      },
-      {
-        number: 2,
-        type: "consultorio",
-        status: "Activo",
-        _id: "h98r989f9ecwe"
-      },
-      {
-        number: 3,
-        type: "consultorio",
-        status: "Activo",
-        _id: "jgjgju7g87g88893"
-      },
-      {
-        number: 4,
-        type: "consultorio",
-        status: "Activo",
-        _id: "5585d5d5dddecgrft"
-      }
-    ]
-
+    
     return (
       <div>
         {
@@ -175,7 +149,7 @@ class ListBedrooms extends Component {
                 </tr>
               </thead>
               <tbody>
-                {obj ? obj.map((list, key) => {
+                {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
                   return (
                     <tr key={key}>
                       <td>{list.number}</td>

@@ -22,7 +22,7 @@ const loadOneBedroons = (state, payload) => {
     ...payload.loadOneTurnos,
     supplies: array
   }
-  
+
   return Map(estado);
 }
 
@@ -46,7 +46,7 @@ const acceptData = (state, payload) => {
 const setSuppliesData = (state, payload) => {
   let estado = state.toJS();
 
-  if (payload.option === 4) {
+  if (payload.option === 1) {
     estado.dataAccept.map(data => {
       if (payload.data >= 0 && payload.data <= data.quantity) {
         if (data._id === payload.id) {
@@ -105,8 +105,8 @@ const queryBelongingFunction = (state, payload) => {
       ...payload,
       cantidad: 0
     })
-  } else {
-    estado.bedroomsOne.supplies.push({
+  } else if (payload.option === 1) {
+    estado.dataAccept.push({
       ...payload,
       cantidad: 0
     })
