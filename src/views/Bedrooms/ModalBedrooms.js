@@ -6,6 +6,8 @@ import { CircularProgress } from '@material-ui/core/CircularProgress';
 import { createBedroomsFunction, searchBelogingFunction, actionAcceptFunction, setDatasuppies, deleteDataSupplies, editOneBedroomsFunction, dataSuppliesSet, oneSuppliesSet, editBedroomsFunction, queryOneBelongingFunction } from '../../actions/bedroomsActions';
 import TablaSuplies from './TablaSuplies';
 import { data } from '../Ventas/mockData';
+import Switch from '@material-ui/core/Switch';
+import { FormControlLabel } from '@material-ui/core';
 
 class ModalBedrooms extends Component {
 
@@ -17,10 +19,15 @@ class ModalBedrooms extends Component {
       divBedroomsSelectError: '',
       arrayBedrooms: [],
 
-      arrayBedroomsStatusSelect: null,
-      divBedroomsStatusSelect: '',
-      divBedroomsStatusSelectError: '',
-      arrayBedroomsStatus: [],
+      arrayConsultingRoomSelect: null,
+      divConsultingRoomSelect: '',
+      divConsultingRoomSelectError: '',
+      arrayConsultingRoom: [],
+
+      arrayBedroomsTypeSelect: null,
+      divBedroomsSelect: '',
+      divBedroomsSelectError: '',
+      arrayBedrooms: [],
 
       habitacionesError: '',
       habitacionesInvalid: false,
@@ -28,15 +35,33 @@ class ModalBedrooms extends Component {
       habitaciones: 0,
 
       foto: null,
+      fotoError: '',
+      fotoInvalid: false,
+
       supplies: null,
 
-      desde: this.props.data[0].number,
+      desde: 0 /*this.props.data[0].number*/,
       desdeError: '',
       desdeInvalid: false,
 
-      hasta: this.props.data[0].number + 1,
+      hasta: 0  /*this.props.data[0].number + 1*/,
       hastaError: '',
       hastaInvalid: false,
+
+      check: false,
+
+      piso: 0,
+      pisoError: '',
+      pisoInvalid: false,
+
+      abreviatura: '',
+      abreviaturaError: '',
+      abreviaturaInvalid: false,
+
+      nombre: '',
+      nombreError: '',
+      nombreInvalid: false,
+
     }
   }
 
@@ -71,12 +96,29 @@ class ModalBedrooms extends Component {
     let divBedroomsStatusSelect = ''
     let divBedroomsStatusSelectError = ''
 
+    let nombreError = ""
+    let nombreInvalid = false
+
+    let abreviaturaError = ""
+    let abreviaturaInvalid = false
+
+    let fotoError = ""
+    let fotoInvalid = false
+
+    let divConsultingRoomSelect = ""
+    let divConsultingRoomSelectError = ''
 
     if (this.state.arrayBedroomsTypeSelect === null || this.state.arrayBedroomsTypeSelect.length === 0) {
       divBedroomsSelectError = "¡Seleccione el Tipo de Habitaciones!";
       divBedroomsSelect = "borderColor";
     }
-    if (this.props.option === 1) {
+
+    if (this.state.arrayConsultingRoom === null || this.state.arrayConsultingRoomSelect.length === 0) {
+      divConsultingRoomSelect = "¡Seleccione el Tipo de Habitaciones!";
+      divConsultingRoomSelectError = "borderColor";
+    }
+
+    if (this.props.option === 1 && this.state.check === true) {
       if (this.state.habitaciones === 0 || this.state.habitaciones < 0) {
         habitacionesError = "¡Ingrese la cantidad de habitaciones!";
         habitacionesInvalid = true;
@@ -88,14 +130,39 @@ class ModalBedrooms extends Component {
       divBedroomsStatusSelect = "borderColor";
     }
 
-    if (divBedroomsSelectError || habitacionesError || divBedroomsStatusSelectError) {
+    if (this.state.nombre === "") {
+      nombreError = "¡Ingrese el Nombre!";
+      nombreInvalid = true;
+    }
+
+    if (this.state.abreviatura === "") {
+      abreviaturaError = "¡Ingrese la Abreviatura!"
+      abreviaturaInvalid = true
+    }
+
+    if (this.state.foto === "" || this.state.foto === null) {
+      if (this.state.check === false) {
+        fotoError = "¡Ingrese la Foto!";
+        fotoInvalid = true;
+      }
+    }
+
+    if (divBedroomsSelectError || habitacionesError || divBedroomsStatusSelectError || nombreError || abreviaturaError || fotoError || divConsultingRoomSelectError) {
       this.setState({
         divBedroomsSelectError,
         habitacionesError,
         habitacionesInvalid,
         divBedroomsSelect,
         divBedroomsStatusSelectError,
-        divBedroomsStatusSelect
+        divBedroomsStatusSelect,
+        nombreError,
+        nombreInvalid,
+        abreviaturaError,
+        abreviaturaInvalid,
+        fotoError,
+        fotoInvalid,
+        divConsultingRoomSelect,
+        divConsultingRoomSelectError
       });
       return false;
     }
@@ -120,20 +187,24 @@ class ModalBedrooms extends Component {
 
   handleDesde = e => {
     const { name, value } = e.target;
-    if (value >= this.props.data[0].number && value <= this.props.data.length - 1) {
-      this.setState({
-        desde: parseInt(value),
-        hasta: parseInt(value) + 1
-      });
+    if (this.props.data.length > 0) {
+      if (value >= this.props.data[0].number && value <= this.props.data.length - 1) {
+        this.setState({
+          desde: parseInt(value),
+          hasta: parseInt(value) + 1
+        });
+      }
     }
   }
 
   handleHasta = e => {
     const { name, value } = e.target;
-    if (value > this.state.desde && value <= this.props.data.length) {
-      this.setState({
-        hasta: parseInt(value)
-      });
+    if (this.props.data.length > 0) {
+      if (value > this.state.desde && value <= this.props.data.length) {
+        this.setState({
+          hasta: parseInt(value)
+        });
+      }
     }
   }
 
@@ -150,6 +221,14 @@ class ModalBedrooms extends Component {
       arrayBedroomsStatusSelect,
       divBedroomsStatusSelect: '',
       divBedroomsStatusSelectError: '',
+    })
+  }
+
+  handleConsulting = arrayConsultingRoomSelect => {
+    this.setState({
+      arrayConsultingRoomSelect,
+      divConsultingRoomSelect: '',
+      divConsultingRoomSelectError: '',
     })
   }
 
@@ -313,17 +392,20 @@ class ModalBedrooms extends Component {
   }
 
   filter = (data) => {
-    const date = data.filter(data => {
-      return data.number >= this.state.desde && data.number <= this.state.hasta
-    })
+    if (data.length != 0) {
+      const date = data.filter(data => {
+        return data.number >= this.state.desde && data.number <= this.state.hasta
+      })
+      const arrayClean = []
 
-    const arrayClean = []
+      date.map(datos => {
+        arrayClean.push(datos._id)
+      })
 
-    date.map(datos => {
-      arrayClean.push(datos._id)
-    })
-
-    return arrayClean
+      return arrayClean
+    } else {
+      return []
+    }
   }
 
   componentWillReceiveProps(props) {
@@ -357,12 +439,37 @@ class ModalBedrooms extends Component {
     }
   }
 
+  handleChangeSwitch = name => event => {
+    this.setState({
+      [name]: event.target.checked
+    });
+  }
+
+  handlePiso = e => {
+    const { name, value } = e.target;
+    if (value >= 0) {
+      this.setState({
+        [name]: parseInt(value)
+      });
+    }
+  }
+
+  handleabreviatura = e => {
+    const { value, name } = e.target
+    this.setState({
+      abreviatura: value
+    })
+  }
+
+  handleNombre = e => {
+    const { value, name } = e.target
+    this.setState({
+      abreviatura: value
+    })
+  }
 
   render() {
-
     const disable = this.disabled()
-
-
     return (
       <span>
         <Modal
@@ -377,7 +484,22 @@ class ModalBedrooms extends Component {
               <ModalBody className="Scroll">
                 <form onSubmit={this.handleSave.bind(this)} >
                   <div className="row">
-                    {this.props.option !== 4 &&
+                    {this.props.option === 1 &&
+                      <FormGroup className="top form-group col-sm-6">
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              color="primary"
+                              checked={this.state.check}
+                              onChange={this.handleChangeSwitch('check')}
+                              value="check"
+                            />
+                          }
+                          label="Masivo"
+                        />
+                      </FormGroup>
+                    }
+                    {this.props.option !== 4 && this.state.check === true &&
                       <FormGroup className="top form-group col-sm-6">
                         {this.props.option === 1 && <Label for="descripcion">Numero de Habitaciones</Label>}
                         {this.props.option !== 1 && <Label for="descripcion">Numero de Habitacion</Label>}
@@ -415,26 +537,48 @@ class ModalBedrooms extends Component {
                         {this.state.divBedroomsSelectError}
                       </div>
                     </FormGroup>
-                    {this.props.option !== 1 &&
+
+                    {this.state.arrayBedroomsTypeSelect !== null &&
+                      this.state.arrayBedroomsTypeSelect.label === "Oficina" &&
+                      this.state.arrayBedroomsTypeSelect.value === "5d7facaa3beda80db3462513" &&
                       <FormGroup className="top form-group col-sm-6">
-                        <Label for="CentroMedico">Estatus</Label>
+                        <Label for="especialidad">Especialidad</Label>
                         <div className={this.state.divBedroomsSelect}>
                           <Select
                             isSearchable="true"
                             isDisabled={this.props.disabled}
-                            name="CentroMedico"
-                            value={this.state.arrayBedroomsStatusSelect}
-                            onChange={this.handleStatusBedrooms}
-                            options={this.props.status_room}
-                            id="CentroMedico"
+                            name="especialidad"
+                            value={this.state.arrayConsultingRoomSelect}
+                            onChange={this.handleConsulting}
+                            options={this.props.type_consulting_room}
+                            id="especialidad"
                           />
                         </div>
                         <div className="errorSelect">
-                          {this.state.divBedroomsSelectError}
+                          {this.state.divConsultingRoomSelectError}
                         </div>
                       </FormGroup>
                     }
-                    {/* {this.props.option !== 4 &&
+
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="CentroMedico">Estatus</Label>
+                      <div className={this.state.divBedroomsSelect}>
+                        <Select
+                          isSearchable="true"
+                          isDisabled={this.props.disabled}
+                          name="CentroMedico"
+                          value={this.state.arrayBedroomsStatusSelect}
+                          onChange={this.handleStatusBedrooms}
+                          options={this.props.status_room}
+                          id="CentroMedico"
+                        />
+                      </div>
+                      <div className="errorSelect">
+                        {this.state.divBedroomsSelectError}
+                      </div>
+                    </FormGroup>
+
+                    {this.state.check === false && this.props.option !== 4 &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="foto">Foto:</Label>
                         <InputGroup>
@@ -455,7 +599,64 @@ class ModalBedrooms extends Component {
                           </InputGroupAddon>
                         </InputGroup>
                       </FormGroup>
-                    } */}
+                    }
+
+                    <FormGroup className="top form-group col-sm-5">
+                      <Label for="piso">Piso</Label>
+                      <Input
+                        disabled={this.props.disabled}
+                        //invalid={this.state.habitacionesInvalid}
+                        name="piso"
+                        id="piso"
+                        // onKeyUp={this.handlekeyHabitaciones}
+                        onChange={this.handleChange}
+                        value={this.state.piso}
+                        type="number"
+                        placeholder="Nro Habitaciones"
+                        min={0}
+                      />
+                      <div className="errorSelect">
+                        {/* {this.state.habitacionesError} */}
+                      </div>
+                    </FormGroup>
+
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="abreviatura">Abreviatura</Label>
+                      <Input
+                        disabled={this.props.disabled}
+                        invalid={this.state.abreviaturaInvalid}
+                        name="abreviatura"
+                        id="abreviatura"
+                        onKeyUp={this.handlekeyHabitaciones}
+                        onChange={this.handleabreviatura}
+                        value={this.state.abreviatura}
+                        type="text"
+                        placeholder="Abreviatura"
+                        maxLength={3}
+                      />
+                      <div className="errorSelect">
+                        {this.state.abreviaturaError}
+                      </div>
+                    </FormGroup>
+
+                    <FormGroup className="top form-group col-sm-5">
+                      <Label for="abreviatura">Nombre</Label>
+                      <Input
+                        disabled={this.props.disabled}
+                        invalid={this.state.nombreInvalid}
+                        name="nombre"
+                        id="nombre"
+                        onKeyUp={this.handlekeyHabitaciones}
+                        onChange={this.handleNombre}
+                        value={this.state.nombre}
+                        type="text"
+                        placeholder="nombre"
+                      />
+                      <div className="errorSelect">
+                        {this.state.nombreError}
+                      </div>
+                    </FormGroup>
+
                     {this.props.option === 4 &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="desde">Rango</Label>
@@ -476,6 +677,7 @@ class ModalBedrooms extends Component {
                         </div>
                       </FormGroup>
                     }
+
                     {this.props.option === 4 &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="hasta">Rango</Label>
@@ -497,9 +699,8 @@ class ModalBedrooms extends Component {
                         </div>
                       </FormGroup>
                     }
-
                   </div>
-                  {this.props.modal === true && this.props.option !== 1 &&
+                  {this.props.modal === true &&
                     <TablaSuplies
                       supplies={this.state.supplies}
                       searchBelogingFunction={this.props.searchBelogingFunction}

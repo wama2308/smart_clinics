@@ -60,10 +60,10 @@ class TablaSuplies extends Component {
               <thead className="thead-light">
                 <tr>
                   <th >Nombre</th>
-                  {this.props.option === 4 && <th >Code</th>}
-                  {this.props.option === 4 && <th >Modelo</th>}
-                  {this.props.option === 4 && <th >Ano</th>}
-                  {this.props.option === 4 && <th >Cantidad Disponible</th>}
+                  <th >Code</th>
+                  <th >Modelo</th>
+                  <th >Ano</th>
+                  <th >Cantidad Disponible</th>
                   < th > Cantidad</th>
                 </tr>
               </thead>
@@ -72,27 +72,26 @@ class TablaSuplies extends Component {
                   return (
                     <tr key={key}>
                       <td>{list.name}</td>
-                      {this.props.option === 4 && <td>{list.code}</td>}
-                      {this.props.option === 4 && <td>{list.model}</td>}
-                      {this.props.option === 4 && <td>{list.year}</td>}
-                      {this.props.option === 4 ?
-                        <td>{list.quantity}</td>
-                        :
-                        <td>
-                          <div>
-                            <Input
-                              disabled={this.props.disabled}
-                              name="hasta"
-                              id="hasta"
-                              onKeyUp={this.handlekeyHabitaciones}
-                              onChange={(event) => this.handleChange(event, list._id)}
-                              value={list.cantidad}
-                              type="number"
-                              placeholder="Nro Habitaciones"
-                            />
-                          </div>
-                        </td>
-                      }
+                      <td>{list.code}</td>
+                      <td>{list.model}</td>
+                      <td>{list.year}</td>
+                      <td>{list.quantity}</td>
+
+                      <td>
+                        <div>
+                          <Input
+                            disabled={this.props.disabled}
+                            name="hasta"
+                            id="hasta"
+                            onKeyUp={this.handlekeyHabitaciones}
+                            onChange={(event) => this.handleChange(event, list._id)}
+                            value={list.cantidad}
+                            type="number"
+                            placeholder="Nro Habitaciones"
+                          />
+                        </div>
+                      </td>
+
                       {this.props.option === 4 &&
                         <td>
                           <div>

@@ -13,6 +13,7 @@ const enabledBedrooms = `${url}/api/enabledBedrooms`
 const editBedrooms = `${url}/api/editBedrooms`
 const queryOneBelonging = `${url}/api/queryOneBelonging`
 
+ /*--------------------------API-------------------------------*/
 export const loadBedroomsFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
@@ -73,83 +74,6 @@ export const createBedroomsFunction = (data, callback) => dispatch => {
     })
 }
 
-export const disabledBedroomsFuntion = (data) => dispatch => {
-  getDataToken()
-    .then(datos => {
-      axios({
-        method: "post",
-        url: disabledBedrooms,
-        data: {
-          _id: data
-        },
-        headers: datos.headers
-      })
-        .then(() => {
-          dispatch(openSnackbars("success", "Operacion Exitosa"));
-        })
-        .catch(error => {
-          dispatch(openSnackbars("error", "Error borrando la habitacion"));
-          console.log("error");
-        });
-    })
-}
-
-export const searchBelogingFunction = (data) => dispatch => {
-  dispatch({
-    type: "SEARCH_DATA",
-    payload: data
-  });
-
-  getDataToken()
-    .then(datos => {
-      axios({
-        method: "post",
-        url: searchBeloging,
-        data: {
-          value: data
-        },
-        headers: datos.headers
-      }).then(res => {
-        dispatch({
-          type: "SEARCH_SUPPLIES",
-          payload: res.data
-        })
-      })
-    })
-}
-
-export const actionAcceptFunction = (data) => dispatch => {
-  dispatch({
-    type: "SEARCH_DATA",
-    payload: ""
-  })
-
-  dispatch({
-    type: "DATA_SUPPLIES",
-    payload: data
-  })
-}
-
-export const setDatasuppies = (data, id, option) => dispatch => {
-  dispatch({
-    type: "SET_DATA_SUPPLIES",
-    payload: {
-      data: data,
-      id: id,
-      option : option
-    }
-  })
-}
-
-export const deleteDataSupplies = () => dispatch => {
-  dispatch({
-    type: "DELETE_DATA_SUPPLIES",
-    payload: {
-      data: [],
-    }
-  })
-}
-
 export const editOneBedroomsFunction = (data, callback) => dispatch => {
   getDataToken()
     .then(datos => {
@@ -166,28 +90,6 @@ export const editOneBedroomsFunction = (data, callback) => dispatch => {
       dispatch(openSnackbars("error", "Error guardando el Reclamo"));
       console.log("error");
     })
-}
-
-export const dataSuppliesSet = (data, id) => dispatch => {
-  dispatch({
-    type: "SET_ONE_SUPPLIES",
-    payload: {
-      data: data,
-      id: id
-    }
-  })
-}
-
-export const oneSuppliesSet = (data) => dispatch => {
-  dispatch({
-    type: "SEARCH_DATA",
-    payload: ""
-  })
-
-  dispatch({
-    type: "ONE_SUPPLIES_SET",
-    payload: data
-  })
 }
 
 export const enabledBedroomsFunction = (data) => dispatch => {
@@ -253,4 +155,105 @@ export const queryOneBelongingFunction = (data, option) => dispatch => {
         })
       })
     })
+}
+
+export const disabledBedroomsFuntion = (data) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: disabledBedrooms,
+        data: {
+          _id: data
+        },
+        headers: datos.headers
+      })
+        .then(() => {
+          dispatch(openSnackbars("success", "Operacion Exitosa"));
+        })
+        .catch(error => {
+          dispatch(openSnackbars("error", "Error borrando la habitacion"));
+          console.log("error");
+        });
+    })
+}
+/*-------------------------API-------------------------------------*/
+
+
+export const searchBelogingFunction = (data) => dispatch => {
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: data
+  });
+
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: searchBeloging,
+        data: {
+          value: data
+        },
+        headers: datos.headers
+      }).then(res => {
+        dispatch({
+          type: "SEARCH_SUPPLIES",
+          payload: res.data
+        })
+      })
+    })
+}
+
+export const actionAcceptFunction = (data) => dispatch => {
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: ""
+  })
+
+  dispatch({
+    type: "DATA_SUPPLIES",
+    payload: data
+  })
+}
+
+export const setDatasuppies = (data, id, option) => dispatch => {
+  dispatch({
+    type: "SET_DATA_SUPPLIES",
+    payload: {
+      data: data,
+      id: id,
+      option: option
+    }
+  })
+}
+
+export const deleteDataSupplies = () => dispatch => {
+  dispatch({
+    type: "DELETE_DATA_SUPPLIES",
+    payload: {
+      data: [],
+    }
+  })
+}
+
+export const dataSuppliesSet = (data, id) => dispatch => {
+  dispatch({
+    type: "SET_ONE_SUPPLIES",
+    payload: {
+      data: data,
+      id: id
+    }
+  })
+}
+
+export const oneSuppliesSet = (data) => dispatch => {
+  dispatch({
+    type: "SEARCH_DATA",
+    payload: ""
+  })
+
+  dispatch({
+    type: "ONE_SUPPLIES_SET",
+    payload: data
+  })
 }

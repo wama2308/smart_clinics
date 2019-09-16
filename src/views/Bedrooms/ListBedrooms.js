@@ -28,7 +28,7 @@ class ListBedrooms extends Component {
       rowsPerPage: 10
     }
   }
-  
+
   openModal = (option, id) => {
     if (option === 1) {
       this.setState({
@@ -94,8 +94,35 @@ class ListBedrooms extends Component {
     });
   }
 
- 
+
   render() {
+    const obj = [
+      {
+        number: 1,
+        type: "consultorio",
+        status: "Activo",
+        _id: "hfkshg5g4684684"
+      },
+      {
+        number: 2,
+        type: "consultorio",
+        status: "Activo",
+        _id: "h98r989f9ecwe"
+      },
+      {
+        number: 3,
+        type: "consultorio",
+        status: "Activo",
+        _id: "jgjgju7g87g88893"
+      },
+      {
+        number: 4,
+        type: "consultorio",
+        status: "Activo",
+        _id: "5585d5d5dddecgrft"
+      }
+    ]
+
     return (
       <div>
         {
@@ -112,6 +139,7 @@ class ListBedrooms extends Component {
             data={this.props.bedrooms}
             status_room={this.props.status_room}
             id={this.state.id}
+            type_consulting_room={this.props.type_consulting_room}
           />
         }
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
@@ -147,7 +175,7 @@ class ListBedrooms extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
+                {obj ? obj.map((list, key) => {
                   return (
                     <tr key={key}>
                       <td>{list.number}</td>

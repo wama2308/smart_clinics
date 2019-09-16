@@ -19,11 +19,8 @@ import Calendar from "./containers/CalendarContainer";
 import Dashboard from "./views/Dashboard";
 import ReclamosContainer from "./containers/ReclamosContainer";
 import TurnosContainer from "./containers/TurnosContainer";
-<<<<<<< HEAD
 import BedroomsContainer from "./containers/BedroomsContainer";
-=======
 import TransferContainer from "./containers/TransferContainer";
->>>>>>> dev
 
 function Loading() {
   return <div>Loading...</div>;
