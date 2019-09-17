@@ -266,9 +266,33 @@ class ModalTransferencias extends React.Component {
             [name]: event.target.checked
         });
         this.props.setSelectAllSwitchTransferencias(event.target.checked, this.props.option);
-    };    
+    };
 
     render() {
+        var found_internal = this.props.permitsTransfer.find(function (element) {
+            return element === "Create_request_internal";            
+        });
+        var found_external = this.props.permitsTransfer.find(function (element) {
+            return element === "Create_request_externall";            
+        });
+        let arrayOptions = [];
+        
+        if(this.props.transfer.selectTransfers){
+            if(found_internal && found_external){
+                arrayOptions = this.props.transfer.selectTransfers
+            }
+            if(found_internal && !found_external){
+                arrayOptions = this.props.transfer.selectTransfers.filter(
+                    selectTransfer => selectTransfer.value !== "5d1776e3b0d4a50b23939977"
+                );
+            }
+            if(!found_internal && found_external){
+                arrayOptions = this.props.transfer.selectTransfers.filter(
+                    selectTransfer => selectTransfer.value === "5d1776e3b0d4a50b23939977"
+                );
+            }
+        }
+        
         let label = '';
         let label_children = '';
         if (this.state.arrayTipoTransfer) {
@@ -301,7 +325,7 @@ class ModalTransferencias extends React.Component {
                                                         name="tipoTransfer"
                                                         value={this.state.arrayTipoTransfer}
                                                         onChange={this.handleChangeTipoTransfer}
-                                                        options={this.props.transfer.selectTransfers}
+                                                        options={arrayOptions}
                                                     />
                                                 </div>
                                                 <div className="errorSelect">{this.state.divTipoTransferError}</div>
@@ -369,7 +393,7 @@ class ModalTransferencias extends React.Component {
                                             confirm={this.props.confirm}
                                             alert={this.props.alert}
                                             divAviso={this.state.divAviso}
-                                        //cleanDivAviso = {this.cleanDivAviso}
+                                            //cleanDivAviso = {this.cleanDivAviso}
                                         />
                                     </form>
                                 </ModalBody>

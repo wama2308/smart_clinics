@@ -119,5 +119,12 @@ export const InitalState = {
     option:0,
     arrayOptionsShelfs: [],
     divAviso:'',
+    divAlmacen:'',
+    arrayAlmacen: null,
+    divAlmacenError: '',
+    divEstante:'',
+    arrayEstante: null,
+    arrayEstanteSelect: [],
+    divEstanteError: '',
     loading:'show',       
 }
