@@ -22,15 +22,11 @@ class TablaSuplies extends Component {
 
 
   handleChange = (event, id) => {
-
     this.props.setDatasuppies(parseInt(event.target.value), id, this.props.option)
-
   }
 
   searchData = (event) => {
-    if (this.props.option === 1) {
-      this.props.queryOneBelongingFunction(event, this.props.option)
-    }
+    this.props.queryOneBelongingFunction(event, this.props.option)
   }
 
   render() {
@@ -56,12 +52,11 @@ class TablaSuplies extends Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th >Nombre</th>
-                  <th >Code</th>
-                  <th >Modelo</th>
-                  <th >Ano</th>
-                  <th >Cantidad Disponible</th>
-                  < th > Cantidad</th>
+                  <th>Nombre</th>
+                  <th>Codigo</th>
+                  <th>Modelo</th>
+                  <th>Año</th>
+                  <th>Cantidad</th>
                 </tr>
               </thead>
               {this.props.option !== 1 ?
@@ -73,22 +68,23 @@ class TablaSuplies extends Component {
                         <td>{list.code}</td>
                         <td>{list.model}</td>
                         <td>{list.year}</td>
-                        <td>{list.quantity}</td>
 
-                        <td>
-                          <div>
-                            <Input
-                              disabled={this.props.disabled}
-                              name="hasta"
-                              id="hasta"
-                              onKeyUp={this.handlekeyHabitaciones}
-                              onChange={(event) => this.handleChange(event, list._id)}
-                              value={list.cantidad}
-                              type="number"
-                              placeholder="Nro Habitaciones"
-                            />
-                          </div>
-                        </td>
+                        {this.props.option !== 4 &&
+                          <td>
+                            <div>
+                              <Input
+                                disabled={this.props.disabled}
+                                name="hasta"
+                                id="hasta"
+                                onKeyUp={this.handlekeyHabitaciones}
+                                onChange={(event) => this.handleChange(event, list._id)}
+                                value={list.quantity_stock}
+                                type="number"
+                                placeholder="Cantidad"
+                              />
+                            </div>
+                          </td>
+                        }
 
                         {this.props.option === 4 &&
                           <td>
@@ -99,9 +95,9 @@ class TablaSuplies extends Component {
                                 id="hasta"
                                 onKeyUp={this.handlekeyHabitaciones}
                                 onChange={(event) => this.handleChange(event, list._id)}
-                                value={list.cantidad}
+                                value={list.quantity_stock}
                                 type="number"
-                                placeholder="Nro Habitaciones"
+                                placeholder="Cantidad"
                               />
                             </div>
                           </td>
@@ -119,7 +115,6 @@ class TablaSuplies extends Component {
                         <td>{list.code}</td>
                         <td>{list.model}</td>
                         <td>{list.year}</td>
-                        <td>{list.quantity}</td>
 
                         <td>
                           <div>
@@ -131,7 +126,7 @@ class TablaSuplies extends Component {
                               onChange={(event) => this.handleChange(event, list._id)}
                               value={list.cantidad}
                               type="number"
-                              placeholder="Nro Habitaciones"
+                              placeholder="Cantidad"
                             />
                           </div>
                         </td>
@@ -147,7 +142,7 @@ class TablaSuplies extends Component {
                                 onChange={(event) => this.handleChange(event, list._id)}
                                 value={list.cantidad}
                                 type="number"
-                                placeholder="Nro Habitaciones"
+                                placeholder="Cantidad"
                               />
                             </div>
                           </td>

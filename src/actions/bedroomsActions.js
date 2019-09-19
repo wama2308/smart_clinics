@@ -13,7 +13,7 @@ const enabledBedrooms = `${url}/api/enabledBedrooms`
 const editBedrooms = `${url}/api/editBedrooms`
 const queryOneBelonging = `${url}/api/queryOneBelonging`
 
- /*--------------------------API-------------------------------*/
+/*--------------------------API-------------------------------*/
 export const loadBedroomsFunction = () => dispatch => {
   getDataToken()
     .then(datos => {
@@ -56,7 +56,7 @@ export const queryOneBedroomsFunction = (data) => dispatch => {
 
 export const createBedroomsFunction = (data, callback) => dispatch => {
   console.log(data);
-  
+
   getDataToken()
     .then(datos => {
       axios({
@@ -136,6 +136,8 @@ export const editBedroomsFunction = (data, callback) => dispatch => {
 }
 
 export const queryOneBelongingFunction = (data, option) => dispatch => {
+  console.log(data);
+
   getDataToken()
     .then(datos => {
       axios({
@@ -258,4 +260,8 @@ export const oneSuppliesSet = (data) => dispatch => {
     type: "ONE_SUPPLIES_SET",
     payload: data
   })
+}
+
+export const messageError = () => dispatch => {
+  dispatch(openSnackbars("warning", `Necesita Registrar las Pertenencias`))
 }

@@ -15,7 +15,7 @@ const loadOneBedroons = (state, payload) => {
   payload.loadOneTurnos.supplies.map(data => {
     array.push({
       ...data,
-      cantidad: data.quantity
+      cantidad: data.quantity_stock
     })
   })
   estado.bedroomsOne = {
@@ -54,16 +54,23 @@ const setSuppliesData = (state, payload) => {
         }
       }
     })
-  } else {
+  } else if (payload.option === 3) {
     estado.bedroomsOne.supplies.map(data => {
+      if (payload.data >= 0 ) {
+        if (data._id === payload.id) {
+          data.quantity_stock = parseInt(payload.data)
+        }
+      }
+    })
+  } else if (payload.option === 4) {
+    estado.dataAccept.map(data => {
       if (payload.data >= 0 && payload.data <= data.quantity) {
         if (data._id === payload.id) {
-          data.cantidad = parseInt(payload.data)
+          data.quantity = parseInt(payload.data)
         }
       }
     })
   }
-
 
   return Map(estado);
 }
@@ -99,6 +106,7 @@ const setSupplies = (state, payload) => {
 
 const queryBelongingFunction = (state, payload) => {
   let estado = state.toJS();
+  console.log(payload);
 
   if (payload.option === 4) {
     estado.dataAccept.push({
@@ -107,6 +115,11 @@ const queryBelongingFunction = (state, payload) => {
     })
   } else if (payload.option === 1) {
     estado.dataAccept.push({
+      ...payload,
+      cantidad: 0
+    })
+  } else if (payload.option === 3) {
+    estado.bedroomsOne.supplies.push({
       ...payload,
       cantidad: 0
     })

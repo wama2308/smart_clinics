@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { ModalHeader, Modal, ModalBody, Input, FormFeedback, ModalFooter, FormGroup, Label, Button, InputGroup, InputGroupAddon } from 'reactstrap';
 import Select from 'react-select';
 import { connect } from 'react-redux';
-import { CircularProgress } from '@material-ui/core/CircularProgress';
-import { createBedroomsFunction, searchBelogingFunction, actionAcceptFunction, setDatasuppies, deleteDataSupplies, editOneBedroomsFunction, dataSuppliesSet, oneSuppliesSet, editBedroomsFunction, queryOneBelongingFunction } from '../../actions/bedroomsActions';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { createBedroomsFunction, searchBelogingFunction, actionAcceptFunction, setDatasuppies, deleteDataSupplies, editOneBedroomsFunction, dataSuppliesSet, oneSuppliesSet, editBedroomsFunction, queryOneBelongingFunction, messageError } from '../../actions/bedroomsActions';
 import TablaSuplies from './TablaSuplies';
-import { data } from '../Ventas/mockData';
 import Switch from '@material-ui/core/Switch';
 import { FormControlLabel } from '@material-ui/core';
 
@@ -32,9 +31,9 @@ class ModalBedrooms extends Component {
       habitacionesError: '',
       habitacionesInvalid: false,
       loading: "show",
-      habitaciones: 0,
+      habitaciones: 1,
 
-      foto: null,
+      foto: [],
       fotoError: '',
       fotoInvalid: false,
 
@@ -50,7 +49,7 @@ class ModalBedrooms extends Component {
 
       check: false,
 
-      piso: 0,
+      piso: '',
       pisoError: '',
       pisoInvalid: false,
 
@@ -62,6 +61,17 @@ class ModalBedrooms extends Component {
       nombreError: '',
       nombreInvalid: false,
 
+      desdeError: '',
+      desdeInvalid: false,
+
+      hastaError: '',
+      hastaInvalid: false,
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.option !== 1 && this.props.option !== 4) {
+      this.setState({ loading: 'hide' })
     }
   }
 
@@ -80,7 +90,7 @@ class ModalBedrooms extends Component {
       habitaciones: 0,
       habitacionesError: '',
       habitacionesInvalid: false,
-      loading: "show"
+      loading: "hide"
     });
     this.props.valorCloseModal(false);
     this.props.deleteDataSupplies()
@@ -108,21 +118,30 @@ class ModalBedrooms extends Component {
     let divConsultingRoomSelect = ""
     let divConsultingRoomSelectError = ''
 
+    let pisoError = ""
+    let pisoInvalid = false
+
+    let desdeError = ""
+    let desdeInvalid = false
+
+    let hastaError = ""
+    let hastaInvalid = true
+
     if (this.state.arrayBedroomsTypeSelect === null || this.state.arrayBedroomsTypeSelect.length === 0) {
-      divBedroomsSelectError = "¡Seleccione el Tipo de Habitaciones!";
+      divBedroomsSelectError = "¡Seleccione el Tipo de Espacio!";
       divBedroomsSelect = "borderColor";
     }
 
-    if (this.state.arrayBedroomsTypeSelect.label === "Oficina") {
-      if (this.state.arrayConsultingRoom === null || this.state.arrayConsultingRoomSelect.length === 0) {
-        divConsultingRoomSelect = "¡Seleccione el Tipo de Habitaciones!";
-        divConsultingRoomSelectError = "borderColor";
-      }
+
+    if (this.state.arrayConsultingRoom === null) {
+      divConsultingRoomSelect = "¡Seleccione el Tipo de Departamento!";
+      divConsultingRoomSelectError = "borderColor";
     }
+
 
     if (this.props.option === 1 && this.state.check === true) {
       if (this.state.habitaciones === 0 || this.state.habitaciones < 0) {
-        habitacionesError = "¡Ingrese la cantidad de habitaciones!";
+        habitacionesError = "¡Ingrese la cantidad de Espacio!";
         habitacionesInvalid = true;
       }
     }
@@ -131,11 +150,13 @@ class ModalBedrooms extends Component {
       divBedroomsStatusSelectError = "¡Seleccione el Estatus!";
       divBedroomsStatusSelect = "borderColor";
     }
-    if (this.state.check === false) {
-      if (this.state.nombre === "") {
 
-        nombreError = "¡Ingrese el Nombre!";
-        nombreInvalid = true;
+    if (this.state.check === false) {
+      if (this.props.option !== 4) {
+        if (this.state.nombre === "") {
+          nombreError = "¡Ingrese el Nombre!";
+          nombreInvalid = true;
+        }
       }
     }
 
@@ -144,14 +165,33 @@ class ModalBedrooms extends Component {
       abreviaturaInvalid = true
     }
 
-    if (this.state.foto === "" || this.state.foto === null) {
+    if (this.state.foto.length === 0 || this.state.foto === null) {
       if (this.state.check === false) {
-        fotoError = "¡Ingrese la Foto!";
-        fotoInvalid = true;
+        if (this.props.option !== 4) {
+          fotoError = "¡Ingrese la Foto!";
+          fotoInvalid = true;
+        }
       }
     }
 
-    if (divBedroomsSelectError || habitacionesError || divBedroomsStatusSelectError || nombreError || abreviaturaError || fotoError || divConsultingRoomSelectError) {
+    if (this.state.piso === "") {
+      pisoError = "¡Ingrese el piso!"
+      pisoInvalid = true;
+    }
+
+    if (this.state.desde === 0 && this.props.option === 4) {
+      desdeError = "¡Ingrese el rango!"
+      desdeInvalid = true
+    }
+
+    if (this.state.desde === 0 && this.props.option === 4) {
+      hastaError = "¡Ingrese el rango!"
+      hastaInvalid = true
+    }
+
+    if (divBedroomsSelectError || habitacionesError ||
+      divBedroomsStatusSelectError || nombreError ||
+      abreviaturaError || fotoError || divConsultingRoomSelectError || pisoError || desdeError || hastaError) {
       this.setState({
         divBedroomsSelectError,
         habitacionesError,
@@ -166,7 +206,13 @@ class ModalBedrooms extends Component {
         fotoError,
         fotoInvalid,
         divConsultingRoomSelect,
-        divConsultingRoomSelectError
+        divConsultingRoomSelectError,
+        pisoError,
+        pisoInvalid,
+        desdeError,
+        desdeInvalid,
+        hastaError,
+        hastaInvalid
       });
       return false;
     }
@@ -182,10 +228,16 @@ class ModalBedrooms extends Component {
 
   handleChange = e => {
     const { name, value } = e.target;
-    if (value > 0) {
+    if (this.state.check === false) {
       this.setState({
-        [name]: parseInt(value)
+        [name]: 1
       });
+    } else {
+      if (value > 0) {
+        this.setState({
+          [name]: parseInt(value)
+        });
+      }
     }
   };
 
@@ -259,22 +311,244 @@ class ModalBedrooms extends Component {
     return array
   }
 
+  pruebaFunction = (data) => {
+    const array = []
+    data.map(data => {
+      array.push({
+        ...data,
+        quantity: data.quantity
+      })
+    })
+    return array
+  }
+
+  functionArray = (data) => {
+    const array = []
+    data.map(data => {
+      array.push({
+        ...data,
+        quantity: data.cantidad
+      })
+    })
+    return array
+  }
+
   handleSave = (event) => {
     event.preventDefault();
     const isValid = this.validate();
     if (isValid) {
       if (this.props.option === 1) {
-        this.props.createBedroomsFunction({
-          input: this.state.check,
-          quantity_rooms: this.state.habitaciones,
-          name: this.state.nombre,
-          status: this.state.arrayBedroomsStatusSelect.value,
+        if (this.state.arrayConsultingRoomSelect !== null) {
+          const supplies = this.functionArray(this.props.bedrooms.dataAccept)
+          this.setState({ loading: 'hide' })
+          if (supplies.length > 0) {
+            this.setState({ loading: 'hide' })
+            this.props.createBedroomsFunction({
+              input: this.state.check,
+              //quantity_rooms: this.state.habitaciones,
+              type_office: this.state.arrayConsultingRoomSelect.value,
+              name: this.state.nombre,
+              status: this.state.arrayBedroomsStatusSelect.value,
+              type: this.state.arrayBedroomsTypeSelect.value,
+              floor: this.state.piso,
+              abbreviation: this.state.abreviatura,
+              photos: this.state.foto,
+              belongings: supplies
+            }, () => {
+              this.closeModal();
+              this.setState({
+                arrayBedroomsTypeSelect: null,
+                divBedroomsSelect: '',
+                divBedroomsSelectError: '',
+                arrayCentroMedico: [],
+
+                arrayBedroomsStatusSelect: null,
+                divBedroomsStatusSelect: '',
+                divBedroomsStatusSelectError: '',
+                arrayBedroomsStatus: [],
+
+                habitaciones: 0,
+                habitacionesError: '',
+                habitacionesInvalid: false,
+                loading: "show"
+              })
+            })
+          } else {
+            this.props.messageError()
+          }
+        } else {
+          const supplies = this.functionArray(this.props.bedrooms.dataAccept)
+          this.setState({ loading: 'hide' })
+          if (supplies.length > 0) {
+            this.setState({ loading: 'hide' })
+            this.props.createBedroomsFunction({
+              input: this.state.check,
+              quantity_rooms: this.state.habitaciones,
+              name: this.state.nombre,
+              status: this.state.arrayBedroomsStatusSelect.value,
+              type: this.state.arrayBedroomsTypeSelect.value,
+              floor: this.state.piso,
+              abbreviation: this.state.abreviatura,
+              photos: this.state.foto,
+              belongings: supplies
+            }, () => {
+              this.closeModal();
+              this.setState({
+                arrayBedroomsTypeSelect: null,
+                divBedroomsSelect: '',
+                divBedroomsSelectError: '',
+                arrayCentroMedico: [],
+
+                arrayBedroomsStatusSelect: null,
+                divBedroomsStatusSelect: '',
+                divBedroomsStatusSelectError: '',
+                arrayBedroomsStatus: [],
+
+                habitaciones: 0,
+                habitacionesError: '',
+                habitacionesInvalid: false,
+                loading: "show"
+              })
+            })
+          } else {
+            this.props.messageError()
+          }
+        }
+      } else if (this.props.option === 4) {
+        const bedroomsArray = this.filter(this.props.data)
+        const supplies = this.pruebaFunction(this.props.bedrooms.dataAccept)
+        this.setState({ loading: 'hide' })
+        if (this.state.arrayConsultingRoomSelect !== null) {
+          this.setState({ loading: 'hide' })
+          this.props.editBedroomsFunction({
+            bedrooms: bedroomsArray,
+            status: this.state.arrayBedroomsStatusSelect.value,
+            type: this.state.arrayBedroomsTypeSelect.value,
+            type_office: this.state.arrayConsultingRoomSelect.value,
+            floor: this.state.piso,
+            abbreviation: this.state.abreviatura,
+            belongings: supplies
+
+          }, () => {
+            this.props.deleteDataSupplies()
+            this.closeModal();
+            this.setState({
+              arrayBedroomsTypeSelect: null,
+              divBedroomsSelect: '',
+              divBedroomsSelectError: '',
+              arrayCentroMedico: [],
+
+              arrayBedroomsStatusSelect: null,
+              divBedroomsStatusSelect: '',
+              divBedroomsStatusSelectError: '',
+              arrayBedroomsStatus: [],
+
+              habitaciones: 0,
+              habitacionesError: '',
+              habitacionesInvalid: false,
+              loading: "show"
+            })
+
+          })
+        } else {
+          this.setState({ loading: 'hide' })
+          this.props.editBedroomsFunction({
+            bedrooms: bedroomsArray,
+            status: this.state.arrayBedroomsStatusSelect.value,
+            type: this.state.arrayBedroomsTypeSelect.value,
+            floor: this.state.piso,
+            abbreviation: this.state.abreviatura,
+            belongings: this.props.bedrooms.dataAccept
+
+          }, () => {
+            this.props.deleteDataSupplies()
+            this.closeModal();
+            this.setState({
+              arrayBedroomsTypeSelect: null,
+              divBedroomsSelect: '',
+              divBedroomsSelectError: '',
+              arrayCentroMedico: [],
+
+              arrayBedroomsStatusSelect: null,
+              divBedroomsStatusSelect: '',
+              divBedroomsStatusSelectError: '',
+              arrayBedroomsStatus: [],
+
+              habitaciones: 0,
+              habitacionesError: '',
+              habitacionesInvalid: false,
+              loading: "show"
+            })
+
+          })
+        }
+
+      } else if (this.props.option === 3) {
+        this.setState({ loading: 'hide' })
+        const bedroomsArray = this.filter(this.props.data)
+        const prueba = this.props.bedrooms.bedroomsOne.supplies ? this.arraySupplies(this.props.bedrooms.bedroomsOne.supplies) : []
+        const array = []
+        if (this.props.bedrooms.bedroomsOne.supplies) {
+          this.props.bedrooms.bedroomsOne.supplies.map(data => {
+            array.push({
+              brand: data.brand,
+              code: data.code,
+              maintenance_time: data.maintenance_time,
+              mantenance_staff: data.mantenance_staff,
+              mantenance_staff_id: data.mantenance_staff_id,
+              model: data.model,
+              name: data.name,
+              photo: data.photo,
+              quantity: data.quantity_stock,
+              year: data.year,
+              _id: data._id,
+            })
+          })
+        }
+
+        if (this.state.arrayConsultingRoomSelect != null) {
+          this.setState({ loading: 'hide' })
+          this.props.editOneBedroomsFunction({
+            _id: this.props.id,
+            type: this.state.arrayBedroomsTypeSelect.value,
+            status: this.state.arrayBedroomsStatusSelect.value,
+            type_office: this.state.arrayConsultingRoomSelect.value,
+            photos: this.state.foto,
+            name: this.state.nombre,
+            abbreviation: this.state.abreviatura,
+            floor: this.state.piso,
+            belongings: array,
+          }, () => {
+            this.closeModal();
+            this.setState({
+              arrayBedroomsTypeSelect: null,
+              divBedroomsSelect: '',
+              divBedroomsSelectError: '',
+              arrayCentroMedico: [],
+
+              arrayBedroomsStatusSelect: null,
+              divBedroomsStatusSelect: '',
+              divBedroomsStatusSelectError: '',
+              arrayBedroomsStatus: [],
+
+              habitaciones: 0,
+              habitacionesError: '',
+              habitacionesInvalid: false,
+              loading: "show"
+            })
+          })
+        }
+      } else {
+        this.setState({ loading: 'hide' })
+        this.props.editOneBedroomsFunction({
+          _id: this.props.id,
           type: this.state.arrayBedroomsTypeSelect.value,
-          type_office: this.state.arrayConsultingRoomSelect,
-          floor: this.state.piso,
-          abbreviation: this.state.abreviatura,
+          status: this.state.arrayBedroomsStatusSelect.value,
           photos: this.state.foto,
-          belongings: this.props.bedrooms.dataAccept
+          name: this.state.nombre,
+          abbreviation: this.state.abreviatura,
+          floor: this.state.piso,
+          belongings: this.props.bedrooms.bedroomsOne.supplies,
         }, () => {
           this.closeModal();
           this.setState({
@@ -295,69 +569,8 @@ class ModalBedrooms extends Component {
           })
         })
       }
-    } else if (this.props.option === 4) {
-      const bedroomsArray = this.filter(this.props.data)
-      const supplies = this.arrayClean(this.props.bedrooms.dataAccept)
-
-      const prueba = this.arraySupplies(this.props.bedrooms.dataAccept);
-
-
-      this.props.editBedroomsFunction({
-        bedrooms: bedroomsArray,
-        type: this.state.arrayBedroomsTypeSelect.value,
-        status: this.state.arrayBedroomsStatusSelect.value,
-        supplies: prueba
-      }, () => {
-        this.props.deleteDataSupplies()
-        this.closeModal();
-        this.setState({
-          arrayBedroomsTypeSelect: null,
-          divBedroomsSelect: '',
-          divBedroomsSelectError: '',
-          arrayCentroMedico: [],
-
-          arrayBedroomsStatusSelect: null,
-          divBedroomsStatusSelect: '',
-          divBedroomsStatusSelectError: '',
-          arrayBedroomsStatus: [],
-
-          habitaciones: 0,
-          habitacionesError: '',
-          habitacionesInvalid: false,
-          loading: "show"
-        })
-      })
-    } else if (this.props.option === 3) {
-      const bedroomsArray = this.filter(this.props.data)
-      const prueba = this.props.bedrooms.bedroomsOne.supplies ? this.arraySupplies(this.props.bedrooms.bedroomsOne.supplies) : []
-
-      this.props.editOneBedroomsFunction({
-        type: this.state.arrayBedroomsTypeSelect.value,
-        status: this.state.arrayBedroomsStatusSelect.value,
-        supplies: prueba,
-        _id: this.props.id
-      }, () => {
-        this.closeModal();
-        this.setState({
-          arrayBedroomsTypeSelect: null,
-          divBedroomsSelect: '',
-          divBedroomsSelectError: '',
-          arrayCentroMedico: [],
-
-          arrayBedroomsStatusSelect: null,
-          divBedroomsStatusSelect: '',
-          divBedroomsStatusSelectError: '',
-          arrayBedroomsStatus: [],
-
-          habitaciones: 0,
-          habitacionesError: '',
-          habitacionesInvalid: false,
-          loading: "show"
-        })
-      })
     }
   }
-
 
   arrayClean = (data) => {
     const clean = []
@@ -387,13 +600,14 @@ class ModalBedrooms extends Component {
       })
       let selectedFile = event.target.files;
       let fileName = "";
-      let file = null
+      let file = []
       if (selectedFile.length > 0) {
         let fileToLoad = selectedFile[0];
         fileName = fileToLoad.name;
         let fileReader = new FileReader();
         fileReader.onload = function (fileLoadedEvent) {
-          file = fileLoadedEvent.target.result;
+          file.push(fileLoadedEvent.target.result)
+
           this.setState({
             foto: file
           })
@@ -407,8 +621,19 @@ class ModalBedrooms extends Component {
   filter = (data) => {
     if (data.length != 0) {
       const date = data.filter(data => {
-        return data.number >= this.state.desde && data.number <= this.state.hasta
+        if (this.state.arrayBedroomsTypeSelect !== null &&
+          this.state.arrayConsultingRoomSelect != null && this.state.arrayBedroomsTypeSelect.label === "Oficina") {
+          return data.number >= this.state.desde &&
+            data.number <= this.state.hasta &&
+            data.type === "Oficina" &&
+            this.state.arrayConsultingRoomSelect.label === data.type_office.label
+        } else {
+          if (this.state.arrayBedroomsTypeSelect !== null && this.state.arrayBedroomsTypeSelect.label !== "Oficina") {
+            return data.number >= this.state.desde && data.number <= this.state.hasta && data.type !== "Oficina"
+          }
+        }
       })
+
       const arrayClean = []
 
       date.map(datos => {
@@ -432,14 +657,31 @@ class ModalBedrooms extends Component {
         arrayBedroomsTypeSelect: props.bedrooms.bedroomsOne.type,
         supplies: props.bedrooms.bedroomsOne.supplies,
         arrayBedroomsStatusSelect: props.bedrooms.bedroomsOne.status,
-        habitaciones: props.bedrooms.bedroomsOne.number
+        habitaciones: props.bedrooms.bedroomsOne.number,
+        abreviatura: props.bedrooms.bedroomsOne.abbreviation,
+        nombre: props.bedrooms.bedroomsOne.name,
+        foto: props.bedrooms.bedroomsOne.photos,
+        arrayConsultingRoomSelect: !props.bedrooms.bedroomsOne.type_office === "" ? null : props.bedrooms.bedroomsOne.type_office,
+        piso: props.bedrooms.bedroomsOne.floor,
+        loading: "show"
+
       })
     } else if (props.option === 2) {
       this.setState({
         arrayBedroomsTypeSelect: props.bedrooms.bedroomsOne.type,
         supplies: props.bedrooms.bedroomsOne.supplies,
         arrayBedroomsStatusSelect: props.bedrooms.bedroomsOne.status,
-        habitaciones: props.bedrooms.bedroomsOne.number
+        habitaciones: props.bedrooms.bedroomsOne.number,
+        abreviatura: props.bedrooms.bedroomsOne.abbreviation,
+        nombre: props.bedrooms.bedroomsOne.name,
+        foto: props.bedrooms.bedroomsOne.photos,
+        arrayConsultingRoomSelect: !props.bedrooms.bedroomsOne.type_office === "" ? null : props.bedrooms.bedroomsOne.type_office,
+        piso: props.bedrooms.bedroomsOne.floor,
+        loading: "show"
+      })
+    } else if (props.option === 1) {
+      this.setState({
+        loading: "show"
       })
     }
   }
@@ -460,11 +702,9 @@ class ModalBedrooms extends Component {
 
   handlePiso = e => {
     const { name, value } = e.target;
-    if (value >= 0) {
-      this.setState({
-        [name]: parseInt(value)
-      });
-    }
+    this.setState({
+      piso: value
+    });
   }
 
   handleabreviatura = e => {
@@ -483,7 +723,12 @@ class ModalBedrooms extends Component {
 
   render() {
     const disable = this.disabled()
+    const bedroomsArray = this.filter(this.props.data)
+
     console.log(this.props);
+    console.log("estados", this.state);
+    console.log("filter", bedroomsArray);
+
 
     return (
       <span>
@@ -510,14 +755,14 @@ class ModalBedrooms extends Component {
                               value="check"
                             />
                           }
-                          label="Masivo"
+                          label="Cargar Varios Espacios"
                         />
                       </FormGroup>
                     }
-                    {this.props.option !== 4 && this.state.check === true &&
+                    {this.state.check === true &&
                       <FormGroup className="top form-group col-sm-6">
-                        {this.props.option === 1 && <Label for="descripcion">Numero de Habitaciones</Label>}
-                        {this.props.option !== 1 && <Label for="descripcion">Numero de Habitacion</Label>}
+                        {this.props.option === 1 && <Label for="habitaciones">Numero de Espacios</Label>}
+                        {this.props.option !== 1 && <Label for="habitaciones">Numero de Espacio</Label>}
                         <Input
                           disabled={disable}
                           invalid={this.state.habitacionesInvalid}
@@ -536,16 +781,34 @@ class ModalBedrooms extends Component {
                     }
 
                     <FormGroup className="top form-group col-sm-6">
-                      <Label for="CentroMedico">Tipo de habitaciones</Label>
+                      <Label for="estatus">Estatus</Label>
                       <div className={this.state.divBedroomsSelect}>
                         <Select
                           isSearchable="true"
                           isDisabled={this.props.disabled}
-                          name="CentroMedico"
+                          name="estatus"
+                          value={this.state.arrayBedroomsStatusSelect}
+                          onChange={this.handleStatusBedrooms}
+                          options={this.props.status_room}
+                          id="estatus"
+                        />
+                      </div>
+                      <div className="errorSelect">
+                        {this.state.divBedroomsSelectError}
+                      </div>
+                    </FormGroup>
+
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="tipo">Tipo de Espacios</Label>
+                      <div className={this.state.divBedroomsSelect}>
+                        <Select
+                          isSearchable="true"
+                          isDisabled={this.props.disabled}
+                          name="tipo"
                           value={this.state.arrayBedroomsTypeSelect}
                           onChange={this.handleTypeBedrooms}
                           options={this.props.type_bedrooms}
-                          id="CentroMedico"
+                          id="tipo"
                         />
                       </div>
                       <div className="errorSelect">
@@ -557,16 +820,16 @@ class ModalBedrooms extends Component {
                       this.state.arrayBedroomsTypeSelect.label === "Oficina" &&
                       this.state.arrayBedroomsTypeSelect.value === "5d7facaa3beda80db3462513" &&
                       <FormGroup className="top form-group col-sm-6">
-                        <Label for="especialidad">Especialidad</Label>
+                        <Label for="departamento">Departamento</Label>
                         <div className={this.state.divBedroomsSelect}>
                           <Select
                             isSearchable="true"
                             isDisabled={this.props.disabled}
-                            name="especialidad"
+                            name="departamento"
                             value={this.state.arrayConsultingRoomSelect}
                             onChange={this.handleConsulting}
                             options={this.props.type_consulting_room}
-                            id="especialidad"
+                            id="departamento"
                           />
                         </div>
                         <div className="errorSelect">
@@ -575,23 +838,148 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    <FormGroup className="top form-group col-sm-6">
-                      <Label for="CentroMedico">Estatus</Label>
-                      <div className={this.state.divBedroomsSelect}>
-                        <Select
-                          isSearchable="true"
-                          isDisabled={this.props.disabled}
-                          name="CentroMedico"
-                          value={this.state.arrayBedroomsStatusSelect}
-                          onChange={this.handleStatusBedrooms}
-                          options={this.props.status_room}
-                          id="CentroMedico"
+                    {this.state.check === false && this.props.option === 1 &&
+                      <FormGroup className="top form-group col-sm-6">
+                        <Label for="nombre">Nombre</Label>
+                        <Input
+                          disabled={this.props.disabled}
+                          invalid={this.state.nombreInvalid}
+                          name="nombre"
+                          id="nombre"
+                          onKeyUp={this.handlekeyHabitaciones}
+                          onChange={this.handleNombre}
+                          value={this.state.nombre}
+                          type="text"
+                          placeholder="Nombre"
                         />
-                      </div>
+                        <div className="errorSelect">
+                          {this.state.nombreError}
+                        </div>
+                      </FormGroup>
+                    }
+
+                    {this.props.option !== 1 && this.props.option !== 4 && this.props.bedrooms.bedroomsOne && this.props.bedrooms.bedroomsOne.name !== "" &&
+                      <FormGroup className="top form-group col-sm-6">
+                        <Label for="nombre">Nombre</Label>
+                        <Input
+                          disabled={this.props.disabled}
+                          invalid={this.state.nombreInvalid}
+                          name="nombre"
+                          id="nombre"
+                          onKeyUp={this.handlekeyHabitaciones}
+                          onChange={this.handleNombre}
+                          value={this.state.nombre}
+                          type="text"
+                          placeholder="Nombre"
+                        />
+                        <div className="errorSelect">
+                          {this.state.nombreError}
+                        </div>
+                      </FormGroup>
+                    }
+
+                    {this.props.option === 3 &&
+                      <FormGroup className="top form-group col-sm-6">
+                        <Label for="nombre">Nombre</Label>
+                        <Input
+                          disabled={this.props.disabled}
+                          invalid={this.state.nombreInvalid}
+                          name="nombre"
+                          id="nombre"
+                          onKeyUp={this.handlekeyHabitaciones}
+                          onChange={this.handleNombre}
+                          value={this.state.nombre}
+                          type="text"
+                          placeholder="Nombre"
+                        />
+                        <div className="errorSelect">
+                          {this.state.nombreError}
+                        </div>
+                      </FormGroup>
+                    }
+
+
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="abreviatura">Abreviatura</Label>
+                      <Input
+                        disabled={this.props.disabled}
+                        invalid={this.state.abreviaturaInvalid}
+                        name="abreviatura"
+                        id="abreviatura"
+                        onKeyUp={this.handlekeyHabitaciones}
+                        onChange={this.handleabreviatura}
+                        value={this.state.abreviatura}
+                        type="text"
+                        placeholder="Abreviatura"
+                        maxLength={3}
+                      />
                       <div className="errorSelect">
-                        {this.state.divBedroomsSelectError}
+                        {this.state.abreviaturaError}
                       </div>
                     </FormGroup>
+
+                    {this.props.option === 4 &&
+                      <FormGroup className="top form-group col-sm-3">
+                        <Label for="desde">Rango Inicial</Label>
+                        <Input
+                          disabled={this.props.disabled}
+                          invalid={this.state.desdeInvalid}
+                          name="desde"
+                          id="desde"
+                          onKeyUp={this.handlekeyHabitaciones}
+                          onChange={this.handleDesde}
+                          value={this.state.desde}
+                          type="number"
+                          placeholder="Nro Habitaciones"
+                          min={0}
+                        />
+                        <div className="errorSelect">
+                          {this.state.desdeError}
+                        </div>
+                      </FormGroup>
+                    }
+
+                    {this.props.option === 4 &&
+                      <FormGroup className="top form-group col-sm-3">
+                        <Label for="hasta">Rango Final</Label>
+                        <Input
+                          disabled={this.props.disabled}
+                          invalid={this.state.hastaInvalid}
+                          name="hasta"
+                          id="hasta"
+                          onKeyUp={this.handlekeyHabitaciones}
+                          onChange={this.handleHasta}
+                          value={this.state.hasta}
+                          type="number"
+                          placeholder="Nro Habitaciones"
+                          min={0}
+                          max={this.props.data.length}
+                        />
+                        <div className="errorSelect">
+                          {this.state.hastaError}
+                        </div>
+                      </FormGroup>
+                    }
+
+
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="piso">Piso</Label>
+                      <Input
+                        disabled={this.props.disabled}
+                        invalid={this.state.pisoInvalid}
+                        name="piso"
+                        id="piso"
+                        onChange={this.handlePiso}
+                        value={this.state.piso}
+                        type="text"
+                        placeholder="Piso"
+                        min={0}
+                      />
+                      <div className="errorSelect">
+                        {this.state.pisoError}
+                      </div>
+                    </FormGroup>
+
 
                     {this.state.check === false && this.props.option !== 4 &&
                       <FormGroup className="top form-group col-sm-6">
@@ -613,107 +1001,6 @@ class ModalBedrooms extends Component {
                             </div>
                           </InputGroupAddon>
                         </InputGroup>
-                      </FormGroup>
-                    }
-
-                    <FormGroup className="top form-group col-sm-5">
-                      <Label for="piso">Piso</Label>
-                      <Input
-                        disabled={this.props.disabled}
-                        //invalid={this.state.habitacionesInvalid}
-                        name="piso"
-                        id="piso"
-                        // onKeyUp={this.handlekeyHabitaciones}
-                        onChange={this.handleChange}
-                        value={this.state.piso}
-                        type="number"
-                        placeholder="Nro Habitaciones"
-                        min={0}
-                      />
-                      <div className="errorSelect">
-                        {/* {this.state.habitacionesError} */}
-                      </div>
-                    </FormGroup>
-
-                    <FormGroup className="top form-group col-sm-6">
-                      <Label for="abreviatura">Abreviatura</Label>
-                      <Input
-                        disabled={this.props.disabled}
-                        invalid={this.state.abreviaturaInvalid}
-                        name="abreviatura"
-                        id="abreviatura"
-                        onKeyUp={this.handlekeyHabitaciones}
-                        onChange={this.handleabreviatura}
-                        value={this.state.abreviatura}
-                        type="text"
-                        placeholder="Abreviatura"
-                        maxLength={3}
-                      />
-                      <div className="errorSelect">
-                        {this.state.abreviaturaError}
-                      </div>
-                    </FormGroup>
-
-                    {this.state.check === false &&
-                      <FormGroup className="top form-group col-sm-5">
-                        <Label for="abreviatura">Nombre</Label>
-                        <Input
-                          disabled={this.props.disabled}
-                          invalid={this.state.nombreInvalid}
-                          name="nombre"
-                          id="nombre"
-                          onKeyUp={this.handlekeyHabitaciones}
-                          onChange={this.handleNombre}
-                          value={this.state.nombre}
-                          type="text"
-                          placeholder="nombre"
-                        />
-                        <div className="errorSelect">
-                          {this.state.nombreError}
-                        </div>
-                      </FormGroup>
-                    }
-
-                    {this.props.option === 4 &&
-                      <FormGroup className="top form-group col-sm-3">
-                        <Label for="desde">Rango</Label>
-                        <Input
-                          disabled={this.props.disabled}
-                          invalid={this.state.habitacionesInvalid}
-                          name="desde"
-                          id="desde"
-                          onKeyUp={this.handlekeyHabitaciones}
-                          onChange={this.handleDesde}
-                          value={this.state.desde}
-                          type="number"
-                          placeholder="Nro Habitaciones"
-                          min={0}
-                        />
-                        <div className="errorSelect">
-                          {this.state.habitacionesError}
-                        </div>
-                      </FormGroup>
-                    }
-
-                    {this.props.option === 4 &&
-                      <FormGroup className="top form-group col-sm-3">
-                        <Label for="hasta">Rango</Label>
-                        <Input
-                          disabled={this.props.disabled}
-                          invalid={this.state.habitacionesInvalid}
-                          name="hasta"
-                          id="hasta"
-                          onKeyUp={this.handlekeyHabitaciones}
-                          onChange={this.handleHasta}
-                          value={this.state.hasta}
-                          type="number"
-                          placeholder="Nro Habitaciones"
-                          min={0}
-                          max={this.props.data.length}
-                        />
-                        <div className="errorSelect">
-                          {this.state.habitacionesError}
-                        </div>
                       </FormGroup>
                     }
                   </div>
@@ -771,7 +1058,8 @@ const mapDispatchToProps = dispatch => ({
   dataSuppliesSet: (data, id) => dispatch(dataSuppliesSet(data, id)),
   oneSuppliesSet: (data) => dispatch(oneSuppliesSet(data)),
   editBedroomsFunction: (data, callback) => dispatch(editBedroomsFunction(data, callback)),
-  queryOneBelongingFunction: (id, option) => dispatch(queryOneBelongingFunction(id, option))
+  queryOneBelongingFunction: (id, option) => dispatch(queryOneBelongingFunction(id, option)),
+  messageError: () => dispatch(messageError())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalBedrooms);
