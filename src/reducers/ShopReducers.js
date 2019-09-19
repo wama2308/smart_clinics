@@ -371,7 +371,10 @@ const ShopReducer = (state = Map(), action) => {
 	  		return setStoreTransferReceivedAcceptPusher(state, action.payload)
 	  
 		case 'LOAD_TRANSFER_RECEIVED_REJECT_PUSHER': 
-	  		return setStoreTransferReceivedRejectPusher(state, action.payload)
+			  return setStoreTransferReceivedRejectPusher(state, action.payload)
+			  
+		case "LOAD_SELECT_TRANSFERS":
+			return setData(state, "selectTransfers", action.payload);
 
 		default:
 			return state;

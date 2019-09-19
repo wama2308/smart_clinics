@@ -136,6 +136,7 @@ class ListTransferencias extends React.Component {
             status={this.state.status}
             branchOfficces={this.props.branchOfficces}
             valorCloseModal={this.valorCloseModal}
+            permitsTransfer={this.props.permitsTransfer}
           />
         }
         <div className="containerGeneral" style={{ "justifyContent": "flex-end" }}>

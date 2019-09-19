@@ -3,7 +3,13 @@ const setData = (state, node, payload) => state.set(node, payload)
 
 const searchOneSuppplie = (state, payload) => {
 	let estado = state.toJS();
-	estado.productsToTransfer.push(payload);
+	let objProduct = {
+		_id:payload._id,
+		name:payload.name,
+		type:payload.type,
+		quantity_transfer:payload.quantity_transfer,
+	}
+	estado.productsToTransfer.push(objProduct);
 	return Map(estado);
 }
 

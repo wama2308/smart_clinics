@@ -6,13 +6,14 @@ const selectRegisterUser =
     ];  
 	/*CARGOS*/
 export const InitalState = {
+
+	/*CARGOS*/
     cargo: '',
     cargoError: '',
     cargoInvalid: false,
     descripcion: '',
     descripcionError: '',
     descripcionInvalid: false,
-
     loading:'show',   
 	/*CARGOS*/
 

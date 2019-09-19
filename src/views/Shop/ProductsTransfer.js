@@ -53,12 +53,12 @@ class ProductsTransfer extends React.Component {
   };
 
   handleChange = (event, product) => {
-    if (parseFloat(product.quantity_stock) < parseFloat(event.target.value)) {
-      this.props.alert("warning", "¡La cantidad a transferir no puede ser mayor al stock!");
-    } else {
-      this.props.setQuantityTranferAction(product._id, parseFloat(event.target.value));
-    }
-
+    this.props.setQuantityTranferAction(product._id, parseFloat(event.target.value));
+    // if (parseFloat(product.quantity_stock) < parseFloat(event.target.value)) {
+    //   this.props.alert("warning", "¡La cantidad a transferir no puede ser mayor al stock!");
+    // } else {
+    //   this.props.setQuantityTranferAction(product._id, parseFloat(event.target.value));
+    // }
   };  
 
   componentDidUpdate = prevProps => {
@@ -111,9 +111,8 @@ class ProductsTransfer extends React.Component {
     const { productsToTransfer } = this.props;
     const dataHead = [
       { label: "NOMBRE" },
-      { label: "TIPO" },
-      { label: "PRECIO" },
-      { label: "DISPONIBLE" },
+      { label: "TIPO" },      
+      //{ label: "DISPONIBLE" },
       { label: "CANT TRANSFERIR" },
       { label: "ACTION" }
     ];
@@ -163,9 +162,8 @@ class ProductsTransfer extends React.Component {
                     return (
                       <RowTable key={key}>
                         <Cell className="cellStyle">{product.name}</Cell>
-                        <Cell>{product.type}</Cell>
-                        <Cell>{formatNumber(product.price)}</Cell>
-                        <Cell>{product.quantity_stock}</Cell>
+                        <Cell>{product.type}</Cell>                        
+                        {/* <Cell>{product.quantity_stock}</Cell> */}
                         <td>
                           <Input
                             name={`inputQuantity_${product._id}`}
