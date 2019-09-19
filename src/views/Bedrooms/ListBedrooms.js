@@ -5,6 +5,9 @@ import { IconButton } from '@material-ui/core';
 import { Visibility } from '@material-ui/icons';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
+import Pagination from '../../components/Pagination';
+import { getArrays } from '../../core/utils';
+import Search from "../../components/Select";
 
 class ListBedrooms extends Component {
   constructor(props) {
@@ -30,11 +33,13 @@ class ListBedrooms extends Component {
   }
 
   openModal = (option, id) => {
+    let set = ""
+    this.props.setSearch(set)
     if (option === 1) {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Registrar Reclamo',
+        modalHeader: 'Registrar Espacios',
         modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
@@ -44,7 +49,7 @@ class ListBedrooms extends Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Reclamo',
+        modalHeader: 'Ver Espacios',
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'hide',
@@ -55,7 +60,7 @@ class ListBedrooms extends Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Reclamo',
+        modalHeader: 'Editar Espacios',
         modalFooter: 'Editar',
         disabled: false,
         showHide: 'show',
@@ -65,7 +70,7 @@ class ListBedrooms extends Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Reclamo',
+        modalHeader: 'Editar Espacios',
         modalFooter: 'Editar',
         disabled: false,
         showHide: 'show',
@@ -94,34 +99,32 @@ class ListBedrooms extends Component {
     });
   }
 
+  handleChangeRowsPerPage = event => {
+    this.setState({ page: 0, rowsPerPage: event.target.value });
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
 
   render() {
-    const obj = [
-      {
-        number: 1,
-        type: "consultorio",
-        status: "Activo",
-        _id: "hfkshg5g4684684"
-      },
-      {
-        number: 2,
-        type: "consultorio",
-        status: "Activo",
-        _id: "h98r989f9ecwe"
-      },
-      {
-        number: 3,
-        type: "consultorio",
-        status: "Activo",
-        _id: "jgjgju7g87g88893"
-      },
-      {
-        number: 4,
-        type: "consultorio",
-        status: "Activo",
-        _id: "5585d5d5dddecgrft"
-      }
-    ]
+    const { rowsPerPage, page } = this.state;
+    const arrayList = getArrays(this.props.bedrooms);
+
+    const result = this.props.search
+      ? arrayList.filter(list => {
+        if (this.state.modal === false) {
+          return (
+            list.number.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
+            list.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            list.status.toLowerCase().includes(this.props.search.toLowerCase()) ||
+            list.floor.toLowerCase().includes(this.props.search.toLowerCase())
+          );
+        } else {
+          return arrayList
+        }
+      })
+      : arrayList;
 
     return (
       <div>
@@ -143,24 +146,24 @@ class ListBedrooms extends Component {
           />
         }
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
-          <div className="container-button">
+          <div className="container-button" style={{"height": "35%"}}>
             <Button color="success"
-              onClick={() => this.openModal(1)}
-            >
+              onClick={() => this.openModal(1)}>
               Agregar
             </Button>
 
             <div style={{ "marginLeft": "3%" }}>
               <Button color="success"
-                onClick={() => this.openModal(4)}
-              >
+                onClick={() => this.openModal(4)}>
                 Edicion Multiple
             </Button>
             </div>
           </div>
-          <div className="containerSearch" >
-
-          </div>
+          {this.state.modal === false &&
+            <div className="containerSearch" >
+              <Search value={arrayList} />
+            </div>
+          }
         </div>
 
         <div className="row">
@@ -169,16 +172,18 @@ class ListBedrooms extends Component {
               <thead className="thead-light">
                 <tr>
                   <th >Numero</th>
+                  <th >Piso</th>
                   <th >Tipo</th>
                   <th >Estatus</th>
                   <th >Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {obj ? obj.map((list, key) => {
+                {this.props.bedrooms ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
                     <tr key={key}>
                       <td>{list.number}</td>
+                      <td>{list.floor}</td>
                       <td>{list.type}</td>
                       <td>{list.status}</td>
                       <td>
@@ -212,6 +217,16 @@ class ListBedrooms extends Component {
                 }) : null
                 }
               </tbody>
+              {
+                this.props.bedrooms && this.props.bedrooms.length > 10 && (
+                  <Pagination
+                    contador={this.props.bedrooms}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    handleChangePage={this.handleChangePage}
+                  />
+                )}
             </Table>
           </div>
         </div>
