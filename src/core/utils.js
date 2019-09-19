@@ -281,3 +281,16 @@ export const getArray = (props) => {
   })
   return ArrayData;
 }
+
+export const getArrays = (props) => {
+  if(!props){
+    return []
+  }
+  const ArrayData = []
+  props.map((data, key) => {
+    ArrayData.push({
+      ...data,
+    })
+  })
+  return ArrayData;
+}
