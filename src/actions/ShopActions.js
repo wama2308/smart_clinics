@@ -26,6 +26,8 @@ const queryAllTransferReceived = `${url}/api/queryAllTransferReceived`;
 const rejectTransfer = `${url}/api/rejectTransfer`;
 const acceptTransfer = `${url}/api/acceptTransfer`;
 const defectiveSupplie = `${url}/api/defectiveSupplie`;
+const querySelectTransfer = `${url}/api/querySelectTransfer`;
+const queryStoreBranchOfficeSelect = `${url}/api/queryStoreBranchOfficeSelect`;
 
 export const LoadShopFunction = () => dispatch => {
   getDataToken()
@@ -73,6 +75,26 @@ export const LoadShopFunction = () => dispatch => {
     .catch(() => {
       console.log("Problemas con el token");
     });
+};
+
+export const querySelectTransferAction = () => dispatch => {
+  getDataToken()
+      .then(datos => {
+          axios.get(queryStoreBranchOfficeSelect, datos)
+              .then(res => {
+                  dispatch({
+                      type: "LOAD_SELECT_TRANSFERS",
+                      payload: res.data
+                  });
+              })
+              .catch(error => {
+                  console.log("Error consultando la api para consultar los select del modulo de transferencias", error.toString());
+              });
+
+      })
+      .catch(() => {
+          console.log("Problemas con el token");
+      });
 };
 
 const queryAllSuppliesFunction = (datos, execute) => {
