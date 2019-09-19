@@ -14,10 +14,10 @@ import {
 import { connect } from "react-redux";
 import ListTransferencias from "../views/Shop/ListTransferencias";
 import ListTransferenciasRecibidas from "../views/Shop/ListTransferenciasRecibidas";
-import listSolicitudesRealizadas from "../views/Shop/listSolicitudesRealizadas";
-import listSolicitudesRecibidas from "../views/Shop/listSolicitudesRecibidas";
+import ListSolicitudesRealizadas from "../views/Shop/ListSolicitudesRealizadas";
+import ListSolicitudesRecibidas from "../views/Shop/ListSolicitudesRecibidas";
 import {
-  LoadTransferFunction,    
+  LoadTransferFunction,
 }
   from "../actions/TransferActions";
 import { openConfirmDialog, openSnackbars, search } from "../actions/aplicantionActions";
@@ -28,13 +28,13 @@ class TransferContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: "1",      
-      permitsTransfer: [],            
+      activeTab: "1",
+      permitsTransfer: [],
     };
   }
 
   componentDidMount = () => {
-    this.props.LoadTransferFunction();    
+    this.props.LoadTransferFunction();
 
     this.props.aplication.dataGeneral.permission.map(permisos => {
       permisos.modules.map(modulos => {
@@ -53,23 +53,23 @@ class TransferContainer extends Component {
         activeTab: tab
       });
       let set = ""
-      this.props.search(set) 
+      this.props.search(set)
     }
   }
   componentWillUnmount() {
     let set = ""
     this.props.search(set)
   }
-  
+
 
   render() {
-    //console.log("props shop container", this.props.shop);
+    console.log("props transfer container", this.props.transfer);
     return (
       <div className="animated fadeIn">
         <Row>
           <Col>
             <Card>
-              <CardHeader>Compras - Productos</CardHeader>
+              <CardHeader>Transferencias - Solicitudes</CardHeader>
               <CardBody>
                 {
                   this.props.transfer.loading === 'hide' ?
@@ -96,7 +96,7 @@ class TransferContainer extends Component {
                             </NavLink>
                         </NavItem>
                       </Nav>
-                      <TabContent activeTab={this.state.activeTab}>                        
+                      <TabContent activeTab={this.state.activeTab}>
                         <TabPane tabId="1">
                           <ListTransferencias
                             confirm={this.props.confirm}
@@ -111,6 +111,28 @@ class TransferContainer extends Component {
                           <ListTransferenciasRecibidas
                             confirm={this.props.confirm}
                             data={this.props.transfer.allTransferRecibidas}
+                            queryOneTransferFunction={this.props.queryOneTransferFunction}
+                            rejectTransferAction={this.props.rejectTransferAction}
+                            acceptTransferAction={this.props.acceptTransferAction}
+                            permitsTransfer={this.state.permitsTransfer}
+                            search={this.props.searchData}
+                          />
+                        </TabPane>
+                        <TabPane tabId="3">
+                          <ListSolicitudesRealizadas
+                            confirm={this.props.confirm}
+                            data={this.props.transfer.allRequestMade}
+                            queryOneTransferFunction={this.props.queryOneTransferFunction}
+                            rejectTransferAction={this.props.rejectTransferAction}
+                            acceptTransferAction={this.props.acceptTransferAction}
+                            permitsTransfer={this.state.permitsTransfer}
+                            search={this.props.searchData}
+                          />
+                        </TabPane>
+                        <TabPane tabId="4">
+                          <ListSolicitudesRecibidas
+                            confirm={this.props.confirm}
+                            data={this.props.transfer.allRequestReceived}
                             queryOneTransferFunction={this.props.queryOneTransferFunction}
                             rejectTransferAction={this.props.rejectTransferAction}
                             acceptTransferAction={this.props.acceptTransferAction}
@@ -141,11 +163,11 @@ const mapStateToProps = state => ({
   searchData: state.global.search
 });
 
-const mapDispatchToProps = dispatch => ({  
-  LoadTransferFunction: () => dispatch(LoadTransferFunction()),    
+const mapDispatchToProps = dispatch => ({
+  LoadTransferFunction: () => dispatch(LoadTransferFunction()),
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
   alert: (type, message) => dispatch(openSnackbars(type, message)),
-  search: (set) =>dispatch(search(set))
+  search: (set) => dispatch(search(set))
 });
 
 export default connect(

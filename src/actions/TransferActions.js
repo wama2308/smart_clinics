@@ -29,6 +29,9 @@ const acceptTransfer = `${url}/api/acceptTransfer`;
 const defectiveSupplie = `${url}/api/defectiveSupplie`;
 const queryStoreBranchOfficesSelect = `${url}/api/queryStoreBranchOfficesSelect`;
 const querySelectTransfer = `${url}/api/querySelectTransfer`;
+const transferRequest = `${url}/api/transferRequest`;
+const queryAllRequestsMade = `${url}/api/queryAllRequestsMade`;
+const queryAllRequestsReceived = `${url}/api/queryAllRequestsReceived`;
 
 const converToJson = data => {
     const stringify = JSON.stringify(data);
@@ -40,41 +43,43 @@ const converToJson = data => {
 export const LoadTransferFunction = () => dispatch => {
     getDataToken()
         .then(datos => {
-            axios.get(queryAllShop, datos)
+            axios.get(queryAllTransfer, datos)
                 .then(res => {
                     LoadSelectBranchOfficesFunction(datos, arrayBranchOffices => {
-                        //queryAllSuppliesFunction(datos, allProducts => {
-                        queryAllTransferFunction(datos, allTransfer => {
-                            queryAllTransferReceivedFunction(datos, allTransferRecibidas => {
-                                queryStoreBranchOfficesSelectFunction(datos, arrayStoreShelfs => {
-                                    dispatch({
-                                        type: "LOAD_TRANSFERS_ALL",
-                                        payload: {
-                                            loading: "hide",
-                                            data: res.data,
-                                            allTransfer: allTransfer,
-                                            allTransferRecibidas: allTransferRecibidas,
-                                            transferId: {},
-                                            products: [],
-                                            productsToTransfer: [],
-                                            subTotal: 0,
-                                            impuesto: 0,
-                                            total: 0,
-                                            dataProductId: {},
-                                            searchProduct: 0,
-                                            dataProductPrice: [],
-                                            branchOfficces: arrayBranchOffices,
-                                            dataShopId: {},
-                                            storeShelfs: arrayStoreShelfs,
-                                            ProductLoteId: {},
-                                            action: 0,
-                                            newProvider: {}
-                                        }
+                        queryAllTransferReceivedFunction(datos, allTransferRecibidas => {
+                            queryAllRequestsMadeFunction(datos, allRequestMade => {
+                                queryAllRequestsReceivedFunction(datos, allRequestReceived => {
+                                    queryStoreBranchOfficesSelectFunction(datos, arrayStoreShelfs => {
+                                        dispatch({
+                                            type: "LOAD_TRANSFERS_ALL",
+                                            payload: {
+                                                loading: "hide",
+                                                //data: res.data,
+                                                allTransfer: res.data,
+                                                allTransferRecibidas: allTransferRecibidas,
+                                                allRequestMade: allRequestMade,
+                                                allRequestReceived: allRequestReceived,
+                                                transferId: {},
+                                                products: [],
+                                                productsToTransfer: [],
+                                                subTotal: 0,
+                                                impuesto: 0,
+                                                total: 0,
+                                                dataProductId: {},
+                                                searchProduct: 0,
+                                                dataProductPrice: [],
+                                                branchOfficces: arrayBranchOffices,
+                                                dataShopId: {},
+                                                storeShelfs: arrayStoreShelfs,
+                                                ProductLoteId: {},
+                                                action: 0,
+                                                newProvider: {}
+                                            }
+                                        });
                                     });
                                 });
                             });
                         });
-                        //});
                     });
                 })
                 .catch(error => {
@@ -121,15 +126,29 @@ const queryStoreBranchOfficesSelectFunction = (datos, execute) => {
         });
 };
 
-const queryAllTransferFunction = (datos, execute) => {
+const queryAllRequestsMadeFunction = (datos, execute) => {
     axios
-        .get(queryAllTransfer, datos)
+        .get(queryAllRequestsMade, datos)
         .then(res => {
             execute(res.data);
         })
         .catch(error => {
             console.log(
-                "Error consultando la api para consultar las transferencias",
+                "Error consultando la api para consultar las solicitudes realizadas",
+                error.toString()
+            );
+        });
+};
+
+const queryAllRequestsReceivedFunction = (datos, execute) => {
+    axios
+        .get(queryAllRequestsReceived, datos)
+        .then(res => {
+            execute(res.data);
+        })
+        .catch(error => {
+            console.log(
+                "Error consultando la api para consultar las solicitudes recibidas",
                 error.toString()
             );
         });
@@ -244,7 +263,7 @@ export const deleteProductsTransferFunction = (key) => dispatch => {
             dispatch({
                 type: "DELETE_PRODUCT_TRANSFER",
                 payload: {
-                    key: key                    
+                    key: key
                 }
             });
         })
@@ -260,6 +279,28 @@ export const cleanQuantityProductsTransferAction = () => dispatch => {
                 type: "CLEAN_TRANSFER_QUANTYTI_PRODUCT",
                 payload: []
             });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
+export const saveTransferRequestAction = (data, callback) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios({
+                method: "post",
+                url: transferRequest,
+                data: data,
+                headers: datos.headers
+            })
+                .then(() => {
+                    callback();
+                    dispatch(openSnackbars("success", "Operacion Exitosa"));
+                })
+                .catch(error => {
+                    dispatch(openSnackbars("error", "Error guardando la solicitud de transferencia"));
+                });
         })
         .catch(() => {
             console.log("Problemas con el token");

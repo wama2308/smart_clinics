@@ -27,7 +27,7 @@ import classnames from "classnames";
 import DefaultSearch from "../../components/DefaultSearch.js";
 import ProductsTransfer from "./ProductsTransfer.js";
 
-class ModalTransferencias extends React.Component {
+class ModalSolicitudes extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -448,4 +448,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(ModalTransferencias);
+)(ModalSolicitudes);
