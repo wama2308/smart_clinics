@@ -106,7 +106,6 @@ const setSupplies = (state, payload) => {
 
 const queryBelongingFunction = (state, payload) => {
   let estado = state.toJS();
-  console.log(payload);
 
   if (payload.option === 4) {
     estado.dataAccept.push({

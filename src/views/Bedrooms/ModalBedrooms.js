@@ -725,11 +725,6 @@ class ModalBedrooms extends Component {
     const disable = this.disabled()
     const bedroomsArray = this.filter(this.props.data)
 
-    console.log(this.props);
-    console.log("estados", this.state);
-    console.log("filter", bedroomsArray);
-
-
     return (
       <span>
         <Modal
