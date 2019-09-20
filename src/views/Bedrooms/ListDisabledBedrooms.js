@@ -7,8 +7,8 @@ class ListDisabledBedrooms extends Component {
 
   activarProveedor = (id) => {
     const message = {
-      title: "Activar Habitacion",
-      info: "¿Esta seguro que desea activar esta Habitacion?"
+      title: "Activar Espacio",
+      info: "¿Esta seguro que desea activar este Espacio?"
     };
     this.props.confirm(message, res => {
       if (res) {
@@ -25,10 +25,10 @@ class ListDisabledBedrooms extends Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th style={{ width: "12%" }}>Numero</th>
-                  <th style={{ width: "12%" }}>Tipo</th>
-                  <th style={{ width: "12%" }}>Estatus</th>
-                  <th style={{ width: "12%" }}>Acciones</th>
+                  <th>Numero</th>
+                  <th>Tipo</th>
+                  <th>Estatus</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -41,7 +41,7 @@ class ListDisabledBedrooms extends Component {
                       <td>
                         <div>
                           <IconButton aria-label="Delete"
-                            title="Activar Proveedor"
+                            title="Activar Espacio"
                             className="iconButtons"
                             onClick={() => { this.activarProveedor(list._id); }}>
                             <HowToReg className="iconTable" />

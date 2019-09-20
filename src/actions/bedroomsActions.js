@@ -55,8 +55,6 @@ export const queryOneBedroomsFunction = (data) => dispatch => {
 }
 
 export const createBedroomsFunction = (data, callback) => dispatch => {
-  console.log(data);
-
   getDataToken()
     .then(datos => {
       axios({
@@ -71,7 +69,6 @@ export const createBedroomsFunction = (data, callback) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error guardando el Reclamo"));
-          console.log("error");
         });
     })
 }
@@ -89,8 +86,7 @@ export const editOneBedroomsFunction = (data, callback) => dispatch => {
       callback();
       dispatch(openSnackbars("success", "Operacion Exitosa"));
     }).catch(() => {
-      dispatch(openSnackbars("error", "Error guardando el Reclamo"));
-      console.log("error");
+      dispatch(openSnackbars("error", "Error guardando la habitacion"));
     })
 }
 
@@ -110,7 +106,6 @@ export const enabledBedroomsFunction = (data) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error borrando la habitacion"));
-          console.log("error");
         });
     })
 }
@@ -130,14 +125,11 @@ export const editBedroomsFunction = (data, callback) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error borrando la habitacion"));
-          console.log("error");
         });
     })
 }
 
 export const queryOneBelongingFunction = (data, option) => dispatch => {
-  console.log(data);
-
   getDataToken()
     .then(datos => {
       axios({
@@ -177,7 +169,6 @@ export const disabledBedroomsFuntion = (data) => dispatch => {
         })
         .catch(error => {
           dispatch(openSnackbars("error", "Error borrando la habitacion"));
-          console.log("error");
         });
     })
 }
@@ -264,4 +255,8 @@ export const oneSuppliesSet = (data) => dispatch => {
 
 export const messageError = () => dispatch => {
   dispatch(openSnackbars("warning", `Necesita Registrar las Pertenencias`))
+}
+
+export const messageErrorInvalid = () => dispatch => {
+  dispatch(openSnackbars("warning", `La cantidad de pertenencias no puede ser 0`))
 }

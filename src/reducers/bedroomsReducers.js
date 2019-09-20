@@ -56,7 +56,7 @@ const setSuppliesData = (state, payload) => {
     })
   } else if (payload.option === 3) {
     estado.bedroomsOne.supplies.map(data => {
-      if (payload.data >= 0 ) {
+      if (payload.data >= 0 && payload.data <= data.quantity) {
         if (data._id === payload.id) {
           data.quantity_stock = parseInt(payload.data)
         }
@@ -66,7 +66,7 @@ const setSuppliesData = (state, payload) => {
     estado.dataAccept.map(data => {
       if (payload.data >= 0 && payload.data <= data.quantity) {
         if (data._id === payload.id) {
-          data.quantity = parseInt(payload.data)
+          data.cantidad = parseInt(payload.data)
         }
       }
     })
@@ -120,7 +120,7 @@ const queryBelongingFunction = (state, payload) => {
   } else if (payload.option === 3) {
     estado.bedroomsOne.supplies.push({
       ...payload,
-      cantidad: 0
+      quantity_stock: 0
     })
   }
   return Map(estado);
