@@ -32,6 +32,7 @@ class ListSolicitudesRecibidas extends React.Component {
   componentDidMount() { }
 
   openModal = (option, pos, id, status) => {
+    this.props.querySelectTransferAction();
     if (option === 1) {
       this.setState({
         modal: true,

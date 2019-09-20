@@ -32,6 +32,7 @@ const querySelectTransfer = `${url}/api/querySelectTransfer`;
 const transferRequest = `${url}/api/transferRequest`;
 const queryAllRequestsMade = `${url}/api/queryAllRequestsMade`;
 const queryAllRequestsReceived = `${url}/api/queryAllRequestsReceived`;
+const queryOneTransferRequests = `${url}/api/queryOneTransferRequests`;
 
 const converToJson = data => {
     const stringify = JSON.stringify(data);
@@ -50,31 +51,35 @@ export const LoadTransferFunction = () => dispatch => {
                             queryAllRequestsMadeFunction(datos, allRequestMade => {
                                 queryAllRequestsReceivedFunction(datos, allRequestReceived => {
                                     queryStoreBranchOfficesSelectFunction(datos, arrayStoreShelfs => {
-                                        dispatch({
-                                            type: "LOAD_TRANSFERS_ALL",
-                                            payload: {
-                                                loading: "hide",
-                                                //data: res.data,
-                                                allTransfer: res.data,
-                                                allTransferRecibidas: allTransferRecibidas,
-                                                allRequestMade: allRequestMade,
-                                                allRequestReceived: allRequestReceived,
-                                                transferId: {},
-                                                products: [],
-                                                productsToTransfer: [],
-                                                subTotal: 0,
-                                                impuesto: 0,
-                                                total: 0,
-                                                dataProductId: {},
-                                                searchProduct: 0,
-                                                dataProductPrice: [],
-                                                branchOfficces: arrayBranchOffices,
-                                                dataShopId: {},
-                                                storeShelfs: arrayStoreShelfs,
-                                                ProductLoteId: {},
-                                                action: 0,
-                                                newProvider: {}
-                                            }
+                                        querySelectTransferAction(datos, arraySelectTransfers => {
+                                            dispatch({
+                                                type: "LOAD_TRANSFERS_ALL",
+                                                payload: {
+                                                    loading: "hide",
+                                                    //data: res.data,
+                                                    selectTransfers: arraySelectTransfers,
+                                                    allTransfer: res.data,
+                                                    allTransferRecibidas: allTransferRecibidas,
+                                                    allRequestMade: allRequestMade,
+                                                    requestMadeId: {},
+                                                    allRequestReceived: allRequestReceived,
+                                                    transferId: {},
+                                                    products: [],
+                                                    productsToTransfer: [],
+                                                    subTotal: 0,
+                                                    impuesto: 0,
+                                                    total: 0,
+                                                    dataProductId: {},
+                                                    searchProduct: 0,
+                                                    dataProductPrice: [],
+                                                    branchOfficces: arrayBranchOffices,
+                                                    dataShopId: {},
+                                                    storeShelfs: arrayStoreShelfs,
+                                                    ProductLoteId: {},
+                                                    action: 0,
+                                                    newProvider: {}
+                                                }
+                                            });
                                         });
                                     });
                                 });
@@ -92,23 +97,37 @@ export const LoadTransferFunction = () => dispatch => {
         });
 };
 
-export const querySelectTransferAction = () => dispatch => {
-    getDataToken()
-        .then(datos => {
-            axios.get(querySelectTransfer, datos)
-                .then(res => {
-                    dispatch({
-                        type: "LOAD_SELECT_TRANSFERS",
-                        payload: res.data
-                    });
-                })
-                .catch(error => {
-                    console.log("Error consultando la api para consultar los select del modulo de transferencias", error.toString());
-                });
+// export const querySelectTransferAction = () => dispatch => {
+//     getDataToken()
+//         .then(datos => {
+//             axios.get(querySelectTransfer, datos)
+//                 .then(res => {
+//                     dispatch({
+//                         type: "LOAD_SELECT_TRANSFERS",
+//                         payload: res.data
+//                     });
+//                 })
+//                 .catch(error => {
+//                     console.log("Error consultando la api para consultar los select del modulo de transferencias", error.toString());
+//                 });
 
+//         })
+//         .catch(() => {
+//             console.log("Problemas con el token");
+//         });
+// };
+
+const querySelectTransferAction = (datos, execute) => {
+    axios
+        .get(querySelectTransfer, datos)
+        .then(res => {
+            execute(res.data);
         })
-        .catch(() => {
-            console.log("Problemas con el token");
+        .catch(error => {
+            console.log(
+                "Error consultando la api para consultar las sucursales y departamentos de la sucursal",
+                error.toString()
+            );
         });
 };
 
@@ -182,6 +201,38 @@ const LoadSelectBranchOfficesFunction = (datos, execute) => {
             );
         });
 };
+
+export const LoadRequestMadeIdFunction = (id) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios({
+                method: "post",
+                url: queryOneTransferRequests,
+                data: {
+                    _id: id,
+                },
+                headers: datos.headers
+            })
+                .then(res => {
+                    dispatch({
+                        type: "REQUEST_MADE_ID",
+                        payload: {
+                            data: res.data
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.log(
+                        "Error consultando la api para consultar las solicitudes realizadas por id",
+                        error.toString()
+                    );
+                });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
 
 export const searchProduct = data => dispatch => {
     getDataToken().then(token => {
@@ -301,6 +352,19 @@ export const saveTransferRequestAction = (data, callback) => dispatch => {
                 .catch(error => {
                     dispatch(openSnackbars("error", "Error guardando la solicitud de transferencia"));
                 });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
+export const actionProps = (value) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            dispatch({
+                type: "ACTION_PROPS",
+                payload: value
+            });
         })
         .catch(() => {
             console.log("Problemas con el token");

@@ -30,7 +30,7 @@ class ListSolicitudesRealizadas extends React.Component {
 
   componentDidMount() { }
 
-  openModal = (option, pos, id, status) => {
+  openModal = (option, pos, id, status) => {    
     if (option === 1) {
       this.setState({
         modal: true,
@@ -42,7 +42,7 @@ class ListSolicitudesRealizadas extends React.Component {
         isClearable: true,
       })
     } else if (option === 2) {
-      this.props.queryOneTransferFunction(id);
+      this.props.LoadRequestMadeIdFunction(id);
       this.setState({
         modal: true,
         option: option,
@@ -52,7 +52,7 @@ class ListSolicitudesRealizadas extends React.Component {
         showHide: 'hide',
       })
     } else if (option === 3) {
-      this.props.queryOneTransferFunction(id);
+      this.props.LoadRequestMadeIdFunction(id);
       this.setState({
         modal: true,
         option: option,
