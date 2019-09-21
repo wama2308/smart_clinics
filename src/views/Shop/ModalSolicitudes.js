@@ -11,12 +11,13 @@ import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
 import {
-    cleanQuantityProductsTransferAction,    
+    cleanQuantityProductsTransferAction,
     searchProduct,
     searchOneSuppplie,
     setQuantityTranferAction,
     deleteProductsTransferFunction,
     saveTransferRequestAction,
+    editTransferRequestsAction,
     actionProps
 } from "../../actions/TransferActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -35,7 +36,7 @@ class ModalSolicitudes extends React.Component {
         };
     }
 
-    componentDidMount() {        
+    componentDidMount() {
         if (this.props.option === 1) {
             this.setState({
                 loading: 'hide',
@@ -100,27 +101,27 @@ class ModalSolicitudes extends React.Component {
             })
         }
         if (props.option === 2 || props.option === 3) {
-            if (props.transfer.requestMadeId.type_shipping && props.transfer.action === 0) {                   
+            if (props.transfer.requestMadeId.type_shipping && props.transfer.action === 0) {
                 let dataOptionsOne = [];
                 let selectOptionsOne = [];
                 let datatOptionsTwo = [];
-                let selectOptionsTwo = [];        
-                
-                if(props.transfer.requestMadeId.type && props.transfer.selectTransfers){                    
-                    dataOptionsOne =  props.transfer.selectTransfers.filter(
+                let selectOptionsTwo = [];
+
+                if (props.transfer.requestMadeId.type && props.transfer.selectTransfers) {
+                    dataOptionsOne = props.transfer.selectTransfers.filter(
                         selectTransfer => selectTransfer.label === props.transfer.requestMadeId.type_shipping.label
-                    );                       
+                    );
                     selectOptionsOne = dataOptionsOne[0]['others'];
 
                     datatOptionsTwo = dataOptionsOne[0]['others'].filter(
                         selectTransfer => selectTransfer.label === props.transfer.requestMadeId.type_department.label
-                    );  
-                    selectOptionsTwo = datatOptionsTwo[0]['others']; 
+                    );
+                    selectOptionsTwo = datatOptionsTwo[0]['others'];
                 }
-                else{
-                    dataOptionsOne =  props.transfer.selectTransfers.filter(
+                else {
+                    dataOptionsOne = props.transfer.selectTransfers.filter(
                         selectTransfer => selectTransfer.label === props.transfer.requestMadeId.type_shipping.label
-                    );   
+                    );
                     selectOptionsOne = dataOptionsOne[0]['others'];
                     selectOptionsTwo = [];
                 }
@@ -134,7 +135,7 @@ class ModalSolicitudes extends React.Component {
                         props.transfer.requestMadeId.sender :
                         props.transfer.requestMadeId.receiver,
                     observacion: props.transfer.requestMadeId.description,
-                    arraySelectOptionOne: selectOptionsOne,  
+                    arraySelectOptionOne: selectOptionsOne,
                     arraySelectOptionTwo: selectOptionsTwo,
                     loading: 'hide',
                 })
@@ -288,26 +289,26 @@ class ModalSolicitudes extends React.Component {
                     }
                 )
             }
-            // if (this.props.option === 6) {
-            //     if (this.props.status === "Pendiente") {
-            //         this.setState({ loading: 'show' })
-            //         this.props.editTransferAction(
-            //             {
-            //                 id: this.props.transfer_id,
-            //                 sucursal_envia: sucursalEnvia,
-            //                 sucursal_recibe: sucursalRecibe,
-            //                 observacion: this.state.observacion,
-            //                 products: this.props.shop.transferId.products,
-            //             },
-            //             () => {
-            //                 this.closeModal();
-            //             }
-            //         )
-            //     } else {
-            //         this.props.alert("warning", "¡No puede editar la transferencia, su estatus es: " + this.props.status + "!");
-            //     }
+            if (this.props.option === 3) {
+                if (this.props.status === "Pendiente") {
+                    this.setState({ loading: 'show' })
+                    this.props.editTransferRequestsAction(
+                        {
+                            _id: this.props.request_id,
+                            receiver: received,
+                            description: this.state.observacion,
+                            products: this.props.transfer.productsToTransfer,
+                        },
+                        () => {
+                            this.closeModal();
+                        }
+                    )
+                }else{
+                    this.props.alert("warning", "¡La solicitud no puede ser editada, su estatus es: "+this.props.status+"!");
+                }
 
-            // }
+
+            }
         }
     }
 
@@ -320,7 +321,7 @@ class ModalSolicitudes extends React.Component {
             [name]: event.target.checked
         });
         this.props.setSelectAllSwitchTransferencias(event.target.checked, this.props.option);
-    };   
+    };
 
     render() {
         //console.log("render ", this.props.transfer)
@@ -360,8 +361,8 @@ class ModalSolicitudes extends React.Component {
                 label = 'Departamento';
                 label_children = 'Oficina/consultorio';
             }
-        }       
-       
+        }
+
         return (
             <span>
                 <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalTransfer">
@@ -488,10 +489,11 @@ const mapDispatchToProps = dispatch => ({
     confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
     cleanQuantityProductsTransferAction: () => dispatch(cleanQuantityProductsTransferAction()),
     searchProduct: (data) => dispatch(searchProduct(data)),
-    searchOneSuppplie: (data) => dispatch(searchOneSuppplie(data)),    
+    searchOneSuppplie: (data) => dispatch(searchOneSuppplie(data)),
     setQuantityTranferAction: (_id, value) => dispatch(setQuantityTranferAction(_id, value)),
     deleteProductsTransferFunction: (key) => dispatch(deleteProductsTransferFunction(key)),
     saveTransferRequestAction: (data, callback) => dispatch(saveTransferRequestAction(data, callback)),
+    editTransferRequestsAction: (data, callback) => dispatch(editTransferRequestsAction(data, callback)),
     actionProps: (value) => dispatch(actionProps(value)),
 });
 
