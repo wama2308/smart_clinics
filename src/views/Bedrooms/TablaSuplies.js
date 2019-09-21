@@ -12,7 +12,7 @@ class TablaSuplies extends Component {
     const data = [];
     options.map(option => {
       data.push({
-        label: `${option.name}-${option.code}`,
+        label: `${option.name} - ${option.code}`,
         _id: option._id,
         code: option.code
       });
