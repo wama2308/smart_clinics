@@ -18,6 +18,7 @@ import {
     deleteProductsTransferFunction,
     saveTransferRequestAction,
     editTransferRequestsAction,
+    setSwitchTableRequestReceived,
     actionProps
 } from "../../actions/TransferActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -100,7 +101,7 @@ class ModalSolicitudes extends React.Component {
                 ...InitalState
             })
         }
-        if (props.option === 2 || props.option === 3) {
+        if (props.option === 2 || props.option === 3 || props.option === 4) {
             if (props.transfer.requestMadeId.type_shipping && props.transfer.action === 0) {
                 let dataOptionsOne = [];
                 let selectOptionsOne = [];
@@ -374,7 +375,7 @@ class ModalSolicitudes extends React.Component {
                                     <form className="formCodeConfirm" onSubmit={this.handleAction.bind(this)}>
                                         <div className="row">
                                             <FormGroup className="top form-group col-sm-6">
-                                                <Label for="tipoTransfer">Transferir a:</Label>
+                                                <Label for="tipoTransfer">Tipo de Solicitud:</Label>
                                                 <div className={this.state.divTipoTransfer}>
                                                     <Select
                                                         isSearchable="true"
@@ -441,12 +442,14 @@ class ModalSolicitudes extends React.Component {
                                             </FormGroup>
                                         </div>
                                         <ProductsTransfer
+                                            option={this.props.option}
                                             searchProduct={this.props.searchProduct}
                                             dataAllProducts={this.props.dataAllProducts}
                                             searchOneSuppplie={this.props.searchOneSuppplie}
                                             productsToTransfer={this.props.transfer.productsToTransfer}
                                             setQuantityTranferAction={this.props.setQuantityTranferAction}
                                             deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
+                                            setSwitchTableRequestReceived={this.props.setSwitchTableRequestReceived}
                                             confirm={this.props.confirm}
                                             alert={this.props.alert}
                                             divAviso={this.state.divAviso}
@@ -494,6 +497,7 @@ const mapDispatchToProps = dispatch => ({
     deleteProductsTransferFunction: (key) => dispatch(deleteProductsTransferFunction(key)),
     saveTransferRequestAction: (data, callback) => dispatch(saveTransferRequestAction(data, callback)),
     editTransferRequestsAction: (data, callback) => dispatch(editTransferRequestsAction(data, callback)),
+    setSwitchTableRequestReceived: (id, value) => dispatch(setSwitchTableRequestReceived(id, value)),
     actionProps: (value) => dispatch(actionProps(value)),
 });
 

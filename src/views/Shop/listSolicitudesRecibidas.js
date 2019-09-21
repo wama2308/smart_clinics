@@ -1,9 +1,8 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
-import { Delete, Edit, Visibility, SwapHoriz } from "@material-ui/icons";
-import ModalShop from './ModalShop.js';
-import ModalTransferencias from './ModalTransferencias.js';
+import { Delete, Edit, Visibility, EventBusy } from "@material-ui/icons";
+import ModalSolicitudes from './ModalSolicitudes.js';
 import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
 import Pagination from '../../components/Pagination';
 import Search from "../../components/Select";
@@ -22,66 +21,65 @@ class ListSolicitudesRecibidas extends React.Component {
       option: 0,
       position: 0,
       isClearable: false,
-      transfer_id: '0',
+      request_id: '0',
       status: '',
       page: 0,
       rowsPerPage: 10,
+      typeRequest: 'Recibida',
     };
   }
 
   componentDidMount() { }
 
-  openModal = (option, pos, id, status) => {    
-    if (option === 1) {
+  openModal = (option, pos, id, status) => {
+    if (option === 4) {
+      this.props.querySeeARequestsFunction(id);
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Registrar Transferencia',
+        modalHeader: 'Ver Solicitud Recibida',
         modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
         isClearable: true,
       })
-    } else if (option === 2) {
-      this.props.queryOneTransferFunction(id);
-      this.setState({
-        modal: true,
-        option: option,
-        modalHeader: 'Ver Transferencia',
-        modalFooter: 'Guardar',
-        disabled: true,
-        showHide: 'hide',
-      })
-    } else if (option === 3) {
-      this.props.queryOneTransferFunction(id);
-      this.setState({
-        modal: true,
-        option: option,
-        modalHeader: 'Editar Transferencia',
-        modalFooter: 'Editar',
-        disabled: false,
-        showHide: 'show',
-        position: pos,
-        transfer_id: id,
-        status: status,
-        page: 0,
-        rowsPerPage: 10,
-      })
     }
+    // else if (option === 2) {
+    //   this.props.queryOneTransferFunction(id);
+    //   this.setState({
+    //     modal: true,
+    //     option: option,
+    //     modalHeader: 'Ver Transferencia',
+    //     modalFooter: 'Guardar',
+    //     disabled: true,
+    //     showHide: 'hide',
+    //   })
+    // } else if (option === 3) {
+    //   this.props.queryOneTransferFunction(id);
+    //   this.setState({
+    //     modal: true,
+    //     option: option,
+    //     modalHeader: 'Editar Transferencia',
+    //     modalFooter: 'Editar',
+    //     disabled: false,
+    //     showHide: 'show',
+    //     position: pos,
+    //     request_id: id,
+    //     status: status,
+    //     page: 0,
+    //     rowsPerPage: 10,
+    //   })
+    // }
   }
 
   deleteRegister = (id, status) => {
     const message = {
-      title: "Eliminar Registro",
-      info: "¿Esta seguro que desea eliminar este registro?"
+      title: "Rechazar Solicitud",
+      info: "¿Esta seguro que desea rechazar esta solicitud?"
     };
     this.props.confirm(message, res => {
       if (res) {
-        if (status === "Pendiente" || status === "Rechazada") {
-          this.props.disableTransferAction(id);
-        } else {
-          this.props.alert("warning", "¡La transferencia no puede ser eliminada porque ya fue aceptada!");
-        }
+        this.props.rejectRequestAction(id);
       }
     });
   }
@@ -120,10 +118,10 @@ class ListSolicitudesRecibidas extends React.Component {
     return (
       <div>
         {
-          (this.state.option === 1 ||
-            this.state.option === 2 ||
-            this.state.option === 3) &&
-          <ModalTransferencias
+          (this.state.option === 4 ||
+            this.state.option === 5 ||
+            this.state.option === 6) &&
+          <ModalSolicitudes
             option={this.state.option}
             modal={this.state.modal}
             modalHeader={this.state.modalHeader}
@@ -131,7 +129,7 @@ class ListSolicitudesRecibidas extends React.Component {
             disabled={this.state.disabled}
             showHide={this.state.showHide}
             isClearable={this.state.isClearable}
-            transfer_id={this.state.transfer_id}
+            request_id={this.state.request_id}
             status={this.state.status}
             branchOfficces={this.props.branchOfficces}
             valorCloseModal={this.valorCloseModal}
@@ -139,13 +137,13 @@ class ListSolicitudesRecibidas extends React.Component {
           />
         }
         <div className="containerGeneral" style={{ "justifyContent": "flex-end" }}>
-          <div className="container-button" >
+          {/* <div className="container-button" >
             <Button color="success"
               disabled={createDisabled}
               onClick={() => { this.openModal(1); }}>
               Agregar
             </Button>
-          </div>
+          </div> */}
           <div className="containerSearch">
             <Search value={arrayData} />
           </div>
@@ -156,7 +154,7 @@ class ListSolicitudesRecibidas extends React.Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th className="text-left">Nro</th>                  
+                  <th className="text-left">Nro</th>
                   <th className="text-left">Control</th>
                   <th className="text-left">Emisor</th>
                   <th className="text-left">Receptor</th>
@@ -169,7 +167,7 @@ class ListSolicitudesRecibidas extends React.Component {
                   this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
                     return (
                       <tr key={data.number} className="text-left">
-                        <td>{data.number}</td>                        
+                        <td>{data.number}</td>
                         <td>{data.number_control}</td>
                         <td>{data.sender}</td>
                         <td>{data.receiver}</td>
@@ -177,28 +175,23 @@ class ListSolicitudesRecibidas extends React.Component {
                         <td style={{ 'minWidth': "205px" }}>
                           <div className="float-left" >
                             <IconButton aria-label="Delete"
-                              title="Ver Transferencia"
+                              title="Ver Solicitud Recibida"
                               className="iconButtons"
-                              onClick={() => { this.openModal(2, data.number, data._id, data.status); }}
+                              onClick={() => { this.openModal(4, data.number, data._id, data.status); }}
                               disabled={detailsDisabled}>
                               <Visibility className="iconTable" />
                             </IconButton>
+                            {
+                              data.status !== "Rechazada" &&
+                              <IconButton aria-label="Delete"
+                                title="Rechazar Solicitud"
+                                className="iconButtons"
+                                onClick={() => { this.deleteRegister(data._id, data.status); }}
+                                disabled={deleteDisabled}>
+                                <EventBusy className="iconTable" />
+                              </IconButton>
+                            }
 
-                            <IconButton aria-label="Delete"
-                              title="Editar Transferencia"
-                              className="iconButtons"
-                              onClick={() => { this.openModal(3, data.number, data._id, data.status); }}
-                              disabled={updateDisabled}>
-                              <Edit className="iconTable" />
-                            </IconButton>
-
-                            <IconButton aria-label="Delete"
-                              title="Eliminar Transferencia"
-                              className="iconButtons"
-                              onClick={() => { this.deleteRegister(data._id, data.status); }}
-                              disabled={deleteDisabled}>
-                              <Delete className="iconTable" />
-                            </IconButton>
                           </div>
                         </td>
                       </tr>

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Search from "../../components/DefaultSearch.js";
 import DefaultSearch from "../../components/DefaultSearch.js";
 import { Delete } from "@material-ui/icons";
+import Switch from '@material-ui/core/Switch';
 import {
   Table,
   TableCell,
@@ -59,7 +60,7 @@ class ProductsTransfer extends React.Component {
     // } else {
     //   this.props.setQuantityTranferAction(product._id, parseFloat(event.target.value));
     // }
-  };  
+  };
 
   componentDidUpdate = prevProps => {
     let lastData = undefined;
@@ -106,16 +107,34 @@ class ProductsTransfer extends React.Component {
     }
   }
 
+  handleChangeSwitch = (id) => event => {
+    this.props.setSwitchTableRequestReceived(id, event.target.checked);    
+  };
+
   render() {
     const optionsProducts = this.optionsProducts(this.props.dataAllProducts);
     const { productsToTransfer } = this.props;
-    const dataHead = [
-      { label: "NOMBRE" },
-      { label: "TIPO" },      
-      //{ label: "DISPONIBLE" },
-      { label: "CANT TRANSFERIR" },
-      { label: "ACTION" }
-    ];
+    let dataHead = [];
+    if(this.props.option === 3 || this.props.option === 2 || this.props.option === 1){
+      dataHead = [
+        { label: "NOMBRE" },
+        { label: "TIPO" },
+        //{ label: "DISPONIBLE" },
+        { label: "CANT A SOLICITAR" },
+        { label: "ACTION" }
+      ];
+    }else if(this.props.option === 4){
+      dataHead = [
+        { label: "NOMBRE" },
+        { label: "TIPO" },
+        { label: "DISPONIBLE" },
+        { label: "CANT SOLICITADA" },
+        { label: "SELECCIONAR" },
+        { label: "ACTION" }
+      ];
+    }
+    
+
     return (
       <span>
         <div className="errorSelect" style={{ width: "100%" }}>{this.props.divAviso}</div>
@@ -162,8 +181,12 @@ class ProductsTransfer extends React.Component {
                     return (
                       <RowTable key={key}>
                         <Cell className="cellStyle">{product.name}</Cell>
-                        <Cell>{product.type}</Cell>                        
-                        {/* <Cell>{product.quantity_stock}</Cell> */}
+                        <Cell>{product.type}</Cell>
+                        {
+                          this.props.option === 4 &&
+                          <Cell>{product.quantity_stock}</Cell>
+                        }
+
                         <td>
                           <Input
                             name={`inputQuantity_${product._id}`}
@@ -178,6 +201,22 @@ class ProductsTransfer extends React.Component {
                             onFocus={this.eventFocusInputQuantity(product._id)}
                           />
                         </td>
+                        {
+                          this.props.option === 4 &&
+                          <Cell>
+                          <td style={{ padding: "1px" }}>
+                            <Switch
+                              onChange={this.handleChangeSwitch(product._id)}
+                              value={product.confirm}
+                              id={`checked_${product._id}`}
+                              name={`checked_${product._id}`}
+                              color="primary"
+                              checked={product.confirm}
+                              disabled={this.props.disabled}
+                            />
+                          </td>
+                          </Cell>
+                        }
                         <Cell>
                           <IconButton
                             //disabled={disabled}
