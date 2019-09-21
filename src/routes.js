@@ -271,11 +271,16 @@ const routes = [
     component: TurnosContainer
   },
   {
-    name: "Dispensarios",
-    path: "/dispensarios/habitaciones",
+    name: "Mobiliarios",
+    path: "/mobiliario/espacios",
     component: BedroomsContainer
   },
 
+  {
+    name: "Bienes",
+    path: "/mobiliarios/bienes",
+    //component: BedroomsContainer
+  },
   { path: "/theme", exact: true, name: "Theme", component: Colors },
   { path: "/theme/colors", name: "Colors", component: Colors },
   { path: "/theme/typography", name: "Typography", component: Typography },

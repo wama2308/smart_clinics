@@ -1,11 +1,12 @@
 import { Map } from 'immutable'
-import { deleteDataSupplies, queryOneBelongingFunction } from '../actions/bedroomsActions';
+import { deleteDataSupplies, queryOneBelongingFunction, propsAction } from '../actions/bedroomsActions';
 
 const loadbedroons = (state, payload) => {
   let estado = state.toJS();
   estado.bedroomsEnabled = payload.enabled
   estado.bedroomsDisabled = payload.disabled
   estado.dataAccept = []
+  estado.propsAction = 0
   return Map(estado);
 }
 
@@ -28,7 +29,8 @@ const loadOneBedroons = (state, payload) => {
 
 const searchSupplies = (state, payload) => {
   let estado = state.toJS();
-  estado.searchSupplies = payload
+  estado.searchSupplies = payload.data
+  
   return Map(estado);
 }
 
@@ -55,8 +57,12 @@ const setSuppliesData = (state, payload) => {
       }
     })
   } else if (payload.option === 3) {
+    estado.bedroomsOne.name = payload.obj.nombre
+    estado.bedroomsOne.abbreviation = payload.obj.abreviatura
+    estado.bedroomsOne.floor =   payload.obj.piso
+
     estado.bedroomsOne.supplies.map(data => {
-      if (payload.data >= 0 ) {
+      if (payload.data >= 0 && payload.data <= data.quantity) {
         if (data._id === payload.id) {
           data.quantity_stock = parseInt(payload.data)
         }
@@ -66,7 +72,7 @@ const setSuppliesData = (state, payload) => {
     estado.dataAccept.map(data => {
       if (payload.data >= 0 && payload.data <= data.quantity) {
         if (data._id === payload.id) {
-          data.quantity = parseInt(payload.data)
+          data.quantity_stock = parseInt(payload.data)
         }
       }
     })
@@ -110,7 +116,7 @@ const queryBelongingFunction = (state, payload) => {
   if (payload.option === 4) {
     estado.dataAccept.push({
       ...payload,
-      cantidad: 0
+      quantity_stock: 0
     })
   } else if (payload.option === 1) {
     estado.dataAccept.push({
@@ -120,9 +126,15 @@ const queryBelongingFunction = (state, payload) => {
   } else if (payload.option === 3) {
     estado.bedroomsOne.supplies.push({
       ...payload,
-      cantidad: 0
+      quantity_stock: 0
     })
   }
+  return Map(estado);
+}
+
+const propsActionFucction = (state, payload) =>{
+  let estado = state.toJS();
+  estado.propsAction = payload
   return Map(estado);
 }
 
@@ -165,9 +177,13 @@ const bedroomsReducer = (state = Map(), action) => {
     case "QUERY_BELONGING":
       return queryBelongingFunction(state, action.payload)
       break;
+
+      case "PROPS_ACTION":
+        return propsActionFucction(state, action.payload)
+        break;
+
     default:
       return state
-
   }
 }
 

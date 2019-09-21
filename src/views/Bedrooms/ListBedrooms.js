@@ -81,8 +81,8 @@ class ListBedrooms extends Component {
 
   disabledBedroom = id => {
     const message = {
-      title: "Desabilitar Habitacion",
-      info: "¿Esta seguro que desea Desabilitar este Habitacion?"
+      title: "Desabilitar Espacio",
+      info: "¿Esta seguro que desea Desabilitar este Espacio?"
     };
     this.props.confirm(message, res => {
       if (res) {
@@ -152,7 +152,7 @@ class ListBedrooms extends Component {
               Agregar
             </Button>
 
-            <div style={{ "marginLeft": "3%" }}>
+            <div style={{ "marginLeft": "1%" }}>
               <Button color="success"
                 onClick={() => this.openModal(4)}>
                 Edicion Multiple
@@ -171,17 +171,17 @@ class ListBedrooms extends Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th >Numero</th>
-                  <th >Piso</th>
-                  <th >Tipo</th>
-                  <th >Estatus</th>
-                  <th >Acciones</th>
+                  <th className="text-left" >Numero</th>
+                  <th className="text-left" >Piso</th>
+                  <th className="text-left" >Tipo</th>
+                  <th className="text-left" >Estatus</th>
+                  <th className="text-left" >Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {this.props.bedrooms ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
-                    <tr key={key}>
+                    <tr key={key} className="text-left">
                       <td>{list.number}</td>
                       <td>{list.floor}</td>
                       <td>{list.type}</td>
@@ -189,14 +189,14 @@ class ListBedrooms extends Component {
                       <td>
                         <div>
                           <IconButton aria-label="Delete"
-                            title="Ver Compra"
+                            title="Ver Espacio"
                             className="iconButtons" onClick={() => { this.openModal(2, list._id); }}
                           >
                             <Visibility className="iconTable" />
                           </IconButton>
 
                           <IconButton aria-label="Delete"
-                            title="Editar Compra"
+                            title="Editar Espacio"
 
                             className="iconButtons"
                             onClick={() => { this.openModal(3, list._id); }}>
@@ -204,7 +204,7 @@ class ListBedrooms extends Component {
                           </IconButton>
 
                           <IconButton aria-label="Delete"
-                            title="Eliminar Compra"
+                            title="Eliminar Espacio"
 
                             className="iconButtons"
                             onClick={() => { this.disabledBedroom(list._id); }}>
