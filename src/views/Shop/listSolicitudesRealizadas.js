@@ -21,7 +21,7 @@ class ListSolicitudesRealizadas extends React.Component {
       option: 0,
       position: 0,
       isClearable: false,
-      transfer_id: '0',
+      request_id: '0',
       status: '',
       page: 0,
       rowsPerPage: 10,
@@ -30,7 +30,7 @@ class ListSolicitudesRealizadas extends React.Component {
 
   componentDidMount() { }
 
-  openModal = (option, pos, id, status) => {
+  openModal = (option, pos, id, status) => {    
     if (option === 1) {
       this.setState({
         modal: true,
@@ -42,7 +42,7 @@ class ListSolicitudesRealizadas extends React.Component {
         isClearable: true,
       })
     } else if (option === 2) {
-      this.props.queryOneTransferFunction(id);
+      this.props.LoadRequestMadeIdFunction(id);
       this.setState({
         modal: true,
         option: option,
@@ -52,7 +52,7 @@ class ListSolicitudesRealizadas extends React.Component {
         showHide: 'hide',
       })
     } else if (option === 3) {
-      this.props.queryOneTransferFunction(id);
+      this.props.LoadRequestMadeIdFunction(id);
       this.setState({
         modal: true,
         option: option,
@@ -61,7 +61,7 @@ class ListSolicitudesRealizadas extends React.Component {
         disabled: false,
         showHide: 'show',
         position: pos,
-        transfer_id: id,
+        request_id: id,
         status: status,
         page: 0,
         rowsPerPage: 10,
@@ -77,9 +77,9 @@ class ListSolicitudesRealizadas extends React.Component {
     this.props.confirm(message, res => {
       if (res) {
         if (status === "Pendiente" || status === "Rechazada") {
-          this.props.disableTransferAction(id);
+          this.props.DeleteRequestMadeAction(id);
         } else {
-          this.props.alert("warning", "¡La transferencia no puede ser eliminada porque ya fue aceptada!");
+          this.props.alert("warning", "¡La solicitud no puede ser eliminada, su estatus es: "+status+"!");
         }
       }
     });
@@ -130,7 +130,7 @@ class ListSolicitudesRealizadas extends React.Component {
             disabled={this.state.disabled}
             showHide={this.state.showHide}
             isClearable={this.state.isClearable}
-            transfer_id={this.state.transfer_id}
+            request_id={this.state.request_id}
             status={this.state.status}
             branchOfficces={this.props.branchOfficces}
             valorCloseModal={this.valorCloseModal}

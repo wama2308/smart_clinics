@@ -112,8 +112,7 @@ class ListTransferencias extends React.Component {
     const result = this.props.search
       ? arrayData.filter(data => {
         return (
-          data.number_invoice.toLowerCase().includes(this.props.search) ||
-          data.number_controll.toLowerCase().includes(this.props.search)
+          data.number_control.toLowerCase().includes(this.props.search)
         );
       })
       : arrayData;

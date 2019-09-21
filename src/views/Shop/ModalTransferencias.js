@@ -11,8 +11,7 @@ import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
 import {
-    cleanQuantityProductsTransferAction,
-    querySelectTransferAction,
+    cleanQuantityProductsTransferAction,    
     searchProduct,
     searchOneSuppplie,
     setQuantityTranferAction,
@@ -35,8 +34,7 @@ class ModalTransferencias extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this.props.querySelectTransferAction();
+    componentDidMount() {        
         if (this.props.option === 1) {
             this.setState({
                 loading: 'hide',
@@ -439,7 +437,7 @@ const mapDispatchToProps = dispatch => ({
     cleanQuantityProductsTransferAction: () => dispatch(cleanQuantityProductsTransferAction()),    
     searchProduct: (data) => dispatch(searchProduct(data)),
     searchOneSuppplie: (data) => dispatch(searchOneSuppplie(data)),
-    querySelectTransferAction: () => dispatch(querySelectTransferAction()),
+    
     setQuantityTranferAction: (_id, value) => dispatch(setQuantityTranferAction(_id, value)),
     deleteProductsTransferFunction: (key) => dispatch(deleteProductsTransferFunction(key)),
     saveTransferRequestAction: (data, callback) => dispatch(saveTransferRequestAction(data, callback)),

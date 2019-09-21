@@ -18,6 +18,8 @@ import ListSolicitudesRealizadas from "../views/Shop/ListSolicitudesRealizadas";
 import ListSolicitudesRecibidas from "../views/Shop/ListSolicitudesRecibidas";
 import {
   LoadTransferFunction,
+  LoadRequestMadeIdFunction,  
+  DeleteRequestMadeAction
 }
   from "../actions/TransferActions";
 import { openConfirmDialog, openSnackbars, search } from "../actions/aplicantionActions";
@@ -34,7 +36,7 @@ class TransferContainer extends Component {
   }
 
   componentDidMount = () => {
-    this.props.LoadTransferFunction();
+    this.props.LoadTransferFunction();   
 
     this.props.aplication.dataGeneral.permission.map(permisos => {
       permisos.modules.map(modulos => {
@@ -62,8 +64,8 @@ class TransferContainer extends Component {
   }
 
 
-  render() {
-    console.log("props transfer container", this.props.transfer);
+  render() {   
+    console.log("props transfer container", this.props.transfer); 
     return (
       <div className="animated fadeIn">
         <Row>
@@ -121,12 +123,15 @@ class TransferContainer extends Component {
                         <TabPane tabId="3">
                           <ListSolicitudesRealizadas
                             confirm={this.props.confirm}
+                            alert={this.props.alert}
                             data={this.props.transfer.allRequestMade}
                             queryOneTransferFunction={this.props.queryOneTransferFunction}
                             rejectTransferAction={this.props.rejectTransferAction}
                             acceptTransferAction={this.props.acceptTransferAction}
                             permitsTransfer={this.state.permitsTransfer}
                             search={this.props.searchData}
+                            LoadRequestMadeIdFunction={this.props.LoadRequestMadeIdFunction}                            
+                            DeleteRequestMadeAction={this.props.DeleteRequestMadeAction}                            
                           />
                         </TabPane>
                         <TabPane tabId="4">
@@ -167,7 +172,9 @@ const mapDispatchToProps = dispatch => ({
   LoadTransferFunction: () => dispatch(LoadTransferFunction()),
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
   alert: (type, message) => dispatch(openSnackbars(type, message)),
-  search: (set) => dispatch(search(set))
+  search: (set) => dispatch(search(set)),
+  LoadRequestMadeIdFunction: (id) => dispatch(LoadRequestMadeIdFunction(id)),  
+  DeleteRequestMadeAction: (id) => dispatch(DeleteRequestMadeAction(id)),  
 });
 
 export default connect(

@@ -31,7 +31,7 @@ class ListSolicitudesRecibidas extends React.Component {
 
   componentDidMount() { }
 
-  openModal = (option, pos, id, status) => {
+  openModal = (option, pos, id, status) => {    
     if (option === 1) {
       this.setState({
         modal: true,
