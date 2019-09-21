@@ -54,5 +54,6 @@ export const InitalState = {
     hastaInvalid: false,
 
     cantidadError: "",
-    cantidadInvalid: false
+    cantidadInvalid: false,
+    id: ''
 }

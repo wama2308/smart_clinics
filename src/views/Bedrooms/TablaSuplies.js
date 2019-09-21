@@ -22,7 +22,12 @@ class TablaSuplies extends Component {
 
 
   handleChange = (event, id) => {
-    this.props.setDatasuppies(parseInt(event.target.value), id, this.props.option)
+    const obj = {
+      nombre: this.props.nombre,
+      piso: this.props.piso,
+      abreviatura: this.props.abreviatura
+    }
+    this.props.setDatasuppies(parseInt(event.target.value), id, this.props.option, obj)
   }
 
   searchData = (event) => {
@@ -31,6 +36,7 @@ class TablaSuplies extends Component {
 
   render() {
     const optionsPatientsStaffAll = this.optionsPatientsStaffAll(this.props.searchSupplies);
+  
     return (
       <div>
         {this.props.disabled === false &&
@@ -56,6 +62,7 @@ class TablaSuplies extends Component {
                   <th>Codigo</th>
                   <th>Modelo</th>
                   <th>Año</th>
+                  <th>Cantidad Disponible</th>
                   <th>Cantidad</th>
                 </tr>
               </thead>
@@ -68,6 +75,7 @@ class TablaSuplies extends Component {
                         <td>{list.code}</td>
                         <td>{list.model}</td>
                         <td>{list.year}</td>
+                        <td>{list.quantity}</td>
 
                         {this.props.option !== 4 &&
                           <td>
@@ -76,8 +84,8 @@ class TablaSuplies extends Component {
                               <FormGroup>
                                 <Input
                                   disabled={this.props.disabled}
-                                  invalid={this.props.cantidadInvalid}
-                                  name="hasta"
+                                  invalid={list.quantity_stock === 0 && this.props.cantidadInvalid}
+                                  name={`cantidad_${key}`}
                                   id="1"
                                   onKeyUp={this.handlekeyHabitaciones}
                                   onChange={(event) => this.handleChange(event, list._id)}
@@ -86,8 +94,8 @@ class TablaSuplies extends Component {
                                   placeholder="Cantidad"
 
                                 />
-                                <div className="errorSelect">
-                                  {this.props.cantidadError}
+                                <div style={{"width": "100%"}} className="errorSelect">
+                                  {list.quantity_stock === 0 && this.props.cantidadError}
                                 </div>
                               </FormGroup>
                             </div>
@@ -101,18 +109,18 @@ class TablaSuplies extends Component {
                               <FormGroup>
                                 <Input
                                   disabled={this.props.disabled}
-                                  invalid={this.props.cantidadInvalid}
-                                  name="hasta"
-                                  id="3"
+                                  invalid={ list.quantity_stock === 0 && this.props.cantidadInvalid}
+                                  name={`cantidad_${key}`}
+                                  id="2"
                                   onKeyUp={this.handlekeyHabitaciones}
                                   onChange={(event) => this.handleChange(event, list._id)}
-                                  value={list.cantidad}
+                                  value={list.quantity_stock}
                                   type="number"
                                   placeholder="Cantidad"
 
                                 />
-                                <div className="errorSelect">
-                                  {this.props.cantidadError}
+                                <div style={{"width": "100%"}} className="errorSelect">
+                                  {list.quantity_stock === 0 && this.props.cantidadError}
                                 </div>
                               </FormGroup>
                             </div>
@@ -131,15 +139,14 @@ class TablaSuplies extends Component {
                         <td>{list.code}</td>
                         <td>{list.model}</td>
                         <td>{list.year}</td>
-
+                        <td>{list.quantity}</td>
                         <td>
                           <div>
-
                             <FormGroup>
                               <Input
                                 disabled={this.props.disabled}
-                                invalid={this.props.cantidadInvalid}
-                                name="hasta"
+                                invalid={list.cantidad === 0 && this.props.cantidadInvalid}
+                                name={`cantidad_${key}`}
                                 id="3"
                                 onKeyUp={this.handlekeyHabitaciones}
                                 onChange={(event) => this.handleChange(event, list._id)}
@@ -148,8 +155,8 @@ class TablaSuplies extends Component {
                                 placeholder="Cantidad"
 
                               />
-                              <div className="errorSelect">
-                                {this.props.cantidadError}
+                              <div style={{"width": "100%"}} className="errorSelect">
+                                { list.cantidad === 0 && this.props.cantidadError}
                               </div>
                             </FormGroup>
                           </div>
@@ -160,7 +167,7 @@ class TablaSuplies extends Component {
                             <div>
                               <Input
                                 disabled={this.props.disabled}
-                                name="hasta"
+                                name={`cantidad_${key}`}
                                 id="4"
                                 onKeyUp={this.handlekeyHabitaciones}
                                 onChange={(event) => this.handleChange(event, list._id)}

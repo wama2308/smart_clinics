@@ -171,17 +171,17 @@ class ListBedrooms extends Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th >Numero</th>
-                  <th >Piso</th>
-                  <th >Tipo</th>
-                  <th >Estatus</th>
-                  <th >Acciones</th>
+                  <th className="text-left" >Numero</th>
+                  <th className="text-left" >Piso</th>
+                  <th className="text-left" >Tipo</th>
+                  <th className="text-left" >Estatus</th>
+                  <th className="text-left" >Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {this.props.bedrooms ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
-                    <tr key={key}>
+                    <tr key={key} className="text-left">
                       <td>{list.number}</td>
                       <td>{list.floor}</td>
                       <td>{list.type}</td>

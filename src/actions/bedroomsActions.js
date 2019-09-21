@@ -68,7 +68,7 @@ export const createBedroomsFunction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error guardando el Reclamo"));
+          dispatch(openSnackbars("error", "Error guardando el Espacio"));
         });
     })
 }
@@ -86,7 +86,7 @@ export const editOneBedroomsFunction = (data, callback) => dispatch => {
       callback();
       dispatch(openSnackbars("success", "Operacion Exitosa"));
     }).catch(() => {
-      dispatch(openSnackbars("error", "Error guardando la habitacion"));
+      dispatch(openSnackbars("error", "Error guardando el Espacio"));
     })
 }
 
@@ -105,7 +105,7 @@ export const enabledBedroomsFunction = (data) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error borrando la habitacion"));
+          dispatch(openSnackbars("error", "Error habilitando el Espacio"));
         });
     })
 }
@@ -124,7 +124,7 @@ export const editBedroomsFunction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error borrando la habitacion"));
+          dispatch(openSnackbars("error", "Error editando el Espacio"));
         });
     })
 }
@@ -168,14 +168,14 @@ export const disabledBedroomsFuntion = (data) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error borrando la habitacion"));
+          dispatch(openSnackbars("error", "Error borrando el Espacio"));
         });
     })
 }
 /*-------------------------API-------------------------------------*/
 
 
-export const searchBelogingFunction = (data) => dispatch => {
+export const searchBelogingFunction = (data, obj) => dispatch => {
   dispatch({
     type: "SEARCH_DATA",
     payload: data
@@ -193,7 +193,10 @@ export const searchBelogingFunction = (data) => dispatch => {
       }).then(res => {
         dispatch({
           type: "SEARCH_SUPPLIES",
-          payload: res.data
+          payload:{
+            obj:obj,
+            data:res.data
+          } 
         })
       })
     })
@@ -211,13 +214,14 @@ export const actionAcceptFunction = (data) => dispatch => {
   })
 }
 
-export const setDatasuppies = (data, id, option) => dispatch => {
+export const setDatasuppies = (data, id, option, obj) => dispatch => {
   dispatch({
     type: "SET_DATA_SUPPLIES",
     payload: {
       data: data,
       id: id,
-      option: option
+      option: option,
+      obj:obj
     }
   })
 }
@@ -259,4 +263,11 @@ export const messageError = () => dispatch => {
 
 export const messageErrorInvalid = () => dispatch => {
   dispatch(openSnackbars("warning", `La cantidad de pertenencias no puede ser 0`))
+}
+
+export const propsAction = (data) => dispatch => {
+  dispatch({
+    type: "PROPS_ACTION",
+    payload: data
+  })
 }
