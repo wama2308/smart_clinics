@@ -167,14 +167,14 @@ class ListGoods extends Component {
                       <td>
                         <div>
                           <IconButton aria-label="Delete"
-                            title="Ver Espacio"
+                            title="Ver Mobiliario"
                             className="iconButtons" onClick={() => { this.openModal(2, list._id); }}
                           >
                             <Visibility className="iconTable" />
                           </IconButton>
 
                           <IconButton aria-label="Delete"
-                            title="Editar Espacio"
+                            title="Editar Mobiliario"
 
                             className="iconButtons"
                             onClick={() => { this.openModal(3, list._id); }}>
@@ -182,7 +182,7 @@ class ListGoods extends Component {
                           </IconButton>
 
                           <IconButton aria-label="Delete"
-                            title="Eliminar Espacio"
+                            title="Eliminar Mobiliario"
 
                             className="iconButtons"
                             onClick={() => { this.disabledGood(list._id); }}>

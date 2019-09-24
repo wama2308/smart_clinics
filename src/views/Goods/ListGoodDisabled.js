@@ -83,7 +83,7 @@ class ListGoodDisabled extends Component {
                       <td>
                         <div>
                           <IconButton aria-label="Delete"
-                            title="Activar Espacio"
+                            title="Activar Mobiliario"
                             className="iconButtons"
                             onClick={() => { this.enabledGoods(list._id); }}>
                             <HowToReg className="iconTable" />
