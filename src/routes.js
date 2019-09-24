@@ -21,6 +21,7 @@ import ReclamosContainer from "./containers/ReclamosContainer";
 import TurnosContainer from "./containers/TurnosContainer";
 import BedroomsContainer from "./containers/BedroomsContainer";
 import TransferContainer from "./containers/TransferContainer";
+import GoodsContainer from "./containers/GoodsContainer"
 
 function Loading() {
   return <div>Loading...</div>;
@@ -278,8 +279,8 @@ const routes = [
 
   {
     name: "Bienes",
-    path: "/mobiliarios/bienes",
-    //component: BedroomsContainer
+    path: "/mobiliario/bienes",
+    component: GoodsContainer
   },
   { path: "/theme", exact: true, name: "Theme", component: Colors },
   { path: "/theme/colors", name: "Colors", component: Colors },
