@@ -103,17 +103,17 @@ class TransferContainer extends Component {
                       </Nav>
                       <TabContent activeTab={this.state.activeTab}>
                         <TabPane tabId="1">
-                          <ListTransferencias
+                          {/* <ListTransferencias
                             confirm={this.props.confirm}
                             data={this.props.transfer.allTransfer}
                             queryOneTransferFunction={this.props.queryOneTransferFunction}
                             disableTransferAction={this.props.disableTransferAction}
                             permitsTransfer={this.state.permitsTransfer}
                             search={this.props.searchData}
-                          />
+                          /> */}
                         </TabPane>
                         <TabPane tabId="2">
-                          <ListTransferenciasRecibidas
+                          {/* <ListTransferenciasRecibidas
                             confirm={this.props.confirm}
                             data={this.props.transfer.allTransferRecibidas}
                             queryOneTransferFunction={this.props.queryOneTransferFunction}
@@ -121,7 +121,7 @@ class TransferContainer extends Component {
                             acceptTransferAction={this.props.acceptTransferAction}
                             permitsTransfer={this.state.permitsTransfer}
                             search={this.props.searchData}
-                          />
+                          /> */}
                         </TabPane>
                         <TabPane tabId="3">
                           <ListSolicitudesRealizadas

@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, CardHeader, Input } from "reactstrap";
 import styled from "styled-components";
-import Search from "../../components/DefaultSearch.js";
 import DefaultSearch from "../../components/DefaultSearch.js";
 import { Delete } from "@material-ui/icons";
 import Switch from '@material-ui/core/Switch';
@@ -13,7 +12,6 @@ import {
   TableHead,
   IconButton
 } from "@material-ui/core";
-import { formatNumber } from "../../core/utils";
 
 class ProductsTransfer extends React.Component {
   constructor(props) {
@@ -114,6 +112,8 @@ class ProductsTransfer extends React.Component {
   render() {
     const optionsProducts = this.optionsProducts(this.props.dataAllProducts);
     const { productsToTransfer } = this.props;
+    let heightInput = '';
+    let widthInput = '';
     let dataHead = [];
     if(this.props.option === 3 || this.props.option === 2 || this.props.option === 1){
       dataHead = [
@@ -123,6 +123,8 @@ class ProductsTransfer extends React.Component {
         { label: "CANT A SOLICITAR" },
         { label: "ACTION" }
       ];
+      heightInput = 48;
+      widthInput = '25%';
     }else if(this.props.option === 4){
       dataHead = [
         { label: "NOMBRE" },
@@ -132,6 +134,8 @@ class ProductsTransfer extends React.Component {
         { label: "SELECCIONAR" },
         { label: "ACTION" }
       ];
+      heightInput = 55;
+      widthInput = '17%';
     }
     
 
@@ -187,7 +191,7 @@ class ProductsTransfer extends React.Component {
                           <Cell>{product.quantity_stock}</Cell>
                         }
 
-                        <td>
+                        <td style= {{width: widthInput}}>
                           <Input
                             name={`inputQuantity_${product._id}`}
                             id={`inputQuantity_${product._id}`}
@@ -196,15 +200,14 @@ class ProductsTransfer extends React.Component {
                             value={product.quantity_transfer}
                             onKeyDown={e => this.keyPress(e, product)}
                             onChange={event => this.handleChange(event, product)}
-                            style={{ height: 48, borderRadius: 0 }}
+                            style={{ height: heightInput, borderRadius: 0 }}
                             onBlur={this.eventBlurInputQuantity(product._id)}
                             onFocus={this.eventFocusInputQuantity(product._id)}
                           />
                         </td>
                         {
                           this.props.option === 4 &&
-                          <Cell>
-                          <td style={{ padding: "1px" }}>
+                          <Cell style= {{width: widthInput}}>
                             <Switch
                               onChange={this.handleChangeSwitch(product._id)}
                               value={product.confirm}
@@ -213,8 +216,7 @@ class ProductsTransfer extends React.Component {
                               color="primary"
                               checked={product.confirm}
                               disabled={this.props.disabled}
-                            />
-                          </td>
+                            />                          
                           </Cell>
                         }
                         <Cell>
