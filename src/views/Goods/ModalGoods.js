@@ -430,7 +430,7 @@ class ModalGoods extends Component {
 
                     {this.state.arrayProviderSelect !== "" &&
                       <FormGroup className="top form-group col-sm-6">
-                        <Label for="tiempo">Tiempo de Mantenimiento</Label>
+                        <Label for="tiempo">Tiempo de Mantenimiento (Dias)</Label>
                         <Input disabled={this.props.disabled}
                           invalid={this.state.tiempoInvalid}
                           name="tiempo"
