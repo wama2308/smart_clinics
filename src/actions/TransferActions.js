@@ -14,6 +14,9 @@ const queryAllRequestsReceived = `${url}/api/queryAllRequestsReceived`;
 const queryOneTransferRequests = `${url}/api/queryOneTransferRequests`;
 const disableTransferRequests = `${url}/api/disableTransferRequests`;
 const editTransferRequests = `${url}/api/editTransferRequests`;
+const querySeeARequests = `${url}/api/querySeeARequests`;
+const rejectRequest = `${url}/api/rejectRequest`;
+const cancelRequest = `${url}/api/cancelRequest`;
 
 const converToJson = data => {
     const stringify = JSON.stringify(data);
@@ -44,6 +47,7 @@ export const LoadTransferFunction = () => dispatch => {
                                                     allRequestMade: allRequestMade,
                                                     requestMadeId: {},
                                                     allRequestReceived: allRequestReceived,
+                                                    requestReceivedId: {},
                                                     transferId: {},
                                                     products: [],
                                                     productsToTransfer: [],
@@ -214,6 +218,37 @@ export const LoadRequestMadeIdFunction = (id) => dispatch => {
         });
 };
 
+export const querySeeARequestsFunction = (id) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios({
+                method: "post",
+                url: querySeeARequests,
+                data: {
+                    _id: id,
+                },
+                headers: datos.headers
+            })
+                .then(res => {
+                    dispatch({
+                        type: "REQUEST_RECEIVED_ID",
+                        payload: {
+                            data: res.data
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.log(
+                        "Error consultando la api para consultar las solicitudes recibidas por id",
+                        error.toString()
+                    );
+                });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
 
 export const searchProduct = data => dispatch => {
     getDataToken().then(token => {
@@ -363,21 +398,83 @@ export const editTransferRequestsAction = (data, callback) => dispatch => {
 
 export const DeleteRequestMadeAction = (id) => dispatch => {
     getDataToken()
-      .then(datos => {
-        axios({
-          method: "post",
-          url: disableTransferRequests,
-          data: {
-            _id: id          
-          },
-          headers: datos.headers
+        .then(datos => {
+            axios({
+                method: "post",
+                url: disableTransferRequests,
+                data: {
+                    _id: id
+                },
+                headers: datos.headers
+            })
+                .then(() => {
+                    dispatch(openSnackbars("success", "Solicitud eliminada con exito"));
+                })
+                .catch(error => {
+                    dispatch(openSnackbars("error", "Error eliminando la solicitud"));
+                });
         })
-          .then(() => {
-            dispatch(openSnackbars("success", "Solicitud eliminada con exito"));
-          })
-          .catch(error => {
-            dispatch(openSnackbars("error", "Error eliminando la solicitud"));
-          });
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
+export const cancelRequestAction = (id) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios({
+                method: "post",
+                url: cancelRequest,
+                data: {
+                    _id: id
+                },
+                headers: datos.headers
+            })
+                .then(() => {
+                    dispatch(openSnackbars("success", "Solicitud cancelada con exito"));
+                })
+                .catch(error => {
+                    dispatch(openSnackbars("error", "Error cancelando la solicitud"));
+                });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
+export const rejectRequestAction = (id) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios({
+                method: "post",
+                url: rejectRequest,
+                data: {
+                    _id: id
+                },
+                headers: datos.headers
+            })
+                .then(() => {
+                    dispatch(openSnackbars("success", "Solicitud rechazada con exito"));
+                })
+                .catch(error => {
+                    dispatch(openSnackbars("error", "Error rechazando la solicitud"));
+                });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
+export const setSwitchTableRequestReceived = (id, value) => dispatch => {
+    getDataToken()
+      .then(datos => {
+        dispatch({
+          type: "SET_SWITCH_REQUEST_RECEIVED",
+          payload: {
+            id: id,
+            value: value 
+          }
+        });
       })
       .catch(() => {
         console.log("Problemas con el token");
