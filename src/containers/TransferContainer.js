@@ -127,10 +127,11 @@ class TransferContainer extends Component {
                           <ListSolicitudesRealizadas
                             confirm={this.props.confirm}
                             alert={this.props.alert}
-                            data={this.props.transfer.allRequestMade}
+                            data={this.props.transfer.allRequestMade}                            
                             permitsTransfer={this.state.permitsTransfer}
                             search={this.props.searchData}
                             LoadRequestMadeIdFunction={this.props.LoadRequestMadeIdFunction}                            
+                            selectTransfers={this.props.transfer.selectTransfers}                            
                             DeleteRequestMadeAction={this.props.DeleteRequestMadeAction}                            
                             cancelRequestAction={this.props.cancelRequestAction}                            
                           />

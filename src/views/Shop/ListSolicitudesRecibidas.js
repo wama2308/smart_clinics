@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
-import { Delete, Edit, Visibility, EventBusy } from "@material-ui/icons";
+import { Cancel, Edit, Visibility, EventBusy } from "@material-ui/icons";
 import ModalSolicitudes from './ModalSolicitudes.js';
 import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
 import Pagination from '../../components/Pagination';
@@ -37,9 +37,9 @@ class ListSolicitudesRecibidas extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Solicitud Recibida',
+        modalHeader: 'Ver Solicitud de Transferencia Recibida',
         modalFooter: 'Guardar',
-        disabled: false,
+        disabled: true,
         showHide: 'show',
         isClearable: true,
       })
@@ -188,7 +188,7 @@ class ListSolicitudesRecibidas extends React.Component {
                                 className="iconButtons"
                                 onClick={() => { this.deleteRegister(data._id, data.status); }}
                                 disabled={deleteDisabled}>
-                                <EventBusy className="iconTable" />
+                                <Cancel className="iconTable" />
                               </IconButton>
                             }
 

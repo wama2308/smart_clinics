@@ -31,7 +31,7 @@ class ListSolicitudesRealizadas extends React.Component {
 
   componentDidMount() { }
 
-  openModal = (option, pos, id, status) => {    
+  openModal = (option, pos, id, status) => {
     if (option === 1) {
       this.setState({
         modal: true,
@@ -71,36 +71,36 @@ class ListSolicitudesRealizadas extends React.Component {
   }
 
   deleteRegister = (option, id, status) => {
-    if(option === 1){
+    if (option === 1) {
       const message = {
         title: "Eliminar Registro",
         info: "¿Esta seguro que desea eliminar este registro?"
       };
       this.props.confirm(message, res => {
         if (res) {
-          if (status === "Pendiente" || status === "Rechazada") {
-            this.props.DeleteRequestMadeAction(id);
-          } else {
-            this.props.alert("warning", "¡La solicitud no puede ser eliminada, su estatus es: "+status+"!");
+          if (status === "Pendiente" || status === "Rechazada" || status === "Cancelada") {            
+          this.props.DeleteRequestMadeAction(id);
+          }else {
+            this.props.alert("warning", "¡La solicitud no puede ser cancelada, su estatus es: " + status + "!");
           }
         }
       });
-    }else{
+    } else {
       const message = {
         title: "Cancelar Solicitud",
         info: "¿Esta seguro que desea cancelar esta solicitud?"
       };
       this.props.confirm(message, res => {
         if (res) {
-          if (status === "Pendiente" || status === "Rechazada") {
+          if (status === "Pendiente" || status === "Rechazada" || status === "Cancelada") {
             this.props.cancelRequestAction(id);
           } else {
-            this.props.alert("warning", "¡La solicitud no puede ser cancelada, su estatus es: "+status+"!");
+            this.props.alert("warning", "¡La solicitud no puede ser cancelada, su estatus es: " + status + "!");
           }
         }
       });
     }
-    
+
   }
 
   valorCloseModal = (valor) => {
@@ -153,6 +153,7 @@ class ListSolicitudesRealizadas extends React.Component {
             branchOfficces={this.props.branchOfficces}
             valorCloseModal={this.valorCloseModal}
             permitsTransfer={this.props.permitsTransfer}
+            search={this.props.searchData}
           />
         }
         <div className="containerGeneral" style={{ "justifyContent": "flex-end" }}>
@@ -173,7 +174,7 @@ class ListSolicitudesRealizadas extends React.Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th className="text-left">Nro</th>                  
+                  <th className="text-left">Nro</th>
                   <th className="text-left">Control</th>
                   <th className="text-left">Emisor</th>
                   <th className="text-left">Receptor</th>
@@ -186,7 +187,7 @@ class ListSolicitudesRealizadas extends React.Component {
                   this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
                     return (
                       <tr key={data.number} className="text-left">
-                        <td>{data.number}</td>                        
+                        <td>{data.number}</td>
                         <td>{data.number_control}</td>
                         <td>{data.sender}</td>
                         <td>{data.receiver}</td>
@@ -207,7 +208,7 @@ class ListSolicitudesRealizadas extends React.Component {
                               onClick={() => { this.openModal(3, data.number, data._id, data.status); }}
                               disabled={updateDisabled}>
                               <Edit className="iconTable" />
-                            </IconButton>                           
+                            </IconButton>
 
                             <IconButton aria-label="Delete"
                               title="Cancelar Solicitud"

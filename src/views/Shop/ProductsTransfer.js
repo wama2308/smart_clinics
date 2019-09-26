@@ -106,7 +106,7 @@ class ProductsTransfer extends React.Component {
   }
 
   handleChangeSwitch = (id) => event => {
-    this.props.setSwitchTableRequestReceived(id, event.target.checked);    
+    this.props.setSwitchTableRequestReceived(id, event.target.checked);
   };
 
   render() {
@@ -115,7 +115,7 @@ class ProductsTransfer extends React.Component {
     let heightInput = '';
     let widthInput = '';
     let dataHead = [];
-    if(this.props.option === 3 || this.props.option === 2 || this.props.option === 1){
+    if (this.props.option === 3 || this.props.option === 2 || this.props.option === 1) {
       dataHead = [
         { label: "NOMBRE" },
         { label: "TIPO" },
@@ -125,19 +125,19 @@ class ProductsTransfer extends React.Component {
       ];
       heightInput = 48;
       widthInput = '25%';
-    }else if(this.props.option === 4){
+    } else if (this.props.option === 4) {
       dataHead = [
         { label: "NOMBRE" },
         { label: "TIPO" },
         { label: "DISPONIBLE" },
         { label: "CANT SOLICITADA" },
-        { label: "SELECCIONAR" },
+        { label: "TRANSFERIR" },
         { label: "ACTION" }
       ];
       heightInput = 55;
       widthInput = '17%';
     }
-    
+
 
     return (
       <span>
@@ -151,17 +151,22 @@ class ProductsTransfer extends React.Component {
             maxHeight: 480
           }}
         >
+
           <Header>
             <div>Productos</div>
-            <div style={{ width: "40%" }}>
-              <DefaultSearch
-                pressKey={true}
-                placeholder="Buscar Producto..."
-                getOptions={this.props.searchProduct}
-                options={optionsProducts}
-                searchAction={this.props.searchOneSuppplie}
-              />
-            </div>
+            {
+              this.props.option !== 4 &&
+              <div style={{ width: "40%" }}>
+                <DefaultSearch
+                  pressKey={true}
+                  placeholder="Buscar Producto..."
+                  getOptions={this.props.searchProduct}
+                  options={optionsProducts}
+                  searchAction={this.props.searchOneSuppplie}
+                  disabled={this.props.disabled}
+                />
+              </div>
+            }
           </Header>
           <div style={{ overflow: "auto", height: "70%" }}>
             <Table>
@@ -191,7 +196,7 @@ class ProductsTransfer extends React.Component {
                           <Cell>{product.quantity_stock}</Cell>
                         }
 
-                        <td style= {{width: widthInput}}>
+                        <td style={{ width: widthInput }}>
                           <Input
                             name={`inputQuantity_${product._id}`}
                             id={`inputQuantity_${product._id}`}
@@ -203,11 +208,12 @@ class ProductsTransfer extends React.Component {
                             style={{ height: heightInput, borderRadius: 0 }}
                             onBlur={this.eventBlurInputQuantity(product._id)}
                             onFocus={this.eventFocusInputQuantity(product._id)}
+                            disabled={this.props.disabled}
                           />
                         </td>
                         {
                           this.props.option === 4 &&
-                          <Cell style= {{width: widthInput}}>
+                          <Cell style={{ width: widthInput }}>
                             <Switch
                               onChange={this.handleChangeSwitch(product._id)}
                               value={product.confirm}
@@ -216,12 +222,12 @@ class ProductsTransfer extends React.Component {
                               color="primary"
                               checked={product.confirm}
                               disabled={this.props.disabled}
-                            />                          
+                            />
                           </Cell>
                         }
                         <Cell>
                           <IconButton
-                            //disabled={disabled}
+                            disabled={this.props.disabled}
                             onClick={() => {
                               this.delete(key);
                             }}
