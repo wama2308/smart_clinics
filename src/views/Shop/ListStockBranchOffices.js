@@ -7,7 +7,7 @@ import { getArray, GetDisabledPermits } from '../../core/utils';
 import '../../components/style.css'
 
 
-class ListStockProducts extends React.Component {
+class ListStockBranchOffices extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,16 +28,15 @@ class ListStockProducts extends React.Component {
         };
     }
 
-    componentDidMount() { }
+    componentDidMount() {}
 
     handleChange = e => {
         const { name, value } = e.target;
         const dataService = getArray(this.props.data)
         let expresion = new RegExp(`${value}.*`, "i");
         const result = dataService.filter(
-            data => expresion.test(data.name) ||
-                expresion.test(data.code) ||
-                expresion.test(data.type)
+            data => expresion.test(data.branchoffice.name) ||
+                expresion.test(data.total)
         );
         this.setState({
             [name]: value,
@@ -54,7 +53,7 @@ class ListStockProducts extends React.Component {
         this.setState({ page });
     };
 
-    componentWillReceiveProps = props => {
+    componentWillReceiveProps = props => {        
         this.setState({
             arrayTest: getArray(props.data)
         })
@@ -63,9 +62,6 @@ class ListStockProducts extends React.Component {
     render() {
         const { rowsPerPage, page } = this.state;
         const ArrayData = this.state.arrayTest
-        var find_see_stock = this.props.permitsTransfer.find(function (element) {
-            return element === "See_stock";
-        });
         return (
             <div>
                 <div className="containerGeneral" style={{ "justifyContent": "flex-end" }}>
@@ -89,14 +85,11 @@ class ListStockProducts extends React.Component {
                     <thead className="thead-light">
                         <tr>
                             <th className="text-left" style={{ width: '10%' }}>Nro</th>
-                            <th className="text-left" style={{ width: '25%' }}>Producto</th>
-                            <th className="text-left" style={{ width: '25%' }}>Codigo</th>
-                            <th className="text-left" style={{ width: '25%' }}>Tipo</th>
-                            {
-                                find_see_stock &&
-                                <th className="text-left" style={{ width: '15%' }}>Stock</th>
-                            }
-
+                            <th className="text-left" style={{ width: '30%' }}>Sucursal</th>
+                            <th className="text-left" style={{ width: '20%' }}>Producto</th>
+                            <th className="text-left" style={{ width: '15%' }}>Codigo</th>
+                            <th className="text-left" style={{ width: '15%' }}>Tipo</th>
+                            <th className="text-left" style={{ width: '10%' }}>Stock</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,13 +97,11 @@ class ListStockProducts extends React.Component {
                             return (
                                 <tr key={data.number} className="text-left">
                                     <td style={{ width: '10%' }}>{data.number}</td>
-                                    <td style={{ width: '25%' }}>{data.name}</td>
-                                    <td style={{ width: '25%' }}>{data.code}</td>
-                                    <td style={{ width: '25%' }}>{data.type}</td>
-                                    {
-                                        find_see_stock &&
-                                        <td style={{ width: '15%' }}>{data.quantity_stock}</td>
-                                    }
+                                    <td style={{ width: '30%' }}>{data.branchoffice.name}</td>
+                                    <td style={{ width: '20%' }}>{data.name}</td>
+                                    <td style={{ width: '15%' }}>{data.code}</td>
+                                    <td style={{ width: '15%' }}>{data.type}</td>
+                                    <td style={{ width: '10%' }}>{data.total}</td>
                                 </tr>
                             );
                         })
@@ -134,4 +125,4 @@ class ListStockProducts extends React.Component {
     }
 }
 
-export default ListStockProducts;
+export default ListStockBranchOffices;

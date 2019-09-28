@@ -18,6 +18,7 @@ const querySeeARequests = `${url}/api/querySeeARequests`;
 const rejectRequest = `${url}/api/rejectRequest`;
 const cancelRequest = `${url}/api/cancelRequest`;
 const queryAllSupplies = `${url}/api/queryAllSupplies`;
+const queryOneSupplieInBranch = `${url}/api/queryOneSupplieInBranch`;
 
 const converToJson = data => {
     const stringify = JSON.stringify(data);
@@ -63,6 +64,7 @@ export const LoadTransferFunction = () => dispatch => {
                                                         branchOfficces: arrayBranchOffices,
                                                         dataShopId: {},
                                                         storeShelfs: arrayStoreShelfs,
+                                                        supplieIdBranchOffice:[],
                                                         ProductLoteId: {},
                                                         action: 0,
                                                         newProvider: {}
@@ -247,6 +249,36 @@ export const querySeeARequestsFunction = (id) => dispatch => {
         });
 };
 
+export const queryOneSupplieInBranchFunction = (id) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios({
+                method: "post",
+                url: queryOneSupplieInBranch,
+                data: {
+                    _id: id,
+                },
+                headers: datos.headers
+            })
+                .then(res => {
+                    dispatch({
+                        type: "SUPPLIE_ONE_BRANCH_OFFICE",
+                        payload: {
+                            data: res.data
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.log(
+                        "Error consultando la api para consultar las solicitudes realizadas por id",
+                        error.toString()
+                    );
+                });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
 
 export const searchProduct = data => dispatch => {
     getDataToken().then(token => {

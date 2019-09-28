@@ -19,6 +19,7 @@ import {
     saveTransferRequestAction,
     editTransferRequestsAction,
     setSwitchTableRequestReceived,
+    queryOneSupplieInBranchFunction,
     actionProps
 } from "../../actions/TransferActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -45,10 +46,10 @@ class ModalSolicitudes extends React.Component {
         let sucursal_id = '';
 
         Object.keys(decoded.profile[0]).map((i) => {
-            sucursal_id = decoded.profile[0].medical_center[0].branch_office[0]._id;
+            sucursal_id = decoded.profile[0].medical_center[0].branch_office[0].center;
         })
         this.setState({
-            sucursal_id_token: sucursal_id
+            sucursal_central_token: sucursal_id
         });
 
         if (this.props.option === 1) {
@@ -102,7 +103,7 @@ class ModalSolicitudes extends React.Component {
     }
 
     componentWillReceiveProps = (props) => {
-        //console.log("props transfer modal", props.permitsTransfer);
+        console.log("props transfer modal", props.transfer);
         if (props.transfer.productsToTransfer.length > 0) {
 
             this.setState({
@@ -207,6 +208,10 @@ class ModalSolicitudes extends React.Component {
         this.props.cleanQuantityProductsTransferAction();
         this.props.actionProps(0);
         this.props.valorCloseModal(false);
+    }
+
+    ordenTransferencia = () => {
+        alert("Modal donde se cargara un form para realizar una orden de transferencia en caso de que la sucursal central no tenga stock");
     }
 
     validate = () => {
@@ -376,6 +381,13 @@ class ModalSolicitudes extends React.Component {
                 label_children = 'Oficina/consultorio';
             }
         }
+        let var_sucursal_central = '';
+        if(this.state.sucursal_central_token){
+            var_sucursal_central = 'Compra';
+        }else{
+            var_sucursal_central = 'Transferencia';
+        }
+        
         return (
             <span>
                 <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalTransfer">
@@ -452,67 +464,79 @@ class ModalSolicitudes extends React.Component {
                                                 </div>
                                                 <div className="errorSelect">{this.state.divObservacionError}</div>
                                             </FormGroup>
+                                            <FormGroup className="top form-group col-sm-6">
+                                                <Button className="" color="danger" onClick={this.ordenTransferencia}>
+                                                    Orde de Transferencia
+                                                </Button>
+                                            </FormGroup>                                            
                                         </div>
                                         {
                                             this.props.option !== 4 ?
-                                            <div>
-                                                <Nav tabs>
-                                                    <NavItem>
-                                                        <NavLink
-                                                            className={classnames({ active: this.state.activeTab === '1' })}
-                                                            onClick={() => { this.toggleTab('1'); }} >
-                                                            Solicitud de Productos
+                                                <div>
+                                                    <Nav tabs>
+                                                        <NavItem>
+                                                            <NavLink
+                                                                className={classnames({ active: this.state.activeTab === '1' })}
+                                                                onClick={() => { this.toggleTab('1'); }} >
+                                                                Solicitud de Productos
                                                     </NavLink>
-                                                    </NavItem>
-                                                    <NavItem>
-                                                        <NavLink
-                                                            className={classnames({ active: this.state.activeTab === '2' })}
-                                                            onClick={() => { this.toggleTab('2'); }} >
-                                                            Lista de Productos
+                                                        </NavItem>
+                                                        <NavItem>
+                                                            <NavLink
+                                                                className={classnames({ active: this.state.activeTab === '2' })}
+                                                                onClick={() => { this.toggleTab('2'); }} >
+                                                                Lista de Productos
                                                     </NavLink>
-                                                    </NavItem>
-                                                </Nav>
-                                                <TabContent activeTab={this.state.activeTab}>
-                                                    <TabPane tabId="1">
-                                                        <ProductsTransfer
-                                                            option={this.props.option}
-                                                            searchProduct={this.props.searchProduct}
-                                                            dataAllProducts={this.props.dataAllProducts}
-                                                            searchOneSuppplie={this.props.searchOneSuppplie}
-                                                            productsToTransfer={this.props.transfer.productsToTransfer}
-                                                            setQuantityTranferAction={this.props.setQuantityTranferAction}
-                                                            deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
-                                                            setSwitchTableRequestReceived={this.props.setSwitchTableRequestReceived}
-                                                            confirm={this.props.confirm}
-                                                            alert={this.props.alert}
-                                                            divAviso={this.state.divAviso}
-                                                            disabled={this.props.disabled}
-                                                        />
-                                                    </TabPane>
-                                                    <TabPane tabId="2">
-                                                        <ListStockProducts
-                                                            option={this.props.option}
-                                                            data={this.props.transfer.allProducts}
-                                                            search={this.props.searchData}
-                                                            permitsTransfer={this.props.permitsTransfer}
-                                                        />
-                                                    </TabPane>
-                                                </TabContent>
-                                            </div>
-                                            :
-                                            <ProductsTransfer
-                                                            option={this.props.option}
-                                                            searchProduct={this.props.searchProduct}
-                                                            dataAllProducts={this.props.dataAllProducts}
-                                                            searchOneSuppplie={this.props.searchOneSuppplie}
-                                                            productsToTransfer={this.props.transfer.productsToTransfer}
-                                                            setQuantityTranferAction={this.props.setQuantityTranferAction}
-                                                            deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
-                                                            setSwitchTableRequestReceived={this.props.setSwitchTableRequestReceived}
-                                                            confirm={this.props.confirm}
-                                                            alert={this.props.alert}
-                                                            divAviso={this.state.divAviso}
-                                                        />
+                                                        </NavItem>
+                                                    </Nav>
+                                                    <TabContent activeTab={this.state.activeTab}>
+                                                        <TabPane tabId="1">
+                                                            <ProductsTransfer
+                                                                option={this.props.option}
+                                                                searchProduct={this.props.searchProduct}
+                                                                dataAllProducts={this.props.dataAllProducts}
+                                                                searchOneSuppplie={this.props.searchOneSuppplie}
+                                                                productsToTransfer={this.props.transfer.productsToTransfer}
+                                                                setQuantityTranferAction={this.props.setQuantityTranferAction}
+                                                                deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
+                                                                setSwitchTableRequestReceived={this.props.setSwitchTableRequestReceived}
+                                                                confirm={this.props.confirm}
+                                                                alert={this.props.alert}
+                                                                divAviso={this.state.divAviso}
+                                                                disabled={this.props.disabled}
+                                                            />
+                                                        </TabPane>
+                                                        <TabPane tabId="2">
+                                                            <ListStockProducts
+                                                                option={this.props.option}
+                                                                data={this.props.transfer.allProducts}
+                                                                search={this.props.searchData}
+                                                                permitsTransfer={this.props.permitsTransfer}
+                                                                disabled={this.props.disabled}
+                                                            />
+                                                        </TabPane>
+                                                    </TabContent>
+                                                </div>
+                                                :
+                                                <ProductsTransfer
+                                                    option={this.props.option}
+                                                    searchProduct={this.props.searchProduct}
+                                                    dataAllProducts={this.props.dataAllProducts}
+                                                    searchOneSuppplie={this.props.searchOneSuppplie}
+                                                    productsToTransfer={this.props.transfer.productsToTransfer}
+                                                    setQuantityTranferAction={this.props.setQuantityTranferAction}
+                                                    deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
+                                                    setSwitchTableRequestReceived={this.props.setSwitchTableRequestReceived}
+                                                    confirm={this.props.confirm}
+                                                    alert={this.props.alert}
+                                                    divAviso={this.state.divAviso}
+                                                    sucursal_central_token={var_sucursal_central}
+                                                    queryOneSupplieInBranchFunction={this.props.queryOneSupplieInBranchFunction}
+                                                    supplieIdBranchOffice={this.props.transfer.supplieIdBranchOffice}
+                                                    search={this.props.searchData}
+                                                    permitsTransfer={this.props.permitsTransfer}
+                                                    //disabled={this.props.disabled}
+                                                />
                                         }
 
 
@@ -559,6 +583,7 @@ const mapDispatchToProps = dispatch => ({
     saveTransferRequestAction: (data, callback) => dispatch(saveTransferRequestAction(data, callback)),
     editTransferRequestsAction: (data, callback) => dispatch(editTransferRequestsAction(data, callback)),
     setSwitchTableRequestReceived: (id, value) => dispatch(setSwitchTableRequestReceived(id, value)),
+    queryOneSupplieInBranchFunction: (id) => dispatch(queryOneSupplieInBranchFunction(id)),
     actionProps: (value) => dispatch(actionProps(value)),
 });
 
