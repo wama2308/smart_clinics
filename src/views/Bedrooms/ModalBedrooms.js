@@ -1,31 +1,41 @@
 import React, { Component } from 'react';
-import { 
-  ModalHeader, 
-  Modal, 
-  ModalBody, 
-  Input, 
-  FormFeedback, 
-  ModalFooter, 
-  FormGroup, 
-  Label, 
-  Button, 
-  InputGroup, 
-  InputGroupAddon 
+import {
+  ModalHeader,
+  Modal,
+  ModalBody,
+  Input,
+  FormFeedback,
+  ModalFooter,
+  FormGroup,
+  Label,
+  Button,
+  InputGroup,
+  InputGroupAddon,
+  Nav,
+  NavItem,
+  NavLink,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Row,
+  TabContent,
+  TabPane
 } from 'reactstrap';
-import { 
-  createBedroomsFunction, 
-  searchBelogingFunction, 
-  actionAcceptFunction, 
-  setDatasuppies, 
-  deleteDataSupplies, 
-  editOneBedroomsFunction, 
-  dataSuppliesSet, 
-  oneSuppliesSet, 
-  editBedroomsFunction, 
-  queryOneBelongingFunction, 
-  messageError, 
-  messageErrorInvalid, 
-  propsAction 
+import {
+  createBedroomsFunction,
+  searchBelogingFunction,
+  actionAcceptFunction,
+  setDatasuppies,
+  deleteDataSupplies,
+  editOneBedroomsFunction,
+  dataSuppliesSet,
+  oneSuppliesSet,
+  editBedroomsFunction,
+  queryOneBelongingFunction,
+  messageError,
+  messageErrorInvalid,
+  propsAction
 } from '../../actions/bedroomsActions';
 import Select from 'react-select';
 import { connect } from 'react-redux';
@@ -34,12 +44,15 @@ import TablaSuplies from './TablaSuplies';
 import Switch from '@material-ui/core/Switch';
 import { FormControlLabel } from '@material-ui/core';
 import { InitalState } from './InitialState';
+import classnames from 'classnames';
+import Img from 'react-image'
 
 class ModalBedrooms extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ...InitalState
+      ...InitalState,
+      activeTab: "1",
     }
   }
 
@@ -263,6 +276,7 @@ class ModalBedrooms extends Component {
     const data = this.filterRange(this.props.data)
     const min = this.getGroup(data)
     const max = this.getGroupMax(data)
+    this.handleAction()
 
     if (this.props.data.length > 0) {
       if (value >= min && value <= max - 1) {
@@ -271,6 +285,23 @@ class ModalBedrooms extends Component {
           hasta: parseInt(value) + 1
         });
       }
+    }
+  }
+
+  handleAction = () => {
+    const data = this.filterRange(this.props.data)
+    const min = this.getGroup(data)
+
+    if (min != undefined) {
+      this.setState({
+        desde: min,
+        hasta: min + 1
+      });
+    } else {
+      this.setState({
+        desde: 0,
+        hasta: 0
+      });
     }
   }
 
@@ -597,11 +628,17 @@ class ModalBedrooms extends Component {
         fileName = fileToLoad.name;
         let fileReader = new FileReader();
         fileReader.onload = function (fileLoadedEvent) {
-          file.push(fileLoadedEvent.target.result)
+          file.push({ foto: fileLoadedEvent.target.result })
 
-          this.setState({
-            foto: file
-          })
+          if (this.state.foto.length === 0) {
+            this.setState({
+              foto: file
+            })
+          } else {
+            this.state.foto.push({
+              foto: fileLoadedEvent.target.result
+            })
+          }
         }
           .bind(this)
         fileReader.readAsDataURL(fileToLoad);
@@ -731,8 +768,19 @@ class ModalBedrooms extends Component {
     })
   }
 
+  toggleTab(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
+  }
+
   render() {
     const disable = this.disabled()
+    console.log("foto", this.state.foto);
+
+
     return (
       <span>
         <Modal
@@ -998,8 +1046,12 @@ class ModalBedrooms extends Component {
                           <FormFeedback tooltip>{this.state.fotoError}</FormFeedback>
                           <InputGroupAddon addonType="append">
                             <div>
-                              {
-                                this.state.foto != null && this.state.foto != "" && <img alt="foto" style={{ width: 200, height: 150 }} className="image" src={"data:image/jpeg;" + this.state.foto} />
+                              {this.state.foto ? this.state.foto.map(foto => {
+                                return (
+                                  foto.foto != null && foto.foto != "" && <img alt="foto" style={{ width: 200, height: 150 }} className="image" src={"data:image/jpeg;" + foto.foto} />
+                                )
+
+                              }) : null
                               }
                             </div>
                           </InputGroupAddon>
@@ -1007,28 +1059,70 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
                   </div>
-                  {this.props.modal === true &&
-                    <TablaSuplies
-                      supplies={this.state.supplies}
-                      searchBelogingFunction={this.props.searchBelogingFunction}
-                      searchSupplies={this.props.bedrooms.searchSupplies}
-                      actionAcceptFunction={this.props.actionAcceptFunction}
-                      setDatasuppies={this.props.setDatasuppies}
-                      option={this.props.option}
-                      dataSuppliesSet={this.props.dataSuppliesSet}
-                      oneSuppliesSet={this.props.oneSuppliesSet}
-                      disabled={this.props.disabled}
-                      queryOneBelongingFunction={this.props.queryOneBelongingFunction}
-                      dataAccept={this.props.bedrooms.dataAccept}
-                      cantidadError={this.state.cantidadError}
-                      cantidadInvalid={this.state.cantidadInvalid}
-                      nombre={this.state.nombre}
-                      piso={this.state.piso}
-                      abreviatura={this.state.abreviatura}
-                      id={this.state.id}
-                    />
-                  }
+                  {/* {this.props.modal === true &&
+                      <TablaSuplies
+                        supplies={this.state.supplies}
+                        searchBelogingFunction={this.props.searchBelogingFunction}
+                        searchSupplies={this.props.bedrooms.searchSupplies}
+                        actionAcceptFunction={this.props.actionAcceptFunction}
+                        setDatasuppies={this.props.setDatasuppies}
+                        option={this.props.option}
+                        dataSuppliesSet={this.props.dataSuppliesSet}
+                        oneSuppliesSet={this.props.oneSuppliesSet}
+                        disabled={this.props.disabled}
+                        queryOneBelongingFunction={this.props.queryOneBelongingFunction}
+                        dataAccept={this.props.bedrooms.dataAccept}
+                        cantidadError={this.state.cantidadError}
+                        cantidadInvalid={this.state.cantidadInvalid}
+                        nombre={this.state.nombre}
+                        piso={this.state.piso}
+                        abreviatura={this.state.abreviatura}
+                        id={this.state.id}
+                      />
+                    } */}
                 </form>
+                <Row>
+                  <Col>
+                    <Card>
+                      <CardBody>
+                        <Nav tabs>
+                          <NavItem>
+                            <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
+                              Espacios Activos
+                              </NavLink>
+                          </NavItem>
+                          {/* <NavItem>
+                          <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
+                            Espacios Inactivos
+                          </NavLink>
+                        </NavItem> */}
+                        </Nav>
+                        <TabContent activeTab={this.state.activeTab}>
+                          <TabPane tabId="1">
+                            <TablaSuplies
+                              supplies={this.state.supplies}
+                              searchBelogingFunction={this.props.searchBelogingFunction}
+                              searchSupplies={this.props.bedrooms.searchSupplies}
+                              actionAcceptFunction={this.props.actionAcceptFunction}
+                              setDatasuppies={this.props.setDatasuppies}
+                              option={this.props.option}
+                              dataSuppliesSet={this.props.dataSuppliesSet}
+                              oneSuppliesSet={this.props.oneSuppliesSet}
+                              disabled={this.props.disabled}
+                              queryOneBelongingFunction={this.props.queryOneBelongingFunction}
+                              dataAccept={this.props.bedrooms.dataAccept}
+                              cantidadError={this.state.cantidadError}
+                              cantidadInvalid={this.state.cantidadInvalid}
+                              nombre={this.state.nombre}
+                              piso={this.state.piso}
+                              abreviatura={this.state.abreviatura}
+                              id={this.state.id} />
+                          </TabPane>
+                        </TabContent>
+                      </CardBody>
+                    </Card>
+                  </Col>
+                </Row>
               </ModalBody>
               <ModalFooter>
                 <Button className="" color="danger" onClick={this.closeModal}>

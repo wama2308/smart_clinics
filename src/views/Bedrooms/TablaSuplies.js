@@ -36,158 +36,149 @@ class TablaSuplies extends Component {
 
   render() {
     const optionsPatientsStaffAll = this.optionsPatientsStaffAll(this.props.searchSupplies);
-  
+
     return (
       <div>
         {this.props.disabled === false &&
-          <div style={{ "marginBottom": "2%", "width": "50%" }}>
+          <FormGroup className="top form-group col-sm-6">
             <Search
               pressKey={true}
               placeholder={`Buscar`}
               getOptions={this.props.searchBelogingFunction}
               options={optionsPatientsStaffAll}
               searchAction={this.searchData}
-
             />
-          </div>
+          </FormGroup>
         }
 
+        <Table hover responsive borderless>
+          <thead className="thead-light">
+            <tr>
+              <th style={{ "width": "10%" }}>Nombre</th>
+              <th style={{ "width": "10%" }}>Codigo</th>
+              <th style={{ "width": "10%" }}>Modelo</th>
+              <th style={{ "width": "6%" }}>Año</th>
+              <th style={{ "width": "11%" }}>Cantidad Disponible</th>
+              <th style={{ "width": "10%" }}>Cantidad</th>
+            </tr>
+          </thead>
+          {this.props.option !== 1 ?
+            <tbody>
+              {this.props.supplies ? this.props.supplies.map((list, key) => {
+                return (
+                  <tr key={key} className="text-left">
+                    <td>{list.name}</td>
+                    <td>{list.code}</td>
+                    <td>{list.model}</td>
+                    <td>{list.year}</td>
+                    <td  className="text-center">{list.quantity}</td>
+                    {this.props.option !== 4 &&
+                      <th>
+                        <div className="float-left">
+                          <FormGroup>
+                            <Input
+                              disabled={this.props.disabled}
+                              invalid={list.quantity_stock === 0 && this.props.cantidadInvalid}
+                              name={`cantidad_${key}`}
+                              id="1"
+                              onKeyUp={this.handlekeyHabitaciones}
+                              onChange={(event) => this.handleChange(event, list._id)}
+                              value={list.quantity_stock}
+                              type="number"
+                              placeholder="Cantidad"
 
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th>Nombre</th>
-                  <th>Codigo</th>
-                  <th>Modelo</th>
-                  <th>Año</th>
-                  <th>Cantidad Disponible</th>
-                  <th>Cantidad</th>
-                </tr>
-              </thead>
-              {this.props.option !== 1 ?
-                <tbody>
-                  {this.props.supplies ? this.props.supplies.map((list, key) => {
-                    return (
-                      <tr key={key}>
-                        <td>{list.name}</td>
-                        <td>{list.code}</td>
-                        <td>{list.model}</td>
-                        <td>{list.year}</td>
-                        <td>{list.quantity}</td>
-
-                        {this.props.option !== 4 &&
-                          <td>
-                            <div>
-
-                              <FormGroup>
-                                <Input
-                                  disabled={this.props.disabled}
-                                  invalid={list.quantity_stock === 0 && this.props.cantidadInvalid}
-                                  name={`cantidad_${key}`}
-                                  id="1"
-                                  onKeyUp={this.handlekeyHabitaciones}
-                                  onChange={(event) => this.handleChange(event, list._id)}
-                                  value={list.quantity_stock}
-                                  type="number"
-                                  placeholder="Cantidad"
-
-                                />
-                                <div style={{"width": "100%"}} className="errorSelect">
-                                  {list.quantity_stock === 0 && this.props.cantidadError}
-                                </div>
-                              </FormGroup>
+                            />
+                            <div style={{ "width": "100%" }} className="errorSelect">
+                              {list.quantity_stock === 0 && this.props.cantidadError}
                             </div>
-                          </td>
-                        }
+                          </FormGroup>
+                        </div>
+                      </th>
+                    }
 
+                    {this.props.option === 4 &&
+                      <th>
+                        <div className="float-left">
+                          <FormGroup>
+                            <Input
+                              disabled={this.props.disabled}
+                              invalid={list.quantity_stock === 0 && this.props.cantidadInvalid}
+                              name={`cantidad_${key}`}
+                              id="2"
+                              onKeyUp={this.handlekeyHabitaciones}
+                              onChange={(event) => this.handleChange(event, list._id)}
+                              value={list.quantity_stock}
+                              type="number"
+                              placeholder="Cantidad"
 
-                        {this.props.option === 4 &&
-                          <td>
-                            <div>
-                              <FormGroup>
-                                <Input
-                                  disabled={this.props.disabled}
-                                  invalid={ list.quantity_stock === 0 && this.props.cantidadInvalid}
-                                  name={`cantidad_${key}`}
-                                  id="2"
-                                  onKeyUp={this.handlekeyHabitaciones}
-                                  onChange={(event) => this.handleChange(event, list._id)}
-                                  value={list.quantity_stock}
-                                  type="number"
-                                  placeholder="Cantidad"
-
-                                />
-                                <div style={{"width": "100%"}} className="errorSelect">
-                                  {list.quantity_stock === 0 && this.props.cantidadError}
-                                </div>
-                              </FormGroup>
+                            />
+                            <div style={{ "width": "100%" }} className="errorSelect">
+                              {list.quantity_stock === 0 && this.props.cantidadError}
                             </div>
-                          </td>
-                        }
-                      </tr>
-                    )
-                  }) : null
-                  }
-                </tbody> :
-                <tbody>
-                  {this.props.dataAccept ? this.props.dataAccept.map((list, key) => {
-                    return (
-                      <tr key={key}>
-                        <td>{list.name}</td>
-                        <td>{list.code}</td>
-                        <td>{list.model}</td>
-                        <td>{list.year}</td>
-                        <td>{list.quantity}</td>
-                        <td>
-                          <div>
-                            <FormGroup>
-                              <Input
-                                disabled={this.props.disabled}
-                                invalid={list.cantidad === 0 && this.props.cantidadInvalid}
-                                name={`cantidad_${key}`}
-                                id="3"
-                                onKeyUp={this.handlekeyHabitaciones}
-                                onChange={(event) => this.handleChange(event, list._id)}
-                                value={list.cantidad}
-                                type="number"
-                                placeholder="Cantidad"
-
-                              />
-                              <div style={{"width": "100%"}} className="errorSelect">
-                                { list.cantidad === 0 && this.props.cantidadError}
-                              </div>
-                            </FormGroup>
-                          </div>
-                        </td>
-
-                        {this.props.option === 4 &&
-                          <td>
-                            <div>
-                              <Input
-                                disabled={this.props.disabled}
-                                name={`cantidad_${key}`}
-                                id="4"
-                                onKeyUp={this.handlekeyHabitaciones}
-                                onChange={(event) => this.handleChange(event, list._id)}
-                                value={list.cantidad}
-                                type="number"
-                                placeholder="Cantidad"
-                              />
-                            </div>
-                          </td>
-                        }
-                      </tr>
-                    )
-                  }) : null
-                  }
-                </tbody>
+                          </FormGroup>
+                        </div>
+                      </th>
+                    }
+                  </tr>
+                )
+              }) : null
               }
-            </Table>
-          </div>
-        </div>
-      </div >
+            </tbody> :
+            <tbody>
+              {this.props.dataAccept ? this.props.dataAccept.map((list, key) => {
+                return (
+                  <tr key={key}>
+                    <td>{list.name}</td>
+                    <td>{list.code}</td>
+                    <td>{list.model}</td>
+                    <td>{list.year}</td>
+                    <td  className="text-center">{list.quantity}</td>
+                    <td>
+                      <div>
+                        <FormGroup>
+                          <Input
+                            disabled={this.props.disabled}
+                            invalid={list.cantidad === 0 && this.props.cantidadInvalid}
+                            name={`cantidad_${key}`}
+                            id="3"
+                            onKeyUp={this.handlekeyHabitaciones}
+                            onChange={(event) => this.handleChange(event, list._id)}
+                            value={list.cantidad}
+                            type="number"
+                            placeholder="Cantidad"
+
+                          />
+                          <div style={{ "width": "100%" }} className="errorSelect">
+                            {list.cantidad === 0 && this.props.cantidadError}
+                          </div>
+                        </FormGroup>
+                      </div>
+                    </td>
+
+                    {this.props.option === 4 &&
+                      <td>
+                        <div>
+                          <Input
+                            disabled={this.props.disabled}
+                            name={`cantidad_${key}`}
+                            id="4"
+                            onKeyUp={this.handlekeyHabitaciones}
+                            onChange={(event) => this.handleChange(event, list._id)}
+                            value={list.cantidad}
+                            type="number"
+                            placeholder="Cantidad"
+                          />
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                )
+              }) : null
+              }
+            </tbody>
+          }
+        </Table>
+      </div>
     );
   }
 }

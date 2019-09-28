@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'reactstrap';
 import ModalBedrooms from './ModalBedrooms';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Collapse, TableHead, TableRow, TableCell } from '@material-ui/core';
 import { Visibility } from '@material-ui/icons';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
 import Pagination from '../../components/Pagination';
 import { getArrays } from '../../core/utils';
 import Search from "../../components/Select";
+import classnames from "classnames";
 
 class ListBedrooms extends Component {
   constructor(props) {
@@ -28,7 +29,8 @@ class ListBedrooms extends Component {
       id_transmitter: '',
       visitor: null,
       page: 0,
-      rowsPerPage: 10
+      rowsPerPage: 10,
+      activeTab: "1",
     }
   }
 
@@ -107,6 +109,18 @@ class ListBedrooms extends Component {
     this.setState({ page });
   };
 
+  toggle = (id) => {
+    this.props.collapseFunction(id)
+  }
+
+  toggleTab(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
+  }
+
   render() {
     const { rowsPerPage, page } = this.state;
     const arrayList = getArrays(this.props.bedrooms);
@@ -146,18 +160,12 @@ class ListBedrooms extends Component {
           />
         }
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
-          <div className="container-button" style={{"height": "35%"}}>
+          <div className="container-button" style={{ "height": "35%" }}>
             <Button color="success"
               onClick={() => this.openModal(1)}>
               Agregar
             </Button>
 
-            <div style={{ "marginLeft": "1%" }}>
-              <Button color="success"
-                onClick={() => this.openModal(4)}>
-                Edicion Multiple
-            </Button>
-            </div>
           </div>
           {this.state.modal === false &&
             <div className="containerSearch" >
@@ -168,55 +176,94 @@ class ListBedrooms extends Component {
 
         <div className="row">
           <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
+            <Table responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th className="text-left" >Numero</th>
-                  <th className="text-left" >Piso</th>
-                  <th className="text-left" >Tipo</th>
-                  <th className="text-left" >Estatus</th>
-                  <th className="text-left" >Acciones</th>
+                  <th className="text-left">Numero</th>
+                  <th className="text-left">Tipo</th>
+                  <th className="text-left">Acciones</th>
                 </tr>
               </thead>
-              <tbody>
-                {this.props.bedrooms ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
-                  return (
-                    <tr key={key} className="text-left">
+              {this.props.bedrooms ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
+                return (
+                  <tbody key={key}>
+                    <tr className="text-left">
                       <td>{list.number}</td>
-                      <td>{list.floor}</td>
                       <td>{list.type}</td>
-                      <td>{list.status}</td>
                       <td>
-                        <div>
+                        <div className="float-left">
                           <IconButton aria-label="Delete"
                             title="Ver Espacio"
-                            className="iconButtons" onClick={() => { this.openModal(2, list._id); }}
+                            className="iconButtons"
+                            onClick={() => { this.toggle(list._id); }}
                           >
                             <Visibility className="iconTable" />
                           </IconButton>
 
                           <IconButton aria-label="Delete"
                             title="Editar Espacio"
-
                             className="iconButtons"
-                            onClick={() => { this.openModal(3, list._id); }}>
+                            onClick={() => { this.openModal(4); }}>
                             <Edit className="iconTable" />
-                          </IconButton>
-
-                          <IconButton aria-label="Delete"
-                            title="Eliminar Espacio"
-
-                            className="iconButtons"
-                            onClick={() => { this.disabledBedroom(list._id); }}>
-                            <Delete className="iconTable" />
                           </IconButton>
                         </div>
                       </td>
                     </tr>
-                  )
-                }) : null
-                }
-              </tbody>
+
+                    <tr>
+                      <td style={{ "width": "10%" }}></td>
+                      <td colSpan="6">
+                        <Collapse in={list.collapse}>
+                          <div className="row">
+                            <Table responsive borderless>
+                              <TableHead className="thead-light">
+                                <TableRow style={{ height: 35 }}>
+                                  <TableCell style={{ "width": "10%" }} >Numero</TableCell>
+                                  <TableCell style={{ "width": "12%" }} >Piso</TableCell>
+                                  <TableCell style={{ "width": "12%" }} >Tipo</TableCell>
+                                  <TableCell style={{ "width": "18%" }} >Estatus</TableCell>
+                                  <TableCell >Acciones</TableCell>
+                                  
+                                </TableRow>
+                              </TableHead>
+                             
+                              <tbody>
+                                <tr>
+                                  <td>{list.number}</td>
+                                  <td>{list.floor}</td>
+                                  <td>{list.type}</td>
+                                  <td>{list.status}</td>
+                                  <td>
+                                    <div className="float-left">
+                                      <IconButton aria-label="Delete"
+                                        title="Ver Espacio"
+                                        className="iconButtons"
+                                        onClick={() => { this.openModal(2, list._id); }}
+                                      >
+                                        <Visibility className="iconTable" />
+                                      </IconButton>
+
+                                      <IconButton aria-label="Delete"
+                                        title="Editar Espacio"
+                                        className="iconButtons"
+                                        onClick={() => { this.openModal(3, list._id); }}>
+                                        <Edit className="iconTable" />
+                                      </IconButton>
+
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </Table>
+                          </div>
+                        </Collapse>
+                      </td>
+                    </tr>
+                  </tbody>
+                )
+              }) : null
+              }
+
               {
                 this.props.bedrooms && this.props.bedrooms.length > 10 && (
                   <Pagination
@@ -230,9 +277,10 @@ class ListBedrooms extends Component {
             </Table>
           </div>
         </div>
-      </div>
+      </div >
     );
   }
 }
+
 
 export default ListBedrooms;

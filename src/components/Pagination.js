@@ -40,7 +40,8 @@ class TablePaginationActions extends Component {
         <IconButton
           onClick={this.handleFirstPageButtonClick}
           disabled={page === 0}
-          aria-label="First Page">
+          aria-label="First Page"
+        >
           {theme.direction === 'rtl' ? <LastPage /> : <FirstPage />}
         </IconButton>
 
@@ -86,7 +87,8 @@ class Pagination extends Component {
             onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
             onChangePage={this.props.handleChangePage}
             ActionsComponent={TablePaginationActionsWrapped}
-            labelRowsPerPage={ ['Filas por página:'] }
+            labelRowsPerPage={['Filas por página:']}
+            //style={{ "display": "flex", "justifyContent": "flex-end" }}
           >
           </TablePagination>
         </TableRow>

@@ -271,3 +271,12 @@ export const propsAction = (data) => dispatch => {
     payload: data
   })
 }
+
+export const collapseFunction = (id) => dispatch =>{
+  dispatch({
+    type: "COLLAPSE_SET",
+    payload: {
+      id: id
+    }
+  })
+}

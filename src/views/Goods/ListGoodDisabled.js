@@ -26,7 +26,7 @@ class ListGoodDisabled extends Component {
   enabledGoods = (id) => {
     const message = {
       title: "Activar Mobiliario",
-      info: "¿Esta seguro que desea activar este Moviliario?"
+      info: "¿Esta seguro que desea Activar este Mobiliario?"
     };
     this.props.confirm(message, res => {
       if (res) {
@@ -65,11 +65,11 @@ class ListGoodDisabled extends Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th className="text-left" >Nombre</th>
-                  <th className="text-left" >Codigo</th>
-                  <th className="text-left" >Marca</th>
-                  <th className="text-left" >Cantidad</th>
-                  <th className="text-left" >Año</th>
+                  <th>Nombre</th>
+                  <th>Codigo</th>
+                  <th>Marca</th>
+                  <th>Cantidad</th>
+                  <th>Año</th>
                 </tr>
               </thead>
               <tbody>
@@ -81,7 +81,7 @@ class ListGoodDisabled extends Component {
                       <td>{list.brand}</td>
                       <td>{list.quantity}</td>
                       <td>
-                        <div>
+                        <div className="float-left">
                           <IconButton aria-label="Delete"
                             title="Activar Mobiliario"
                             className="iconButtons"

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'reactstrap';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Collapse } from '@material-ui/core';
 import { Visibility } from '@material-ui/icons';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
@@ -96,6 +96,18 @@ class ListGoods extends Component {
     this.setState({ page });
   };
 
+  toggle = () => {
+    if (this.state.collapse === false) {
+      this.setState({
+        collapse: true
+      })
+    } else {
+      this.setState({
+        collapse: false
+      })
+    }
+  }
+
   render() {
     const { page, rowsPerPage } = this.state
     const arrayList = getArrays(this.props.goods);
@@ -137,38 +149,34 @@ class ListGoods extends Component {
               Agregar
             </Button>
           </div>
-            {this.state.modal === false &&
-              <div className="containerSearch" >
-                <Search value={arrayList} />
-              </div>
-            }
+          {this.state.modal === false &&
+            <div className="containerSearch" >
+              <Search value={arrayList} />
+            </div>
+          }
         </div>
 
         <div className="row">
           <div className="form-group col-sm-12">
-            <Table hover responsive borderless>
+            <Table responsive borderless>
               <thead className="thead-light">
                 <tr>
                   <th className="text-left" >Nombre</th>
-                  <th className="text-left" >Codigo</th>
-                  <th className="text-left" >Marca</th>
-                  <th className="text-left" >Cantidad</th>
-                  <th className="text-left" >Año</th>
+                  <th style={{ "width": "30%" }} className="text-left" >Cantidad</th>
+                  <th className="text-left" >Acciones</th>
                 </tr>
               </thead>
-              <tbody>
-                {this.props.goods ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
-                  return (
-                    <tr key={key} className="text-left">
+              {this.props.goods ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
+                return (
+                  <tbody key={key}>
+                    <tr className="text-left">
                       <td>{list.name}</td>
-                      <td>{list.code}</td>
-                      <td>{list.brand}</td>
                       <td>{list.quantity}</td>
                       <td>
-                        <div>
+                        <div className="float-left">
                           <IconButton aria-label="Delete"
                             title="Ver Mobiliario"
-                            className="iconButtons" onClick={() => { this.openModal(2, list._id); }}
+                            className="iconButtons" onClick={() => { this.toggle(); }}
                           >
                             <Visibility className="iconTable" />
                           </IconButton>
@@ -180,21 +188,68 @@ class ListGoods extends Component {
                             onClick={() => { this.openModal(3, list._id); }}>
                             <Edit className="iconTable" />
                           </IconButton>
-
-                          <IconButton aria-label="Delete"
-                            title="Eliminar Mobiliario"
-
-                            className="iconButtons"
-                            onClick={() => { this.disabledGood(list._id); }}>
-                            <Delete className="iconTable" />
-                          </IconButton>
                         </div>
                       </td>
                     </tr>
-                  )
-                }) : null
-                }
-              </tbody>
+
+                    <tr>
+                      <td style={{ "width": "15%" }}></td>
+                      <td colSpan="6">
+                        <Collapse in={this.state.collapse}>
+                          <div className="row">
+                            <Table responsive borderless>
+                              <thead className="thead-light">
+                                <tr>
+                                  <th style={{ "width": "12%" }} className="text-left" >Codigo</th>
+                                  <th style={{ "width": "10%" }} className="text-left" >Marca</th>
+                                  <th style={{ "width": "13%" }} className="text-left" >Ano</th>
+                                  <th className="text-left" >Acciones</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>{list.code}</td>
+                                  <td>{list.brand}</td>
+                                  <td>{list.year}</td>
+                                  <td>
+                                    <div className="float-left">
+                                      <IconButton aria-label="Delete"
+                                        title="Ver Espacio"
+                                        className="iconButtons"
+                                        onClick={() => { this.toggle(2, list._id); }}
+                                      >
+                                        <Visibility className="iconTable" />
+                                      </IconButton>
+
+                                      <IconButton aria-label="Delete"
+                                        title="Editar Espacio"
+                                        className="iconButtons"
+                                        onClick={() => { this.openModal(3, list._id); }}>
+                                        <Edit className="iconTable" />
+                                      </IconButton>
+
+                                      <IconButton aria-label="Delete"
+                                        title="Eliminar Mobiliario"
+
+                                        className="iconButtons"
+                                        onClick={() => { this.disabledGood(list._id); }}>
+                                        <Delete className="iconTable" />
+                                      </IconButton>
+
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </Table>
+
+                          </div>
+                        </Collapse>
+                      </td>
+                    </tr>
+                  </tbody>
+                )
+              }) : null
+              }
               {
                 this.props.goods && this.props.goods.length > 10 && (
                   <Pagination

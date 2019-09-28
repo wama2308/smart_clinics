@@ -2,11 +2,20 @@ import { Map } from 'immutable'
 import { deleteDataSupplies, queryOneBelongingFunction, propsAction } from '../actions/bedroomsActions';
 
 const loadbedroons = (state, payload) => {
+
   let estado = state.toJS();
-  estado.bedroomsEnabled = payload.enabled
+  const array = []
+  payload.enabled.map(data => {
+    array.push({
+      ...data,
+      collapse: false
+    })
+  })
+  estado.bedroomsEnabled = array
   estado.bedroomsDisabled = payload.disabled
   estado.dataAccept = []
   estado.propsAction = 0
+
   return Map(estado);
 }
 
@@ -30,7 +39,7 @@ const loadOneBedroons = (state, payload) => {
 const searchSupplies = (state, payload) => {
   let estado = state.toJS();
   estado.searchSupplies = payload.data
-  
+
   return Map(estado);
 }
 
@@ -59,7 +68,7 @@ const setSuppliesData = (state, payload) => {
   } else if (payload.option === 3) {
     estado.bedroomsOne.name = payload.obj.nombre
     estado.bedroomsOne.abbreviation = payload.obj.abreviatura
-    estado.bedroomsOne.floor =   payload.obj.piso
+    estado.bedroomsOne.floor = payload.obj.piso
 
     estado.bedroomsOne.supplies.map(data => {
       if (payload.data >= 0 && payload.data <= data.quantity) {
@@ -132,9 +141,24 @@ const queryBelongingFunction = (state, payload) => {
   return Map(estado);
 }
 
-const propsActionFucction = (state, payload) =>{
+const propsActionFucction = (state, payload) => {
   let estado = state.toJS();
   estado.propsAction = payload
+  return Map(estado);
+}
+
+const setCollapse = (state, payload) => {
+  let estado = state.toJS();
+
+  estado.bedroomsEnabled.find(list => {
+    if (list._id === payload.id) {
+     if(list.collapse === false){
+      list.collapse = true
+     }else{
+      list.collapse = false
+     }
+    }
+  })
   return Map(estado);
 }
 
@@ -178,9 +202,12 @@ const bedroomsReducer = (state = Map(), action) => {
       return queryBelongingFunction(state, action.payload)
       break;
 
-      case "PROPS_ACTION":
-        return propsActionFucction(state, action.payload)
-        break;
+    case "PROPS_ACTION":
+      return propsActionFucction(state, action.payload)
+      break;
+    case "COLLAPSE_SET":
+      return setCollapse(state, action.payload)
+      break
 
     default:
       return state
