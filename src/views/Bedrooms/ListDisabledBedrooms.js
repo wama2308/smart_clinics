@@ -39,7 +39,7 @@ class ListDisabledBedrooms extends Component {
                       <td>{list.type}</td>
                       <td>{list.status}</td>
                       <td>
-                        <div>
+                        <div className="float-left">
                           <IconButton aria-label="Delete"
                             title="Activar Espacio"
                             className="iconButtons"

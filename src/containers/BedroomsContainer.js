@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { connect } from "react-redux";
-import { loadBedroomsFunction, queryOneBedroomsFunction, disabledBedroomsFuntion, enabledBedrooms, enabledBedroomsFunction } from '../actions/bedroomsActions';
+import { loadBedroomsFunction, queryOneBedroomsFunction, disabledBedroomsFuntion, enabledBedrooms, enabledBedroomsFunction, collapseFunction } from '../actions/bedroomsActions';
 import { openConfirmDialog, search } from '../actions/aplicantionActions';
 import ListDisabledBedrooms from '../views/Bedrooms/ListDisabledBedrooms';
 
@@ -27,7 +27,6 @@ class BedroomsContainer extends Component {
       loading: "show"
     }
   }
-
 
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
@@ -52,26 +51,25 @@ class BedroomsContainer extends Component {
     }
   }
 
-
   render() {
     return (
       <div className="animated fadeIn">
         <Row>
           <Col>
             <Card>
-              <CardHeader>Dispensarios</CardHeader>
+              <CardHeader>Espacios</CardHeader>
               <CardBody>
                 {this.state.loading === "show" ?
                   <div>
                     <Nav tabs>
                       <NavItem>
                         <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                          Habitaciones
+                        Espacios Activos
                       </NavLink>
                       </NavItem>
                       <NavItem>
                         <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
-                          Habitaciones Desabilitadas
+                          Espacios Inactivos
                       </NavLink>
                       </NavItem>
                     </Nav>
@@ -87,6 +85,7 @@ class BedroomsContainer extends Component {
                           type_consulting_room={this.props.type_consulting_room}
                           search={this.props.searchData}
                           setSearch={this.props.search}
+                          collapseFunction={this.props.collapseFunction}
                         />
                       </TabPane>
                     </TabContent>
@@ -128,7 +127,8 @@ const mapDispatchToProps = dispatch => ({
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
   disabledBedroomsFuntion: (data) => dispatch(disabledBedroomsFuntion(data)),
   enabledBedroomsFunction: (data) => dispatch(enabledBedroomsFunction(data)),
-  search: (set) => dispatch(search(set))
+  search: (set) => dispatch(search(set)),
+  collapseFunction: (id) => dispatch(collapseFunction(id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BedroomsContainer);

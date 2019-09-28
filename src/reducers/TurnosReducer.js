@@ -37,7 +37,7 @@ const setSwitchTableTurnos = (state, payload) => {
 const setSizeTableTurnos = (state, payload) => {
   let estado = state.toJS();
   if (payload.data >= 1 && payload.data <= 100) {
-    estado.oneTurnos.fields.map((list) => {
+    estado.oneTurnos.fields.find((list) => {
       if (list._id === payload.id) {
         list.size = parseInt(payload.data)
       }
@@ -49,7 +49,7 @@ const setSizeTableTurnos = (state, payload) => {
 const setPositionTableTurnos = (state, payload) => {
   let estado = state.toJS();
   if (payload.data >= 1 && payload.data <= 100) {
-    estado.oneTurnos.fields.map((list) => {
+    estado.oneTurnos.fields.find((list) => {
       if (list._id === payload.id) {
         list.position = parseInt(payload.data)
       }
@@ -61,7 +61,7 @@ const setPositionTableTurnos = (state, payload) => {
 const setGroupTableTurnos = (state, payload) => {
   let estado = state.toJS();
   if (payload.data >= 1 && payload.data <= 100) {
-    estado.oneTurnos.fields.map((list) => {
+    estado.oneTurnos.fields.find((list) => {
       if (list._id === payload.id) {
         list.group = parseInt(payload.data)
       }
