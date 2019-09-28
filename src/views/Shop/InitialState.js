@@ -126,5 +126,9 @@ export const InitalState = {
     arrayEstante: null,
     arrayEstanteSelect: [],
     divEstanteError: '',
+    sucursal_central_token: '',
+    divQuantityRegister:'',
+    quantityRegister:'',
+    divQuantityRegisterError:'',
     loading:'show',       
 }

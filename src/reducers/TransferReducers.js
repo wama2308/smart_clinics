@@ -51,6 +51,12 @@ const querySeeARequestsFunction = (state, payload) => {
 	return Map(estado);
 }
 
+const queryOneSupplieInBranchFunction = (state, payload) => {
+	let estado = state.toJS();
+	estado.supplieIdBranchOffice = payload.data;	
+	return Map(estado);
+}
+
 const setActionProps = (state, payload) => {
 	let estado = state.toJS();
 	estado.action = payload;
@@ -98,6 +104,9 @@ const TransferReducer = (state = Map(), action) => {
 
 		case "SET_SWITCH_REQUEST_RECEIVED":
 			return setSwitchTableRequestReceived(state, action.payload);
+
+		case "SUPPLIE_ONE_BRANCH_OFFICE":
+			return queryOneSupplieInBranchFunction(state, action.payload);
 
 		case 'ACTION_PROPS':
 			return setActionProps(state, action.payload)

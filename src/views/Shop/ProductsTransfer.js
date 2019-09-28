@@ -2,8 +2,10 @@ import React from "react";
 import { Card, CardHeader, Input } from "reactstrap";
 import styled from "styled-components";
 import DefaultSearch from "../../components/DefaultSearch.js";
-import { Delete } from "@material-ui/icons";
+import { Delete, Visibility, PlaylistAdd } from "@material-ui/icons";
 import Switch from '@material-ui/core/Switch';
+import ModalStockBranchoffices from './ModalStockBranchoffices.js';
+
 import {
   Table,
   TableCell,
@@ -18,6 +20,16 @@ class ProductsTransfer extends React.Component {
     super(props);
     this.myRef = React.createRef();
     this.state = {
+      modal: false,
+      modalHeader: '',
+      modalFooter: '',
+      productName:'',
+      productType:'',
+      productStock:'',
+      action: '',
+      disabled: '',
+      showHide: '',
+      option: 0,
       edit: false,
       delete: false,
       quantyToSell: 0,
@@ -106,8 +118,44 @@ class ProductsTransfer extends React.Component {
   }
 
   handleChangeSwitch = (id) => event => {
-    this.props.setSwitchTableRequestReceived(id, event.target.checked);    
+    this.props.setSwitchTableRequestReceived(id, event.target.checked);
   };
+
+  openModalStockProductsAdd = (option, id, name, type, stock) => {
+    if (option === 1) {
+      this.setState({
+        modal: true,
+        option: option,
+        modalHeader: 'Agregar producto a una solicitud de '+this.props.sucursal_central_token,
+        modalFooter: 'Guardar',
+        disabled: true,
+        showHide: 'show',
+        isClearable: true,
+        productName: name,
+        productType:type,
+        productStock: stock
+      })
+    }
+    if (option === 2) {
+      this.props.queryOneSupplieInBranchFunction(id);
+      this.setState({
+        modal: true,
+        option: option,
+        modalHeader: 'Stock en otras sucursales',
+        modalFooter: 'Guardar',
+        disabled: true,
+        showHide: 'hide',
+        isClearable: true,
+      })
+    }
+  }
+
+  valorCloseModal = (valor) => {
+    this.setState({
+      modal: valor,
+      option: 0,
+    });
+  }
 
   render() {
     const optionsProducts = this.optionsProducts(this.props.dataAllProducts);
@@ -115,7 +163,7 @@ class ProductsTransfer extends React.Component {
     let heightInput = '';
     let widthInput = '';
     let dataHead = [];
-    if(this.props.option === 3 || this.props.option === 2 || this.props.option === 1){
+    if (this.props.option === 3 || this.props.option === 2 || this.props.option === 1) {
       dataHead = [
         { label: "NOMBRE" },
         { label: "TIPO" },
@@ -125,23 +173,44 @@ class ProductsTransfer extends React.Component {
       ];
       heightInput = 48;
       widthInput = '25%';
-    }else if(this.props.option === 4){
+    } else if (this.props.option === 4) {
       dataHead = [
         { label: "NOMBRE" },
         { label: "TIPO" },
         { label: "DISPONIBLE" },
         { label: "CANT SOLICITADA" },
-        { label: "SELECCIONAR" },
+        { label: "TRANSFERIR" },
         { label: "ACTION" }
       ];
       heightInput = 55;
       widthInput = '17%';
     }
-    
+
 
     return (
       <span>
-        <div className="errorSelect" style={{ width: "100%" }}>{this.props.divAviso}</div>
+        {
+          (this.state.option === 1 ||            
+            this.state.option === 2) &&
+         <ModalStockBranchoffices
+            option={this.state.option}
+            modal={this.state.modal}
+            modalHeader={this.state.modalHeader}
+            modalFooter={this.state.modalFooter}
+            productName={this.state.productName}
+            productType={this.state.productType}
+            productStock={this.state.productStock}
+            disabled={this.state.disabled}
+            showHide={this.state.showHide}
+            isClearable={this.state.isClearable}
+            request_id={this.state.request_id}
+            status={this.state.status}
+            branchOfficces={this.props.branchOfficces}
+            valorCloseModal={this.valorCloseModal}
+            permitsTransfer={this.props.permitsTransfer}               
+            search={this.props.searchData}              
+          />
+        }
         <Card
           style={{
             flex: 1,
@@ -151,17 +220,22 @@ class ProductsTransfer extends React.Component {
             maxHeight: 480
           }}
         >
+
           <Header>
             <div>Productos</div>
-            <div style={{ width: "40%" }}>
-              <DefaultSearch
-                pressKey={true}
-                placeholder="Buscar Producto..."
-                getOptions={this.props.searchProduct}
-                options={optionsProducts}
-                searchAction={this.props.searchOneSuppplie}
-              />
-            </div>
+            {
+              this.props.option !== 4 &&
+              <div style={{ width: "40%" }}>
+                <DefaultSearch
+                  pressKey={true}
+                  placeholder="Buscar Producto..."
+                  getOptions={this.props.searchProduct}
+                  options={optionsProducts}
+                  searchAction={this.props.searchOneSuppplie}
+                  disabled={this.props.disabled}
+                />
+              </div>
+            }
           </Header>
           <div style={{ overflow: "auto", height: "70%" }}>
             <Table>
@@ -191,7 +265,7 @@ class ProductsTransfer extends React.Component {
                           <Cell>{product.quantity_stock}</Cell>
                         }
 
-                        <td style= {{width: widthInput}}>
+                        <td style={{ width: widthInput }}>
                           <Input
                             name={`inputQuantity_${product._id}`}
                             id={`inputQuantity_${product._id}`}
@@ -203,11 +277,12 @@ class ProductsTransfer extends React.Component {
                             style={{ height: heightInput, borderRadius: 0 }}
                             onBlur={this.eventBlurInputQuantity(product._id)}
                             onFocus={this.eventFocusInputQuantity(product._id)}
+                            disabled={this.props.disabled}
                           />
                         </td>
                         {
                           this.props.option === 4 &&
-                          <Cell style= {{width: widthInput}}>
+                          <Cell style={{ width: widthInput }}>
                             <Switch
                               onChange={this.handleChangeSwitch(product._id)}
                               value={product.confirm}
@@ -216,18 +291,40 @@ class ProductsTransfer extends React.Component {
                               color="primary"
                               checked={product.confirm}
                               disabled={this.props.disabled}
-                            />                          
+                            />
                           </Cell>
                         }
                         <Cell>
-                          <IconButton
-                            //disabled={disabled}
-                            onClick={() => {
-                              this.delete(key);
-                            }}
-                          >
-                            <Delete className="iconTable" />
-                          </IconButton>
+                          {
+                            this.props.option === 4 &&
+                            <IconButton
+                              title={`Agregar producto a una solicitud de  ${this.props.sucursal_central_token}`}                              
+                              onClick={() => { this.openModalStockProductsAdd(1, product._id, product.name, product.type, product.quantity_stock); }}
+                              disabled={this.props.disabled}>
+                              <PlaylistAdd className="iconTable" />
+                            </IconButton>
+                          }
+                          {
+                            this.props.option === 4 &&
+                            <IconButton 
+                              title="Ver stock en otras sucursales"                              
+                              onClick={() => { this.openModalStockProductsAdd(2, product._id); }}
+                              disabled={this.props.disabled}>
+                              <Visibility className="iconTable" />
+                            </IconButton>                            
+                          }
+                          {
+                            this.props.option !== 4 &&
+                            < IconButton
+                              disabled={this.props.disabled}
+                              onClick={() => {
+                                this.delete(key);
+                              }}
+                            >
+                              <Delete className="iconTable" />
+                            </IconButton>
+                          }
+
                         </Cell>
                       </RowTable>
                     );
@@ -236,7 +333,7 @@ class ProductsTransfer extends React.Component {
             </Table>
           </div>
         </Card>
-      </span>
+      </span >
     );
   }
 }
