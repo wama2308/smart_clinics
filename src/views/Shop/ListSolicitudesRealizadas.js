@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import IconButton from "@material-ui/core/IconButton";
-import { Delete, Edit, Visibility, SwapHoriz } from "@material-ui/icons";
+import { Delete, Edit, Visibility, Cancel } from "@material-ui/icons";
 import ModalSolicitudes from './ModalSolicitudes.js';
 import { number_format, GetDisabledPermits, getArray } from "../../core/utils";
 import Pagination from '../../components/Pagination';
@@ -25,12 +25,13 @@ class ListSolicitudesRealizadas extends React.Component {
       status: '',
       page: 0,
       rowsPerPage: 10,
+      typeRequest: 'Realizada',
     };
   }
 
   componentDidMount() { }
 
-  openModal = (option, pos, id, status) => {    
+  openModal = (option, pos, id, status) => {
     if (option === 1) {
       this.setState({
         modal: true,
@@ -69,20 +70,37 @@ class ListSolicitudesRealizadas extends React.Component {
     }
   }
 
-  deleteRegister = (id, status) => {
-    const message = {
-      title: "Eliminar Registro",
-      info: "¿Esta seguro que desea eliminar este registro?"
-    };
-    this.props.confirm(message, res => {
-      if (res) {
-        if (status === "Pendiente" || status === "Rechazada") {
+  deleteRegister = (option, id, status) => {
+    if (option === 1) {
+      const message = {
+        title: "Eliminar Registro",
+        info: "¿Esta seguro que desea eliminar este registro?"
+      };
+      this.props.confirm(message, res => {
+        if (res) {
+          if (status === "Pendiente" || status === "Rechazada" || status === "Cancelada") {            
           this.props.DeleteRequestMadeAction(id);
-        } else {
-          this.props.alert("warning", "¡La solicitud no puede ser eliminada, su estatus es: "+status+"!");
+          }else {
+            this.props.alert("warning", "¡La solicitud no puede ser cancelada, su estatus es: " + status + "!");
+          }
         }
-      }
-    });
+      });
+    } else {
+      const message = {
+        title: "Cancelar Solicitud",
+        info: "¿Esta seguro que desea cancelar esta solicitud?"
+      };
+      this.props.confirm(message, res => {
+        if (res) {
+          if (status === "Pendiente" || status === "Rechazada" || status === "Cancelada") {
+            this.props.cancelRequestAction(id);
+          } else {
+            this.props.alert("warning", "¡La solicitud no puede ser cancelada, su estatus es: " + status + "!");
+          }
+        }
+      });
+    }
+
   }
 
   valorCloseModal = (valor) => {
@@ -135,6 +153,7 @@ class ListSolicitudesRealizadas extends React.Component {
             branchOfficces={this.props.branchOfficces}
             valorCloseModal={this.valorCloseModal}
             permitsTransfer={this.props.permitsTransfer}
+            search={this.props.searchData}
           />
         }
         <div className="containerGeneral" style={{ "justifyContent": "flex-end" }}>
@@ -155,7 +174,7 @@ class ListSolicitudesRealizadas extends React.Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th className="text-left">Nro</th>                  
+                  <th className="text-left">Nro</th>
                   <th className="text-left">Control</th>
                   <th className="text-left">Emisor</th>
                   <th className="text-left">Receptor</th>
@@ -168,7 +187,7 @@ class ListSolicitudesRealizadas extends React.Component {
                   this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
                     return (
                       <tr key={data.number} className="text-left">
-                        <td>{data.number}</td>                        
+                        <td>{data.number}</td>
                         <td>{data.number_control}</td>
                         <td>{data.sender}</td>
                         <td>{data.receiver}</td>
@@ -176,7 +195,7 @@ class ListSolicitudesRealizadas extends React.Component {
                         <td style={{ 'minWidth': "205px" }}>
                           <div className="float-left" >
                             <IconButton aria-label="Delete"
-                              title="Ver Transferencia"
+                              title="Ver Solicitud"
                               className="iconButtons"
                               onClick={() => { this.openModal(2, data.number, data._id, data.status); }}
                               disabled={detailsDisabled}>
@@ -184,7 +203,7 @@ class ListSolicitudesRealizadas extends React.Component {
                             </IconButton>
 
                             <IconButton aria-label="Delete"
-                              title="Editar Transferencia"
+                              title="Editar Solicitud"
                               className="iconButtons"
                               onClick={() => { this.openModal(3, data.number, data._id, data.status); }}
                               disabled={updateDisabled}>
@@ -192,9 +211,17 @@ class ListSolicitudesRealizadas extends React.Component {
                             </IconButton>
 
                             <IconButton aria-label="Delete"
-                              title="Eliminar Transferencia"
+                              title="Cancelar Solicitud"
                               className="iconButtons"
-                              onClick={() => { this.deleteRegister(data._id, data.status); }}
+                              onClick={() => { this.deleteRegister(0, data._id, data.status); }}
+                              disabled={deleteDisabled}>
+                              <Cancel className="iconTable" />
+                            </IconButton>
+
+                            <IconButton aria-label="Delete"
+                              title="Eliminar Solicitud"
+                              className="iconButtons"
+                              onClick={() => { this.deleteRegister(1, data._id, data.status); }}
                               disabled={deleteDisabled}>
                               <Delete className="iconTable" />
                             </IconButton>

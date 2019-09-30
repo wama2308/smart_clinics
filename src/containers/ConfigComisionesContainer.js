@@ -6,6 +6,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  CardFooter,
   Col,
   Row,
   TabContent,
@@ -56,9 +57,9 @@ class ConfigComisionesContainer extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-        <Row>
+        <Row style={{height:'80vh', marginTop:'13px'}}>
           <Col>
-            <Card>
+            <Card >
               <CardHeader>Reglas para Comisiones</CardHeader>
               <CardBody>
                 {
@@ -101,11 +102,12 @@ class ConfigComisionesContainer extends Component {
                       </TabContent>
                     </div>
                     :
-                    <div style={{ height: "60vh" }}>
-                      <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
+                    <div style={{ height: "66vh" }}>
+                      <CircularProgress style={{ position: " absolute", height:40, top: "45%", right: "50%", zIndex: 2 }} />
                     </div>
                 }
               </CardBody>
+              <CardFooter>Footer</CardFooter>
             </Card>
           </Col>
         </Row>

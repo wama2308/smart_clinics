@@ -145,7 +145,7 @@ class ListStore extends React.Component {
         <br />
         <br />
         <div className="flex">
-          <div className="inner-flex" style={{width:'100%', height:'31rem',  overflow: 'auto'}}>
+          <div className="scrollCss" style={{width:'100%', height:'28rem',  overflow: 'auto'}}>
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
@@ -156,7 +156,7 @@ class ListStore extends React.Component {
                   <th className="text-left">Tiempo(dias)</th>
                   <th className="text-left">Tipo</th>
                   <th className="text-left">Condicion</th>
-                  <th className="text-left">Forma de pago</th>
+                  <th className="text-left">For/pago</th>
                   <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
                 </tr>
               </thead>

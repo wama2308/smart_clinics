@@ -270,3 +270,35 @@ padding: 1em;
   margin-top: auto;
 }
 
+/* Tamaño del scroll */
+.scrollCss::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+ /* Estilos barra (thumb) de scroll */
+.container_::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 0px;
+}
+
+.scrollCss::-webkit-scrollbar-thumb:active {
+  background-color: #999999;
+}
+
+.scrollCss::-webkit-scrollbar-thumb:hover {
+  background: #b3b3b3;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+ /* Estilos track de scroll */
+.scrollCss::-webkit-scrollbar-track {
+  background: #e1e1e1;
+  border-radius: 0px;
+}
+
+.scrollCss::-webkit-scrollbar-track:hover, 
+.scrollCss::-webkit-scrollbar-track:active {
+  background: #d4d4d4;
+}
+

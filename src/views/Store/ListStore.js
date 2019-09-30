@@ -141,10 +141,10 @@ class ListStore extends React.Component {
         <Table hover responsive borderless>
           <thead className="thead-light">
             <tr>
-              <th className="text-left">Nro</th>
-              <th className="text-left">Almacen</th>
-              <th className="text-left">Sucursal</th>
-              <th className="text-left">Descripcion</th>
+              <th className="text-left" style={{width:'10%'}}>Nro</th>
+              <th className="text-left" style={{width:'25%'}}>Almacen</th>
+              <th className="text-left" style={{width:'25%'}}>Sucursal</th>
+              <th className="text-left" style={{width:'20%'}}>Descripcion</th>
               <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
             </tr>
           </thead>
@@ -152,10 +152,10 @@ class ListStore extends React.Component {
             {arrayData ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
               return (
                 <tr key={data.number} className="text-left">
-                  <td>{data.number}</td>
-                  <td>{data.name}</td>
-                  <td>{data.branchoffice.label}</td>
-                  <td>{data.description}</td>
+                  <td style={{width:'10%'}}>{data.number}</td>
+                  <td style={{width:'25%'}}>{data.name}</td>
+                  <td style={{width:'25%'}}>{data.branchoffice.label}</td>
+                  <td style={{width:'20%'}}>{data.description}</td>
                   <td style={{ 'minWidth': "205px" }}>
                     <div className="float-left" >
                       <IconButton aria-label="Delete"

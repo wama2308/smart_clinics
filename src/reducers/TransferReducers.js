@@ -44,9 +44,30 @@ const LoadRequestMadeIdFunction = (state, payload) => {
 	return Map(estado);
 }
 
+const querySeeARequestsFunction = (state, payload) => {
+	let estado = state.toJS();
+	estado.requestMadeId = payload.data;
+	estado.productsToTransfer = payload.data.products;
+	return Map(estado);
+}
+
+const queryOneSupplieInBranchFunction = (state, payload) => {
+	let estado = state.toJS();
+	estado.supplieIdBranchOffice = payload.data;	
+	return Map(estado);
+}
+
 const setActionProps = (state, payload) => {
 	let estado = state.toJS();
 	estado.action = payload;
+	return Map(estado);
+}
+
+const setSwitchTableRequestReceived = (state, payload) => {
+	let estado = state.toJS();
+	const key = estado.productsToTransfer.findIndex(product => product._id === payload.id);
+	estado.productsToTransfer[key].confirm = payload.value;
+	estado.action = 1;
 	return Map(estado);
 }
 
@@ -77,6 +98,15 @@ const TransferReducer = (state = Map(), action) => {
 
 		case "REQUEST_MADE_ID":
 			return LoadRequestMadeIdFunction(state, action.payload);
+
+		case "REQUEST_RECEIVED_ID":
+			return querySeeARequestsFunction(state, action.payload);
+
+		case "SET_SWITCH_REQUEST_RECEIVED":
+			return setSwitchTableRequestReceived(state, action.payload);
+
+		case "SUPPLIE_ONE_BRANCH_OFFICE":
+			return queryOneSupplieInBranchFunction(state, action.payload);
 
 		case 'ACTION_PROPS':
 			return setActionProps(state, action.payload)

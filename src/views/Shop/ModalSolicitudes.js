@@ -18,6 +18,8 @@ import {
     deleteProductsTransferFunction,
     saveTransferRequestAction,
     editTransferRequestsAction,
+    setSwitchTableRequestReceived,
+    queryOneSupplieInBranchFunction,
     actionProps
 } from "../../actions/TransferActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -26,7 +28,9 @@ import { PlaylistAdd, Edit } from "@material-ui/icons";
 import Switch from '@material-ui/core/Switch';
 import classnames from "classnames";
 import DefaultSearch from "../../components/DefaultSearch.js";
+import jwt_decode from 'jwt-decode';
 import ProductsTransfer from "./ProductsTransfer.js";
+import ListStockProducts from "./ListStockProducts.js";
 
 class ModalSolicitudes extends React.Component {
     constructor(props) {
@@ -37,6 +41,17 @@ class ModalSolicitudes extends React.Component {
     }
 
     componentDidMount() {
+        const token = window.localStorage.getItem('id_token');
+        var decoded = jwt_decode(token);
+        let sucursal_id = '';
+
+        Object.keys(decoded.profile[0]).map((i) => {
+            sucursal_id = decoded.profile[0].medical_center[0].branch_office[0].center;
+        })
+        this.setState({
+            sucursal_central_token: sucursal_id
+        });
+
         if (this.props.option === 1) {
             this.setState({
                 loading: 'hide',
@@ -100,7 +115,7 @@ class ModalSolicitudes extends React.Component {
                 ...InitalState
             })
         }
-        if (props.option === 2 || props.option === 3) {
+        if (props.option === 2 || props.option === 3 || props.option === 4) {
             if (props.transfer.requestMadeId.type_shipping && props.transfer.action === 0) {
                 let dataOptionsOne = [];
                 let selectOptionsOne = [];
@@ -193,6 +208,10 @@ class ModalSolicitudes extends React.Component {
         this.props.cleanQuantityProductsTransferAction();
         this.props.actionProps(0);
         this.props.valorCloseModal(false);
+    }
+
+    ordenTransferencia = () => {
+        alert("Modal donde se cargara un form para realizar una orden de transferencia en caso de que la sucursal central no tenga stock");
     }
 
     validate = () => {
@@ -303,8 +322,8 @@ class ModalSolicitudes extends React.Component {
                             this.closeModal();
                         }
                     )
-                }else{
-                    this.props.alert("warning", "¡La solicitud no puede ser editada, su estatus es: "+this.props.status+"!");
+                } else {
+                    this.props.alert("warning", "¡La solicitud no puede ser editada, su estatus es: " + this.props.status + "!");
                 }
 
 
@@ -362,7 +381,13 @@ class ModalSolicitudes extends React.Component {
                 label_children = 'Oficina/consultorio';
             }
         }
-
+        let var_sucursal_central = '';
+        if(this.state.sucursal_central_token){
+            var_sucursal_central = 'Compra';
+        }else{
+            var_sucursal_central = 'Transferencia';
+        }
+        
         return (
             <span>
                 <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalTransfer">
@@ -374,7 +399,7 @@ class ModalSolicitudes extends React.Component {
                                     <form className="formCodeConfirm" onSubmit={this.handleAction.bind(this)}>
                                         <div className="row">
                                             <FormGroup className="top form-group col-sm-6">
-                                                <Label for="tipoTransfer">Transferir a:</Label>
+                                                <Label for="tipoTransfer">Tipo de Solicitud:</Label>
                                                 <div className={this.state.divTipoTransfer}>
                                                     <Select
                                                         isSearchable="true"
@@ -439,19 +464,82 @@ class ModalSolicitudes extends React.Component {
                                                 </div>
                                                 <div className="errorSelect">{this.state.divObservacionError}</div>
                                             </FormGroup>
+                                            <FormGroup className="top form-group col-sm-6">
+                                                <Button className="" color="danger" onClick={this.ordenTransferencia}>
+                                                    Orde de Transferencia
+                                                </Button>
+                                            </FormGroup>                                            
                                         </div>
-                                        <ProductsTransfer
-                                            searchProduct={this.props.searchProduct}
-                                            dataAllProducts={this.props.dataAllProducts}
-                                            searchOneSuppplie={this.props.searchOneSuppplie}
-                                            productsToTransfer={this.props.transfer.productsToTransfer}
-                                            setQuantityTranferAction={this.props.setQuantityTranferAction}
-                                            deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
-                                            confirm={this.props.confirm}
-                                            alert={this.props.alert}
-                                            divAviso={this.state.divAviso}
-                                        //cleanDivAviso = {this.cleanDivAviso}
-                                        />
+                                        {
+                                            this.props.option !== 4 ?
+                                                <div>
+                                                    <Nav tabs>
+                                                        <NavItem>
+                                                            <NavLink
+                                                                className={classnames({ active: this.state.activeTab === '1' })}
+                                                                onClick={() => { this.toggleTab('1'); }} >
+                                                                Solicitud de Productos
+                                                    </NavLink>
+                                                        </NavItem>
+                                                        <NavItem>
+                                                            <NavLink
+                                                                className={classnames({ active: this.state.activeTab === '2' })}
+                                                                onClick={() => { this.toggleTab('2'); }} >
+                                                                Lista de Productos
+                                                    </NavLink>
+                                                        </NavItem>
+                                                    </Nav>
+                                                    <TabContent activeTab={this.state.activeTab}>
+                                                        <TabPane tabId="1">
+                                                            <ProductsTransfer
+                                                                option={this.props.option}
+                                                                searchProduct={this.props.searchProduct}
+                                                                dataAllProducts={this.props.dataAllProducts}
+                                                                searchOneSuppplie={this.props.searchOneSuppplie}
+                                                                productsToTransfer={this.props.transfer.productsToTransfer}
+                                                                setQuantityTranferAction={this.props.setQuantityTranferAction}
+                                                                deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
+                                                                setSwitchTableRequestReceived={this.props.setSwitchTableRequestReceived}
+                                                                confirm={this.props.confirm}
+                                                                alert={this.props.alert}
+                                                                divAviso={this.state.divAviso}
+                                                                disabled={this.props.disabled}
+                                                            />
+                                                        </TabPane>
+                                                        <TabPane tabId="2">
+                                                            <ListStockProducts
+                                                                option={this.props.option}
+                                                                data={this.props.transfer.allProducts}
+                                                                search={this.props.searchData}
+                                                                permitsTransfer={this.props.permitsTransfer}
+                                                                disabled={this.props.disabled}
+                                                            />
+                                                        </TabPane>
+                                                    </TabContent>
+                                                </div>
+                                                :
+                                                <ProductsTransfer
+                                                    option={this.props.option}
+                                                    searchProduct={this.props.searchProduct}
+                                                    dataAllProducts={this.props.dataAllProducts}
+                                                    searchOneSuppplie={this.props.searchOneSuppplie}
+                                                    productsToTransfer={this.props.transfer.productsToTransfer}
+                                                    setQuantityTranferAction={this.props.setQuantityTranferAction}
+                                                    deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
+                                                    setSwitchTableRequestReceived={this.props.setSwitchTableRequestReceived}
+                                                    confirm={this.props.confirm}
+                                                    alert={this.props.alert}
+                                                    divAviso={this.state.divAviso}
+                                                    sucursal_central_token={var_sucursal_central}
+                                                    queryOneSupplieInBranchFunction={this.props.queryOneSupplieInBranchFunction}
+                                                    supplieIdBranchOffice={this.props.transfer.supplieIdBranchOffice}
+                                                    search={this.props.searchData}
+                                                    permitsTransfer={this.props.permitsTransfer}
+                                                    //disabled={this.props.disabled}
+                                                />
+                                        }
+
+
                                     </form>
                                 </ModalBody>
                                 <ModalFooter>
@@ -494,6 +582,8 @@ const mapDispatchToProps = dispatch => ({
     deleteProductsTransferFunction: (key) => dispatch(deleteProductsTransferFunction(key)),
     saveTransferRequestAction: (data, callback) => dispatch(saveTransferRequestAction(data, callback)),
     editTransferRequestsAction: (data, callback) => dispatch(editTransferRequestsAction(data, callback)),
+    setSwitchTableRequestReceived: (id, value) => dispatch(setSwitchTableRequestReceived(id, value)),
+    queryOneSupplieInBranchFunction: (id) => dispatch(queryOneSupplieInBranchFunction(id)),
     actionProps: (value) => dispatch(actionProps(value)),
 });
 
