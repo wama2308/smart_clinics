@@ -45,7 +45,6 @@ import Switch from '@material-ui/core/Switch';
 import { FormControlLabel } from '@material-ui/core';
 import { InitalState } from './InitialState';
 import classnames from 'classnames';
-import Img from 'react-image'
 
 class ModalBedrooms extends Component {
   constructor(props) {
@@ -53,6 +52,7 @@ class ModalBedrooms extends Component {
     this.state = {
       ...InitalState,
       activeTab: "1",
+      checkAll: false
     }
   }
 
@@ -105,7 +105,7 @@ class ModalBedrooms extends Component {
 
     let id = []
 
-    if (this.props.option === 1) {
+    if (this.props.option === 1 && this.props.bedrooms.dataAccept.length !== 0) {
       this.props.bedrooms.dataAccept.map(list => {
         if (list.cantidad === 0) {
           cantidadError = "¡Ingrese la Cantidad!"
@@ -398,56 +398,12 @@ class ModalBedrooms extends Component {
         if (this.state.arrayConsultingRoomSelect !== null) {
           const supplies = this.functionArray(this.props.bedrooms.dataAccept)
           this.setState({ loading: 'hide' })
-          if (supplies.length > 0) {
-            this.setState({ loading: 'hide' })
-            if (this.state.check === true) {
-              this.props.createBedroomsFunction({
-                input: this.state.check,
-                quantity_rooms: this.state.habitaciones,
-                type_office: this.state.arrayConsultingRoomSelect.value,
-                name: this.state.nombre,
-                status: this.state.arrayBedroomsStatusSelect.value,
-                type: this.state.arrayBedroomsTypeSelect.value,
-                floor: this.state.piso,
-                abbreviation: this.state.abreviatura,
-                photos: this.state.foto,
-                belongings: supplies
-              }, () => {
-                this.closeModal();
-                this.setState({
-                  ...InitalState
-                })
-              })
-            } else {
-              this.props.createBedroomsFunction({
-                input: this.state.check,
-                //quantity_rooms: this.state.habitaciones,
-                type_office: this.state.arrayConsultingRoomSelect.value,
-                name: this.state.nombre,
-                status: this.state.arrayBedroomsStatusSelect.value,
-                type: this.state.arrayBedroomsTypeSelect.value,
-                floor: this.state.piso,
-                abbreviation: this.state.abreviatura,
-                photos: this.state.foto,
-                belongings: supplies
-              }, () => {
-                this.closeModal();
-                this.setState({
-                  ...InitalState
-                })
-              })
-            }
-          } else {
-            this.props.messageError()
-          }
-        } else {
-          const supplies = this.functionArray(this.props.bedrooms.dataAccept)
           this.setState({ loading: 'hide' })
-          if (supplies.length > 0) {
-            this.setState({ loading: 'hide' })
+          if (this.state.check === true) {
             this.props.createBedroomsFunction({
               input: this.state.check,
               quantity_rooms: this.state.habitaciones,
+              type_office: this.state.arrayConsultingRoomSelect.value,
               name: this.state.nombre,
               status: this.state.arrayBedroomsStatusSelect.value,
               type: this.state.arrayBedroomsTypeSelect.value,
@@ -462,25 +418,61 @@ class ModalBedrooms extends Component {
               })
             })
           } else {
-            this.props.messageError()
+            this.props.createBedroomsFunction({
+              input: this.state.check,
+              //quantity_rooms: this.state.habitaciones,
+              type_office: this.state.arrayConsultingRoomSelect.value,
+              name: this.state.nombre,
+              status: this.state.arrayBedroomsStatusSelect.value,
+              type: this.state.arrayBedroomsTypeSelect.value,
+              floor: this.state.piso,
+              abbreviation: this.state.abreviatura,
+              photos: this.state.foto,
+              belongings: supplies
+            }, () => {
+              this.closeModal();
+              this.setState({
+                ...InitalState
+              })
+            })
           }
+
+        } else {
+          const supplies = this.functionArray(this.props.bedrooms.dataAccept)
+          this.setState({ loading: 'hide' })
+          this.setState({ loading: 'hide' })
+          this.props.createBedroomsFunction({
+            input: this.state.check,
+            quantity_rooms: this.state.habitaciones,
+            name: this.state.nombre,
+            status: this.state.arrayBedroomsStatusSelect.value,
+            type: this.state.arrayBedroomsTypeSelect.value,
+            floor: this.state.piso,
+            abbreviation: this.state.abreviatura,
+            photos: this.state.foto,
+            belongings: supplies
+          }, () => {
+            this.closeModal();
+            this.setState({
+              ...InitalState
+            })
+          })
+
         }
       } else if (this.props.option === 4) {
         const bedroomsArray = this.filter(this.props.data)
         const supplies = this.pruebaFunction(this.props.bedrooms.dataAccept)
         if (this.state.arrayConsultingRoomSelect !== null) {
-
-          const array = []
-          if (this.props.bedrooms.dataAccept) {
-            this.props.bedrooms.dataAccept.map(data => {
-              array.push({
-                ...data,
-                quantity: data.quantity_stock,
+          if (this.state.checkAll === false) {
+            const array = []
+            if (this.props.bedrooms.dataAccept) {
+              this.props.bedrooms.dataAccept.map(data => {
+                array.push({
+                  ...data,
+                  quantity: data.quantity_stock,
+                })
               })
-            })
-          }
-
-          if (supplies.length > 0) {
+            }
             this.setState({ loading: 'hide' })
             this.props.editBedroomsFunction({
               bedrooms: bedroomsArray,
@@ -499,12 +491,8 @@ class ModalBedrooms extends Component {
               })
             })
           } else {
-            this.props.messageError()
-          }
-        } else {
-          if (this.props.bedrooms.dataAccept.length > 0) {
-            this.setState({ loading: 'hide' })
-
+            ///Aqui entra la validacion si es "Editar Todas" 
+            const bedroomsArrayAll = this.filterAll(this.props.data)
             const array = []
             if (this.props.bedrooms.dataAccept) {
               this.props.bedrooms.dataAccept.map(data => {
@@ -514,13 +502,16 @@ class ModalBedrooms extends Component {
                 })
               })
             }
+            this.setState({ loading: 'hide' })
             this.props.editBedroomsFunction({
-              bedrooms: bedroomsArray,
+              bedrooms: bedroomsArrayAll,
               status: this.state.arrayBedroomsStatusSelect.value,
               type: this.state.arrayBedroomsTypeSelect.value,
+              type_office: this.state.arrayConsultingRoomSelect.value,
               floor: this.state.piso,
               abbreviation: this.state.abreviatura,
               belongings: array
+
             }, () => {
               this.props.deleteDataSupplies()
               this.closeModal();
@@ -528,11 +519,35 @@ class ModalBedrooms extends Component {
                 ...InitalState
               })
             })
-          } else {
-            this.props.messageError()
           }
-        }
+        } else {
+          this.setState({ loading: 'hide' })
 
+          const array = []
+          if (this.props.bedrooms.dataAccept) {
+            this.props.bedrooms.dataAccept.map(data => {
+              array.push({
+                ...data,
+                quantity: data.quantity_stock,
+              })
+            })
+          }
+
+          this.props.editBedroomsFunction({
+            bedrooms: bedroomsArray,
+            status: this.state.arrayBedroomsStatusSelect.value,
+            type: this.state.arrayBedroomsTypeSelect.value,
+            floor: this.state.piso,
+            abbreviation: this.state.abreviatura,
+            belongings: array
+          }, () => {
+            this.props.deleteDataSupplies()
+            this.closeModal();
+            this.setState({
+              ...InitalState
+            })
+          })
+        }
       } else if (this.props.option === 3) {
         this.setState({ loading: 'hide' })
 
@@ -610,7 +625,7 @@ class ModalBedrooms extends Component {
     event.preventDefault();
     if (event.target.files[0].size > 25000) {
       this.setState({
-        fotoError: 'El tamaño de la imagen no esta permitido ',
+        fotoError: 'El tamaño de la imagen no esta permitido',
         fotoInvalid: true,
         collapseFil: true,
       })
@@ -656,6 +671,28 @@ class ModalBedrooms extends Component {
           if (this.state.arrayConsultingRoomSelect !== null) {
             return data.type === "Oficina" && data.number >= this.state.desde && data.number <= this.state.hasta &&
               this.state.arrayConsultingRoomSelect.value === data.type_office.value
+          }
+        }
+      })
+      const arrayClean = []
+      date.map(datos => {
+        arrayClean.push(datos._id)
+      })
+      return arrayClean
+
+    } else {
+      return []
+    }
+  }
+
+  filterAll = (data) => {
+    if (data.length != 0) {
+      const date = data.filter(data => {
+        if (this.state.arrayBedroomsTypeSelect !== null && this.state.arrayBedroomsTypeSelect.label !== "Oficina") {
+          return data.type === this.state.arrayBedroomsTypeSelect.label
+        } else {
+          if (this.state.arrayConsultingRoomSelect !== null) {
+            return data.type === "Oficina" && this.state.arrayConsultingRoomSelect.value === data.type_office.value
           }
         }
       })
@@ -781,6 +818,51 @@ class ModalBedrooms extends Component {
     console.log("foto", this.state.foto);
 
 
+    const mod =
+    {
+      enabled: [{
+        _id: "123",
+        type_id: '321',
+        category: "category 1",
+        status: true,
+        spaces: [{
+          _id: "52525",
+          floor: "piso1",
+          code: "hfghf1",
+          type: "type",
+          status: "ocupado",
+          name: "name1"
+        }]
+      },
+      {
+        _id: "123",
+        type_id: '321',
+        category: "category 2",
+        status: false,
+        spaces: [{
+          _id: "52525",
+          floor: "piso1",
+          code: "hfghf1",
+          type: "type",
+          status: "ocupado",
+          name: "name1"
+        }]
+      },
+      {
+        _id: "123",
+        type_id: '321',
+        category: "category 3",
+        status: false,
+        spaces: [{
+          _id: "52525",
+          floor: "piso1",
+          code: "hfghf1",
+          type: "type",
+          status: "ocupado",
+          name: "name1"
+        }]
+      }]
+    }
     return (
       <span>
         <Modal
@@ -949,7 +1031,6 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-
                     <FormGroup className="top form-group col-sm-6">
                       <Label for="abreviatura">Abreviatura</Label>
                       <Input
@@ -969,7 +1050,23 @@ class ModalBedrooms extends Component {
                       </div>
                     </FormGroup>
 
-                    {this.props.option === 4 &&
+                    {this.state.checkAll === false && this.props.option === 4 &&
+                      <FormGroup className="top form-group col-sm-6">
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              color="primary"
+                              checked={this.state.checkAll}
+                              onChange={this.handleChangeSwitch('checkAll')}
+                              value="checkAll"
+                            />
+                          }
+                          label="Editar Todos"
+                        />
+                      </FormGroup>
+                    }
+
+                    {this.props.option === 4 && this.state.checkAll === false &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="desde">Rango Inicial</Label>
                         <Input
@@ -990,7 +1087,7 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 4 &&
+                    {this.props.option === 4 && this.state.checkAll === false &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="hasta">Rango Final</Label>
                         <Input
@@ -1004,7 +1101,7 @@ class ModalBedrooms extends Component {
                           type="number"
                           placeholder="Nro Habitaciones"
                           min={0}
-                          max={this.props.data.length}
+                          max={mod.enabled.length}
                         />
                         <div className="errorSelect">
                           {this.state.hastaError}
@@ -1083,44 +1180,41 @@ class ModalBedrooms extends Component {
                 </form>
                 <Row>
                   <Col>
-                    <Card>
-                      <CardBody>
-                        <Nav tabs>
-                          <NavItem>
-                            <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                              Espacios Activos
+                    <Nav tabs>
+                      <NavItem>
+                        <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
+                          Espacios Activos
                               </NavLink>
-                          </NavItem>
-                          {/* <NavItem>
+                      </NavItem>
+                      {/* <NavItem>
                           <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
                             Espacios Inactivos
                           </NavLink>
                         </NavItem> */}
-                        </Nav>
-                        <TabContent activeTab={this.state.activeTab}>
-                          <TabPane tabId="1">
-                            <TablaSuplies
-                              supplies={this.state.supplies}
-                              searchBelogingFunction={this.props.searchBelogingFunction}
-                              searchSupplies={this.props.bedrooms.searchSupplies}
-                              actionAcceptFunction={this.props.actionAcceptFunction}
-                              setDatasuppies={this.props.setDatasuppies}
-                              option={this.props.option}
-                              dataSuppliesSet={this.props.dataSuppliesSet}
-                              oneSuppliesSet={this.props.oneSuppliesSet}
-                              disabled={this.props.disabled}
-                              queryOneBelongingFunction={this.props.queryOneBelongingFunction}
-                              dataAccept={this.props.bedrooms.dataAccept}
-                              cantidadError={this.state.cantidadError}
-                              cantidadInvalid={this.state.cantidadInvalid}
-                              nombre={this.state.nombre}
-                              piso={this.state.piso}
-                              abreviatura={this.state.abreviatura}
-                              id={this.state.id} />
-                          </TabPane>
-                        </TabContent>
-                      </CardBody>
-                    </Card>
+                    </Nav>
+                    <TabContent activeTab={this.state.activeTab}>
+                      <TabPane tabId="1">
+                        <TablaSuplies
+                          supplies={this.state.supplies}
+                          searchBelogingFunction={this.props.searchBelogingFunction}
+                          searchSupplies={this.props.bedrooms.searchSupplies}
+                          actionAcceptFunction={this.props.actionAcceptFunction}
+                          setDatasuppies={this.props.setDatasuppies}
+                          option={this.props.option}
+                          dataSuppliesSet={this.props.dataSuppliesSet}
+                          oneSuppliesSet={this.props.oneSuppliesSet}
+                          disabled={this.props.disabled}
+                          queryOneBelongingFunction={this.props.queryOneBelongingFunction}
+                          dataAccept={this.props.bedrooms.dataAccept}
+                          cantidadError={this.state.cantidadError}
+                          cantidadInvalid={this.state.cantidadInvalid}
+                          nombre={this.state.nombre}
+                          piso={this.state.piso}
+                          abreviatura={this.state.abreviatura}
+                          id={this.state.id} />
+                      </TabPane>
+                    </TabContent>
+
                   </Col>
                 </Row>
               </ModalBody>
@@ -1142,7 +1236,7 @@ class ModalBedrooms extends Component {
             </div>
           }
         </Modal>
-      </span>
+      </span >
     );
   }
 }

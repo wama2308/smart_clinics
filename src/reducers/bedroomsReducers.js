@@ -4,14 +4,7 @@ import { deleteDataSupplies, queryOneBelongingFunction, propsAction } from '../a
 const loadbedroons = (state, payload) => {
 
   let estado = state.toJS();
-  const array = []
-  payload.enabled.map(data => {
-    array.push({
-      ...data,
-      collapse: false
-    })
-  })
-  estado.bedroomsEnabled = array
+  estado.bedroomsEnabled = payload.enabled
   estado.bedroomsDisabled = payload.disabled
   estado.dataAccept = []
   estado.propsAction = 0
@@ -151,11 +144,11 @@ const setCollapse = (state, payload) => {
   let estado = state.toJS();
 
   estado.bedroomsEnabled.find(list => {
-    if (list._id === payload.id) {
-     if(list.collapse === false){
-      list.collapse = true
+    if (list._id === payload.id && list.type_name === payload.type) {
+     if(list.status === false){
+      list.status = true
      }else{
-      list.collapse = false
+      list.status = false
      }
     }
   })
