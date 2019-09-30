@@ -299,7 +299,7 @@ class ListBedrooms extends Component {
                                             <IconButton aria-label="Delete"
                                               title="Ver Espacio"
                                               className="iconButtons"
-                                              onClick={() => { this.openModal(2, list._id); }}
+                                              onClick={() => { this.openModal(2, space._id); }}
                                             >
                                               <Visibility className="iconTable" />
                                             </IconButton>
@@ -307,7 +307,7 @@ class ListBedrooms extends Component {
                                             <IconButton aria-label="Delete"
                                               title="Editar Espacio"
                                               className="iconButtons"
-                                              onClick={() => { this.openModal(3, list._id); }}>
+                                              onClick={() => { this.openModal(3, space._id); }}>
                                               <Edit className="iconTable" />
                                             </IconButton>
 
