@@ -125,7 +125,7 @@ class ListStockProducts extends React.Component {
                                     <td style={{ width: '10%' }}>
                                         <div className="float-left" >
                                             <IconButton aria-label="Delete"
-                                                title="Agregar product a la solicitud"
+                                                title="Agregar producto a la solicitud"
                                                 className="iconButtons"
                                                 onClick={() => { this.addProductRequest(data._id, data.name, data.type); }}
                                                 disabled={this.props.disabled}>
