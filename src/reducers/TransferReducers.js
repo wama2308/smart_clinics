@@ -1,4 +1,6 @@
 import { Map } from 'immutable'
+import { getArray } from '../core/utils';
+
 const setData = (state, node, payload) => state.set(node, payload)
 
 const searchOneSuppplie = (state, payload) => {
@@ -8,7 +10,7 @@ const searchOneSuppplie = (state, payload) => {
 		name: payload.name,
 		type: payload.type,
 		quantity_transfer: payload.quantity_transfer,
-	}
+	};
 	estado.productsToTransfer.push(objProduct);
 	return Map(estado);
 }
@@ -53,7 +55,7 @@ const querySeeARequestsFunction = (state, payload) => {
 
 const queryOneSupplieInBranchFunction = (state, payload) => {
 	let estado = state.toJS();
-	estado.supplieIdBranchOffice = payload.data;	
+	estado.supplieIdBranchOffice = payload.data;
 	return Map(estado);
 }
 
@@ -68,6 +70,27 @@ const setSwitchTableRequestReceived = (state, payload) => {
 	const key = estado.productsToTransfer.findIndex(product => product._id === payload.id);
 	estado.productsToTransfer[key].confirm = payload.value;
 	estado.action = 1;
+	return Map(estado);
+}
+
+const addProductRequestFunction = (state, payload) => {
+	let estado = state.toJS();
+	estado.productsToTransfer.push(payload);
+	return Map(estado);
+}
+
+const filterStockProductsAction = (state, payload) => {
+	let estado = state.toJS();
+	const dataService = getArray(estado.allProductsSearch)
+	let expresion = new RegExp(`${payload.value}.*`, "i");
+	const result = dataService.filter(
+		data => expresion.test(data.name) ||
+			expresion.test(data.code) ||
+			expresion.test(data.type)
+
+	);
+	estado.allProducts = result;
+
 	return Map(estado);
 }
 
@@ -107,6 +130,12 @@ const TransferReducer = (state = Map(), action) => {
 
 		case "SUPPLIE_ONE_BRANCH_OFFICE":
 			return queryOneSupplieInBranchFunction(state, action.payload);
+
+		case "ADD_PRODUCT_REQUEST":
+			return addProductRequestFunction(state, action.payload);
+
+		case "SET_PRODUCT_STOCK_FILTERS":
+			return filterStockProductsAction(state, action.payload);
 
 		case 'ACTION_PROPS':
 			return setActionProps(state, action.payload)

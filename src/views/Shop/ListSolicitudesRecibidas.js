@@ -26,6 +26,7 @@ class ListSolicitudesRecibidas extends React.Component {
       page: 0,
       rowsPerPage: 10,
       typeRequest: 'Recibida',
+      idRequestReceived: '0',
     };
   }
 
@@ -42,6 +43,7 @@ class ListSolicitudesRecibidas extends React.Component {
         disabled: true,
         showHide: 'show',
         isClearable: true,
+        idRequestReceived: id,
       })
     }
     // else if (option === 2) {
@@ -134,6 +136,7 @@ class ListSolicitudesRecibidas extends React.Component {
             branchOfficces={this.props.branchOfficces}
             valorCloseModal={this.valorCloseModal}
             permitsTransfer={this.props.permitsTransfer}
+            idRequestReceived={this.state.idRequestReceived}
           />
         }
         <div className="containerGeneral" style={{ "justifyContent": "flex-end" }}>
@@ -154,12 +157,12 @@ class ListSolicitudesRecibidas extends React.Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">Control</th>
-                  <th className="text-left">Emisor</th>
-                  <th className="text-left">Receptor</th>
-                  <th className="text-left">Estatus</th>
-                  <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
+                  <th className="text-left" style={{width:'10%'}}>Nro</th>
+                  <th className="text-left" style={{width:'15%'}}>Control</th>
+                  <th className="text-left" style={{width:'20%'}}>Emisor</th>
+                  <th className="text-left" style={{width:'20%'}}>Receptor</th>
+                  <th className="text-left" style={{width:'20%'}}>Estatus</th>
+                  <th className="text-left" style={{ 'minWidth': "105px", width:'15%' }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -167,12 +170,12 @@ class ListSolicitudesRecibidas extends React.Component {
                   this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
                     return (
                       <tr key={data.number} className="text-left">
-                        <td>{data.number}</td>
-                        <td>{data.number_control}</td>
-                        <td>{data.sender}</td>
-                        <td>{data.receiver}</td>
-                        <td>{data.status}</td>
-                        <td style={{ 'minWidth': "205px" }}>
+                        <td style={{width:'10%'}}>{data.number}</td>
+                        <td style={{width:'15%'}}>{data.number_control}</td>
+                        <td style={{width:'20%'}}>{data.sender}</td>
+                        <td style={{width:'20%'}}>{data.receiver}</td>
+                        <td style={{width:'20%'}}>{data.status}</td>
+                        <td style={{ 'minWidth': "205px", width:'15%' }}>
                           <div className="float-left" >
                             <IconButton aria-label="Delete"
                               title="Ver Solicitud Recibida"

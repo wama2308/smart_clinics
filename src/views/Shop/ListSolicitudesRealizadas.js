@@ -36,7 +36,7 @@ class ListSolicitudesRealizadas extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Registrar Solicitud',
+        modalHeader: 'Registrar Solicitud de transferencia',
         modalFooter: 'Guardar',
         disabled: false,
         showHide: 'show',
@@ -47,7 +47,7 @@ class ListSolicitudesRealizadas extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Solicitud',
+        modalHeader: 'Ver Solicitud de transferencia',
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'hide',
@@ -57,7 +57,7 @@ class ListSolicitudesRealizadas extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Solicitud',
+        modalHeader: 'Editar Solicitud de transferencia',
         modalFooter: 'Editar',
         disabled: false,
         showHide: 'show',
@@ -174,12 +174,12 @@ class ListSolicitudesRealizadas extends React.Component {
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th className="text-left">Nro</th>
-                  <th className="text-left">Control</th>
-                  <th className="text-left">Emisor</th>
-                  <th className="text-left">Receptor</th>
-                  <th className="text-left">Estatus</th>
-                  <th className="text-left" style={{ 'minWidth': "105px" }}>Acciones</th>
+                  <th className="text-left" style={{width:'10%'}}>Nro</th>
+                  <th className="text-left" style={{width:'15%'}}>Control</th>
+                  <th className="text-left" style={{width:'20%'}}>Emisor</th>
+                  <th className="text-left" style={{width:'20%'}}>Receptor</th>
+                  <th className="text-left" style={{width:'20%'}}>Estatus</th>
+                  <th className="text-left" style={{ 'minWidth': "105px", width:'15%' }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -187,12 +187,12 @@ class ListSolicitudesRealizadas extends React.Component {
                   this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
                     return (
                       <tr key={data.number} className="text-left">
-                        <td>{data.number}</td>
-                        <td>{data.number_control}</td>
-                        <td>{data.sender}</td>
-                        <td>{data.receiver}</td>
-                        <td>{data.status}</td>
-                        <td style={{ 'minWidth': "205px" }}>
+                        <td style={{width:'10%'}}>{data.number}</td>
+                        <td style={{width:'15%'}}>{data.number_control}</td>
+                        <td style={{width:'20%'}}>{data.sender}</td>
+                        <td style={{width:'20%'}}>{data.receiver}</td>
+                        <td style={{width:'20%'}}>{data.status}</td>
+                        <td style={{ 'minWidth': "205px", width:'15%' }}>
                           <div className="float-left" >
                             <IconButton aria-label="Delete"
                               title="Ver Solicitud"

@@ -159,7 +159,7 @@ class DefaultSearch extends React.Component {
   keyPress = e => {
     const value = !this.state.auxValue ? this.props.value : this.state.auxValue;
     if (e.key === "Enter") {
-      this.props.searchAction(value);
+      this.props.searchAction(value, this.props.productsToTransfer);
     }
   };
 

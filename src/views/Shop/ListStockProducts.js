@@ -1,6 +1,8 @@
 import React from "react";
 import { Table, Button, FormGroup, Input, Label } from "reactstrap";
 import Switch from '@material-ui/core/Switch';
+import IconButton from "@material-ui/core/IconButton";
+import { PlaylistAdd } from "@material-ui/icons";
 import "./Shop.css";
 import Pagination from '../../components/Pagination';
 import { getArray, GetDisabledPermits } from '../../core/utils';
@@ -32,16 +34,9 @@ class ListStockProducts extends React.Component {
 
     handleChange = e => {
         const { name, value } = e.target;
-        const dataService = getArray(this.props.data)
-        let expresion = new RegExp(`${value}.*`, "i");
-        const result = dataService.filter(
-            data => expresion.test(data.name) ||
-                expresion.test(data.code) ||
-                expresion.test(data.type)
-        );
+        this.props.filterStockProductsAction(value);
         this.setState({
-            [name]: value,
-            arrayTest: result
+            [name]: value
         });
 
     };
@@ -59,6 +54,21 @@ class ListStockProducts extends React.Component {
             arrayTest: getArray(props.data)
         })
     };
+
+    addProductRequest = (id, name, type) => {
+        const productRepeat = this.props.productsToTransfer.find(product => product._id === id);
+        let obj = {
+            _id: id,
+            name: name,
+            type: type,
+            quantity_transfer: 0
+        };
+        if (productRepeat) {
+            this.props.alert("warning", "¡Este producto ya se encuentra agregado!");
+        } else {
+            this.props.addProductRequestFunction(obj);
+        }
+    }
 
     render() {
         const { rowsPerPage, page } = this.state;
@@ -90,12 +100,13 @@ class ListStockProducts extends React.Component {
                         <tr>
                             <th className="text-left" style={{ width: '10%' }}>Nro</th>
                             <th className="text-left" style={{ width: '25%' }}>Producto</th>
-                            <th className="text-left" style={{ width: '25%' }}>Codigo</th>
-                            <th className="text-left" style={{ width: '25%' }}>Tipo</th>
+                            <th className="text-left" style={{ width: '20%' }}>Codigo</th>
+                            <th className="text-left" style={{ width: '20%' }}>Tipo</th>
                             {
                                 find_see_stock &&
                                 <th className="text-left" style={{ width: '15%' }}>Stock</th>
                             }
+                            <th className="text-left" style={{ width: '10%' }}>Accion</th>
 
                         </tr>
                     </thead>
@@ -105,12 +116,23 @@ class ListStockProducts extends React.Component {
                                 <tr key={data.number} className="text-left">
                                     <td style={{ width: '10%' }}>{data.number}</td>
                                     <td style={{ width: '25%' }}>{data.name}</td>
-                                    <td style={{ width: '25%' }}>{data.code}</td>
-                                    <td style={{ width: '25%' }}>{data.type}</td>
+                                    <td style={{ width: '20%' }}>{data.code}</td>
+                                    <td style={{ width: '20%' }}>{data.type}</td>
                                     {
                                         find_see_stock &&
                                         <td style={{ width: '15%' }}>{data.quantity_stock}</td>
                                     }
+                                    <td style={{ width: '10%' }}>
+                                        <div className="float-left" >
+                                            <IconButton aria-label="Delete"
+                                                title="Agregar product a la solicitud"
+                                                className="iconButtons"
+                                                onClick={() => { this.addProductRequest(data._id, data.name, data.type); }}
+                                                disabled={this.props.disabled}>
+                                                <PlaylistAdd className="iconTable" />
+                                            </IconButton>
+                                        </div>
+                                    </td>
                                 </tr>
                             );
                         })
