@@ -45,6 +45,10 @@ import Switch from '@material-ui/core/Switch';
 import { FormControlLabel } from '@material-ui/core';
 import { InitalState } from './InitialState';
 import classnames from 'classnames';
+<<<<<<< HEAD
+//import Img from 'react-image'
+=======
+>>>>>>> dev
 
 class ModalBedrooms extends Component {
   constructor(props) {

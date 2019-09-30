@@ -72,7 +72,7 @@ class ProductsTransfer extends React.Component {
     // }
   };
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = prevProps => {    
     let lastData = undefined;
     let lastPrevData = undefined;
     this.props.productsToTransfer
@@ -86,7 +86,7 @@ class ProductsTransfer extends React.Component {
       if (JSON.stringify(lastData) !== JSON.stringify(lastPrevData)) {
         document.getElementById("inputQuantity_" + lastData._id).focus();
       }
-    }
+    }    
   };
 
   editInput = key => {
@@ -211,6 +211,7 @@ class ProductsTransfer extends React.Component {
             search={this.props.searchData}              
           />
         }
+        <div className="errorSelect" style={{ width: "100%" }}>{this.props.divAviso}</div>
         <Card
           style={{
             flex: 1,
@@ -233,6 +234,7 @@ class ProductsTransfer extends React.Component {
                   options={optionsProducts}
                   searchAction={this.props.searchOneSuppplie}
                   disabled={this.props.disabled}
+                  productsToTransfer={this.props.productsToTransfer}
                 />
               </div>
             }
@@ -305,7 +307,7 @@ class ProductsTransfer extends React.Component {
                             </IconButton>
                           }
                           {
-                            this.props.option === 4 &&
+                            (this.props.option === 4 && this.props.sucursal_central) &&
                             <IconButton 
                               title="Ver stock en otras sucursales"                              
                               onClick={() => { this.openModalStockProductsAdd(2, product._id); }}

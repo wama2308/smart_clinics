@@ -19,6 +19,7 @@ const rejectRequest = `${url}/api/rejectRequest`;
 const cancelRequest = `${url}/api/cancelRequest`;
 const queryAllSupplies = `${url}/api/queryAllSupplies`;
 const queryOneSupplieInBranch = `${url}/api/queryOneSupplieInBranch`;
+const makeTransfer = `${url}/api/makeTransfer`;
 
 const converToJson = data => {
     const stringify = JSON.stringify(data);
@@ -45,6 +46,7 @@ export const LoadTransferFunction = () => dispatch => {
                                                         loading: "hide",
                                                         //data: res.data,
                                                         allProducts: arrayAllProducts,
+                                                        allProductsSearch: arrayAllProducts,
                                                         selectTransfers: arraySelectTransfers,
                                                         allTransfer: res.data,
                                                         allTransferRecibidas: allTransferRecibidas,
@@ -64,8 +66,9 @@ export const LoadTransferFunction = () => dispatch => {
                                                         branchOfficces: arrayBranchOffices,
                                                         dataShopId: {},
                                                         storeShelfs: arrayStoreShelfs,
-                                                        supplieIdBranchOffice:[],
+                                                        supplieIdBranchOffice: [],
                                                         ProductLoteId: {},
+                                                        productRepeat: 0,
                                                         action: 0,
                                                         newProvider: {}
                                                     }
@@ -280,6 +283,19 @@ export const queryOneSupplieInBranchFunction = (id) => dispatch => {
         });
 };
 
+export const addProductRequestFunction = (obj) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            dispatch({
+                type: "ADD_PRODUCT_REQUEST",
+                payload: obj
+            });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
 export const searchProduct = data => dispatch => {
     getDataToken().then(token => {
         dispatch({
@@ -302,7 +318,7 @@ export const searchProduct = data => dispatch => {
     });
 };
 
-export const searchOneSuppplie = data => dispatch => {
+export const searchOneSuppplie = (data, arrayProducts) => dispatch => {
     if (data.length === 0) {
         dispatch(
             openSnackbars("warning", "Debe ingresar nombre o codigo del producto!")
@@ -323,12 +339,17 @@ export const searchOneSuppplie = data => dispatch => {
             ...token
         })
             .then(res => {
-                dispatch({
-                    type: "SEARCH_ONE_PRODUCTS_TRANSFER",
-                    payload: {
-                        ...res.data
-                    }
-                });
+                const productRepeat = arrayProducts.find(product => product._id === res.data._id);
+                if (productRepeat) {
+                    dispatch(openSnackbars("warning", "¡Este producto ya se encuentra agregado!"));
+                } else {
+                    dispatch({
+                        type: "SEARCH_ONE_PRODUCTS_TRANSFER",
+                        payload: {
+                            ...res.data
+                        }
+                    });
+                }
             })
             .catch(err => {
                 const result = converToJson(err);
@@ -472,6 +493,28 @@ export const cancelRequestAction = (id) => dispatch => {
         });
 };
 
+export const saveRequestReceivedAction = (data, callback) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios({
+                method: "post",
+                url: makeTransfer,
+                data: data,
+                headers: datos.headers
+            })
+                .then(() => {
+                    callback();
+                    dispatch(openSnackbars("success", "Operacion Exitosa"));
+                })
+                .catch(error => {
+                    dispatch(openSnackbars("error", "Error guardando la transferencia"));
+                });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
+
 export const rejectRequestAction = (id) => dispatch => {
     getDataToken()
         .then(datos => {
@@ -510,6 +553,21 @@ export const setSwitchTableRequestReceived = (id, value) => dispatch => {
             console.log("Problemas con el token");
         });
 };
+
+export const filterStockProductsAction = (value) => dispatch => {
+    getDataToken()
+      .then(datos => {
+        dispatch({
+          type: "SET_PRODUCT_STOCK_FILTERS",
+          payload: {
+            value: value
+          }
+        });
+      })
+      .catch(() => {
+        console.log("Problemas con el token");
+      });
+  };
 
 export const actionProps = (value) => dispatch => {
     getDataToken()
