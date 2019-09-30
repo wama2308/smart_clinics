@@ -109,8 +109,8 @@ class ListBedrooms extends Component {
     this.setState({ page });
   };
 
-  toggle = (id) => {
-    this.props.collapseFunction(id)
+  toggle = (id, type) => {
+    this.props.collapseFunction(id, type)
   }
 
   toggleTab(tab) {
@@ -123,23 +123,77 @@ class ListBedrooms extends Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    const arrayList = getArrays(this.props.bedrooms);
+    // const arrayList = getArrays(this.props.bedrooms);
 
-    const result = this.props.search
-      ? arrayList.filter(list => {
-        if (this.state.modal === false) {
-          return (
-            list.number.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
-            list.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            list.status.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            list.floor.toLowerCase().includes(this.props.search.toLowerCase())
-          );
-        } else {
-          return arrayList
+    // const result = this.props.search
+    //   ? arrayList.filter(list => {
+    //     if (this.state.modal === false) {
+    //       return (
+    //         list.number.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
+    //         list.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
+    //         list.status.toLowerCase().includes(this.props.search.toLowerCase()) ||
+    //         list.floor.toLowerCase().includes(this.props.search.toLowerCase())
+    //       );
+    //     } else {
+    //       return arrayList
+    //     }
+    //   })
+    //   : arrayList;
+
+    const mod =
+    {
+      enabled: [{
+        _id: "123",
+        type_id: '321',
+        category: "category 1",
+        status: true,
+        spaces: [{
+          _id: "52525",
+          floor: "piso1",
+          code: "hfghf1",
+          type: "type",
+          status: "ocupado",
+          name: "name1"
+        },
+        {
+          _id: "hfhfuy",
+          floor: "piso1",
+          code: "hfghf1",
+          type: "type",
+          status: "ocupado",
+          name: "name2"
         }
-      })
-      : arrayList;
-
+        ]
+      },
+      {
+        _id: "123",
+        type_id: '321',
+        category: "category 2",
+        status: false,
+        spaces: [{
+          _id: "52525",
+          floor: "piso1",
+          code: "hfghf1",
+          type: "type",
+          status: "ocupado",
+          name: "name1"
+        }]
+      },
+      {
+        _id: "123",
+        type_id: '321',
+        category: "category 3",
+        status: false,
+        spaces: [{
+          _id: "52525",
+          floor: "piso1",
+          code: "hfghf1",
+          type: "type",
+          status: "ocupado",
+          name: "name1"
+        }]
+      }]
+    }
     return (
       <div>
         {
@@ -167,35 +221,46 @@ class ListBedrooms extends Component {
             </Button>
 
           </div>
-          {this.state.modal === false &&
+          {/* {this.state.modal === false &&
             <div className="containerSearch" >
               <Search value={arrayList} />
             </div>
-          }
+          } */}
         </div>
 
         <div className="row">
           <div className="form-group col-sm-12">
             <Table responsive borderless>
               <thead className="thead-light">
-                <tr>
-                  <th className="text-left">Numero</th>
-                  <th className="text-left">Tipo</th>
-                  <th className="text-left">Acciones</th>
+                <tr style={{ "border": " 1px solid #c8ced3" }}>
+                  <th className="text-left">Nro</th>
+                  <th style={{ width: "12%" }} className="text-left">Tipo</th>
+                  <th /*style={{ width: "29%" }}*/>Departamento</th>
+                  <th className="text-left">Codigo</th>
+                  <th /*style={{ width: "29%" }}*/ >Nombre</th>
+                  <th className="text-left">Piso</th>
+                  <th className="text-left">Estatus</th>
+                  <th className="text-center">Acciones</th>
                 </tr>
               </thead>
-              {this.props.bedrooms ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
+              {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
                 return (
                   <tbody key={key}>
-                    <tr className="text-left">
-                      <td>{list.number}</td>
-                      <td>{list.type}</td>
-                      <td>
-                        <div className="float-left">
+                    <tr className="text-left" style={{ "border": " 1px solid #c8ced3" }}>
+                      <td>{`1 - ${list.rank}`}</td>
+                      <td>{list.category}</td>
+                      {list.type_name !== "" ? <td>{list.type_name}</td> : <td>N/A</td>}
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td className="text-center">
+                        <div style={{ height: "15px" }}
+                        >
                           <IconButton aria-label="Delete"
                             title="Ver Espacio"
                             className="iconButtons"
-                            onClick={() => { this.toggle(list._id); }}
+                            onClick={() => { this.toggle(list._id, list.type_name); }}
                           >
                             <Visibility className="iconTable" />
                           </IconButton>
@@ -210,55 +275,55 @@ class ListBedrooms extends Component {
                       </td>
                     </tr>
 
-                    <tr>
-                      <td style={{ "width": "10%" }}></td>
-                      <td colSpan="6">
-                        <Collapse in={list.collapse}>
-                          <div className="row">
-                            <Table responsive borderless>
-                              <TableHead className="thead-light">
-                                <TableRow style={{ height: 35 }}>
-                                  <TableCell style={{ "width": "10%" }} >Numero</TableCell>
-                                  <TableCell style={{ "width": "12%" }} >Piso</TableCell>
-                                  <TableCell style={{ "width": "12%" }} >Tipo</TableCell>
-                                  <TableCell style={{ "width": "18%" }} >Estatus</TableCell>
-                                  <TableCell >Acciones</TableCell>
-                                  
-                                </TableRow>
-                              </TableHead>
-                             
-                              <tbody>
-                                <tr>
-                                  <td>{list.number}</td>
-                                  <td>{list.floor}</td>
-                                  <td>{list.type}</td>
-                                  <td>{list.status}</td>
-                                  <td>
-                                    <div className="float-left">
-                                      <IconButton aria-label="Delete"
-                                        title="Ver Espacio"
-                                        className="iconButtons"
-                                        onClick={() => { this.openModal(2, list._id); }}
-                                      >
-                                        <Visibility className="iconTable" />
-                                      </IconButton>
 
-                                      <IconButton aria-label="Delete"
-                                        title="Editar Espacio"
-                                        className="iconButtons"
-                                        onClick={() => { this.openModal(3, list._id); }}>
-                                        <Edit className="iconTable" />
-                                      </IconButton>
+                    <tr className="text-left">
+                      {list.status === true && <td></td>}
+                      {list.status === true && <td></td>}
+                      {list.status === true && <td></td>}
+                      {list.status === true &&
+                        <td colSpan="7" style={{ "padding": "0%" }}>
+                          <Collapse in={list.status}>
+                            <div>
+                              <Table responsive borderless>
 
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </Table>
-                          </div>
-                        </Collapse>
-                      </td>
+                                <tbody>
+                                  {list.spaces.map((space, key) => {
+                                    return (
+                                      <tr key={key} style={{ "border": " 1px solid #c8ced3" }} >
+                                        <td style={{ width: "18%" }}>{space.code}</td>
+                                        <td style={{ width: "20%" }}>{space.name}</td>
+                                        <td style={{ width: "14%" }}>{space.floor}</td>
+                                        <td style={{ width: "19%" }}>{space.status}</td>
+                                        <td className="text-center">
+                                          <div style={{ height: "15px" }} >
+                                            <IconButton aria-label="Delete"
+                                              title="Ver Espacio"
+                                              className="iconButtons"
+                                              onClick={() => { this.openModal(2, list._id); }}
+                                            >
+                                              <Visibility className="iconTable" />
+                                            </IconButton>
+
+                                            <IconButton aria-label="Delete"
+                                              title="Editar Espacio"
+                                              className="iconButtons"
+                                              onClick={() => { this.openModal(3, list._id); }}>
+                                              <Edit className="iconTable" />
+                                            </IconButton>
+
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    )
+                                  })
+                                  }
+                                </tbody>
+                              </Table>
+                            </div>
+                          </Collapse>
+                        </td>}
                     </tr>
+
                   </tbody>
                 )
               }) : null

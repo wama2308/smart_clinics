@@ -59,7 +59,7 @@ class BedroomsContainer extends Component {
             <Card>
               <CardHeader>Espacios</CardHeader>
               <CardBody>
-                {this.state.loading === "show" ?
+               
                   <div>
                     <Nav tabs>
                       <NavItem>
@@ -100,11 +100,7 @@ class BedroomsContainer extends Component {
                       </TabPane>
                     </TabContent>
                   </div>
-                  :
-                  <div style={{ height: "60vh" }}>
-                    <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
-                  </div>
-                }
+                  
               </CardBody>
             </Card>
           </Col>
@@ -128,7 +124,7 @@ const mapDispatchToProps = dispatch => ({
   disabledBedroomsFuntion: (data) => dispatch(disabledBedroomsFuntion(data)),
   enabledBedroomsFunction: (data) => dispatch(enabledBedroomsFunction(data)),
   search: (set) => dispatch(search(set)),
-  collapseFunction: (id) => dispatch(collapseFunction(id))
+  collapseFunction: (id, type) => dispatch(collapseFunction(id, type))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BedroomsContainer);
