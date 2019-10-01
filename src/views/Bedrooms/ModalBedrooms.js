@@ -1109,7 +1109,6 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-
                     <FormGroup className="top form-group col-sm-6">
                       <Label for="piso">Piso</Label>
                       <Input
@@ -1127,7 +1126,6 @@ class ModalBedrooms extends Component {
                         {this.state.pisoError}
                       </div>
                     </FormGroup>
-
 
                     {this.state.check === false && this.props.option !== 4 &&
                       <FormGroup className="top form-group col-sm-6">

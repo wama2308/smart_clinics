@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'reactstrap';
 import ModalBedrooms from './ModalBedrooms';
-import { IconButton, Collapse, TableHead, TableRow, TableCell } from '@material-ui/core';
+import { IconButton, Collapse, TableHead, TableRow, TableCell, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from '@material-ui/core';
 import { Visibility } from '@material-ui/icons';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
@@ -9,6 +9,7 @@ import Pagination from '../../components/Pagination';
 import { getArrays } from '../../core/utils';
 import Search from "../../components/Select";
 import classnames from "classnames";
+import { withStyles } from '@material-ui/core/styles';
 
 class ListBedrooms extends Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class ListBedrooms extends Component {
       page: 0,
       rowsPerPage: 10,
       activeTab: "1",
+      expanded: ""
     }
   }
 
@@ -121,6 +123,12 @@ class ListBedrooms extends Component {
     }
   }
 
+  handleChange = panel => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false,
+    });
+  };
+
   render() {
     const { rowsPerPage, page } = this.state;
     // const arrayList = getArrays(this.props.bedrooms);
@@ -140,60 +148,8 @@ class ListBedrooms extends Component {
     //   })
     //   : arrayList;
 
-    const mod =
-    {
-      enabled: [{
-        _id: "123",
-        type_id: '321',
-        category: "category 1",
-        status: true,
-        spaces: [{
-          _id: "52525",
-          floor: "piso1",
-          code: "hfghf1",
-          type: "type",
-          status: "ocupado",
-          name: "name1"
-        },
-        {
-          _id: "hfhfuy",
-          floor: "piso1",
-          code: "hfghf1",
-          type: "type",
-          status: "ocupado",
-          name: "name2"
-        }
-        ]
-      },
-      {
-        _id: "123",
-        type_id: '321',
-        category: "category 2",
-        status: false,
-        spaces: [{
-          _id: "52525",
-          floor: "piso1",
-          code: "hfghf1",
-          type: "type",
-          status: "ocupado",
-          name: "name1"
-        }]
-      },
-      {
-        _id: "123",
-        type_id: '321',
-        category: "category 3",
-        status: false,
-        spaces: [{
-          _id: "52525",
-          floor: "piso1",
-          code: "hfghf1",
-          type: "type",
-          status: "ocupado",
-          name: "name1"
-        }]
-      }]
-    }
+    const { expanded } = this.state;
+    const { classes } = this.props;
     return (
       <div>
         {
@@ -232,103 +188,157 @@ class ListBedrooms extends Component {
           <div className="form-group col-sm-12">
             <Table responsive borderless>
               <thead className="thead-light">
-                <tr style={{ "border": " 1px solid #c8ced3" }}>
-                  <th className="text-left">Nro</th>
-                  <th style={{ width: "12%" }} className="text-left">Tipo</th>
-                  <th /*style={{ width: "29%" }}*/>Departamento</th>
-                  <th className="text-left">Codigo</th>
-                  <th /*style={{ width: "29%" }}*/ >Nombre</th>
-                  <th className="text-left">Piso</th>
-                  <th className="text-left">Estatus</th>
-                  <th className="text-center">Acciones</th>
+                {/* <tr style={{ "border": " 1px solid #c8ced3" }}> */}
+                <tr >
+                  <th style={{ "width": "6%" }} className="text-left">Rango</th>
+                  <th style={{ "width": "14%" }} className="text-left">Tipo</th>
+                  <th style={{ "width": "14%" }} className="text-left">Departamento</th>
+                  <th style={{ "width": "12%" }} className="text-left">Codigo</th>
+                  <th style={{ "width": "14%" }} className="text-left">Nombre</th>
+                  <th style={{ "width": "12%" }} className="text-left">Piso</th>
+                  <th style={{ "width": "12%" }} className="text-left">Estatus</th>
+                  <th className="text-left">Acciones</th>
                 </tr>
               </thead>
-              {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
-                return (
-                  <tbody key={key}>
-                    <tr className="text-left" style={{ "border": " 1px solid #c8ced3" }}>
-                      <td>{`1 - ${list.rank}`}</td>
-                      <td>{list.category}</td>
-                      {list.type_name !== "" ? <td>{list.type_name}</td> : <td>N/A</td>}
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td className="text-center">
-                        <div style={{ height: "15px" }}
+              <tbody>
+                {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
+                  return (
+                    <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
+                      <td colSpan="8" >
+                        <ExpansionPanel
+                          square
+                          expanded={expanded === `panel${key}`}
+                          onChange={this.handleChange(`panel${key}`)}
+                          style={{ "margin": "-12px", }}
                         >
-                          <IconButton aria-label="Delete"
-                            title="Ver Espacio"
-                            className="iconButtons"
-                            onClick={() => { this.toggle(list._id, list.type_name); }}
-                          >
-                            <Visibility className="iconTable" />
-                          </IconButton>
+                          <ExpansionPanelSummary /*style={{ "padding": "0 0px 0 0px" }}*/>
+                            {/* <Table responsive borderless style={{ "paddingRight": "0px" }}>
+                              <tbody>
+                                <tr>
+                                  <td style={{ width: "6.5%" }}>{`1 - ${list.rank}`}</td>
+                                  <td style={{ width: "14.5%", "textlign": "center" }}>{list.category}</td>
+                                  {list.type_name !== "" ? <td style={{ "width": "14%" }}>{list.type_name}</td> : <td style={{ "width": "14%" }}> N/A</td>}
+                                  <td style={{ width: "12%" }} ></td>
+                                  <td style={{ width: "14%" }}></td>
+                                  <td style={{ width: "12%" }}></td>
+                                  <td style={{ width: "12%" }}></td>
+                                  <td>
+                                    <div className="float-center" >
+                                      <IconButton aria-label="Delete"
+                                        title="Ver Reclamo"
+                                        className="iconButtons"
+                                        onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor); }}
 
-                          <IconButton aria-label="Delete"
-                            title="Editar Espacio"
-                            className="iconButtons"
-                            onClick={() => { this.openModal(4); }}>
-                            <Edit className="iconTable" />
-                          </IconButton>
-                        </div>
+                                      >
+                                        <Visibility className="iconTable" />
+                                      </IconButton>
+
+
+                                      <IconButton aria-label="Delete"
+                                        title="Editar Reclamo"
+                                        className="iconButtons"
+                                        onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor, list.status); }}
+
+                                      >
+                                        <Edit className="iconTable" />
+                                      </IconButton>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </Table> */}
+                            <Typography className={classes.heading}>{`1 - ${list.rank}`}</Typography>
+                            <Typography className={classes.heading2}>{list.category}</Typography>
+                            {list.type_name != "" ?
+                              <Typography className={classes.heading2}>{list.type_name}</Typography> :
+                              <Typography className={classes.heading2}>N/A</Typography>
+                            }
+                            <Typography className={classes.heading3}></Typography>
+                            <Typography className={classes.heading2}></Typography>
+                            <Typography className={classes.heading3}></Typography>
+                            <Typography className={classes.heading3}></Typography>
+                            <div  style={{ "height": "25px" }} className="float-center" >
+                              <IconButton aria-label="Delete"
+                                title="Ver Reclamo"
+                                className="iconButtons"
+                                onClick={() => { this.handleChange(`panel${key}`)}}
+
+                              >
+                                <Visibility className="iconTable" />
+                              </IconButton>
+
+
+                              <IconButton aria-label="Delete"
+                                title="Editar Reclamo"
+                                className="iconButtons"
+                                onClick={() => { this.openModal(4); }}
+
+                              >
+                                <Edit className="iconTable" />
+                              </IconButton>
+
+                            </div>
+                          </ExpansionPanelSummary>
+                          <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
+                            <Table responsive borderless style={{ "paddingRight": "0px" }}>
+                              <tbody>
+                                {list.spaces.map((spaces, key) => {
+                                  return (
+                                    <tr key={key}>
+                                      <td style={{ width: "6%" }}></td>
+                                      <td style={{ width: "14%" }}></td>
+                                      <td style={{ width: "14%" }}></td>
+                                      <td style={{ width: "11%" }}>{spaces.code}</td>
+                                      <td style={{ width: "14%" }}>{spaces.name}</td>
+                                      <td style={{ width: "12%" }}>{spaces.floor}</td>
+                                      <td style={{ width: "12%" }}>{spaces.status}</td>
+                                      <td>
+                                        <div className="float-center" >
+                                          <IconButton aria-label="Delete"
+                                            title="Ver Reclamo"
+                                            className="iconButtons"
+                                            onClick={() => { this.openModal(2, spaces._id); }}
+
+                                          >
+                                            <Visibility className="iconTable" />
+                                          </IconButton>
+
+
+                                          <IconButton aria-label="Delete"
+                                            title="Editar Reclamo"
+                                            className="iconButtons"
+                                            onClick={() => { this.openModal(3, spaces._id); }}
+
+                                          >
+                                            <Edit className="iconTable" />
+                                          </IconButton>
+
+                                          <IconButton aria-label="Delete"
+                                            title="Eliminar Reclamo"
+                                            className="iconButtons"
+                                            onClick={() => { this.deleteRegister(list.id_claim_receiver, list.id_claim_transmitter); }}
+
+                                          >
+                                            <Delete className="iconTable" />
+                                          </IconButton>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  )
+                                })
+
+                                }
+                              </tbody>
+                            </Table>
+                          </ExpansionPanelDetails>
+                        </ExpansionPanel>
                       </td>
                     </tr>
 
-
-                    <tr className="text-left">
-                      {list.status === true && <td></td>}
-                      {list.status === true && <td></td>}
-                      {list.status === true && <td></td>}
-                      {list.status === true &&
-                        <td colSpan="7" style={{ "padding": "0%" }}>
-                          <Collapse in={list.status}>
-                            <div>
-                              <Table responsive borderless>
-
-                                <tbody>
-                                  {list.spaces.map((space, key) => {
-                                    return (
-                                      <tr key={key} style={{ "border": " 1px solid #c8ced3" }} >
-                                        <td style={{ width: "18%" }}>{space.code}</td>
-                                        <td style={{ width: "20%" }}>{space.name}</td>
-                                        <td style={{ width: "14%" }}>{space.floor}</td>
-                                        <td style={{ width: "19%" }}>{space.status}</td>
-                                        <td className="text-center">
-                                          <div style={{ height: "15px" }} >
-                                            <IconButton aria-label="Delete"
-                                              title="Ver Espacio"
-                                              className="iconButtons"
-                                              onClick={() => { this.openModal(2, list._id); }}
-                                            >
-                                              <Visibility className="iconTable" />
-                                            </IconButton>
-
-                                            <IconButton aria-label="Delete"
-                                              title="Editar Espacio"
-                                              className="iconButtons"
-                                              onClick={() => { this.openModal(3, list._id); }}>
-                                              <Edit className="iconTable" />
-                                            </IconButton>
-
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    )
-                                  })
-                                  }
-                                </tbody>
-                              </Table>
-                            </div>
-                          </Collapse>
-                        </td>}
-                    </tr>
-
-                  </tbody>
-                )
-              }) : null
-              }
-
+                  )
+                }) : null
+                }
+              </tbody>
               {
                 this.props.bedrooms && this.props.bedrooms.length > 10 && (
                   <Pagination
@@ -338,7 +348,8 @@ class ListBedrooms extends Component {
                     handleChangeRowsPerPage={this.handleChangeRowsPerPage}
                     handleChangePage={this.handleChangePage}
                   />
-                )}
+                )
+              }
             </Table>
           </div>
         </div>
@@ -347,5 +358,27 @@ class ListBedrooms extends Component {
   }
 }
 
+const styles = theme => ({
+  root: {
+    width: '100%',
+  },
+  heading: {
+    flexBasis: '6%',
+  },
+  heading2: {
+    flexBasis: '14%',
+  },
+  heading3: {
+    flexBasis: '12.4%',
+  },
+  heading4: {
+    flexBasis: '11%',
+  },
 
-export default ListBedrooms;
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  },
+});
+
+export default withStyles(styles)(ListBedrooms);

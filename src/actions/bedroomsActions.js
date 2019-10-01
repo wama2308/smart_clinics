@@ -68,6 +68,8 @@ export const createBedroomsFunction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
+          console.log(error);
+          
           dispatch(openSnackbars("error", "Error guardando el Espacio"));
         });
     })
