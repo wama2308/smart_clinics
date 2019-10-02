@@ -7,6 +7,7 @@ import Pagination from '../../components/Pagination';
 import { getArray, GetDisabledPermits } from '../../core/utils'
 import { number_format } from "../../core/utils";
 import Search from "../../components/Select";
+import '../../components/style.css'
 import "./Commissions.css";
 
 class ListStore extends React.Component {
@@ -141,11 +142,9 @@ class ListStore extends React.Component {
             </div>
           }
         </div>
-
-        <br />
-        <br />
+        <br />        
         <div className="flex">
-          <div className="scrollCss" style={{width:'100%', height:'28rem',  overflow: 'auto'}}>
+          <div className="scrollCss" style={{width:'100%', height:'31rem',  overflow: 'auto'}}>
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>

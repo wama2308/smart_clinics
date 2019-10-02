@@ -20,6 +20,7 @@ const cancelRequest = `${url}/api/cancelRequest`;
 const queryAllSupplies = `${url}/api/queryAllSupplies`;
 const queryOneSupplieInBranch = `${url}/api/queryOneSupplieInBranch`;
 const makeTransfer = `${url}/api/makeTransfer`;
+const createRequest = `${url}/api/createRequest`;
 
 const converToJson = data => {
     const stringify = JSON.stringify(data);
@@ -556,18 +557,40 @@ export const setSwitchTableRequestReceived = (id, value) => dispatch => {
 
 export const filterStockProductsAction = (value) => dispatch => {
     getDataToken()
-      .then(datos => {
-        dispatch({
-          type: "SET_PRODUCT_STOCK_FILTERS",
-          payload: {
-            value: value
-          }
+        .then(datos => {
+            dispatch({
+                type: "SET_PRODUCT_STOCK_FILTERS",
+                payload: {
+                    value: value
+                }
+            });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
         });
-      })
-      .catch(() => {
-        console.log("Problemas con el token");
-      });
-  };
+};
+
+export const createRequestAction = (data, callback) => dispatch => {
+    getDataToken()
+        .then(datos => {
+            axios({
+                method: "post",
+                url: createRequest,
+                data: data,
+                headers: datos.headers
+            })
+                .then(() => {
+                    callback();
+                    dispatch(openSnackbars("success", "Operacion Exitosa"));
+                })
+                .catch(error => {
+                    dispatch(openSnackbars("error", "Error guardando la solicitud de producto para compra"));
+                });
+        })
+        .catch(() => {
+            console.log("Problemas con el token");
+        });
+};
 
 export const actionProps = (value) => dispatch => {
     getDataToken()

@@ -23,14 +23,11 @@ import {
     addProductRequestFunction,
     saveRequestReceivedAction,
     filterStockProductsAction,
+    createRequestAction,
     actionProps
 } from "../../actions/TransferActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import { PlaylistAdd, Edit } from "@material-ui/icons";
-import Switch from '@material-ui/core/Switch';
 import classnames from "classnames";
-import DefaultSearch from "../../components/DefaultSearch.js";
 import jwt_decode from 'jwt-decode';
 import ProductsTransfer from "./ProductsTransfer.js";
 import ListStockProducts from "./ListStockProducts.js";
@@ -106,7 +103,7 @@ class ModalSolicitudes extends React.Component {
     }
 
     componentWillReceiveProps = (props) => {
-        console.log("props transfer modal", props.transfer);
+        console.log("componentWillReceiveProps modal solicitud", props.transfer);
         if (props.transfer.productsToTransfer.length > 0) {
             this.setState({
                 divAviso: ''
@@ -227,7 +224,7 @@ class ModalSolicitudes extends React.Component {
         let acumProductosSelected = 0;
         const cantidadCero = this.props.transfer.productsToTransfer.find(product => product.quantity_transfer !== 0);
         const cantidadVacia = this.props.transfer.productsToTransfer.find(product => product.quantity_transfer === "");
-        const productSelected = this.props.transfer.productsToTransfer.find(product => product.confirm === true);        
+        const productSelected = this.props.transfer.productsToTransfer.find(product => product.confirm === true);
 
         if (!this.state.arrayTipoTransfer) {
             divTipoTransferError = "¡Seleccione el destino de la transferencia!";
@@ -282,7 +279,7 @@ class ModalSolicitudes extends React.Component {
             return false;
         } else if (sinProductos === 1) {
             return false;
-        } else if (this.props.option === 4 &&  acumProductosSelected === 1) {
+        } else if (this.props.option === 4 && acumProductosSelected === 1) {
             return false;
         } else {
             return true;
@@ -336,16 +333,20 @@ class ModalSolicitudes extends React.Component {
 
             }
             if (this.props.option === 4) {
-                this.setState({ loading: 'show' })
-                this.props.saveRequestReceivedAction(
-                    {
-                        _id: this.props.idRequestReceived,
-                        products: this.props.transfer.productsToTransfer,
-                    },
-                    () => {
-                        this.closeModal();
-                    }
-                )
+                if (this.props.status_request === "Pendiente") {
+                    this.setState({ loading: 'show' })
+                    this.props.saveRequestReceivedAction(
+                        {
+                            _id: this.props.idRequestReceived,
+                            products: this.props.transfer.productsToTransfer,
+                        },
+                        () => {
+                            this.closeModal();
+                        }
+                    )
+                }else{
+                    this.props.alert("warning", "¡No se puede procesar la solicitud, su estatus es: " + this.props.status_request + "!");
+                }
             }
         }
     }
@@ -483,12 +484,12 @@ class ModalSolicitudes extends React.Component {
                                                 <div className="errorSelect">{this.state.divObservacionError}</div>
                                             </FormGroup>
                                             {
-                                                (this.props.option === 4 && this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939977") &&
-                                                <FormGroup className="top form-group col-sm-6">
-                                                    <Button className="" color="primary" onClick={this.ordenTransferencia}>
-                                                        Orden de Transferencia
-                                                </Button>
-                                                </FormGroup>
+                                                // (this.props.option === 4 && this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939977") &&
+                                                // <FormGroup className="top form-group col-sm-6">
+                                                //     <Button className="" color="primary" onClick={this.ordenTransferencia}>
+                                                //         Orden de Transferencia
+                                                // </Button>
+                                                // </FormGroup>
                                             }
 
                                         </div>
@@ -526,7 +527,7 @@ class ModalSolicitudes extends React.Component {
                                                                 alert={this.props.alert}
                                                                 divAviso={this.state.divAviso}
                                                                 disabled={this.props.disabled}
-                                                                productsToTransfer={this.props.transfer.productsToTransfer}
+                                                            //productsToTransfer={this.props.transfer.productsToTransfer}
                                                             />
                                                         </TabPane>
                                                         <TabPane tabId="2">
@@ -558,11 +559,12 @@ class ModalSolicitudes extends React.Component {
                                                     alert={this.props.alert}
                                                     divAviso={this.state.divAviso}
                                                     sucursal_central_token={var_sucursal_central}
-                                                    sucursal_central={this.state.sucursal_central_token}                                                    
+                                                    sucursal_central={this.state.sucursal_central_token}
                                                     queryOneSupplieInBranchFunction={this.props.queryOneSupplieInBranchFunction}
                                                     supplieIdBranchOffice={this.props.transfer.supplieIdBranchOffice}
                                                     search={this.props.searchData}
                                                     permitsTransfer={this.props.permitsTransfer}
+                                                    createRequestAction={this.props.createRequestAction}
                                                 //disabled={this.props.disabled}
                                                 />
                                         }
@@ -611,6 +613,7 @@ const mapDispatchToProps = dispatch => ({
     saveTransferRequestAction: (data, callback) => dispatch(saveTransferRequestAction(data, callback)),
     saveRequestReceivedAction: (data, callback) => dispatch(saveRequestReceivedAction(data, callback)),
     editTransferRequestsAction: (data, callback) => dispatch(editTransferRequestsAction(data, callback)),
+    createRequestAction: (data, callback) => dispatch(createRequestAction(data, callback)),
     setSwitchTableRequestReceived: (id, value) => dispatch(setSwitchTableRequestReceived(id, value)),
     queryOneSupplieInBranchFunction: (id) => dispatch(queryOneSupplieInBranchFunction(id)),
     addProductRequestFunction: (obj) => dispatch(addProductRequestFunction(obj)),

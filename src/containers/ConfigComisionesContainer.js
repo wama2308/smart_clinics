@@ -57,7 +57,7 @@ class ConfigComisionesContainer extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-        <Row style={{height:'80vh', marginTop:'13px'}}>
+        <Row style={{height:'31rem', marginTop:'0px'}}>
           <Col>
             <Card >
               <CardHeader>Reglas para Comisiones</CardHeader>
