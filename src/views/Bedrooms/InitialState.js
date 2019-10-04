@@ -17,7 +17,7 @@ export const InitalState = {
     habitacionesError: '',
     habitacionesInvalid: false,
     loading: "show",
-    habitaciones: 1,
+    habitaciones: 2,
 
     foto: [],
     fotoError: '',

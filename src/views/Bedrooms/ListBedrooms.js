@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'reactstrap';
 import ModalBedrooms from './ModalBedrooms';
-import { IconButton, Collapse, TableHead, TableRow, TableCell, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from '@material-ui/core';
-import { Visibility } from '@material-ui/icons';
+import { IconButton, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails, ListItemIcon } from '@material-ui/core';
+import { Visibility, ExpandMore, List } from '@material-ui/icons';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
 import Pagination from '../../components/Pagination';
@@ -10,6 +10,8 @@ import { getArrays } from '../../core/utils';
 import Search from "../../components/Select";
 import classnames from "classnames";
 import { withStyles } from '@material-ui/core/styles';
+import ModalTabla from './ModalTabla';
+import '../../components/style.css'
 
 class ListBedrooms extends Component {
   constructor(props) {
@@ -32,11 +34,15 @@ class ListBedrooms extends Component {
       page: 0,
       rowsPerPage: 10,
       activeTab: "1",
-      expanded: ""
+      expanded: "",
+      category: '',
+      type_name: "",
+      modalTable: false
     }
   }
 
-  openModal = (option, id) => {
+  openModal = (option, id, category, type, event, value) => {
+    event.stopPropagation();
     let set = ""
     this.props.setSearch(set)
     if (option === 1) {
@@ -78,7 +84,18 @@ class ListBedrooms extends Component {
         modalFooter: 'Editar',
         disabled: false,
         showHide: 'show',
-
+        category: category,
+        type_name: type
+      })
+    } else if (option === 5) {
+      this.props.queryBedroomsBelongingsFunction({
+        input: value,
+        _id: id,
+        type_office: category
+      })
+      this.setState({
+        modalTable: true,
+        option: option,
       })
     }
   }
@@ -103,6 +120,13 @@ class ListBedrooms extends Component {
     });
   }
 
+  valorCloseModalTable = (valor) => {
+    this.setState({
+      modalTable: valor,
+      option: null,
+    });
+  }
+
   handleChangeRowsPerPage = event => {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
@@ -123,7 +147,7 @@ class ListBedrooms extends Component {
     }
   }
 
-  handleChange = panel => (event, expanded) => {
+  handleChange = (panel, status) => (event, expanded) => {
     this.setState({
       expanded: expanded ? panel : false,
     });
@@ -167,12 +191,22 @@ class ListBedrooms extends Component {
             status_room={this.props.status_room}
             id={this.state.id}
             type_consulting_room={this.props.type_consulting_room}
+            category={this.state.category}
+            type_name={this.state.type_name}
+          />
+        }
+        {
+          this.state.modalTable === true &&
+          <ModalTabla
+            modal={this.state.modalTable}
+            valorCloseModalTable={this.valorCloseModalTable}
+            option={this.state.option}
           />
         }
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
           <div className="container-button" style={{ "height": "35%" }}>
             <Button color="success"
-              onClick={() => this.openModal(1)}>
+              onClick={(event) => this.openModal(1, null, null, null, event,null)}>
               Agregar
             </Button>
 
@@ -184,22 +218,21 @@ class ListBedrooms extends Component {
           } */}
         </div>
 
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table responsive borderless>
-              <thead className="thead-light">
-                {/* <tr style={{ "border": " 1px solid #c8ced3" }}> */}
+        <div className="flex">
+          <div className="inner-flex"
+            style={{ width: '100%', height: '31rem', overflow: 'auto', "marginBottom": "1rem" }} >
+            <Table borderless style={{ "minWidth": "900px" }}>
+              {/* <thead className="thead-light">
                 <tr >
-                  <th style={{ "width": "6%" }} className="text-left">Rango</th>
-                  <th style={{ "width": "14%" }} className="text-left">Tipo</th>
-                  <th style={{ "width": "14%" }} className="text-left">Departamento</th>
-                  <th style={{ "width": "12%" }} className="text-left">Codigo</th>
-                  <th style={{ "width": "14%" }} className="text-left">Nombre</th>
-                  <th style={{ "width": "12%" }} className="text-left">Piso</th>
-                  <th style={{ "width": "12%" }} className="text-left">Estatus</th>
-                  <th className="text-left">Acciones</th>
+                  <th style={{ "width": "14%", "padding": "2%" }} className="text-left"></th>
+                  <th style={{ "width": "14%" }} className="text-left"></th>
+                  <th style={{ "width": "12%" }} className="text-left"></th>
+                  <th style={{ "width": "14%" }} className="text-left"></th>
+                  <th style={{ "width": "12%" }} className="text-left"></th>
+                  <th style={{ "width": "12%" }} className="text-left"></th>
+                  <th className="text-left"></th>
                 </tr>
-              </thead>
+              </thead> */}
               <tbody>
                 {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
                   return (
@@ -208,121 +241,189 @@ class ListBedrooms extends Component {
                         <ExpansionPanel
                           square
                           expanded={expanded === `panel${key}`}
+                          style={{ "margin": "-11.5px", }}
                           onChange={this.handleChange(`panel${key}`)}
-                          style={{ "margin": "-12px", }}
                         >
-                          <ExpansionPanelSummary /*style={{ "padding": "0 0px 0 0px" }}*/>
-                            {/* <Table responsive borderless style={{ "paddingRight": "0px" }}>
-                              <tbody>
-                                <tr>
-                                  <td style={{ width: "6.5%" }}>{`1 - ${list.rank}`}</td>
-                                  <td style={{ width: "14.5%", "textlign": "center" }}>{list.category}</td>
-                                  {list.type_name !== "" ? <td style={{ "width": "14%" }}>{list.type_name}</td> : <td style={{ "width": "14%" }}> N/A</td>}
-                                  <td style={{ width: "12%" }} ></td>
-                                  <td style={{ width: "14%" }}></td>
-                                  <td style={{ width: "12%" }}></td>
-                                  <td style={{ width: "12%" }}></td>
-                                  <td>
-                                    <div className="float-center" >
-                                      <IconButton aria-label="Delete"
-                                        title="Ver Reclamo"
-                                        className="iconButtons"
-                                        onClick={() => { this.openModal(2, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor); }}
+                          <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
+                            {/* <Typography className={classes.heading}>{`1 - ${list.rank}`}</Typography> */}
 
-                                      >
-                                        <Visibility className="iconTable" />
-                                      </IconButton>
-
-
-                                      <IconButton aria-label="Delete"
-                                        title="Editar Reclamo"
-                                        className="iconButtons"
-                                        onClick={() => { this.openModal(3, list.id_claim_receiver, list.id_claim_transmitter, list.made_by_visitor, list.status); }}
-
-                                      >
-                                        <Edit className="iconTable" />
-                                      </IconButton>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </Table> */}
-                            <Typography className={classes.heading}>{`1 - ${list.rank}`}</Typography>
-                            <Typography className={classes.heading2}>{list.category}</Typography>
-                            {list.type_name != "" ?
-                              <Typography className={classes.heading2}>{list.type_name}</Typography> :
-                              <Typography className={classes.heading2}>N/A</Typography>
+                            {
+                              list.type_name === "" ?
+                                <Typography className={classes.heading5}>{list.category}</Typography> :
+                                <Typography className={classes.heading5}>{list.type_name}</Typography>
                             }
+
+                            <Typography variant="button" style={{ "height": "10px" }}>
+                              <IconButton
+                                aria-label="Delete"
+                                title="Edicion Masiva"
+                                className="iconButtons"
+                                onClick={
+                                  (event) => {
+                                    this.openModal(4, null, list.category, list.type_name, event);
+                                  }
+                                }
+                              >
+                                <Edit className="iconTable" />
+                              </IconButton>
+                            </Typography>
+
+                            <Typography variant="button" style={{ "height": "10px" }}>
+                              <IconButton
+                                aria-label="Delete"
+                                title="Mobiliario General"
+                                className="iconButtons"
+                                onClick={
+                                  (event) => {
+                                    this.openModal(5, list._id, list.type_office, list.type_name, event, 1);
+                                  }
+                                }
+                              >
+                                <List className="iconTable" />
+                              </IconButton>
+                            </Typography>
+
+                            <Typography className={classes.spacing}></Typography>
+
+                            {
+                              list.type_name != "" ?
+                                <Typography className={classes.heading2}></Typography> :
+                                <Typography className={classes.heading2}></Typography>
+                            }
+
                             <Typography className={classes.heading3}></Typography>
                             <Typography className={classes.heading2}></Typography>
                             <Typography className={classes.heading3}></Typography>
                             <Typography className={classes.heading3}></Typography>
-                            <div  style={{ "height": "25px" }} className="float-center" >
-                              <IconButton aria-label="Delete"
-                                title="Ver Reclamo"
-                                className="iconButtons"
-                                onClick={() => { this.handleChange(`panel${key}`)}}
 
-                              >
-                                <Visibility className="iconTable" />
-                              </IconButton>
-
-
-                              <IconButton aria-label="Delete"
-                                title="Editar Reclamo"
-                                className="iconButtons"
-                                onClick={() => { this.openModal(4); }}
-
-                              >
-                                <Edit className="iconTable" />
-                              </IconButton>
-
-                            </div>
                           </ExpansionPanelSummary>
                           <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
                             <Table responsive borderless style={{ "paddingRight": "0px" }}>
+                              <thead className="thead-light">
+                                <tr >
+                                  {/* <td style={{ width: "6%" }}></td> */}
+                                  <td style={{ width: "18%" }}></td>
+                                  <th style={{ "width": "12%" }} className="text-left">Codigo</th>
+                                  <th style={{ "width": "21%" }} className="text-left">Nombre</th>
+                                  <th style={{ "width": "20%" }} className="text-left">Piso</th>
+                                  <th style={{ "width": "12%" }} className="text-left">Estatus</th>
+                                  <th className="text-left">Acciones</th>
+                                </tr>
+                              </thead>
                               <tbody>
                                 {list.spaces.map((spaces, key) => {
                                   return (
                                     <tr key={key}>
-                                      <td style={{ width: "6%" }}></td>
-                                      <td style={{ width: "14%" }}></td>
-                                      <td style={{ width: "14%" }}></td>
-                                      <td style={{ width: "11%" }}>{spaces.code}</td>
-                                      <td style={{ width: "14%" }}>{spaces.name}</td>
-                                      <td style={{ width: "12%" }}>{spaces.floor}</td>
-                                      <td style={{ width: "12%" }}>{spaces.status}</td>
-                                      <td>
-                                        <div className="float-center" >
-                                          <IconButton aria-label="Delete"
-                                            title="Ver Reclamo"
-                                            className="iconButtons"
-                                            onClick={() => { this.openModal(2, spaces._id); }}
-
-                                          >
-                                            <Visibility className="iconTable" />
-                                          </IconButton>
-
-
-                                          <IconButton aria-label="Delete"
-                                            title="Editar Reclamo"
-                                            className="iconButtons"
-                                            onClick={() => { this.openModal(3, spaces._id); }}
-
-                                          >
-                                            <Edit className="iconTable" />
-                                          </IconButton>
-
-                                          <IconButton aria-label="Delete"
-                                            title="Eliminar Reclamo"
-                                            className="iconButtons"
-                                            onClick={() => { this.deleteRegister(list.id_claim_receiver, list.id_claim_transmitter); }}
-
-                                          >
-                                            <Delete className="iconTable" />
-                                          </IconButton>
-                                        </div>
+                                      <td colSpan="8">
+                                        <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
+                                          <Typography style={{ width: "19%" }}></Typography>
+                                          <Typography style={{ "width": "12%" }}>{spaces.code}</Typography>
+                                          <Typography style={{ "width": "22.5%" }}>{spaces.name}</Typography>
+                                          <Typography style={{ "width": "21%" }}>{spaces.floor}</Typography>
+                                          <Typography style={{ "width": "12%" }}>{spaces.status}</Typography>
+                                          <Typography variant="button">
+                                            <IconButton aria-label="Delete"
+                                              title="Ver Espacio"
+                                              className="iconButtons"
+                                              onClick={
+                                                (event) => {
+                                                  this.openModal(2, spaces._id, null, null, event, null);
+                                                }
+                                              }
+                                            >
+                                              <Visibility className="iconTable" />
+                                            </IconButton>
+                                          </Typography>
+                                          <Typography variant="button">
+                                            <IconButton aria-label="Delete"
+                                              title="Editar Espacio"
+                                              className="iconButtons"
+                                              onClick={(event) => { this.openModal(3, spaces._id, null, null, event, null); }}
+                                            >
+                                              <Edit className="iconTable" />
+                                            </IconButton>
+                                          </Typography>
+                                          <Typography variant="button">
+                                            <IconButton aria-label="Delete"
+                                              title="Eliminar Espacio"
+                                              className="iconButtons"
+                                              onClick={
+                                                () => {
+                                                  this.disabledBedroom(spaces._id);
+                                                }
+                                              }
+                                            >
+                                              <Delete className="iconTable" />
+                                            </IconButton>
+                                          </Typography>
+                                          <Typography variant="button">
+                                            <IconButton aria-label="Delete"
+                                              title="Mobiliario del Espacio"
+                                              className="iconButtons"
+                                              onClick={
+                                                (event) => {
+                                                  this.openModal(5, spaces._id, list.type_office, list.type_name, event, 0);
+                                                }
+                                              }
+                                            >
+                                              <List className="iconTable" />
+                                            </IconButton>
+                                          </Typography>
+                                        </ExpansionPanelDetails>
                                       </td>
+                                      {/* <td style={{ width: "6%" }}></td> */}
+                                      {/* <td style={{ width: "14%" }}></td>
+                                        <td style={{ width: "14%" }}></td>
+                                        <td style={{ width: "11%" }}>{spaces.code}</td>
+                                        <td style={{ width: "14%" }}>{spaces.name}</td>
+                                        <td style={{ width: "12%" }}>{spaces.floor}</td>
+                                        <td style={{ width: "12%" }}>{spaces.status}</td>
+                                        <td>
+                                          <div className="float-center" >
+                                            <IconButton aria-label="Delete"
+                                              title="Ver Espacio"
+                                              className="iconButtons"
+                                              onClick={
+                                                (event) => {
+                                                  this.openModal(2, spaces._id, null, null, event, null);
+                                                }
+                                              }
+                                            >
+                                              <Visibility className="iconTable" />
+                                            </IconButton>
+
+                                            <IconButton aria-label="Delete"
+                                              title="Editar Espacio"
+                                              className="iconButtons"
+                                              onClick={(event) => { this.openModal(3, spaces._id, null, null, event, null); }}
+                                            >
+                                              <Edit className="iconTable" />
+                                            </IconButton>
+
+                                            <IconButton aria-label="Delete"
+                                              title="Eliminar Espacio"
+                                              className="iconButtons"
+                                              onClick={
+                                                () => {
+                                                  this.disabledBedroom(list._id);
+                                                }
+                                              }
+                                            >
+                                              <Delete className="iconTable" />
+                                            </IconButton>
+                                            <IconButton aria-label="Delete"
+                                              title="Eliminar Reclamo"
+                                              className="iconButtons"
+                                              onClick={
+                                                (event) => {
+                                                  this.openModal(5, spaces._id, list.type_office, list.type_name, event, 0);
+                                                }
+                                              }
+                                            >
+                                              <List className="iconTable" />
+                                            </IconButton>
+                                          </div>
+                                        </td> */}
                                     </tr>
                                   )
                                 })
@@ -373,6 +474,12 @@ const styles = theme => ({
   },
   heading4: {
     flexBasis: '11%',
+  },
+  heading5: {
+    width: '120px',
+  },
+  spacing: {
+    flexBasis: '35%'
   },
 
   secondaryHeading: {

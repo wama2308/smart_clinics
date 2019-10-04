@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { connect } from "react-redux";
-import { loadBedroomsFunction, queryOneBedroomsFunction, disabledBedroomsFuntion, enabledBedrooms, enabledBedroomsFunction, collapseFunction } from '../actions/bedroomsActions';
+import { loadBedroomsFunction, queryOneBedroomsFunction, disabledBedroomsFuntion, enabledBedrooms, enabledBedroomsFunction, collapseFunction, actionStop, queryBedroomsBelongingsFunction } from '../actions/bedroomsActions';
 import { openConfirmDialog, search } from '../actions/aplicantionActions';
 import ListDisabledBedrooms from '../views/Bedrooms/ListDisabledBedrooms';
 
@@ -59,18 +59,18 @@ class BedroomsContainer extends Component {
             <Card>
               <CardHeader>Espacios</CardHeader>
               <CardBody>
-               
+                {this.state.loading === "show" ?
                   <div>
                     <Nav tabs>
                       <NavItem>
                         <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                        Espacios Activos
-                      </NavLink>
+                          Espacios Activos
+                    </NavLink>
                       </NavItem>
                       <NavItem>
                         <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
                           Espacios Inactivos
-                      </NavLink>
+                    </NavLink>
                       </NavItem>
                     </Nav>
                     <TabContent activeTab={this.state.activeTab}>
@@ -86,6 +86,9 @@ class BedroomsContainer extends Component {
                           search={this.props.searchData}
                           setSearch={this.props.search}
                           collapseFunction={this.props.collapseFunction}
+                          action={this.props.bedrooms.action}
+                          actionStop={this.props.actionStop}
+                          queryBedroomsBelongingsFunction={this.props.queryBedroomsBelongingsFunction}
                         />
                       </TabPane>
                     </TabContent>
@@ -99,8 +102,11 @@ class BedroomsContainer extends Component {
                         />
                       </TabPane>
                     </TabContent>
-                  </div>
-                  
+                  </div>:
+                <div style={{ height: "60vh" }}>
+                  <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
+                </div>
+                }
               </CardBody>
             </Card>
           </Col>
@@ -124,7 +130,9 @@ const mapDispatchToProps = dispatch => ({
   disabledBedroomsFuntion: (data) => dispatch(disabledBedroomsFuntion(data)),
   enabledBedroomsFunction: (data) => dispatch(enabledBedroomsFunction(data)),
   search: (set) => dispatch(search(set)),
-  collapseFunction: (id, type) => dispatch(collapseFunction(id, type))
+  collapseFunction: (id, type) => dispatch(collapseFunction(id, type)),
+  actionStop: (data) => dispatch(actionStop(data)),
+  queryBedroomsBelongingsFunction: (data) => dispatch(queryBedroomsBelongingsFunction(data))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BedroomsContainer);
