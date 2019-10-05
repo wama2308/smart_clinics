@@ -2,6 +2,7 @@ import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
 import decode from "jwt-decode";
+import { converToJson } from "../core/utils";
 
 const loadBedrooms = `${url}/api/queryBedrooms`;
 const queryOneBedrooms = `${url}/api/queryOneBedrooms`;
@@ -69,9 +70,8 @@ export const createBedroomsFunction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          console.log(error.message);
-
-          dispatch(openSnackbars("error", "Error guardando el Espacio"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
 }
@@ -127,7 +127,8 @@ export const editBedroomsFunction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error editando el Espacio"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
 }
@@ -171,7 +172,8 @@ export const disabledBedroomsFuntion = (data) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error borrando el Espacio"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
 }

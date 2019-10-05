@@ -715,7 +715,6 @@ class ModalBedrooms extends Component {
           return data.category === this.props.category
         }
       })
-
       return date
 
     } else {
@@ -729,10 +728,12 @@ class ModalBedrooms extends Component {
       const datos = data[0].spaces.filter(data => {
         return parseInt(data.number) >= this.state.desde && parseInt(data.number) <= this.state.hasta
       })
+      
       const arrayClean = []
       datos.map(datos => {
         arrayClean.push(datos._id)
       })
+
       return arrayClean
     } else {
       return []
@@ -763,7 +764,6 @@ class ModalBedrooms extends Component {
     if (props.option === 4) {
       this.setState({
         supplies: props.bedrooms.dataAccept,
-
       })
     } else if (props.option === 3) {
       if (props.bedrooms.propsAction === 0) {

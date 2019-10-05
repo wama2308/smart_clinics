@@ -159,7 +159,7 @@ class ListGoods extends Component {
         <div className="row">
           <div className="form-group col-sm-12">
             <Table responsive borderless>
-              {/* <thead className="thead-light">
+              <thead className="thead-light">
                 <tr>
                   <th className="text-left" >Nombre</th>
                   <th style={{ "width": "30%" }} className="text-left" >Cantidad</th>
@@ -248,9 +248,9 @@ class ListGoods extends Component {
                     </tr>
                   </tbody>
                 )
-              }) : null */}
+              }) : null
               }
-              {/* {
+              {
                 this.props.goods && this.props.goods.length > 10 && (
                   <Pagination
                     contador={this.props.goods}
@@ -259,7 +259,7 @@ class ListGoods extends Component {
                     handleChangeRowsPerPage={this.handleChangeRowsPerPage}
                     handleChangePage={this.handleChangePage}
                   />
-                )} */}
+                )}
             </Table>
           </div>
         </div>

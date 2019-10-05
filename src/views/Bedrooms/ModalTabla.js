@@ -67,7 +67,7 @@ class ModalTabla extends Component {
           {this.state.loading === "show" ?
             <div>
               <ModalHeader toggle={this.closeModal}>
-
+                {this.props.modalHeader}
               </ModalHeader>
               <ModalBody>
                 <div className="row">

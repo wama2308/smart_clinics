@@ -41,7 +41,7 @@ class ListBedrooms extends Component {
     }
   }
 
-  openModal = (option, id, category, type, event, value) => {
+  openModal = (option, id, category, type, event, value, code) => {
     event.stopPropagation();
     let set = ""
     this.props.setSearch(set)
@@ -96,6 +96,7 @@ class ListBedrooms extends Component {
       this.setState({
         modalTable: true,
         option: option,
+        modalHeader: `Mobiliario de ${code}`
       })
     }
   }
@@ -201,12 +202,14 @@ class ListBedrooms extends Component {
             modal={this.state.modalTable}
             valorCloseModalTable={this.valorCloseModalTable}
             option={this.state.option}
+            modalHeader={this.state.modalHeader}
           />
         }
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
           <div className="container-button" style={{ "height": "35%" }}>
             <Button color="success"
-              onClick={(event) => this.openModal(1, null, null, null, event,null)}>
+              title="Registrar Espacios"
+              onClick={(event) => this.openModal(1, null, null, null, event, null)}>
               Agregar
             </Button>
 
@@ -275,7 +278,7 @@ class ListBedrooms extends Component {
                                 className="iconButtons"
                                 onClick={
                                   (event) => {
-                                    this.openModal(5, list._id, list.type_office, list.type_name, event, 1);
+                                    this.openModal(5, list._id, list.type_office, list.type_name, event, 1, list.category);
                                   }
                                 }
                               >
@@ -362,7 +365,7 @@ class ListBedrooms extends Component {
                                               className="iconButtons"
                                               onClick={
                                                 (event) => {
-                                                  this.openModal(5, spaces._id, list.type_office, list.type_name, event, 0);
+                                                  this.openModal(5, spaces._id, list.type_office, list.type_name, event, 0,spaces.name);
                                                 }
                                               }
                                             >
