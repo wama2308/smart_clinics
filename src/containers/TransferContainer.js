@@ -6,6 +6,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  CardFooter,
   Col,
   Row,
   TabContent,
@@ -18,7 +19,7 @@ import ListSolicitudesRealizadas from "../views/Shop/ListSolicitudesRealizadas";
 import ListSolicitudesRecibidas from "../views/Shop/ListSolicitudesRecibidas";
 import {
   LoadTransferFunction,
-  LoadRequestMadeIdFunction,  
+  LoadRequestMadeIdFunction,
   DeleteRequestMadeAction,
   cancelRequestAction,
   rejectRequestAction,
@@ -39,7 +40,7 @@ class TransferContainer extends Component {
   }
 
   componentDidMount = () => {
-    this.props.LoadTransferFunction();   
+    this.props.LoadTransferFunction();
 
     this.props.aplication.dataGeneral.permission.map(permisos => {
       permisos.modules.map(modulos => {
@@ -67,11 +68,11 @@ class TransferContainer extends Component {
   }
 
 
-  render() {   
+  render() {
     //console.log("props transfer container", this.props.transfer); 
     return (
       <div className="animated fadeIn">
-        <Row>
+        <Row style={{ height: '31rem', marginTop: '0px' }}>
           <Col>
             <Card>
               <CardHeader>Transferencias - Solicitudes</CardHeader>
@@ -103,14 +104,14 @@ class TransferContainer extends Component {
                       </Nav>
                       <TabContent activeTab={this.state.activeTab}>
                         <TabPane tabId="1">
-                          {/* <ListTransferencias
+                          <ListTransferencias
                             confirm={this.props.confirm}
                             data={this.props.transfer.allTransfer}
                             queryOneTransferFunction={this.props.queryOneTransferFunction}
                             disableTransferAction={this.props.disableTransferAction}
                             permitsTransfer={this.state.permitsTransfer}
                             search={this.props.searchData}
-                          /> */}
+                          />
                         </TabPane>
                         <TabPane tabId="2">
                           {/* <ListTransferenciasRecibidas
@@ -127,24 +128,24 @@ class TransferContainer extends Component {
                           <ListSolicitudesRealizadas
                             confirm={this.props.confirm}
                             alert={this.props.alert}
-                            data={this.props.transfer.allRequestMade}                            
+                            data={this.props.transfer.allRequestMade}
                             permitsTransfer={this.state.permitsTransfer}
                             search={this.props.searchData}
-                            LoadRequestMadeIdFunction={this.props.LoadRequestMadeIdFunction}                            
-                            selectTransfers={this.props.transfer.selectTransfers}                            
-                            DeleteRequestMadeAction={this.props.DeleteRequestMadeAction}                            
-                            cancelRequestAction={this.props.cancelRequestAction}                            
+                            LoadRequestMadeIdFunction={this.props.LoadRequestMadeIdFunction}
+                            selectTransfers={this.props.transfer.selectTransfers}
+                            DeleteRequestMadeAction={this.props.DeleteRequestMadeAction}
+                            cancelRequestAction={this.props.cancelRequestAction}
                           />
                         </TabPane>
                         <TabPane tabId="4">
                           <ListSolicitudesRecibidas
                             confirm={this.props.confirm}
                             alert={this.props.alert}
-                            data={this.props.transfer.allRequestReceived}                            
+                            data={this.props.transfer.allRequestReceived}
                             permitsTransfer={this.state.permitsTransfer}
                             search={this.props.searchData}
                             querySeeARequestsFunction={this.props.querySeeARequestsFunction}
-                            rejectRequestAction={this.props.rejectRequestAction}                            
+                            rejectRequestAction={this.props.rejectRequestAction}
                           />
                         </TabPane>
                       </TabContent>
@@ -155,6 +156,7 @@ class TransferContainer extends Component {
                     </div>
                 }
               </CardBody>
+              <CardFooter>Footer</CardFooter>
             </Card>
           </Col>
         </Row>
@@ -175,11 +177,11 @@ const mapDispatchToProps = dispatch => ({
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
   alert: (type, message) => dispatch(openSnackbars(type, message)),
   search: (set) => dispatch(search(set)),
-  LoadRequestMadeIdFunction: (id) => dispatch(LoadRequestMadeIdFunction(id)),  
-  querySeeARequestsFunction: (id) => dispatch(querySeeARequestsFunction(id)),  
-  DeleteRequestMadeAction: (id) => dispatch(DeleteRequestMadeAction(id)),  
-  cancelRequestAction: (id) => dispatch(cancelRequestAction(id)),  
-  rejectRequestAction: (id) => dispatch(rejectRequestAction(id)),  
+  LoadRequestMadeIdFunction: (id) => dispatch(LoadRequestMadeIdFunction(id)),
+  querySeeARequestsFunction: (id) => dispatch(querySeeARequestsFunction(id)),
+  DeleteRequestMadeAction: (id) => dispatch(DeleteRequestMadeAction(id)),
+  cancelRequestAction: (id) => dispatch(cancelRequestAction(id)),
+  rejectRequestAction: (id) => dispatch(rejectRequestAction(id)),
 });
 
 export default connect(

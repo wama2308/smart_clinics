@@ -22,6 +22,7 @@ class ListSolicitudesRecibidas extends React.Component {
       position: 0,
       isClearable: false,
       request_id: '0',
+      status_request: '',
       status: '',
       page: 0,
       rowsPerPage: 10,
@@ -44,6 +45,7 @@ class ListSolicitudesRecibidas extends React.Component {
         showHide: 'show',
         isClearable: true,
         idRequestReceived: id,
+        status_request: status,
       })
     }
     // else if (option === 2) {
@@ -137,6 +139,7 @@ class ListSolicitudesRecibidas extends React.Component {
             valorCloseModal={this.valorCloseModal}
             permitsTransfer={this.props.permitsTransfer}
             idRequestReceived={this.state.idRequestReceived}
+            status_request={this.state.status_request}
           />
         }
         <div className="containerGeneral" style={{ "justifyContent": "flex-end" }}>
@@ -153,16 +156,16 @@ class ListSolicitudesRecibidas extends React.Component {
         </div>
         <br />
         <div className="flex">
-          <div className="inner-flex" style={{ width: '100%', height: '31rem', overflow: 'auto' }}>
+          <div className="scrollCss" style={{ width: '100%', height: '31rem', overflow: 'auto' }}>
             <Table hover responsive borderless>
               <thead className="thead-light">
                 <tr>
-                  <th className="text-left" style={{width:'10%'}}>Nro</th>
-                  <th className="text-left" style={{width:'15%'}}>Control</th>
-                  <th className="text-left" style={{width:'20%'}}>Emisor</th>
-                  <th className="text-left" style={{width:'20%'}}>Receptor</th>
-                  <th className="text-left" style={{width:'20%'}}>Estatus</th>
-                  <th className="text-left" style={{ 'minWidth': "105px", width:'15%' }}>Acciones</th>
+                  <th className="text-left" style={{ width: '10%' }}>Nro</th>
+                  <th className="text-left" style={{ width: '15%' }}>Control</th>
+                  <th className="text-left" style={{ width: '20%' }}>Emisor</th>
+                  <th className="text-left" style={{ width: '20%' }}>Receptor</th>
+                  <th className="text-left" style={{ width: '20%' }}>Estatus</th>
+                  <th className="text-left" style={{ 'minWidth': "105px", width: '15%' }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -170,12 +173,12 @@ class ListSolicitudesRecibidas extends React.Component {
                   this.props.data ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => {
                     return (
                       <tr key={data.number} className="text-left">
-                        <td style={{width:'10%'}}>{data.number}</td>
-                        <td style={{width:'15%'}}>{data.number_control}</td>
-                        <td style={{width:'20%'}}>{data.sender}</td>
-                        <td style={{width:'20%'}}>{data.receiver}</td>
-                        <td style={{width:'20%'}}>{data.status}</td>
-                        <td style={{ 'minWidth': "205px", width:'15%' }}>
+                        <td style={{ width: '10%' }}>{data.number}</td>
+                        <td style={{ width: '15%' }}>{data.number_control}</td>
+                        <td style={{ width: '20%' }}>{data.sender}</td>
+                        <td style={{ width: '20%' }}>{data.receiver}</td>
+                        <td style={{ width: '20%' }}>{data.status}</td>
+                        <td style={{ 'minWidth': "205px", width: '15%' }}>
                           <div className="float-left" >
                             <IconButton aria-label="Delete"
                               title="Ver Solicitud Recibida"

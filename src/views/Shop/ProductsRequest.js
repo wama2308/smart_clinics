@@ -15,7 +15,7 @@ import {
   IconButton
 } from "@material-ui/core";
 
-class ProductsTransfer extends React.Component {
+class ProductsRequest extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
@@ -23,10 +23,9 @@ class ProductsTransfer extends React.Component {
       modal: false,
       modalHeader: '',
       modalFooter: '',
-      productId: '',
-      productName: '',
-      productType: '',
-      productStock: '',
+      productName:'',
+      productType:'',
+      productStock:'',
       action: '',
       disabled: '',
       showHide: '',
@@ -65,7 +64,10 @@ class ProductsTransfer extends React.Component {
   };
 
   handleChange = (event, product) => {
-    this.props.setQuantityTranferAction(product._id, parseFloat(event.target.value));
+    if(event.target.value !== ""){
+      this.props.setQuantityTranferAction(product._id, parseFloat(event.target.value));
+    }
+    
     // if (parseFloat(product.quantity_stock) < parseFloat(event.target.value)) {
     //   this.props.alert("warning", "¡La cantidad a transferir no puede ser mayor al stock!");
     // } else {
@@ -73,7 +75,7 @@ class ProductsTransfer extends React.Component {
     // }
   };
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = prevProps => {    
     let lastData = undefined;
     let lastPrevData = undefined;
     this.props.productsToTransfer
@@ -87,7 +89,7 @@ class ProductsTransfer extends React.Component {
       if (JSON.stringify(lastData) !== JSON.stringify(lastPrevData)) {
         document.getElementById("inputQuantity_" + lastData._id).focus();
       }
-    }
+    }    
   };
 
   editInput = key => {
@@ -127,14 +129,13 @@ class ProductsTransfer extends React.Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Agregar producto a una solicitud de ' + this.props.sucursal_central_token,
+        modalHeader: 'Agregar producto a una solicitud de '+this.props.sucursal_central_token,
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'show',
         isClearable: true,
-        productId: id,
         productName: name,
-        productType: type,
+        productType:type,
         productStock: stock
       })
     }
@@ -170,12 +171,12 @@ class ProductsTransfer extends React.Component {
         { label: "NOMBRE" },
         { label: "TIPO" },
         //{ label: "DISPONIBLE" },
-        { label: "CANT A SOLICITAR" },
+        { label: "CANT A TRANSFERIR" },
         { label: "ACTION" }
       ];
       heightInput = 48;
       widthInput = '25%';
-    } else if (this.props.option === 4 && this.props.sucursal_central) {
+    } else if (this.props.option === 4) {
       dataHead = [
         { label: "NOMBRE" },
         { label: "TIPO" },
@@ -183,16 +184,6 @@ class ProductsTransfer extends React.Component {
         { label: "CANT SOLICITADA" },
         { label: "DISPONIBLE" },
         { label: "ACTION" }
-      ];
-      heightInput = 55;
-      widthInput = '17%';
-    } else if (this.props.option === 4 && !this.props.sucursal_central) {
-      dataHead = [
-        { label: "NOMBRE" },
-        { label: "TIPO" },
-        { label: "TRANSFERIR" },
-        { label: "CANT SOLICITADA" },
-        { label: "DISPONIBLE" },
       ];
       heightInput = 55;
       widthInput = '17%';
@@ -202,14 +193,13 @@ class ProductsTransfer extends React.Component {
     return (
       <span>
         {
-          (this.state.option === 1 ||
+          (this.state.option === 1 ||            
             this.state.option === 2) &&
-          <ModalStockBranchoffices
+         <ModalStockBranchoffices
             option={this.state.option}
             modal={this.state.modal}
             modalHeader={this.state.modalHeader}
             modalFooter={this.state.modalFooter}
-            productId={this.state.productId}
             productName={this.state.productName}
             productType={this.state.productType}
             productStock={this.state.productStock}
@@ -220,9 +210,8 @@ class ProductsTransfer extends React.Component {
             status={this.state.status}
             branchOfficces={this.props.branchOfficces}
             valorCloseModal={this.valorCloseModal}
-            permitsTransfer={this.props.permitsTransfer}
-            search={this.props.searchData}
-            createRequestAction={this.props.createRequestAction}
+            permitsTransfer={this.props.permitsTransfer}               
+            search={this.props.searchData}              
           />
         }
         <div className="errorSelect" style={{ width: "100%" }}>{this.props.divAviso}</div>
@@ -278,18 +267,9 @@ class ProductsTransfer extends React.Component {
                         <Cell>{product.type}</Cell>
                         {
                           this.props.option === 4 &&
-                          <Cell style={{ width: widthInput }}>
-                            <Switch
-                              onChange={this.handleChangeSwitch(product._id)}
-                              value={product.confirm}
-                              id={`checked_${product._id}`}
-                              name={`checked_${product._id}`}
-                              color="primary"
-                              checked={product.confirm}
-                              disabled={this.props.disabled}
-                            />
-                          </Cell>
+                          <Cell>{product.quantity_stock}</Cell>
                         }
+
                         <td style={{ width: widthInput }}>
                           <Input
                             name={`inputQuantity_${product._id}`}
@@ -302,16 +282,44 @@ class ProductsTransfer extends React.Component {
                             style={{ height: heightInput, borderRadius: 0 }}
                             onBlur={this.eventBlurInputQuantity(product._id)}
                             onFocus={this.eventFocusInputQuantity(product._id)}
-                            disabled={this.props.option === 4 ? !product.confirm : this.props.disabled}
+                            disabled={this.props.disabled}
                           />
                         </td>
                         {
                           this.props.option === 4 &&
-                          <Cell>{product.quantity_stock}</Cell>
+                          <Cell style={{ width: widthInput }}>
+                            <Switch
+                              onChange={this.handleChangeSwitch(product._id)}
+                              value={product.confirm}
+                              id={`checked_${product._id}`}
+                              name={`checked_${product._id}`}
+                              color="primary"
+                              checked={product.confirm}
+                              disabled={this.props.disabled}
+                            />
+                          </Cell>
                         }
-                        {
-                          this.props.option !== 4 &&
-                          <Cell>
+                        <Cell>
+                          {
+                            this.props.option === 4 &&
+                            <IconButton
+                              title={`Agregar producto a una solicitud de  ${this.props.sucursal_central_token}`}                              
+                              onClick={() => { this.openModalStockProductsAdd(1, product._id, product.name, product.type, product.quantity_stock); }}
+                              disabled={this.props.disabled}>
+                              <PlaylistAdd className="iconTable" />
+                            </IconButton>
+                          }
+                          {
+                            (this.props.option === 4 && this.props.sucursal_central) &&
+                            <IconButton 
+                              title="Ver stock en otras sucursales"                              
+                              onClick={() => { this.openModalStockProductsAdd(2, product._id); }}
+                              disabled={this.props.disabled}>
+                              <Visibility className="iconTable" />
+                            </IconButton>                            
+                          }
+                          {
+                            this.props.option !== 4 &&
                             < IconButton
                               disabled={this.props.disabled}
                               onClick={() => {
@@ -320,25 +328,9 @@ class ProductsTransfer extends React.Component {
                             >
                               <Delete className="iconTable" />
                             </IconButton>
-                          </Cell>
-                        }
-                        {
-                          (this.props.option === 4 && this.props.sucursal_central) &&
-                          <Cell>
-                            <IconButton
-                              title={`Agregar producto a una solicitud de  ${this.props.sucursal_central_token}`}
-                              onClick={() => { this.openModalStockProductsAdd(1, product._id, product.name, product.type, product.quantity_stock); }}
-                              disabled={this.props.disabled}>
-                              <PlaylistAdd className="iconTable" />
-                            </IconButton>
-                            <IconButton
-                              title="Ver stock en otras sucursales"
-                              onClick={() => { this.openModalStockProductsAdd(2, product._id); }}
-                              disabled={this.props.disabled}>
-                              <Visibility className="iconTable" />
-                            </IconButton>
-                          </Cell>
-                        }
+                          }
+
+                        </Cell>
                       </RowTable>
                     );
                   })}
@@ -351,7 +343,7 @@ class ProductsTransfer extends React.Component {
   }
 }
 
-export default ProductsTransfer;
+export default ProductsRequest;
 
 const Header = styled(CardHeader)`
   display: flex;

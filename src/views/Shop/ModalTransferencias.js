@@ -11,20 +11,23 @@ import { enterDecimal } from "../../core/utils";
 import { Visibility } from "@material-ui/icons";
 import { openSnackbars, openConfirmDialog } from "../../actions/aplicantionActions";
 import {
-    cleanQuantityProductsTransferAction,    
+    cleanQuantityProductsTransferAction,
     searchProduct,
     searchOneSuppplie,
     setQuantityTranferAction,
     deleteProductsTransferFunction,
-    saveTransferRequestAction
+    setSwitchTableRequestReceived,
+    addProductRequestFunction,
+    filterStockProductsAction,
+    actionProps
 } from "../../actions/TransferActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import { PlaylistAdd, Edit } from "@material-ui/icons";
-import Switch from '@material-ui/core/Switch';
 import classnames from "classnames";
-import DefaultSearch from "../../components/DefaultSearch.js";
-import ProductsTransfer from "./ProductsTransfer.js";
+import ProductsRequest from "./ProductsRequest.js";
+import ListStockProducts from "./ListStockProducts.js";
+import jwt_decode from 'jwt-decode';
 
 class ModalTransferencias extends React.Component {
     constructor(props) {
@@ -34,7 +37,17 @@ class ModalTransferencias extends React.Component {
         };
     }
 
-    componentDidMount() {        
+    componentDidMount() {
+        const token = window.localStorage.getItem('id_token');
+        var decoded = jwt_decode(token);
+        let sucursal_center = '';
+        Object.keys(decoded.profile[0]).map((i) => {
+            sucursal_center = decoded.profile[0].medical_center[0].branch_office[0].center;
+        })
+        this.setState({
+            sucursal_central_token: sucursal_center
+        });
+
         if (this.props.option === 1) {
             this.setState({
                 loading: 'hide',
@@ -86,6 +99,7 @@ class ModalTransferencias extends React.Component {
     }
 
     componentWillReceiveProps = (props) => {
+        console.log("componentWillReceiveProps modal transferencias", props.transfer);
         if (props.transfer.productsToTransfer.length > 0) {
 
             this.setState({
@@ -118,6 +132,42 @@ class ModalTransferencias extends React.Component {
         });
     }
 
+    handleChangeArrayOrdenTransfer = (arrayOrdenTransfer) => {
+        this.setState({
+            arrayOrdenTransfer,
+            divOrdenTransfer: '',
+            divOrdenTransferError: '',
+        });
+    }
+
+    handleChangeArrayOrigenOrden = (arrayOrigenOrden) => {
+        this.setState({
+            arrayOrigenOrden,
+            divOrigenOrden: '',
+            divOrigenOrdenError: '',
+        });
+        if (this.state.arrayDestinoOrden) {
+            this.setState({
+                divDestinoOrden: '',
+                divDestinoOrdenError: '',
+            });
+        }
+    }
+
+    handleChangeArrayDestinoOrden = (arrayDestinoOrden) => {
+        this.setState({
+            arrayDestinoOrden,
+            divDestinoOrden: '',
+            divDestinoOrdenError: '',
+        });
+        if (this.state.arrayOrigenOrden) {
+            this.setState({
+                divOrigenOrden: '',
+                divOrigenOrdenError: '',
+            });
+        }
+    }
+
     handleChangeOptionOne = (arrayOptionOne) => {
         this.setState({
             arrayOptionOne,
@@ -145,6 +195,12 @@ class ModalTransferencias extends React.Component {
     }
 
     validate = () => {
+        let divOrdenTransfer = '';
+        let divOrdenTransferError = '';
+        let divOrigenOrden = '';
+        let divOrigenOrdenError = '';
+        let divDestinoOrden = '';
+        let divDestinoOrdenError = '';
         let divTipoTransfer = '';
         let divTipoTransferError = '';
         let divOptionOne = '';
@@ -157,45 +213,79 @@ class ModalTransferencias extends React.Component {
         const cantidadCero = this.props.transfer.productsToTransfer.find(product => product.quantity_transfer !== 0);
         const cantidadVacia = this.props.transfer.productsToTransfer.find(product => product.quantity_transfer === "");
 
-        if (!this.state.arrayTipoTransfer) {
-            divTipoTransferError = "¡Seleccione el destino de la transferencia!";
-            divTipoTransfer = "borderColor";
+        if (!this.state.arrayOrdenTransfer) {
+            divOrdenTransferError = "¡Seleccione el tipo de operacion!";
+            divOrdenTransfer = "borderColor";
         } else {
-            if (this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939988") {
-                if (!this.state.arrayOptionOne) {
-                    divOptionOneError = "¡Selecione el almacen!";
-                    divOptionOne = "borderColor";
+            if (this.state.arrayOrdenTransfer.value === "Orden") {
+                if (!this.state.arrayOrigenOrden) {
+                    divOrigenOrdenError = "¡Seleccione el origen de la transferencia!";
+                    divOrigenOrden = "borderColor";
                 }
-            } else if (this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939977") {
-                if (!this.state.arrayOptionOne) {
-                    divOptionOneError = "¡Selecione la sucursal!";
-                    divOptionOne = "borderColor";
+                if (!this.state.arrayDestinoOrden) {
+                    divDestinoOrdenError = "¡Seleccione el destino de la transferencia!";
+                    divDestinoOrden = "borderColor";
                 }
-            } else if (this.state.arrayTipoTransfer.value === "5d780fde6a5e8f0d1b38d68e") {
-                if (!this.state.arrayOptionOne) {
-                    divOptionOneError = "¡Selecione el departamento!";
-                    divOptionOne = "borderColor";
+                if (this.state.arrayOrigenOrden && this.state.arrayDestinoOrden) {
+                    if (this.state.arrayOrigenOrden.value === this.state.arrayDestinoOrden.value) {
+                        divOrigenOrdenError = "¡El origen no puede ser igual al destino!";
+                        divOrigenOrden = "borderColor";
+
+                        divDestinoOrdenError = "¡El destino no puede ser igual al origen!";
+                        divDestinoOrden = "borderColor";
+                    }
                 }
-                if (!this.state.arrayOptionTwo) {
-                    divOptionTwoError = "¡Selecione oficina/consultorio!";
-                    divOptionTwo = "borderColor";
+            } else {
+                if (!this.state.arrayTipoTransfer) {
+                    divTipoTransferError = "¡Seleccione el destino de la transferencia!";
+                    divTipoTransfer = "borderColor";
+                } else {
+                    if (this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939988") {
+                        if (!this.state.arrayOptionOne) {
+                            divOptionOneError = "¡Selecione el almacen!";
+                            divOptionOne = "borderColor";
+                        }
+                    } else if (this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939977") {
+                        if (!this.state.arrayOptionOne) {
+                            divOptionOneError = "¡Selecione la sucursal!";
+                            divOptionOne = "borderColor";
+                        }
+                    } else if (this.state.arrayTipoTransfer.value === "5d780fde6a5e8f0d1b38d68e") {
+                        if (!this.state.arrayOptionOne) {
+                            divOptionOneError = "¡Selecione el departamento!";
+                            divOptionOne = "borderColor";
+                        }
+                        if (!this.state.arrayOptionTwo) {
+                            divOptionTwoError = "¡Selecione oficina/consultorio!";
+                            divOptionTwo = "borderColor";
+                        }
+                    }
+                    if (this.props.transfer.productsToTransfer.length === 0) {
+                        sinProductos++;
+                        divAviso = "¡Debe agregar al menos un producto!";
+                    } else if (!cantidadCero) {
+                        acumCantidadTransfer++;
+                        //this.props.alert("warning", "¡Las cantidades de los productos no pueden ser 0!");
+                        divAviso = "¡Las cantidades de los productos a transferir no pueden ser 0!";
+                    } else if (cantidadVacia) {
+                        acumCantidadTransfer++;
+                        //this.props.alert("warning", "¡Las cantidades de los productos no pueden estar vacias!");
+                        divAviso = "¡Los porcentajes de ganancia no pueden estar vacios!";
+                    }
                 }
-            }
-            if (this.props.transfer.productsToTransfer.length === 0) {
-                sinProductos++;
-                divAviso = "¡Debe agregar al menos un producto!";
-            } else if (!cantidadCero) {
-                acumCantidadTransfer++;
-                //this.props.alert("warning", "¡Las cantidades de los productos no pueden ser 0!");
-                divAviso = "¡Las cantidades de los productos a transferir no pueden ser 0!";
-            } else if (cantidadVacia) {
-                acumCantidadTransfer++;
-                //this.props.alert("warning", "¡Las cantidades de los productos no pueden estar vacias!");
-                divAviso = "¡Los porcentajes de ganancia no pueden estar vacios!";
             }
         }
-        if (divTipoTransferError || divOptionOneError || divOptionTwoError || divAviso) {
+
+        if (divTipoTransferError || divOptionOneError || divOptionTwoError || divAviso || divOrdenTransferError ||
+            divOrigenOrdenError || divDestinoOrdenError
+        ) {
             this.setState({
+                divOrdenTransfer,
+                divOrdenTransferError,
+                divOrigenOrden,
+                divOrigenOrdenError,
+                divDestinoOrden,
+                divDestinoOrdenError,
                 divTipoTransferError,
                 divTipoTransfer,
                 divOptionOneError,
@@ -207,57 +297,31 @@ class ModalTransferencias extends React.Component {
             return false;
         } else if (sinProductos === 1) {
             return false;
+        } else if (acumCantidadTransfer === 1) {
+            return false;
         } else {
             return true;
         }
-
-
     };
 
     handleAction = event => {
         event.preventDefault();
         const isValid = this.validate();
-        if (isValid) {           
-            let received = "";
-            if(this.state.arrayTipoTransfer.value === "5d1776e3b0d4a50b23939977"){
-                received = this.state.arrayOptionOne.value;
-            }else{
-                received = this.state.arrayOptionTwo.value;
-            }
-            
+        if (isValid) {
             if (this.props.option === 1) {
-                this.setState({ loading: 'show' })
-                this.props.saveTransferRequestAction(
-                    {
-                        receiver: received,
-                        description: this.state.observacion,
-                        products: this.props.transfer.productsToTransfer,                        
-                    },
-                    () => {
-                        this.closeModal();
-                    }
-                )
+                alert("exito");
+                // this.setState({ loading: 'show' })
+                // this.props.saveTransferRequestAction(
+                //     {
+                //         receiver: received,
+                //         description: this.state.observacion,
+                //         products: this.props.transfer.productsToTransfer,
+                //     },
+                //     () => {
+                //         this.closeModal();
+                //     }
+                // )
             }
-            // if (this.props.option === 6) {
-            //     if (this.props.status === "Pendiente") {
-            //         this.setState({ loading: 'show' })
-            //         this.props.editTransferAction(
-            //             {
-            //                 id: this.props.transfer_id,
-            //                 sucursal_envia: sucursalEnvia,
-            //                 sucursal_recibe: sucursalRecibe,
-            //                 observacion: this.state.observacion,
-            //                 products: this.props.shop.transferId.products,
-            //             },
-            //             () => {
-            //                 this.closeModal();
-            //             }
-            //         )
-            //     } else {
-            //         this.props.alert("warning", "¡No puede editar la transferencia, su estatus es: " + this.props.status + "!");
-            //     }
-
-            // }
         }
     }
 
@@ -274,29 +338,37 @@ class ModalTransferencias extends React.Component {
 
     render() {
         var found_internal = this.props.permitsTransfer.find(function (element) {
-            return element === "Create_request_internal";            
+            return element === "Create_request_internal";
         });
         var found_external = this.props.permitsTransfer.find(function (element) {
-            return element === "Create_request_external";            
+            return element === "Create_request_external";
         });
+
         let arrayOptions = [];
-        
-        if(this.props.transfer.selectTransfers){
-            if(found_internal && found_external){
+        let arrayBranchOfficcesOrden = [];
+
+        if (this.props.transfer.selectTransfers) {
+            if (found_internal && found_external) {
                 arrayOptions = this.props.transfer.selectTransfers
             }
-            if(found_internal && !found_external){
+            if (found_internal && !found_external) {
                 arrayOptions = this.props.transfer.selectTransfers.filter(
                     selectTransfer => selectTransfer.value !== "5d1776e3b0d4a50b23939977"
                 );
             }
-            if(!found_internal && found_external){
+            if (!found_internal && found_external) {
                 arrayOptions = this.props.transfer.selectTransfers.filter(
                     selectTransfer => selectTransfer.value === "5d1776e3b0d4a50b23939977"
                 );
             }
+
+            const arrayFilterBranchOfficcesOrden = this.props.transfer.selectTransfers.filter(
+                selectTransfer => selectTransfer.value === "5d1776e3b0d4a50b23939977"
+            );
+
+            arrayBranchOfficcesOrden = arrayFilterBranchOfficcesOrden[0]['others'];
         }
-        
+
         let label = '';
         let label_children = '';
         if (this.state.arrayTipoTransfer) {
@@ -310,6 +382,30 @@ class ModalTransferencias extends React.Component {
                 label_children = 'Oficina/consultorio';
             }
         }
+
+        let ordenTransfer = [];
+        if (this.state.sucursal_central_token) {
+            ordenTransfer =
+                [
+                    {
+                        label: "Orden",
+                        value: "Orden"
+                    },
+                    {
+                        label: "Transferencia",
+                        value: "Transferencia"
+                    }
+                ];
+        } else {
+            ordenTransfer =
+                [
+                    {
+                        label: "Transferencia",
+                        value: "Transferencia"
+                    }
+                ];
+        }
+
         return (
             <span>
                 <Modal isOpen={this.props.modal} toggle={this.closeModal} className="ModalTransfer">
@@ -321,19 +417,75 @@ class ModalTransferencias extends React.Component {
                                     <form className="formCodeConfirm" onSubmit={this.handleAction.bind(this)}>
                                         <div className="row">
                                             <FormGroup className="top form-group col-sm-6">
-                                                <Label for="tipoTransfer">Transferir a:</Label>
-                                                <div className={this.state.divTipoTransfer}>
+                                                <Label for="arrayOrdenTransfer">Tipo:</Label>
+                                                <div className={this.state.divOrdenTransfer}>
                                                     <Select
                                                         isSearchable="true"
                                                         isDisabled={this.props.disabled}
-                                                        name="tipoTransfer"
-                                                        value={this.state.arrayTipoTransfer}
-                                                        onChange={this.handleChangeTipoTransfer}
-                                                        options={arrayOptions}
+                                                        name="arrayOrdenTransfer"
+                                                        id="arrayOrdenTransfer"
+                                                        value={this.state.arrayOrdenTransfer}
+                                                        onChange={this.handleChangeArrayOrdenTransfer}
+                                                        options={ordenTransfer}
                                                     />
                                                 </div>
-                                                <div className="errorSelect">{this.state.divTipoTransferError}</div>
+                                                <div className="errorSelect">{this.state.divOrdenTransferError}</div>
                                             </FormGroup>
+                                            {
+                                                this.state.arrayOrdenTransfer !== null &&
+                                                this.state.arrayOrdenTransfer.value === "Orden" &&
+                                                <FormGroup className="top form-group col-sm-6">
+                                                    <Label for="arrayOrigenOrden">Origen:</Label>
+                                                    <div className={this.state.divOrigenOrden}>
+                                                        <Select
+                                                            isSearchable="true"
+                                                            isDisabled={this.props.disabled}
+                                                            name="arrayOrigenOrden"
+                                                            value={this.state.arrayOrigenOrden}
+                                                            onChange={this.handleChangeArrayOrigenOrden}
+                                                            options={arrayBranchOfficcesOrden}
+                                                        />
+                                                    </div>
+                                                    <div className="errorSelect">{this.state.divOrigenOrdenError}</div>
+                                                </FormGroup>
+                                            }
+                                            {
+                                                this.state.arrayOrdenTransfer !== null &&
+                                                this.state.arrayOrdenTransfer.value === "Orden" &&
+                                                <FormGroup className="top form-group col-sm-6">
+                                                    <Label for="arrayDestinoOrden">Destino:</Label>
+                                                    <div className={this.state.divDestinoOrden}>
+                                                        <Select
+                                                            isSearchable="true"
+                                                            isDisabled={this.props.disabled}
+                                                            name="arrayDestinoOrden"
+                                                            value={this.state.arrayDestinoOrden}
+                                                            onChange={this.handleChangeArrayDestinoOrden}
+                                                            options={arrayBranchOfficcesOrden}
+                                                        />
+                                                    </div>
+                                                    <div className="errorSelect">{this.state.divDestinoOrdenError}</div>
+                                                </FormGroup>
+                                            }
+                                            {
+                                                this.state.arrayOrdenTransfer &&
+                                                this.state.arrayOrdenTransfer.value !== "Orden" &&
+                                                <FormGroup className="top form-group col-sm-6">
+                                                    <Label for="tipoTransfer">Transferir a:</Label>
+                                                    <div className={this.state.divTipoTransfer}>
+                                                        <Select
+                                                            isSearchable="true"
+                                                            isDisabled={this.props.disabled}
+                                                            name="tipoTransfer"
+                                                            value={this.state.arrayTipoTransfer}
+                                                            onChange={this.handleChangeTipoTransfer}
+                                                            options={arrayOptions}
+                                                        />
+                                                    </div>
+                                                    <div className="errorSelect">{this.state.divTipoTransferError}</div>
+                                                </FormGroup>
+                                            }
+
                                             {
                                                 this.state.arrayTipoTransfer &&
                                                 <FormGroup className="top form-group col-sm-6">
@@ -387,18 +539,58 @@ class ModalTransferencias extends React.Component {
                                                 <div className="errorSelect">{this.state.divObservacionError}</div>
                                             </FormGroup>
                                         </div>
-                                        <ProductsTransfer
-                                            searchProduct={this.props.searchProduct}
-                                            dataAllProducts={this.props.dataAllProducts}
-                                            searchOneSuppplie={this.props.searchOneSuppplie}
-                                            productsToTransfer={this.props.transfer.productsToTransfer}
-                                            setQuantityTranferAction={this.props.setQuantityTranferAction}
-                                            deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
-                                            confirm={this.props.confirm}
-                                            alert={this.props.alert}
-                                            divAviso={this.state.divAviso}
-                                            //cleanDivAviso = {this.cleanDivAviso}
-                                        />
+                                        {
+                                            this.props.option !== 4 &&
+                                            <div>
+                                                <Nav tabs>
+                                                    <NavItem>
+                                                        <NavLink
+                                                            className={classnames({ active: this.state.activeTab === '1' })}
+                                                            onClick={() => { this.toggleTab('1'); }} >
+                                                            Transferir Productos
+                                                    </NavLink>
+                                                    </NavItem>
+                                                    <NavItem>
+                                                        <NavLink
+                                                            className={classnames({ active: this.state.activeTab === '2' })}
+                                                            onClick={() => { this.toggleTab('2'); }} >
+                                                            Lista de Productos
+                                                    </NavLink>
+                                                    </NavItem>
+                                                </Nav>
+                                                <TabContent activeTab={this.state.activeTab}>
+                                                    <TabPane tabId="1">
+                                                        <ProductsRequest
+                                                            option={this.props.option}
+                                                            searchProduct={this.props.searchProduct}
+                                                            dataAllProducts={this.props.dataAllProducts}
+                                                            searchOneSuppplie={this.props.searchOneSuppplie}
+                                                            productsToTransfer={this.props.transfer.productsToTransfer}
+                                                            setQuantityTranferAction={this.props.setQuantityTranferAction}
+                                                            deleteProductsTransferFunction={this.props.deleteProductsTransferFunction}
+                                                            setSwitchTableRequestReceived={this.props.setSwitchTableRequestReceived}
+                                                            confirm={this.props.confirm}
+                                                            alert={this.props.alert}
+                                                            divAviso={this.state.divAviso}
+                                                            disabled={this.props.disabled}
+                                                        />
+                                                    </TabPane>
+                                                    <TabPane tabId="2">
+                                                        <ListStockProducts
+                                                            option={this.props.option}
+                                                            data={this.props.transfer.allProducts}
+                                                            productsToTransfer={this.props.transfer.productsToTransfer}
+                                                            search={this.props.searchData}
+                                                            permitsTransfer={this.props.permitsTransfer}
+                                                            disabled={this.props.disabled}
+                                                            addProductRequestFunction={this.props.addProductRequestFunction}
+                                                            alert={this.props.alert}
+                                                            filterStockProductsAction={this.props.filterStockProductsAction}
+                                                        />
+                                                    </TabPane>
+                                                </TabContent>
+                                            </div>
+                                        }
                                     </form>
                                 </ModalBody>
                                 <ModalFooter>
@@ -434,13 +626,15 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     alert: (type, message) => dispatch(openSnackbars(type, message)),
     confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
-    cleanQuantityProductsTransferAction: () => dispatch(cleanQuantityProductsTransferAction()),    
+    cleanQuantityProductsTransferAction: () => dispatch(cleanQuantityProductsTransferAction()),
     searchProduct: (data) => dispatch(searchProduct(data)),
-    searchOneSuppplie: (data) => dispatch(searchOneSuppplie(data)),
-    
+    searchOneSuppplie: (data, arrayProductsTransfer) => dispatch(searchOneSuppplie(data, arrayProductsTransfer)),
     setQuantityTranferAction: (_id, value) => dispatch(setQuantityTranferAction(_id, value)),
     deleteProductsTransferFunction: (key) => dispatch(deleteProductsTransferFunction(key)),
-    saveTransferRequestAction: (data, callback) => dispatch(saveTransferRequestAction(data, callback)),
+    setSwitchTableRequestReceived: (id, value) => dispatch(setSwitchTableRequestReceived(id, value)),
+    addProductRequestFunction: (obj) => dispatch(addProductRequestFunction(obj)),
+    filterStockProductsAction: (value) => dispatch(filterStockProductsAction(value)),
+    actionProps: (value) => dispatch(actionProps(value)),
 });
 
 export default connect(

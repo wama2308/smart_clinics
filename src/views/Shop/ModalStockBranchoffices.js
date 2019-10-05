@@ -16,11 +16,9 @@ import jstz from "jstz";
 import { connect } from "react-redux";
 import { openConfirmDialog } from "../../actions/aplicantionActions";
 import {
-  saveStoreAction,
-  editStoreAction,
-  cleanShelfs,
+  
   actionProps
-} from "../../actions/StoreActions";
+} from "../../actions/TransferActions";
 import { InitalState } from "./InitialState.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ListStockBranchOffices from "./ListStockBranchOffices.js";
@@ -33,7 +31,7 @@ class ModalStockBranchoffices extends React.Component {
     };
   }
 
-  componentDidMount() {    
+  componentDidMount() {
     if (this.props.option === 1 || this.props.option === 2) {
       this.setState({
         loading: 'hide',
@@ -58,28 +56,38 @@ class ModalStockBranchoffices extends React.Component {
 
   validate = () => {
     let divQuantityRegister = "";
-    let divQuantityRegisterError = "";    
+    let divQuantityRegisterError = "";
     if (this.state.quantityRegister === "0" || this.state.quantityRegister === "" || parseFloat(this.state.quantityRegister) < 0) {
       divQuantityRegisterError = "¡Ingrese la cantidad a solicitar!";
       divQuantityRegister = "borderColor";
     }
-    
+
     if (divQuantityRegisterError) {
       this.setState({
         divQuantityRegister,
-        divQuantityRegisterError,        
+        divQuantityRegisterError,
       });
       return false;
     }
     return true;
   };
 
-  handleSave = event => {
+  handleSave = event => {    
     event.preventDefault();
     const isValid = this.validate();
     if (isValid) {
       if (this.props.option === 1) {
-        alert("En programacion");
+        this.setState({ loading: 'show' })
+        let supplie = {_id:this.props.productId,quantity: this.state.quantityRegister  
+        }
+        this.props.createRequestAction(
+          {
+            supplie       
+          },
+          () => {
+            this.closeModal();
+          }
+        )
       }
     }
   };
@@ -90,8 +98,8 @@ class ModalStockBranchoffices extends React.Component {
       divQuantityRegisterError: ""
     });
   };
-  
-  componentWillReceiveProps = props => {};
+
+  componentWillReceiveProps = props => { };
 
   render() {
     return (
@@ -183,7 +191,7 @@ class ModalStockBranchoffices extends React.Component {
                       data={this.props.transfer.supplieIdBranchOffice}
                       search={this.props.searchData}
                       permitsTransfer={this.props.permitsTransfer}
-                      //disabled={this.props.disabled}
+                    //disabled={this.props.disabled}
                     />
 
                 }
@@ -227,12 +235,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   confirm: (message, callback) =>
-    dispatch(openConfirmDialog(message, callback)),
-  saveStoreAction: (data, callback) =>
-    dispatch(saveStoreAction(data, callback)),
-  editStoreAction: (data, callback) =>
-    dispatch(editStoreAction(data, callback)),
-  cleanShelfs: () => dispatch(cleanShelfs()),
+    dispatch(openConfirmDialog(message, callback)),  
   actionProps: () => dispatch(actionProps())
 });
 
