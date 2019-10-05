@@ -96,6 +96,17 @@ class ListBedrooms extends Component {
       this.setState({
         modalTable: true,
         option: option,
+        modalHeader: `Mobiliario General de ${code}`
+      })
+    }else if(option === 6){
+      this.props.queryBedroomsBelongingsFunction({
+        input: value,
+        _id: id,
+        type_office: category
+      })
+      this.setState({
+        modalTable: true,
+        option: option,
         modalHeader: `Mobiliario de ${code}`
       })
     }
@@ -365,7 +376,7 @@ class ListBedrooms extends Component {
                                               className="iconButtons"
                                               onClick={
                                                 (event) => {
-                                                  this.openModal(5, spaces._id, list.type_office, list.type_name, event, 0,spaces.name);
+                                                  this.openModal(6, spaces._id, list.type_office, list.type_name, event, 0,spaces.name);
                                                 }
                                               }
                                             >

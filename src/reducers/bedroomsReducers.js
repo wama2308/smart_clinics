@@ -15,7 +15,7 @@ const loadbedroons = (state, payload) => {
 const loadOneBedroons = (state, payload) => {
   let estado = state.toJS();
   const array = []
-  payload.loadOneTurnos.supplies.map(data => {
+  payload.loadOneTurnos.belogings.map(data => {
     array.push({
       ...data,
       cantidad: data.quantity_stock
