@@ -2,6 +2,7 @@ import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
 import decode from "jwt-decode";
+import { converToJson } from "../core/utils";
 
 const loadBedrooms = `${url}/api/queryBedrooms`;
 const queryOneBedrooms = `${url}/api/queryOneBedrooms`;
@@ -12,6 +13,7 @@ const editOneBedrooms = `${url}/api/editOneBedrooms`
 const enabledBedrooms = `${url}/api/enabledBedrooms`
 const editBedrooms = `${url}/api/editBedrooms`
 const queryOneBelonging = `${url}/api/queryOneBelonging`
+const queryBedroomsBelongings = `${url}/api/queryBedroomsBelongings`
 
 /*--------------------------API-------------------------------*/
 export const loadBedroomsFunction = () => dispatch => {
@@ -68,9 +70,8 @@ export const createBedroomsFunction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          console.log(error);
-          
-          dispatch(openSnackbars("error", "Error guardando el Espacio"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
 }
@@ -126,7 +127,8 @@ export const editBedroomsFunction = (data, callback) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error editando el Espacio"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
 }
@@ -170,9 +172,35 @@ export const disabledBedroomsFuntion = (data) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error borrando el Espacio"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
+}
+
+export const queryBedroomsBelongingsFunction = (data) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: queryBedroomsBelongings,
+        data: data,
+        headers: datos.headers
+      })
+        .then(res => {
+          dispatch({
+            type: "LOAD_MODAL_TABLE",
+            payload: {
+              loadOneTurnos: res.data,
+              loading: "hide",
+            }
+          })
+        })
+
+    })
+    .catch(() => {
+      console.log("Problemas con el token");
+    });
 }
 /*-------------------------API-------------------------------------*/
 
@@ -195,10 +223,10 @@ export const searchBelogingFunction = (data, obj) => dispatch => {
       }).then(res => {
         dispatch({
           type: "SEARCH_SUPPLIES",
-          payload:{
-            obj:obj,
-            data:res.data
-          } 
+          payload: {
+            obj: obj,
+            data: res.data
+          }
         })
       })
     })
@@ -223,7 +251,7 @@ export const setDatasuppies = (data, id, option, obj) => dispatch => {
       data: data,
       id: id,
       option: option,
-      obj:obj
+      obj: obj
     }
   })
 }
@@ -274,12 +302,19 @@ export const propsAction = (data) => dispatch => {
   })
 }
 
-export const collapseFunction = (id, type) => dispatch =>{
+export const collapseFunction = (id, type) => dispatch => {
   dispatch({
     type: "COLLAPSE_SET",
     payload: {
       id: id,
       type: type
     }
+  })
+}
+
+export const actionStop = (data) => dispatch => {
+  dispatch({
+    type: "STOP",
+    payload: data
   })
 }

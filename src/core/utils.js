@@ -270,7 +270,7 @@ export const GetDisabledPermits = (permits, type) => {
 };
 
 export const getArray = (props) => {
-  if(!props){
+  if (!props) {
     return []
   }
   const ArrayData = []
@@ -283,7 +283,7 @@ export const getArray = (props) => {
 }
 
 export const getArrays = (props) => {
-  if(!props){
+  if (!props) {
     return []
   }
   const ArrayData = []
@@ -294,3 +294,9 @@ export const getArrays = (props) => {
   })
   return ArrayData;
 }
+
+export const converToJson = data => {
+  const stringify = JSON.stringify(data);
+  const parse = JSON.parse(stringify);
+  return parse.response.data;
+};

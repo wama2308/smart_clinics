@@ -186,13 +186,17 @@ class ModalBedrooms extends Component {
     }
 
     if (this.state.desde === 0 && this.props.option === 4) {
-      desdeError = "¡Ingrese el rango!"
-      desdeInvalid = true
+      if (this.state.checkAll === false) {
+        desdeError = "¡Ingrese el rango!"
+        desdeInvalid = true
+      }
     }
 
     if (this.state.desde === 0 && this.props.option === 4) {
-      hastaError = "¡Ingrese el rango!"
-      hastaInvalid = true
+      if (this.state.checkAll === false) {
+        hastaError = "¡Ingrese el rango!"
+        hastaInvalid = true
+      }
     }
 
     if (divBedroomsSelectError || habitacionesError ||
@@ -252,8 +256,8 @@ class ModalBedrooms extends Component {
   getGroup = fields => {
     if (fields.length !== 0) {
       let arrayGroups = [];
-      fields.map(field => {
-        arrayGroups.push(field.number)
+      fields[0].spaces.map(field => {
+        arrayGroups.push(parseInt(field.number))
       });
       var min = Math.min.apply(null, arrayGroups)
     }
@@ -263,7 +267,7 @@ class ModalBedrooms extends Component {
   getGroupMax = fields => {
     if (fields.length !== 0) {
       let arrayGroups = [];
-      fields.map(field => {
+      fields[0].spaces.map(field => {
         arrayGroups.push(field.number)
       });
       var max = Math.max.apply(null, arrayGroups)
@@ -273,16 +277,27 @@ class ModalBedrooms extends Component {
 
   handleDesde = e => {
     const { name, value } = e.target;
-    const data = this.filterRange(this.props.data)
+    const data = this.filter(this.props.data)
     const min = this.getGroup(data)
     const max = this.getGroupMax(data)
-    this.handleAction()
 
+
+    if (value >= 0 && value <= data[0].rank - 1) {
+      this.setState({
+        desde: parseInt(value),
+        hasta: parseInt(value) + 1
+      })
+    }
+  }
+
+  handleHasta = e => {
+    const { name, value } = e.target;
+    const data = this.filter(this.props.data)
+    const max = this.getGroupMax(data)
     if (this.props.data.length > 0) {
-      if (value >= min && value <= max - 1) {
+      if (value <= data[0].rank) {
         this.setState({
-          desde: parseInt(value),
-          hasta: parseInt(value) + 1
+          hasta: parseInt(value)
         });
       }
     }
@@ -305,18 +320,6 @@ class ModalBedrooms extends Component {
     }
   }
 
-  handleHasta = e => {
-    const { name, value } = e.target;
-    const data = this.filterRange(this.props.data)
-    const max = this.getGroupMax(data)
-    if (this.props.data.length > 0) {
-      if (value > this.state.desde && value <= max && this.state.desde <= max) {
-        this.setState({
-          hasta: parseInt(value)
-        });
-      }
-    }
-  }
 
   handleTypeBedrooms = arrayBedroomsTypeSelect => {
     this.setState({
@@ -390,6 +393,17 @@ class ModalBedrooms extends Component {
     return array
   }
 
+  allId = () => {
+    const data = this.filter(this.props.data)
+    const array = []
+    if (data.length !== 0) {
+      data[0].spaces.map(data => {
+        array.push(data._id)
+      })
+    }
+    return array
+  }
+
   handleSave = (event) => {
     event.preventDefault();
     const isValid = this.validate();
@@ -460,10 +474,10 @@ class ModalBedrooms extends Component {
 
         }
       } else if (this.props.option === 4) {
-        const bedroomsArray = this.filter(this.props.data)
-        const supplies = this.pruebaFunction(this.props.bedrooms.dataAccept)
         if (this.state.arrayConsultingRoomSelect !== null) {
           if (this.state.checkAll === false) {
+            const bedroomsArray = this.filterFull(this.props.data)
+            const supplies = this.pruebaFunction(this.props.bedrooms.dataAccept)
             const array = []
             if (this.props.bedrooms.dataAccept) {
               this.props.bedrooms.dataAccept.map(data => {
@@ -475,12 +489,13 @@ class ModalBedrooms extends Component {
             }
             this.setState({ loading: 'hide' })
             this.props.editBedroomsFunction({
-              bedrooms: bedroomsArray,
+              input: 1,
               status: this.state.arrayBedroomsStatusSelect.value,
               type: this.state.arrayBedroomsTypeSelect.value,
-              type_office: this.state.arrayConsultingRoomSelect.value,
               floor: this.state.piso,
               abbreviation: this.state.abreviatura,
+              bedrooms: bedroomsArray,
+              type_office: this.state.arrayConsultingRoomSelect.value,
               belongings: array
 
             }, () => {
@@ -491,8 +506,8 @@ class ModalBedrooms extends Component {
               })
             })
           } else {
-            ///Aqui entra la validacion si es "Editar Todas" 
-            const bedroomsArrayAll = this.filterAll(this.props.data)
+            const bedroomsArray = this.allId()
+            const supplies = this.pruebaFunction(this.props.bedrooms.dataAccept)
             const array = []
             if (this.props.bedrooms.dataAccept) {
               this.props.bedrooms.dataAccept.map(data => {
@@ -504,12 +519,13 @@ class ModalBedrooms extends Component {
             }
             this.setState({ loading: 'hide' })
             this.props.editBedroomsFunction({
-              bedrooms: bedroomsArrayAll,
+              input: 1,
               status: this.state.arrayBedroomsStatusSelect.value,
               type: this.state.arrayBedroomsTypeSelect.value,
-              type_office: this.state.arrayConsultingRoomSelect.value,
               floor: this.state.piso,
               abbreviation: this.state.abreviatura,
+              bedrooms: bedroomsArray,
+              type_office: this.state.arrayConsultingRoomSelect.value,
               belongings: array
 
             }, () => {
@@ -520,33 +536,65 @@ class ModalBedrooms extends Component {
               })
             })
           }
-        } else {
-          this.setState({ loading: 'hide' })
 
-          const array = []
-          if (this.props.bedrooms.dataAccept) {
-            this.props.bedrooms.dataAccept.map(data => {
-              array.push({
-                ...data,
-                quantity: data.quantity_stock,
+        } else {
+          if (this.state.checkAll === false) {
+            this.setState({ loading: 'hide' })
+            const bedroomsArray = this.filterFull()
+            const array = []
+            if (this.props.bedrooms.dataAccept) {
+              this.props.bedrooms.dataAccept.map(data => {
+                array.push({
+                  ...data,
+                  quantity: data.quantity_stock,
+                })
+              })
+            }
+
+            this.props.editBedroomsFunction({
+              input: 1,
+              bedrooms: bedroomsArray,
+              status: this.state.arrayBedroomsStatusSelect.value,
+              type: this.state.arrayBedroomsTypeSelect.value,
+              floor: this.state.piso,
+              abbreviation: this.state.abreviatura,
+              belongings: array
+            }, () => {
+              this.props.deleteDataSupplies()
+              this.closeModal();
+              this.setState({
+                ...InitalState
+              })
+            })
+          } else {
+            this.setState({ loading: 'hide' })
+            const bedroomsArray = this.allId()
+            const array = []
+            if (this.props.bedrooms.dataAccept) {
+              this.props.bedrooms.dataAccept.map(data => {
+                array.push({
+                  ...data,
+                  quantity: data.quantity_stock,
+                })
+              })
+            }
+
+            this.props.editBedroomsFunction({
+              input: 1,
+              bedrooms: bedroomsArray,
+              status: this.state.arrayBedroomsStatusSelect.value,
+              type: this.state.arrayBedroomsTypeSelect.value,
+              floor: this.state.piso,
+              abbreviation: this.state.abreviatura,
+              belongings: array
+            }, () => {
+              this.props.deleteDataSupplies()
+              this.closeModal();
+              this.setState({
+                ...InitalState
               })
             })
           }
-
-          this.props.editBedroomsFunction({
-            bedrooms: bedroomsArray,
-            status: this.state.arrayBedroomsStatusSelect.value,
-            type: this.state.arrayBedroomsTypeSelect.value,
-            floor: this.state.piso,
-            abbreviation: this.state.abreviatura,
-            belongings: array
-          }, () => {
-            this.props.deleteDataSupplies()
-            this.closeModal();
-            this.setState({
-              ...InitalState
-            })
-          })
         }
       } else if (this.props.option === 3) {
         this.setState({ loading: 'hide' })
@@ -562,27 +610,24 @@ class ModalBedrooms extends Component {
         }
 
         if (this.state.arrayConsultingRoomSelect != null) {
-          if (array.length !== 0) {
-            this.setState({ loading: 'hide' })
-            this.props.editOneBedroomsFunction({
-              _id: this.props.id,
-              type: this.state.arrayBedroomsTypeSelect.value,
-              status: this.state.arrayBedroomsStatusSelect.value,
-              type_office: this.state.arrayConsultingRoomSelect.value,
-              photos: this.state.foto,
-              name: this.state.nombre,
-              abbreviation: this.state.abreviatura,
-              floor: this.state.piso,
-              belongings: array,
-            }, () => {
-              this.closeModal();
-              this.setState({
-                ...InitalState
-              })
+          this.setState({ loading: 'hide' })
+          this.props.editBedroomsFunction({
+            input: 0,
+            _id: this.props.id,
+            type: this.state.arrayBedroomsTypeSelect.value,
+            status: this.state.arrayBedroomsStatusSelect.value,
+            type_office: this.state.arrayConsultingRoomSelect.value,
+            photos: this.state.foto,
+            name: this.state.nombre,
+            abbreviation: this.state.abreviatura,
+            floor: this.state.piso,
+            belongings: array,
+          }, () => {
+            this.closeModal();
+            this.setState({
+              ...InitalState
             })
-          } else {
-            this.props.messageError()
-          }
+          })
         }
       } else {
         if (this.props.bedrooms.bedroomsOne.supplies.length !== 0) {
@@ -663,58 +708,47 @@ class ModalBedrooms extends Component {
 
   filter = (data) => {
     if (data.length != 0) {
-      const bedrooms = this.filterRange(this.props.data)
       const date = data.filter(data => {
-        if (this.state.arrayBedroomsTypeSelect !== null && this.state.arrayBedroomsTypeSelect.label !== "Oficina") {
-          return data.type === this.state.arrayBedroomsTypeSelect.label && data.number >= this.state.desde && data.number <= this.state.hasta
+        if (this.props.category === "Departamento") {
+          return data.category === this.props.category && data.type_name === this.props.type_name
         } else {
-          if (this.state.arrayConsultingRoomSelect !== null) {
-            return data.type === "Oficina" && data.number >= this.state.desde && data.number <= this.state.hasta &&
-              this.state.arrayConsultingRoomSelect.value === data.type_office.value
-          }
+          return data.category === this.props.category
         }
       })
-      const arrayClean = []
-      date.map(datos => {
-        arrayClean.push(datos._id)
-      })
-      return arrayClean
+      return date
 
     } else {
       return []
     }
   }
 
-  filterAll = (data) => {
-    if (data.length != 0) {
-      const date = data.filter(data => {
-        if (this.state.arrayBedroomsTypeSelect !== null && this.state.arrayBedroomsTypeSelect.label !== "Oficina") {
-          return data.type === this.state.arrayBedroomsTypeSelect.label
-        } else {
-          if (this.state.arrayConsultingRoomSelect !== null) {
-            return data.type === "Oficina" && this.state.arrayConsultingRoomSelect.value === data.type_office.value
-          }
-        }
+  filterFull = () => {
+    const data = this.filter(this.props.data)
+    if (data.length !== 0) {
+      const datos = data[0].spaces.filter(data => {
+        return parseInt(data.number) >= this.state.desde && parseInt(data.number) <= this.state.hasta
       })
+      
       const arrayClean = []
-      date.map(datos => {
+      datos.map(datos => {
         arrayClean.push(datos._id)
       })
-      return arrayClean
 
+      return arrayClean
     } else {
       return []
     }
   }
+
 
   filterRange = (data) => {
     if (data.length > 0) {
       const date = data.filter(data => {
-        if (this.state.arrayBedroomsTypeSelect !== null && this.state.arrayBedroomsTypeSelect.label !== "Oficina") {
+        if (this.state.arrayBedroomsTypeSelect !== null && this.state.arrayBedroomsTypeSelect.label !== "Departamento") {
           return data.type === this.state.arrayBedroomsTypeSelect.label
         } else {
           if (this.state.arrayConsultingRoomSelect !== null) {
-            return data.type === "Oficina" && this.state.arrayConsultingRoomSelect.value === data.type_office.value
+            return data.type === "Departamento" && this.state.arrayConsultingRoomSelect.value === data.type_office.value
           }
         }
       })
@@ -815,54 +849,6 @@ class ModalBedrooms extends Component {
 
   render() {
     const disable = this.disabled()
-    console.log("foto", this.state.foto);
-
-
-    const mod =
-    {
-      enabled: [{
-        _id: "123",
-        type_id: '321',
-        category: "category 1",
-        status: true,
-        spaces: [{
-          _id: "52525",
-          floor: "piso1",
-          code: "hfghf1",
-          type: "type",
-          status: "ocupado",
-          name: "name1"
-        }]
-      },
-      {
-        _id: "123",
-        type_id: '321',
-        category: "category 2",
-        status: false,
-        spaces: [{
-          _id: "52525",
-          floor: "piso1",
-          code: "hfghf1",
-          type: "type",
-          status: "ocupado",
-          name: "name1"
-        }]
-      },
-      {
-        _id: "123",
-        type_id: '321',
-        category: "category 3",
-        status: false,
-        spaces: [{
-          _id: "52525",
-          floor: "piso1",
-          code: "hfghf1",
-          type: "type",
-          status: "ocupado",
-          name: "name1"
-        }]
-      }]
-    }
     return (
       <span>
         <Modal
@@ -950,7 +936,7 @@ class ModalBedrooms extends Component {
                     </FormGroup>
 
                     {this.state.arrayBedroomsTypeSelect !== null &&
-                      this.state.arrayBedroomsTypeSelect.label === "Oficina" &&
+                      this.state.arrayBedroomsTypeSelect.label === "Departamento" &&
                       this.state.arrayBedroomsTypeSelect.value === "5d7facaa3beda80db3462513" &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="departamento">Departamento</Label>
@@ -1050,7 +1036,7 @@ class ModalBedrooms extends Component {
                       </div>
                     </FormGroup>
 
-                    {this.state.checkAll === false && this.props.option === 4 &&
+                    {this.props.option === 4 &&
                       <FormGroup className="top form-group col-sm-6">
                         <FormControlLabel
                           control={
@@ -1079,7 +1065,6 @@ class ModalBedrooms extends Component {
                           value={this.state.desde}
                           type="number"
                           placeholder="Nro Habitaciones"
-                          min={0}
                         />
                         <div className="errorSelect">
                           {this.state.desdeError}
@@ -1101,7 +1086,7 @@ class ModalBedrooms extends Component {
                           type="number"
                           placeholder="Nro Habitaciones"
                           min={0}
-                          max={mod.enabled.length}
+                          max={this.props.data}
                         />
                         <div className="errorSelect">
                           {this.state.hastaError}
@@ -1181,8 +1166,8 @@ class ModalBedrooms extends Component {
                     <Nav tabs>
                       <NavItem>
                         <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
-                          Espacios Activos
-                              </NavLink>
+                          Agregar Bienes
+                        </NavLink>
                       </NavItem>
                       {/* <NavItem>
                           <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >

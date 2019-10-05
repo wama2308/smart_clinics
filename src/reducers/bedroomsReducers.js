@@ -8,7 +8,7 @@ const loadbedroons = (state, payload) => {
   estado.bedroomsDisabled = payload.disabled
   estado.dataAccept = []
   estado.propsAction = 0
-
+  estado.action = 1
   return Map(estado);
 }
 
@@ -145,13 +145,31 @@ const setCollapse = (state, payload) => {
 
   estado.bedroomsEnabled.find(list => {
     if (list._id === payload.id && list.type_name === payload.type) {
-     if(list.status === false){
-      list.status = true
-     }else{
-      list.status = false
-     }
+      if (list.status === false) {
+        list.status = true
+      } else {
+        list.status = false
+      }
     }
   })
+  return Map(estado);
+}
+
+const setStop = (state, payload) => {
+  let estado = state.toJS();
+
+  if (estado.action === 1) {
+    estado.action = payload
+  } else {
+    estado.action = payload
+  }
+  return Map(estado);
+}
+
+const loadModalTable = (state, payload) => {
+  let estado = state.toJS();
+
+  estado.loadModal = payload.loadOneTurnos
   return Map(estado);
 }
 
@@ -200,6 +218,13 @@ const bedroomsReducer = (state = Map(), action) => {
       break;
     case "COLLAPSE_SET":
       return setCollapse(state, action.payload)
+      break
+
+    case "STOP":
+      return setStop(state, action.payload)
+      break
+    case "LOAD_MODAL_TABLE":
+      return loadModalTable(state, action.payload)
       break
 
     default:
