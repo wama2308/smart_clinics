@@ -85,7 +85,8 @@ class ListBedrooms extends Component {
         disabled: false,
         showHide: 'show',
         category: category,
-        type_name: type
+        type_name: type,
+        id: id
       })
     } else if (option === 5) {
       this.props.queryBedroomsBelongingsFunction({
@@ -98,7 +99,7 @@ class ListBedrooms extends Component {
         option: option,
         modalHeader: `Mobiliario General de ${code}`
       })
-    }else if(option === 6){
+    } else if (option === 6) {
       this.props.queryBedroomsBelongingsFunction({
         input: value,
         _id: id,
@@ -167,25 +168,59 @@ class ListBedrooms extends Component {
 
   render() {
     const { rowsPerPage, page } = this.state;
-    // const arrayList = getArrays(this.props.bedrooms);
+    const arrayList = getArrays(this.props.bedrooms);
 
-    // const result = this.props.search
-    //   ? arrayList.filter(list => {
-    //     if (this.state.modal === false) {
-    //       return (
-    //         list.number.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
-    //         list.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
-    //         list.status.toLowerCase().includes(this.props.search.toLowerCase()) ||
-    //         list.floor.toLowerCase().includes(this.props.search.toLowerCase())
-    //       );
-    //     } else {
-    //       return arrayList
-    //     }
-    //   })
-    //   : arrayList;
+    const result = this.props.search
+      ? arrayList.filter(list => {
+        if (this.state.modal === false) {
+          // return (
+          //   list.number.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
+          //   list.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          //   list.status.toLowerCase().includes(this.props.search.toLowerCase()) ||
+          //   list.floor.toLowerCase().includes(this.props.search.toLowerCase())
+          // );
+          return list.spaces.some(space => {
+            return (
+              space.floor.toLowerCase().includes(this.props.search.toLowerCase()) ||
+              space.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+              space.code.toLowerCase().includes(this.props.search.toLowerCase()) ||
+              space.number.toLowerCase().includes(this.props.search.toLowerCase()) ||
+              space.status.toLowerCase().includes(this.props.search.toLowerCase())
+            )
+          })
+        } else {
+          return arrayList
+        }
+      })
+      : arrayList;
+
+    const prueba = this.props.search
+      ? result.map(list => {
+        if (this.state.modal === false) {
+
+          return {
+            ...list,
+            spaces: list.spaces.filter(space => {
+              return (
+                space.floor.toLowerCase().includes(this.props.search.toLowerCase()) ||
+                space.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
+                space.code.toLowerCase().includes(this.props.search.toLowerCase()) ||
+                space.number.toLowerCase().includes(this.props.search.toLowerCase()) ||
+                space.status.toLowerCase().includes(this.props.search.toLowerCase())
+              )
+            })
+          }
+        } else {
+          return result
+        }
+      })
+      : result;
 
     const { expanded } = this.state;
     const { classes } = this.props;
+
+    console.log(prueba);
+
     return (
       <div>
         {
@@ -225,11 +260,11 @@ class ListBedrooms extends Component {
             </Button>
 
           </div>
-          {/* {this.state.modal === false &&
+          {this.state.modal === false &&
             <div className="containerSearch" >
               <Search value={arrayList} />
             </div>
-          } */}
+          }
         </div>
 
         <div className="flex">
@@ -248,7 +283,7 @@ class ListBedrooms extends Component {
                 </tr>
               </thead> */}
               <tbody>
-                {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
+                {this.props.bedrooms ? prueba.map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
@@ -274,7 +309,7 @@ class ListBedrooms extends Component {
                                 className="iconButtons"
                                 onClick={
                                   (event) => {
-                                    this.openModal(4, null, list.category, list.type_name, event);
+                                    this.openModal(4, list._id, list.category, list.type_name, event);
                                   }
                                 }
                               >
@@ -376,7 +411,7 @@ class ListBedrooms extends Component {
                                               className="iconButtons"
                                               onClick={
                                                 (event) => {
-                                                  this.openModal(6, spaces._id, list.type_office, list.type_name, event, 0,spaces.name);
+                                                  this.openModal(6, spaces._id, list.type_office, list.type_name, event, 0, spaces.name);
                                                 }
                                               }
                                             >
