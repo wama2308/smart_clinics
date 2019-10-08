@@ -173,6 +173,13 @@ const loadModalTable = (state, payload) => {
   return Map(estado);
 }
 
+const setTypeAction = (state, payload) =>{
+  let estado = state.toJS();
+
+  estado.setId = payload.data
+  return Map(estado);
+}
+
 const bedroomsReducer = (state = Map(), action) => {
 
   switch (action.type) {
@@ -227,6 +234,8 @@ const bedroomsReducer = (state = Map(), action) => {
       return loadModalTable(state, action.payload)
       break
 
+      case "SET_TYPE_ACTION":
+        return setTypeAction(state, action.payload)
     default:
       return state
   }

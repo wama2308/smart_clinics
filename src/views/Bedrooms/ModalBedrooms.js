@@ -60,12 +60,37 @@ class ModalBedrooms extends Component {
     if (this.props.option !== 1 && this.props.option !== 4) {
       this.setState({ loading: 'hide' })
     } else if (this.props.option === 4) {
-      const datos = this.filter(this.props.data)
-      const min = this.getGroup(datos)
+      const data = this.filter(this.props.data)
+      const min = this.getGroup(data)
+      const max = this.getGroupMax(data)
+
       this.setState({
-        loading: 'hide',
-        desde: min
+        desde: min,
+        hasta: min + 1
       })
+      if (this.props.type_name === "") {
+        const data = this.props.type_bedrooms.find(data => {
+          return data.value === this.props.id
+        })
+        this.setState({
+          loading: 'show',
+          arrayBedroomsTypeSelect: data
+        })
+      } else {
+        const typeSelect = this.props.type_bedrooms.find(data => {
+          return data.value === this.props.id
+        })
+
+        const data = this.props.type_consulting_room.find(data => {
+          return data.value === this.props.type_name
+        })
+
+        this.setState({
+          loading: 'show',
+          arrayBedroomsTypeSelect: typeSelect,
+          arrayConsultingRoomSelect: data
+        })
+      }
     }
   }
 
@@ -188,10 +213,8 @@ class ModalBedrooms extends Component {
     // }
 
     if (this.state.piso === "") {
-      if (this.props.option !== 4) {
-        pisoError = "¡Ingrese el piso!"
-        pisoInvalid = true;
-      }
+      pisoError = "¡Ingrese el piso!"
+      pisoInvalid = true;
     }
 
     if (this.state.desde === 0 && this.props.option === 4) {
@@ -293,10 +316,11 @@ class ModalBedrooms extends Component {
     console.log("min", min);
 
 
-    if (value >= 0 && value <= data[0].rank - 1) {
+    if (parseInt(value) >= min && value <= data[0].rank - 1) {
       this.setState({
-        desde: min,
+        desde: parseInt(value),
         hasta: parseInt(value) + 1
+
       })
     }
   }
@@ -305,8 +329,9 @@ class ModalBedrooms extends Component {
     const { name, value } = e.target;
     const data = this.filter(this.props.data)
     const max = this.getGroupMax(data)
+    const min = this.getGroup(data)
     if (this.props.data.length > 0) {
-      if (value <= data[0].rank) {
+      if (parseInt(value) > min && parseInt(value) <= data[0].rank) {
         this.setState({
           hasta: parseInt(value)
         });
@@ -330,7 +355,6 @@ class ModalBedrooms extends Component {
       });
     }
   }
-
 
   handleTypeBedrooms = arrayBedroomsTypeSelect => {
     this.setState({
@@ -751,7 +775,6 @@ class ModalBedrooms extends Component {
     }
   }
 
-
   filterRange = (data) => {
     if (data.length > 0) {
       const date = data.filter(data => {
@@ -771,12 +794,13 @@ class ModalBedrooms extends Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log(props.option);
 
     if (props.option === 4) {
+
       this.setState({
         supplies: props.bedrooms.dataAccept,
-        loading: "show"
+        // arrayBedroomsTypeSelect: data
+        // loading: "show"
       })
     } else if (props.option === 3) {
       if (props.bedrooms.propsAction === 0) {
@@ -862,12 +886,6 @@ class ModalBedrooms extends Component {
 
   render() {
     const disable = this.disabled()
-
-    const data = this.props.type_bedrooms.find(datos => {
-      return datos.value === this.props.id
-    })
-
-
     return (
       <span>
         <Modal
@@ -979,7 +997,7 @@ class ModalBedrooms extends Component {
                         <div className={this.state.divBedroomsSelect}>
                           <Select
                             isSearchable="true"
-                            isDisabled={this.props.disabled}
+                            isDisabled={this.props.option !== 4 ? this.props.disabled : true}
                             name="departamento"
                             value={this.state.arrayConsultingRoomSelect}
                             onChange={this.handleConsulting}
@@ -1114,24 +1132,23 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option !== 4 &&
-                      <FormGroup className="top form-group col-sm-6">
-                        <Label for="piso">Piso</Label>
-                        <Input
-                          disabled={this.props.disabled}
-                          invalid={this.state.pisoInvalid}
-                          name="piso"
-                          id="piso"
-                          onChange={this.handlePiso}
-                          value={this.state.piso}
-                          type="text"
-                          placeholder="Piso"
-                          min={0}
-                        />
-                        <div className="errorSelect">
-                          {this.state.pisoError}
-                        </div>
-                      </FormGroup>}
+                    <FormGroup className="top form-group col-sm-6">
+                      <Label for="piso">Piso</Label>
+                      <Input
+                        disabled={this.props.disabled}
+                        invalid={this.state.pisoInvalid}
+                        name="piso"
+                        id="piso"
+                        onChange={this.handlePiso}
+                        value={this.state.piso}
+                        type="text"
+                        placeholder="Piso"
+                        min={0}
+                      />
+                      <div className="errorSelect">
+                        {this.state.pisoError}
+                      </div>
+                    </FormGroup>
 
                     {this.state.check === false && this.props.option !== 4 &&
                       <FormGroup className="top form-group col-sm-6">
@@ -1247,7 +1264,7 @@ class ModalBedrooms extends Component {
 
 const mapStateToProps = state => ({
   bedrooms: state.bedrooms.toJS(),
-  type_consulting_room: state.global.dataGeneral.dataGeneral.type_consulting_room,
+  //type_bedrooms: state.global.dataGeneral.dataGeneral.type_bedrooms,
 });
 
 const mapDispatchToProps = dispatch => ({

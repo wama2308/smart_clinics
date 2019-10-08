@@ -34,7 +34,7 @@ class ListBedrooms extends Component {
       page: 0,
       rowsPerPage: 10,
       activeTab: "1",
-      expanded: "",
+      expanded: null,
       category: '',
       type_name: "",
       modalTable: false
@@ -77,6 +77,7 @@ class ListBedrooms extends Component {
         id: id
       })
     } else if (option === 4) {
+      this.props.setType(id)
       this.setState({
         modal: true,
         option: option,
@@ -125,7 +126,6 @@ class ListBedrooms extends Component {
     });
   };
 
-
   valorCloseModal = (valor) => {
     this.setState({
       modal: valor,
@@ -166,28 +166,24 @@ class ListBedrooms extends Component {
     });
   };
 
-  render() {
-    const { rowsPerPage, page } = this.state;
+  filter = () => {
     const arrayList = getArrays(this.props.bedrooms);
-
     const result = this.props.search
       ? arrayList.filter(list => {
+
         if (this.state.modal === false) {
-          // return (
-          //   list.number.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
-          //   list.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
-          //   list.status.toLowerCase().includes(this.props.search.toLowerCase()) ||
-          //   list.floor.toLowerCase().includes(this.props.search.toLowerCase())
-          // );
-          return list.spaces.some(space => {
-            return (
-              space.floor.toLowerCase().includes(this.props.search.toLowerCase()) ||
-              space.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
-              space.code.toLowerCase().includes(this.props.search.toLowerCase()) ||
-              space.number.toLowerCase().includes(this.props.search.toLowerCase()) ||
-              space.status.toLowerCase().includes(this.props.search.toLowerCase())
-            )
-          })
+          let eq = this.props.search.toLowerCase(); // variable de comparacion
+          return (
+            list.category.toLowerCase().includes(eq) ||
+            list.spaces.some(space => {
+              return (
+                space.code.toLowerCase().includes(eq) ||
+                space.floor.toLowerCase().includes(eq) ||
+                space.name.toLowerCase().includes(eq) ||
+                space.status.toLowerCase().includes(eq)
+              )
+            })
+          )
         } else {
           return arrayList
         }
@@ -197,16 +193,16 @@ class ListBedrooms extends Component {
     const prueba = this.props.search
       ? result.map(list => {
         if (this.state.modal === false) {
-
+          let eq = this.props.search.toLowerCase();
           return {
             ...list,
             spaces: list.spaces.filter(space => {
               return (
-                space.floor.toLowerCase().includes(this.props.search.toLowerCase()) ||
-                space.name.toLowerCase().includes(this.props.search.toLowerCase()) ||
-                space.code.toLowerCase().includes(this.props.search.toLowerCase()) ||
-                space.number.toLowerCase().includes(this.props.search.toLowerCase()) ||
-                space.status.toLowerCase().includes(this.props.search.toLowerCase())
+                space.floor.toLowerCase().includes(eq) ||
+                space.name.toLowerCase().includes(eq) ||
+                space.code.toLowerCase().includes(eq) ||
+                space.number.toLowerCase().includes(eq) ||
+                space.status.toLowerCase().includes(eq)
               )
             })
           }
@@ -216,10 +212,29 @@ class ListBedrooms extends Component {
       })
       : result;
 
-    const { expanded } = this.state;
+    this.collapse()
+    return prueba
+
+  }
+
+  collapse = () => {
+    if (this.props.search) {
+      return true
+    } else {
+      return null
+    }
+  }
+
+  render() {
+    const { rowsPerPage, page } = this.state;
+    const arrayList = getArrays(this.props.bedrooms);
+    const prueba = this.filter()
+    const expanded = this.collapse();
+
+
     const { classes } = this.props;
 
-    console.log(prueba);
+    console.log(expanded);
 
     return (
       <div>
@@ -288,10 +303,8 @@ class ListBedrooms extends Component {
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
                         <ExpansionPanel
-                          square
-                          expanded={expanded === `panel${key}`}
                           style={{ "margin": "-11.5px", }}
-                          onChange={this.handleChange(`panel${key}`)}
+                        // onChange={this.handleChange(`panel${key}`)}
                         >
                           <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
                             {/* <Typography className={classes.heading}>{`1 - ${list.rank}`}</Typography> */}
@@ -309,7 +322,7 @@ class ListBedrooms extends Component {
                                 className="iconButtons"
                                 onClick={
                                   (event) => {
-                                    this.openModal(4, list._id, list.category, list.type_name, event);
+                                    this.openModal(4, list._id, list.category, list.type_office, event, list.type_name);
                                   }
                                 }
                               >

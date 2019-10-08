@@ -318,3 +318,10 @@ export const actionStop = (data) => dispatch => {
     payload: data
   })
 }
+
+export const setType = (data) => dispatch => {
+  dispatch({
+    type: "SET_TYPE_ACTION",
+    payload: data
+  })
+}

@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { connect } from "react-redux";
-import { loadBedroomsFunction, queryOneBedroomsFunction, disabledBedroomsFuntion, enabledBedrooms, enabledBedroomsFunction, collapseFunction, actionStop, queryBedroomsBelongingsFunction } from '../actions/bedroomsActions';
+import { loadBedroomsFunction, queryOneBedroomsFunction, disabledBedroomsFuntion, enabledBedrooms, enabledBedroomsFunction, collapseFunction, actionStop, queryBedroomsBelongingsFunction, setType } from '../actions/bedroomsActions';
 import { openConfirmDialog, search } from '../actions/aplicantionActions';
 import ListDisabledBedrooms from '../views/Bedrooms/ListDisabledBedrooms';
 
@@ -89,6 +89,7 @@ class BedroomsContainer extends Component {
                           action={this.props.bedrooms.action}
                           actionStop={this.props.actionStop}
                           queryBedroomsBelongingsFunction={this.props.queryBedroomsBelongingsFunction}
+                          setType={this.props.setType}
                         />
                       </TabPane>
                     </TabContent>
@@ -132,7 +133,8 @@ const mapDispatchToProps = dispatch => ({
   search: (set) => dispatch(search(set)),
   collapseFunction: (id, type) => dispatch(collapseFunction(id, type)),
   actionStop: (data) => dispatch(actionStop(data)),
-  queryBedroomsBelongingsFunction: (data) => dispatch(queryBedroomsBelongingsFunction(data))
+  queryBedroomsBelongingsFunction: (data) => dispatch(queryBedroomsBelongingsFunction(data)),
+  setType: (data) => dispatch(setType(data))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BedroomsContainer);
