@@ -128,9 +128,9 @@ const mapDispatchToProps = dispatch => ({
   confirm: (message, callback) => dispatch(openConfirmDialog(message, callback)),
   search: (set) => dispatch(search(set)),
   queryAllBelongingFunction: () => dispatch(queryAllBelongingFunction()),
-  queryOneBelongingFunction: (id) => dispatch(queryOneBelongingFunction(id)),
-  enabledBelongingFunction: (id) => dispatch(enabledBelongingFunction(id)),
-  disabledBelongingFunction: (id) => dispatch(disabledBelongingFunction(id))
+  queryOneBelongingFunction: (id, specifict_id) => dispatch(queryOneBelongingFunction(id, specifict_id)),
+  enabledBelongingFunction: (data) => dispatch(enabledBelongingFunction(data)),
+  disabledBelongingFunction: (data) => dispatch(disabledBelongingFunction(data))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoodsContainer);

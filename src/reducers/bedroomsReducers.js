@@ -9,6 +9,7 @@ const loadbedroons = (state, payload) => {
   estado.dataAccept = []
   estado.propsAction = 0
   estado.action = 1
+  estado.masivo = false
   return Map(estado);
 }
 
@@ -32,7 +33,6 @@ const loadOneBedroons = (state, payload) => {
 const searchSupplies = (state, payload) => {
   let estado = state.toJS();
   estado.searchSupplies = payload.data
-
   return Map(estado);
 }
 
@@ -52,7 +52,7 @@ const setSuppliesData = (state, payload) => {
 
   if (payload.option === 1) {
     estado.dataAccept.map(data => {
-      if (payload.data >= 0 && payload.data <= data.quantity) {
+      if (payload.data >= 0 && payload.data <= data.quantity_stock) {
         if (data._id === payload.id) {
           data.cantidad = parseInt(payload.data)
         }
@@ -64,17 +64,17 @@ const setSuppliesData = (state, payload) => {
     estado.bedroomsOne.floor = payload.obj.piso
 
     estado.bedroomsOne.supplies.map(data => {
-      if (payload.data >= 0 && payload.data <= data.quantity) {
+      if (payload.data >= 0 && payload.data <= data.quantity_stock) {
         if (data._id === payload.id) {
-          data.quantity_stock = parseInt(payload.data)
+          data.cantidad = parseInt(payload.data)
         }
       }
     })
   } else if (payload.option === 4) {
     estado.dataAccept.map(data => {
-      if (payload.data >= 0 && payload.data <= data.quantity) {
+      if (payload.data >= 0 && payload.data <= data.quantity_stock) {
         if (data._id === payload.id) {
-          data.quantity_stock = parseInt(payload.data)
+          data.cantidad = parseInt(payload.data)
         }
       }
     })
@@ -118,7 +118,7 @@ const queryBelongingFunction = (state, payload) => {
   if (payload.option === 4) {
     estado.dataAccept.push({
       ...payload,
-      quantity_stock: 0
+      cantidad: 0
     })
   } else if (payload.option === 1) {
     estado.dataAccept.push({
@@ -128,7 +128,7 @@ const queryBelongingFunction = (state, payload) => {
   } else if (payload.option === 3) {
     estado.bedroomsOne.supplies.push({
       ...payload,
-      quantity_stock: 0
+      cantidad: 0
     })
   }
   return Map(estado);
@@ -173,10 +173,22 @@ const loadModalTable = (state, payload) => {
   return Map(estado);
 }
 
-const setTypeAction = (state, payload) =>{
+const setTypeAction = (state, payload) => {
   let estado = state.toJS();
 
   estado.setId = payload.data
+  return Map(estado);
+}
+
+const setSearchOptions = (state, payload) => {
+  let estado = state.toJS();
+  estado.searchSupplies = payload
+  return Map(estado);
+}
+
+const setStateSupplies = (state, payload) => {
+  let estado = state.toJS();
+  estado.dataAccept = payload
   return Map(estado);
 }
 
@@ -234,8 +246,17 @@ const bedroomsReducer = (state = Map(), action) => {
       return loadModalTable(state, action.payload)
       break
 
-      case "SET_TYPE_ACTION":
-        return setTypeAction(state, action.payload)
+    case "SET_TYPE_ACTION":
+      return setTypeAction(state, action.payload)
+      break
+
+    case "SET_OPTION_SEARCH":
+      return setSearchOptions(state, action.payload)
+      break
+
+    case "SET_SUPPLIES":
+      return setStateSupplies(state, action.payload)
+
     default:
       return state
   }

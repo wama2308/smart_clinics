@@ -2,6 +2,7 @@ import axios from "axios";
 import { openSnackbars } from "./aplicantionActions";
 import { url, getDataToken } from "../core/connection";
 import decode from "jwt-decode";
+import { converToJson } from "../core/utils";
 
 const queryAllBelonging = `${url}/api/queryAllBelonging`;
 const queryOneBelonging = `${url}/api/queryOneBelonging`;
@@ -23,14 +24,15 @@ export const queryAllBelongingFunction = () => dispatch => {
     })
 }
 
-export const queryOneBelongingFunction = (id) => dispatch => {
+export const queryOneBelongingFunction = (id, specifict_id) => dispatch => {
   getDataToken()
     .then(datos => {
       axios({
         method: "post",
         url: queryOneBelonging,
         data: {
-          _id: id
+          _id: id,
+          specific_id: specifict_id
         },
         headers: datos.headers
       })
@@ -56,7 +58,8 @@ export const disabledBelongingFunction = (data) => dispatch => {
         method: "post",
         url: disabledBelonging,
         data: {
-          _id: data
+          _id: data.id,
+          specific_id: data.specifict_id
         },
         headers: datos.headers
       })
@@ -64,7 +67,8 @@ export const disabledBelongingFunction = (data) => dispatch => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error borrando el Espacio"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
 }
@@ -83,7 +87,8 @@ export const createBelongingFunction = (data, callback) => dispatch => {
           callback()
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error al crear Mobiliario"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result}`));
         });
     })
 }
@@ -102,7 +107,8 @@ export const editBelongingFunction = (data, callback) => dispatch => {
           callback()
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Erro al editar Mobiliario"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
 }
@@ -113,16 +119,15 @@ export const enabledBelongingFunction = (data) => dispatch => {
       axios({
         method: "post",
         url: enabledBelonging,
-        data: {
-          _id: data
-        },
+        data: data,
         headers: datos.headers
       })
         .then(() => {
           dispatch(openSnackbars("success", "Operacion Exitosa"));
         })
         .catch(error => {
-          dispatch(openSnackbars("error", "Error habilitando el Espacio"));
+          const result = converToJson(error);
+          dispatch(openSnackbars("error", `${result.message}`));
         });
     })
 }

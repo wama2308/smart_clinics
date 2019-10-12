@@ -207,19 +207,21 @@ class ListBedrooms extends Component {
             })
           }
         } else {
-          return result
+          return arrayList
         }
       })
-      : result;
+      : arrayList;
 
-    this.collapse()
-    return prueba
-
+    if (this.state.modal === false) {
+      return prueba
+    } else {
+      return arrayList
+    }
   }
 
   collapse = () => {
-    if (this.props.search) {
-      return true
+    if (!!this.props.search) {
+      return !!this.props.search
     } else {
       return null
     }
@@ -229,12 +231,8 @@ class ListBedrooms extends Component {
     const { rowsPerPage, page } = this.state;
     const arrayList = getArrays(this.props.bedrooms);
     const prueba = this.filter()
-    const expanded = this.collapse();
-
-
+    const expan = this.collapse();
     const { classes } = this.props;
-
-    console.log(expanded);
 
     return (
       <div>
@@ -255,6 +253,8 @@ class ListBedrooms extends Component {
             type_consulting_room={this.props.type_consulting_room}
             category={this.state.category}
             type_name={this.state.type_name}
+            search={this.props.setSearch}
+            searchData={this.props.search}
           />
         }
         {
@@ -298,13 +298,14 @@ class ListBedrooms extends Component {
                 </tr>
               </thead> */}
               <tbody>
-                {this.props.bedrooms ? prueba.map((list, key) => {
+                {prueba.length !== 0 ? prueba.map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
                         <ExpansionPanel
                           style={{ "margin": "-11.5px", }}
-                        // onChange={this.handleChange(`panel${key}`)}
+                          // onChange={this.handleChange(`panel${key}`)}
+                          expanded={expan}
                         >
                           <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
                             {/* <Typography className={classes.heading}>{`1 - ${list.rank}`}</Typography> */}
