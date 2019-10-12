@@ -8,7 +8,7 @@ const loadBedrooms = `${url}/api/queryBedrooms`;
 const queryOneBedrooms = `${url}/api/queryOneBedrooms`;
 const createBedrooms = `${url}/api/createBedrooms`
 const disabledBedrooms = `${url}/api/disabledBedrooms`
-const searchBeloging = `${url}/api/searchBeloging`
+const searchBeloging = `${url}/api/searchBelonging`
 const editOneBedrooms = `${url}/api/editOneBedrooms`
 const enabledBedrooms = `${url}/api/enabledBedrooms`
 const editBedrooms = `${url}/api/editBedrooms`
@@ -133,7 +133,7 @@ export const editBedroomsFunction = (data, callback) => dispatch => {
     })
 }
 
-export const queryOneBelongingFunction = (data, option) => dispatch => {
+export const queryOneBelongingFunction = (data, option, callback) => dispatch => {
   getDataToken()
     .then(datos => {
       axios({
@@ -153,6 +153,7 @@ export const queryOneBelongingFunction = (data, option) => dispatch => {
             option: option
           }
         })
+        callback()
       })
     })
 }
@@ -205,26 +206,26 @@ export const queryBedroomsBelongingsFunction = (data) => dispatch => {
 /*-------------------------API-------------------------------------*/
 
 
-export const searchBelogingFunction = (data, obj) => dispatch => {
+export const searchBelogingFunction = (data, status) => dispatch => {
   dispatch({
     type: "SEARCH_DATA",
     payload: data
   });
-
   getDataToken()
     .then(datos => {
       axios({
         method: "post",
         url: searchBeloging,
         data: {
-          value: data
+          value: data,
+          input: status
         },
         headers: datos.headers
+
       }).then(res => {
         dispatch({
           type: "SEARCH_SUPPLIES",
           payload: {
-            obj: obj,
             data: res.data
           }
         })
@@ -316,5 +317,26 @@ export const actionStop = (data) => dispatch => {
   dispatch({
     type: "STOP",
     payload: data
+  })
+}
+
+export const setType = (data) => dispatch => {
+  dispatch({
+    type: "SET_TYPE_ACTION",
+    payload: data
+  })
+}
+
+export const setOptionSearch = () => dispatch => {
+  dispatch({
+    type: "SET_OPTION_SEARCH",
+    payload: []
+  })
+}
+
+export const setSupplies = (data) => dispatch => {
+  dispatch({
+    type: "SET_SUPPLIES",
+    payload: []
   })
 }

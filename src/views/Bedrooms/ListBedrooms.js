@@ -34,7 +34,7 @@ class ListBedrooms extends Component {
       page: 0,
       rowsPerPage: 10,
       activeTab: "1",
-      expanded: "",
+      expanded: null,
       category: '',
       type_name: "",
       modalTable: false
@@ -77,6 +77,7 @@ class ListBedrooms extends Component {
         id: id
       })
     } else if (option === 4) {
+      this.props.setType(id)
       this.setState({
         modal: true,
         option: option,
@@ -85,7 +86,8 @@ class ListBedrooms extends Component {
         disabled: false,
         showHide: 'show',
         category: category,
-        type_name: type
+        type_name: type,
+        id: id
       })
     } else if (option === 5) {
       this.props.queryBedroomsBelongingsFunction({
@@ -98,7 +100,7 @@ class ListBedrooms extends Component {
         option: option,
         modalHeader: `Mobiliario General de ${code}`
       })
-    }else if(option === 6){
+    } else if (option === 6) {
       this.props.queryBedroomsBelongingsFunction({
         input: value,
         _id: id,
@@ -123,7 +125,6 @@ class ListBedrooms extends Component {
       }
     });
   };
-
 
   valorCloseModal = (valor) => {
     this.setState({
@@ -165,27 +166,74 @@ class ListBedrooms extends Component {
     });
   };
 
+  filter = () => {
+    const arrayList = getArrays(this.props.bedrooms);
+    const result = this.props.search
+      ? arrayList.filter(list => {
+
+        if (this.state.modal === false) {
+          let eq = this.props.search.toLowerCase(); // variable de comparacion
+          return (
+            list.category.toLowerCase().includes(eq) ||
+            list.spaces.some(space => {
+              return (
+                space.code.toLowerCase().includes(eq) ||
+                space.floor.toLowerCase().includes(eq) ||
+                space.name.toLowerCase().includes(eq) ||
+                space.status.toLowerCase().includes(eq)
+              )
+            })
+          )
+        } else {
+          return arrayList
+        }
+      })
+      : arrayList;
+
+    const prueba = this.props.search
+      ? result.map(list => {
+        if (this.state.modal === false) {
+          let eq = this.props.search.toLowerCase();
+          return {
+            ...list,
+            spaces: list.spaces.filter(space => {
+              return (
+                space.floor.toLowerCase().includes(eq) ||
+                space.name.toLowerCase().includes(eq) ||
+                space.code.toLowerCase().includes(eq) ||
+                space.number.toLowerCase().includes(eq) ||
+                space.status.toLowerCase().includes(eq)
+              )
+            })
+          }
+        } else {
+          return arrayList
+        }
+      })
+      : arrayList;
+
+    if (this.state.modal === false) {
+      return prueba
+    } else {
+      return arrayList
+    }
+  }
+
+  collapse = () => {
+    if (!!this.props.search) {
+      return !!this.props.search
+    } else {
+      return null
+    }
+  }
+
   render() {
     const { rowsPerPage, page } = this.state;
-    // const arrayList = getArrays(this.props.bedrooms);
-
-    // const result = this.props.search
-    //   ? arrayList.filter(list => {
-    //     if (this.state.modal === false) {
-    //       return (
-    //         list.number.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
-    //         list.type.toLowerCase().includes(this.props.search.toLowerCase()) ||
-    //         list.status.toLowerCase().includes(this.props.search.toLowerCase()) ||
-    //         list.floor.toLowerCase().includes(this.props.search.toLowerCase())
-    //       );
-    //     } else {
-    //       return arrayList
-    //     }
-    //   })
-    //   : arrayList;
-
-    const { expanded } = this.state;
+    const arrayList = getArrays(this.props.bedrooms);
+    const prueba = this.filter()
+    const expan = this.collapse();
     const { classes } = this.props;
+
     return (
       <div>
         {
@@ -205,6 +253,8 @@ class ListBedrooms extends Component {
             type_consulting_room={this.props.type_consulting_room}
             category={this.state.category}
             type_name={this.state.type_name}
+            search={this.props.setSearch}
+            searchData={this.props.search}
           />
         }
         {
@@ -225,11 +275,11 @@ class ListBedrooms extends Component {
             </Button>
 
           </div>
-          {/* {this.state.modal === false &&
+          {this.state.modal === false &&
             <div className="containerSearch" >
               <Search value={arrayList} />
             </div>
-          } */}
+          }
         </div>
 
         <div className="flex">
@@ -248,15 +298,14 @@ class ListBedrooms extends Component {
                 </tr>
               </thead> */}
               <tbody>
-                {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
+                {prueba.length !== 0 ? prueba.map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
                         <ExpansionPanel
-                          square
-                          expanded={expanded === `panel${key}`}
                           style={{ "margin": "-11.5px", }}
-                          onChange={this.handleChange(`panel${key}`)}
+                          // onChange={this.handleChange(`panel${key}`)}
+                          expanded={expan}
                         >
                           <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
                             {/* <Typography className={classes.heading}>{`1 - ${list.rank}`}</Typography> */}
@@ -274,7 +323,7 @@ class ListBedrooms extends Component {
                                 className="iconButtons"
                                 onClick={
                                   (event) => {
-                                    this.openModal(4, null, list.category, list.type_name, event);
+                                    this.openModal(4, list._id, list.category, list.type_office, event, list.type_name);
                                   }
                                 }
                               >
@@ -376,7 +425,7 @@ class ListBedrooms extends Component {
                                               className="iconButtons"
                                               onClick={
                                                 (event) => {
-                                                  this.openModal(6, spaces._id, list.type_office, list.type_name, event, 0,spaces.name);
+                                                  this.openModal(6, spaces._id, list.type_office, list.type_name, event, 0, spaces.name);
                                                 }
                                               }
                                             >

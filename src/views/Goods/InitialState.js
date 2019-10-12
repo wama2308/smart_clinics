@@ -1,4 +1,4 @@
- export const InitialState = {
+export const InitialState = {
   foto: [],
 
   divProviderSelect: "",
@@ -10,7 +10,7 @@
   code: '',
   marca: '',
   modelo: '',
-  cantidad: 0,
+  cantidad: 2,
   tiempo: 0,
 
   nombreError: "",
@@ -33,5 +33,10 @@
 
   tiempoError: '',
   tiempoInvalid: false,
+
+  serial: "",
+  serialError: '',
+  serialInvalid: false,
+
   loading: "show"
 }

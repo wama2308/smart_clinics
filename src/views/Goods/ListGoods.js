@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'reactstrap';
-import { IconButton, Collapse } from '@material-ui/core';
-import { Visibility } from '@material-ui/icons';
+import { IconButton, Collapse, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from '@material-ui/core';
+import { Visibility, ExpandMore } from '@material-ui/icons';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
 import Pagination from '../../components/Pagination';
 import { getArrays } from '../../core/utils';
 import Search from "../../components/Select";
 import ModalGoods from './ModalGoods';
-
+import '../../components/style.css'
+import classnames from "classnames";
+import { withStyles } from '@material-ui/core/styles';
 
 class ListGoods extends Component {
   constructor(props) {
@@ -29,12 +31,14 @@ class ListGoods extends Component {
       id_transmitter: '',
       visitor: null,
       page: 0,
-      rowsPerPage: 10
+      rowsPerPage: 10,
+      specifict_id: "",
+      name: "",
+      code: ""
     }
   }
 
-  openModal = (option, id) => {
-
+  openModal = (option, id, specifict_id, name, event, code) => {
     if (option === 1) {
       this.setState({
         modal: true,
@@ -45,7 +49,7 @@ class ListGoods extends Component {
         showHide: 'show',
       })
     } else if (option === 2) {
-      this.props.queryOneBelongingFunction(id)
+      this.props.queryOneBelongingFunction(id, specifict_id)
       this.setState({
         modal: true,
         option: option,
@@ -56,7 +60,7 @@ class ListGoods extends Component {
         id: id
       })
     } else if (option === 3) {
-      this.props.queryOneBelongingFunction(id)
+      this.props.queryOneBelongingFunction(id, specifict_id)
       this.setState({
         modal: true,
         option: option,
@@ -64,19 +68,37 @@ class ListGoods extends Component {
         modalFooter: 'Editar',
         disabled: false,
         showHide: 'show',
-        id: id
+        id: id,
+        specifict_id: specifict_id
+      })
+    } else if (option === 4) {
+      event.stopPropagation();
+      this.setState({
+        modal: true,
+        option: option,
+        modalHeader: 'Editar Bienes',
+        modalFooter: 'Editar',
+        disabled: false,
+        showHide: 'show',
+        id: id,
+        specifict_id: specifict_id,
+        name: name,
+        code:code
       })
     }
   }
 
-  disabledGood = id => {
+  disabledGood = (id, specifict_id) => {
     const message = {
       title: "Desabilitar Bienes",
       info: "¿Esta seguro que desea Desabilitar este Mobiliario?"
     };
     this.props.confirm(message, res => {
       if (res) {
-        this.props.disabledBelongingFunction(id);
+        this.props.disabledBelongingFunction({
+          id: id,
+          specifict_id: specifict_id
+        });
       }
     });
   };
@@ -108,24 +130,64 @@ class ListGoods extends Component {
     }
   }
 
-  render() {
-    const { page, rowsPerPage } = this.state
+  filter = () => {
     const arrayList = getArrays(this.props.goods);
-
     const result = this.props.search
       ? arrayList.filter(list => {
+
         if (this.state.modal === false) {
+          let eq = this.props.search.toLowerCase(); // variable de comparacion
           return (
-            list.quantity.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
-            list.brand.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            list.code.toLowerCase().includes(this.props.search.toLowerCase()) ||
-            list.name.toLowerCase().includes(this.props.search.toLowerCase())
-          );
+            list.name.toLowerCase().includes(eq) |
+            list.belogings.some(space => {
+              return (
+                space.brand.toLowerCase().includes(eq) ||
+                space.model.toLowerCase().includes(eq) ||
+                space.code.toLowerCase().includes(eq) ||
+                space.year.toLowerCase().includes(eq)
+              )
+            })
+          )
         } else {
           return arrayList
         }
       })
       : arrayList;
+
+    const prueba = this.props.search
+      ? result.map(list => {
+        if (this.state.modal === false) {
+          let eq = this.props.search.toLowerCase();
+          return {
+            ...list,
+            belogings: list.belogings.filter(space => {
+              return (
+                space.brand.toLowerCase().includes(eq) ||
+                space.model.toLowerCase().includes(eq) ||
+                space.code.toLowerCase().includes(eq) ||
+                space.year.toLowerCase().includes(eq)
+              )
+            })
+          }
+        } else {
+          return arrayList
+        }
+      })
+      : arrayList;
+
+    if (this.state.modal === false) {
+      return prueba
+    } else {
+      return arrayList
+    }
+  }
+
+
+  render() {
+    const { page, rowsPerPage } = this.state
+    const arrayList = getArrays(this.props.goods);
+    const { classes } = this.props;
+    const result = this.filter()
 
     return (
       <div>
@@ -140,6 +202,10 @@ class ListGoods extends Component {
             showHide={this.state.showHide}
             valorCloseModal={this.valorCloseModal}
             id={this.state.id}
+            data={this.props.goods}
+            specifict_id={this.state.specifict_id}
+            name={this.state.name}
+            code={this.state.code}
           />
         }
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
@@ -156,110 +222,156 @@ class ListGoods extends Component {
           }
         </div>
 
-        <div className="row">
-          <div className="form-group col-sm-12">
-            <Table responsive borderless>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-left" >Nombre</th>
-                  <th style={{ "width": "30%" }} className="text-left" >Cantidad</th>
-                  <th className="text-left" >Acciones</th>
-                </tr>
-              </thead>
-              {this.props.goods ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
-                return (
-                  <tbody key={key}>
-                    <tr className="text-left">
-                      <td>{list.name}</td>
-                      <td>{list.quantity}</td>
-                      <td>
-                        <div className="float-left">
-                          <IconButton aria-label="Delete"
-                            title="Ver Mobiliario"
-                            className="iconButtons" onClick={() => { this.toggle(); }}
-                          >
-                            <Visibility className="iconTable" />
-                          </IconButton>
+        <div className="flex">
+          <div className="inner-flex"
+            style={{ width: '100%', height: '31rem', overflow: 'auto', "marginBottom": "1rem" }} >
+            <Table borderless style={{ "minWidth": "900px" }}>
+              <tbody>
+                {this.props.goods ? result.map((list, key) => {
+                  return (
+                    <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
+                      <td colSpan="8" >
+                        <ExpansionPanel
+                          style={{ "margin": "-11.5px", }}
+                        >
+                          <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
 
-                          <IconButton aria-label="Delete"
-                            title="Editar Mobiliario"
+                            <Typography className={classes.heading5}>{list.name}</Typography>
 
-                            className="iconButtons"
-                            onClick={() => { this.openModal(3, list._id); }}>
-                            <Edit className="iconTable" />
-                          </IconButton>
-                        </div>
-                      </td>
-                    </tr>
+                            <Typography variant="button" style={{ "height": "10px" }}>
+                              <IconButton
+                                aria-label="Delete"
+                                title="Edicion Masiva"
+                                className="iconButtons"
+                                onClick={
+                                  (event) => {
+                                    this.openModal(4, list._id, null, list.name, event, list.code);
+                                  }
+                                }
+                              >
+                                <Edit className="iconTable" />
+                              </IconButton>
+                            </Typography>
 
-                    <tr>
-                      <td style={{ "width": "15%" }}></td>
-                      <td colSpan="6">
-                        <Collapse in={this.state.collapse}>
-                          <div className="row">
-                            <Table responsive borderless>
+                            {/* <Typography variant="button" style={{ "height": "10px" }}>
+                              <IconButton
+                                aria-label="Delete"
+                                title="Mobiliario General"
+                                className="iconButtons"
+                                onClick={
+                                  (event) => {
+                                    this.openModal(5, list._id, list.type_office, list.type_name, event, 1, list.category);
+                                  }
+                                }
+                              >
+                                <List className="iconTable" />
+                              </IconButton>
+                            </Typography> */}
+
+                            <Typography className={classes.spacing}></Typography>
+
+                            {
+                              list.type_name != "" ?
+                                <Typography className={classes.heading2}></Typography> :
+                                <Typography className={classes.heading2}></Typography>
+                            }
+
+                            <Typography className={classes.heading3}></Typography>
+                            <Typography className={classes.heading2}></Typography>
+                            <Typography className={classes.heading3}></Typography>
+                            <Typography className={classes.heading3}></Typography>
+
+                          </ExpansionPanelSummary>
+                          <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
+                            <Table responsive borderless style={{ "paddingRight": "0px" }}>
                               <thead className="thead-light">
-                                <tr>
-                                  <th style={{ "width": "12%" }} className="text-left" >Codigo</th>
-                                  <th style={{ "width": "10%" }} className="text-left" >Marca</th>
-                                  <th style={{ "width": "13%" }} className="text-left" >Ano</th>
-                                  <th className="text-left" >Acciones</th>
+                                <tr >
+                                  {/* <td style={{ width: "6%" }}></td> */}
+                                  <td style={{ width: "18%" }}></td>
+                                  <th style={{ "width": "12%" }} className="text-left">Codigo</th>
+                                  <th style={{ "width": "21%" }} className="text-left">Marca</th>
+                                  <th style={{ "width": "20%" }} className="text-left">Modelo</th>
+                                  <th style={{ "width": "12%" }} className="text-left">Año</th>
+                                  <th className="text-left">Acciones</th>
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr>
-                                  <td>{list.code}</td>
-                                  <td>{list.brand}</td>
-                                  <td>{list.year}</td>
-                                  <td>
-                                    <div className="float-left">
-                                      <IconButton aria-label="Delete"
-                                        title="Ver Espacio"
-                                        className="iconButtons"
-                                        onClick={() => { this.toggle(2, list._id); }}
-                                      >
-                                        <Visibility className="iconTable" />
-                                      </IconButton>
+                                {list.belogings.map((beloging, key) => {
+                                  return (
+                                    <tr key={key}>
+                                      <td colSpan="8">
+                                        <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
+                                          <Typography style={{ width: "19%" }}></Typography>
+                                          <Typography style={{ "width": "12%" }}>{beloging.code}</Typography>
+                                          <Typography style={{ "width": "21%" }}>{beloging.brand}</Typography>
+                                          <Typography style={{ "width": "20%" }}>{beloging.model}</Typography>
+                                          <Typography style={{ "width": "12%" }}>{beloging.year}</Typography>
+                                          <Typography variant="button">
+                                            <IconButton aria-label="Delete"
+                                              title="Ver Espacio"
+                                              className="iconButtons"
+                                              onClick={
+                                                (event) => {
+                                                  this.openModal(2, list._id, beloging._id);
+                                                }
+                                              }
+                                            >
+                                              <Visibility className="iconTable" />
+                                            </IconButton>
+                                          </Typography>
+                                          <Typography variant="button">
+                                            <IconButton aria-label="Delete"
+                                              title="Editar Espacio"
+                                              className="iconButtons"
+                                              onClick={(event) => { this.openModal(3, list._id, beloging._id); }}
+                                            >
+                                              <Edit className="iconTable" />
+                                            </IconButton>
+                                          </Typography>
+                                          <Typography variant="button">
+                                            <IconButton aria-label="Delete"
+                                              title="Eliminar Espacio"
+                                              className="iconButtons"
+                                              onClick={
+                                                () => {
+                                                  this.disabledGood(list._id, beloging._id);
+                                                }
+                                              }
+                                            >
+                                              <Delete className="iconTable" />
+                                            </IconButton>
+                                          </Typography>
 
-                                      <IconButton aria-label="Delete"
-                                        title="Editar Espacio"
-                                        className="iconButtons"
-                                        onClick={() => { this.openModal(3, list._id); }}>
-                                        <Edit className="iconTable" />
-                                      </IconButton>
+                                        </ExpansionPanelDetails>
+                                      </td>
 
-                                      <IconButton aria-label="Delete"
-                                        title="Eliminar Mobiliario"
+                                    </tr>
+                                  )
+                                })
 
-                                        className="iconButtons"
-                                        onClick={() => { this.disabledGood(list._id); }}>
-                                        <Delete className="iconTable" />
-                                      </IconButton>
-
-                                    </div>
-                                  </td>
-                                </tr>
+                                }
                               </tbody>
                             </Table>
-
-                          </div>
-                        </Collapse>
+                          </ExpansionPanelDetails>
+                        </ExpansionPanel>
                       </td>
                     </tr>
-                  </tbody>
-                )
-              }) : null
-              }
+
+                  )
+                }) : null
+                }
+              </tbody>
               {
-                this.props.goods && this.props.goods.length > 10 && (
+                this.props.bedrooms && this.props.bedrooms.length > 10 && (
                   <Pagination
-                    contador={this.props.goods}
+                    contador={this.props.bedrooms}
                     page={page}
                     rowsPerPage={rowsPerPage}
                     handleChangeRowsPerPage={this.handleChangeRowsPerPage}
                     handleChangePage={this.handleChangePage}
                   />
-                )}
+                )
+              }
             </Table>
           </div>
         </div>
@@ -268,4 +380,33 @@ class ListGoods extends Component {
   }
 }
 
-export default ListGoods;
+const styles = theme => ({
+  root: {
+    width: '100%',
+  },
+  heading: {
+    flexBasis: '6%',
+  },
+  heading2: {
+    flexBasis: '14%',
+  },
+  heading3: {
+    flexBasis: '12.4%',
+  },
+  heading4: {
+    flexBasis: '11%',
+  },
+  heading5: {
+    width: '120px',
+  },
+  spacing: {
+    flexBasis: '35%'
+  },
+
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  },
+});
+
+export default withStyles(styles)(ListGoods);

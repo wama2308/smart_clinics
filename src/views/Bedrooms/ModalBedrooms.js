@@ -35,7 +35,10 @@ import {
   queryOneBelongingFunction,
   messageError,
   messageErrorInvalid,
-  propsAction
+  propsAction,
+  setOptionSearch,
+  setMasivo,
+  setSupplies
 } from '../../actions/bedroomsActions';
 import Select from 'react-select';
 import { connect } from 'react-redux';
@@ -59,6 +62,39 @@ class ModalBedrooms extends Component {
   componentDidMount() {
     if (this.props.option !== 1 && this.props.option !== 4) {
       this.setState({ loading: 'hide' })
+    } else if (this.props.option === 4) {
+      const data = this.filter(this.props.data)
+      const min = this.getGroup(data)
+      const max = this.getGroupMax(data)
+
+      this.setState({
+        desde: min,
+        hasta: min + 1
+      })
+
+      if (this.props.type_name === "") {
+        const data = this.props.type_bedrooms.find(data => {
+          return data.value === this.props.id
+        })
+        this.setState({
+          loading: 'show',
+          arrayBedroomsTypeSelect: data
+        })
+      } else {
+        const typeSelect = this.props.type_bedrooms.find(data => {
+          return data.value === this.props.id
+        })
+
+        const data = this.props.type_consulting_room.find(data => {
+          return data.value === this.props.type_name
+        })
+
+        this.setState({
+          loading: 'show',
+          arrayBedroomsTypeSelect: typeSelect,
+          arrayConsultingRoomSelect: data
+        })
+      }
     }
   }
 
@@ -69,6 +105,9 @@ class ModalBedrooms extends Component {
     this.props.valorCloseModal(false);
     this.props.deleteDataSupplies()
     this.props.propsAction(0)
+
+    let set = ""
+    this.props.search(set)
   };
 
   validate = () => {
@@ -257,7 +296,8 @@ class ModalBedrooms extends Component {
     if (fields.length !== 0) {
       let arrayGroups = [];
       fields[0].spaces.map(field => {
-        arrayGroups.push(parseInt(field.number))
+        const number = parseInt(field.number)
+        arrayGroups.push(number)
       });
       var min = Math.min.apply(null, arrayGroups)
     }
@@ -281,11 +321,11 @@ class ModalBedrooms extends Component {
     const min = this.getGroup(data)
     const max = this.getGroupMax(data)
 
-
-    if (value >= 0 && value <= data[0].rank - 1) {
+    if (parseInt(value) >= min && value <= data[0].rank - 1) {
       this.setState({
         desde: parseInt(value),
         hasta: parseInt(value) + 1
+
       })
     }
   }
@@ -294,8 +334,9 @@ class ModalBedrooms extends Component {
     const { name, value } = e.target;
     const data = this.filter(this.props.data)
     const max = this.getGroupMax(data)
+    const min = this.getGroup(data)
     if (this.props.data.length > 0) {
-      if (value <= data[0].rank) {
+      if (parseInt(value) > min && parseInt(value) <= data[0].rank) {
         this.setState({
           hasta: parseInt(value)
         });
@@ -319,7 +360,6 @@ class ModalBedrooms extends Component {
       });
     }
   }
-
 
   handleTypeBedrooms = arrayBedroomsTypeSelect => {
     this.setState({
@@ -709,8 +749,8 @@ class ModalBedrooms extends Component {
   filter = (data) => {
     if (data.length != 0) {
       const date = data.filter(data => {
-        if (this.props.category === "Departamento") {
-          return data.category === this.props.category && data.type_name === this.props.type_name
+        if (this.props.type_name === data.type_name) {
+          return this.props.category === data.category && data.type_name === this.props.type_name
         } else {
           return data.category === this.props.category
         }
@@ -728,7 +768,7 @@ class ModalBedrooms extends Component {
       const datos = data[0].spaces.filter(data => {
         return parseInt(data.number) >= this.state.desde && parseInt(data.number) <= this.state.hasta
       })
-      
+
       const arrayClean = []
       datos.map(datos => {
         arrayClean.push(datos._id)
@@ -739,7 +779,6 @@ class ModalBedrooms extends Component {
       return []
     }
   }
-
 
   filterRange = (data) => {
     if (data.length > 0) {
@@ -762,8 +801,11 @@ class ModalBedrooms extends Component {
   componentWillReceiveProps(props) {
 
     if (props.option === 4) {
+
       this.setState({
         supplies: props.bedrooms.dataAccept,
+        // arrayBedroomsTypeSelect: data
+        // loading: "show"
       })
     } else if (props.option === 3) {
       if (props.bedrooms.propsAction === 0) {
@@ -813,9 +855,16 @@ class ModalBedrooms extends Component {
   }
 
   handleChangeSwitch = name => event => {
-    this.setState({
-      [name]: event.target.checked
-    });
+    if (this.props.option === 1) {
+      this.setState({
+        [name]: event.target.checked
+      });
+      this.props.setSupplies()
+    } else {
+      this.setState({
+        [name]: event.target.checked
+      });
+    }
   }
 
   handlePiso = e => {
@@ -849,6 +898,7 @@ class ModalBedrooms extends Component {
 
   render() {
     const disable = this.disabled()
+    const data = this.filter(this.props.data)
     return (
       <span>
         <Modal
@@ -878,6 +928,65 @@ class ModalBedrooms extends Component {
                         />
                       </FormGroup>
                     }
+
+                    {this.props.option === 4 &&
+                      <FormGroup className="top form-group col-sm-6">
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              color="primary"
+                              checked={this.state.checkAll}
+                              onChange={this.handleChangeSwitch('checkAll')}
+                              value="checkAll"
+                            />
+                          }
+                          label="Editar Todos"
+                        />
+                      </FormGroup>
+                    }
+
+                    {this.props.option === 4 && this.state.checkAll === false &&
+                      <FormGroup className="top form-group col-sm-3">
+                        <Label for="desde">Rango Inicial</Label>
+                        <Input
+                          disabled={this.props.disabled}
+                          invalid={this.state.desdeInvalid}
+                          name="desde"
+                          id="desde"
+                          onKeyUp={this.handlekeyHabitaciones}
+                          onChange={this.handleDesde}
+                          value={this.state.desde}
+                          type="number"
+                          placeholder="Nro Habitaciones"
+                        />
+                        <div className="errorSelect">
+                          {this.state.desdeError}
+                        </div>
+                      </FormGroup>
+                    }
+
+                    {this.props.option === 4 && this.state.checkAll === false &&
+                      <FormGroup className="top form-group col-sm-3">
+                        <Label for="hasta">Rango Final</Label>
+                        <Input
+                          disabled={this.props.disabled}
+                          invalid={this.state.hastaInvalid}
+                          name="hasta"
+                          id="hasta"
+                          onKeyUp={this.handlekeyHabitaciones}
+                          onChange={this.handleHasta}
+                          value={this.state.hasta}
+                          type="number"
+                          placeholder="Nro Habitaciones"
+                          min={0}
+                          max={this.props.data}
+                        />
+                        <div className="errorSelect">
+                          {this.state.hastaError}
+                        </div>
+                      </FormGroup>
+                    }
+
                     {this.state.check === true &&
                       <FormGroup className="top form-group col-sm-6">
                         {this.props.option === 1 && <Label for="habitaciones">Cantidad de Espacios</Label>}
@@ -922,7 +1031,7 @@ class ModalBedrooms extends Component {
                       <div className={this.state.divBedroomsSelect}>
                         <Select
                           isSearchable="true"
-                          isDisabled={this.props.disabled}
+                          isDisabled={this.props.option !== 4 ? this.props.disabled : true}
                           name="tipo"
                           value={this.state.arrayBedroomsTypeSelect}
                           onChange={this.handleTypeBedrooms}
@@ -943,7 +1052,7 @@ class ModalBedrooms extends Component {
                         <div className={this.state.divBedroomsSelect}>
                           <Select
                             isSearchable="true"
-                            isDisabled={this.props.disabled}
+                            isDisabled={this.props.option !== 4 ? this.props.disabled : true}
                             name="departamento"
                             value={this.state.arrayConsultingRoomSelect}
                             onChange={this.handleConsulting}
@@ -1036,64 +1145,6 @@ class ModalBedrooms extends Component {
                       </div>
                     </FormGroup>
 
-                    {this.props.option === 4 &&
-                      <FormGroup className="top form-group col-sm-6">
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              color="primary"
-                              checked={this.state.checkAll}
-                              onChange={this.handleChangeSwitch('checkAll')}
-                              value="checkAll"
-                            />
-                          }
-                          label="Editar Todos"
-                        />
-                      </FormGroup>
-                    }
-
-                    {this.props.option === 4 && this.state.checkAll === false &&
-                      <FormGroup className="top form-group col-sm-3">
-                        <Label for="desde">Rango Inicial</Label>
-                        <Input
-                          disabled={this.props.disabled}
-                          invalid={this.state.desdeInvalid}
-                          name="desde"
-                          id="desde"
-                          onKeyUp={this.handlekeyHabitaciones}
-                          onChange={this.handleDesde}
-                          value={this.state.desde}
-                          type="number"
-                          placeholder="Nro Habitaciones"
-                        />
-                        <div className="errorSelect">
-                          {this.state.desdeError}
-                        </div>
-                      </FormGroup>
-                    }
-
-                    {this.props.option === 4 && this.state.checkAll === false &&
-                      <FormGroup className="top form-group col-sm-3">
-                        <Label for="hasta">Rango Final</Label>
-                        <Input
-                          disabled={this.props.disabled}
-                          invalid={this.state.hastaInvalid}
-                          name="hasta"
-                          id="hasta"
-                          onKeyUp={this.handlekeyHabitaciones}
-                          onChange={this.handleHasta}
-                          value={this.state.hasta}
-                          type="number"
-                          placeholder="Nro Habitaciones"
-                          min={0}
-                          max={this.props.data}
-                        />
-                        <div className="errorSelect">
-                          {this.state.hastaError}
-                        </div>
-                      </FormGroup>
-                    }
-
                     <FormGroup className="top form-group col-sm-6">
                       <Label for="piso">Piso</Label>
                       <Input
@@ -1139,27 +1190,7 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
                   </div>
-                  {/* {this.props.modal === true &&
-                      <TablaSuplies
-                        supplies={this.state.supplies}
-                        searchBelogingFunction={this.props.searchBelogingFunction}
-                        searchSupplies={this.props.bedrooms.searchSupplies}
-                        actionAcceptFunction={this.props.actionAcceptFunction}
-                        setDatasuppies={this.props.setDatasuppies}
-                        option={this.props.option}
-                        dataSuppliesSet={this.props.dataSuppliesSet}
-                        oneSuppliesSet={this.props.oneSuppliesSet}
-                        disabled={this.props.disabled}
-                        queryOneBelongingFunction={this.props.queryOneBelongingFunction}
-                        dataAccept={this.props.bedrooms.dataAccept}
-                        cantidadError={this.state.cantidadError}
-                        cantidadInvalid={this.state.cantidadInvalid}
-                        nombre={this.state.nombre}
-                        piso={this.state.piso}
-                        abreviatura={this.state.abreviatura}
-                        id={this.state.id}
-                      />
-                    } */}
+
                 </form>
                 <Row>
                   <Col>
@@ -1194,7 +1225,13 @@ class ModalBedrooms extends Component {
                           nombre={this.state.nombre}
                           piso={this.state.piso}
                           abreviatura={this.state.abreviatura}
-                          id={this.state.id} />
+                          id={this.state.id}
+                          setOptionSearch={this.props.setOptionSearch}
+                          masivo={this.state.check}
+                          search={this.props.searchData}
+                          setSupplies={this.props.setSupplies}
+
+                        />
                       </TabPane>
                     </TabContent>
 
@@ -1226,11 +1263,12 @@ class ModalBedrooms extends Component {
 
 const mapStateToProps = state => ({
   bedrooms: state.bedrooms.toJS(),
+  //type_bedrooms: state.global.dataGeneral.dataGeneral.type_bedrooms,
 });
 
 const mapDispatchToProps = dispatch => ({
   createBedroomsFunction: (data, callback) => dispatch(createBedroomsFunction(data, callback)),
-  searchBelogingFunction: (data, obj) => dispatch(searchBelogingFunction(data, obj)),
+  searchBelogingFunction: (data, status) => dispatch(searchBelogingFunction(data, status)),
   actionAcceptFunction: (data) => dispatch(actionAcceptFunction(data)),
   setDatasuppies: (data, id, option, obj) => dispatch(setDatasuppies(data, id, option, obj)),
   deleteDataSupplies: () => dispatch(deleteDataSupplies()),
@@ -1238,10 +1276,12 @@ const mapDispatchToProps = dispatch => ({
   dataSuppliesSet: (data, id) => dispatch(dataSuppliesSet(data, id)),
   oneSuppliesSet: (data) => dispatch(oneSuppliesSet(data)),
   editBedroomsFunction: (data, callback) => dispatch(editBedroomsFunction(data, callback)),
-  queryOneBelongingFunction: (id, option) => dispatch(queryOneBelongingFunction(id, option)),
+  queryOneBelongingFunction: (id, option, status, callback) => dispatch(queryOneBelongingFunction(id, option, status, callback)),
   messageError: () => dispatch(messageError()),
   messageErrorInvalid: () => dispatch(messageErrorInvalid()),
-  propsAction: (data) => dispatch(propsAction(data))
+  propsAction: (data) => dispatch(propsAction(data)),
+  setOptionSearch: () => dispatch(setOptionSearch()),
+  setSupplies: () => dispatch(setSupplies())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalBedrooms);
