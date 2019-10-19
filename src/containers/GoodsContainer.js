@@ -16,7 +16,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { connect } from "react-redux";
 import { openConfirmDialog, search } from '../actions/aplicantionActions';
 import ListGoods from '../views/Goods/ListGoods';
-import { queryAllBelongingFunction, queryOneBelongingFunction, enabledBelongingFunction, disabledBelongingFunction } from '../actions/GoodsAction';
+import { queryAllBelongingFunction, queryOneBelongingFunction, enabledBelongingFunction, disabledBelongingFunction, nextPage, backPage, dataPagination, rowPagination } from '../actions/GoodsAction';
 import ListGoodDisabled from '../views/Goods/ListGoodDisabled';
 
 class GoodsContainer extends Component {
@@ -91,6 +91,10 @@ class GoodsContainer extends Component {
                           queryOneBelongingFunction={this.props.queryOneBelongingFunction}
                           search={this.props.searchData}
                           disabledBelongingFunction={this.props.disabledBelongingFunction}
+                          nextPage={this.props.nextPage}
+                          backPage={this.props.backPage}
+                          dataPagination={this.props.dataPagination}
+                          rowPagination={this.props.rowPagination}
                         />
                       </TabPane>
                     </TabContent>
@@ -102,6 +106,8 @@ class GoodsContainer extends Component {
                           enabledBelongingFunction={this.props.enabledBelongingFunction}
                           goods={this.props.goods.goodsDisabled}
                           search={this.props.searchData}
+                          nextPage={this.props.nextPage}
+                          rowPagination={this.props.rowPagination}
                         />
                       </TabPane>
                     </TabContent>
@@ -130,7 +136,11 @@ const mapDispatchToProps = dispatch => ({
   queryAllBelongingFunction: () => dispatch(queryAllBelongingFunction()),
   queryOneBelongingFunction: (id, specifict_id) => dispatch(queryOneBelongingFunction(id, specifict_id)),
   enabledBelongingFunction: (data) => dispatch(enabledBelongingFunction(data)),
-  disabledBelongingFunction: (data) => dispatch(disabledBelongingFunction(data))
+  disabledBelongingFunction: (data) => dispatch(disabledBelongingFunction(data)),
+  nextPage: (data) => dispatch(nextPage(data)),
+  backPage: (data) => dispatch(backPage(data)),
+  dataPagination: (data) => dispatch(dataPagination(data)),
+  rowPagination: (data) => { dispatch(rowPagination(data)) }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoodsContainer);

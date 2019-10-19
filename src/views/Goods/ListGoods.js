@@ -11,6 +11,7 @@ import ModalGoods from './ModalGoods';
 import '../../components/style.css'
 import classnames from "classnames";
 import { withStyles } from '@material-ui/core/styles';
+import PaginationCollapse from '../../components/PaginationCollapse';
 
 class ListGoods extends Component {
   constructor(props) {
@@ -34,7 +35,8 @@ class ListGoods extends Component {
       rowsPerPage: 10,
       specifict_id: "",
       name: "",
-      code: ""
+      code: "",
+      idCollapse: ""
     }
   }
 
@@ -83,7 +85,7 @@ class ListGoods extends Component {
         id: id,
         specifict_id: specifict_id,
         name: name,
-        code:code
+        code: code
       })
     }
   }
@@ -114,8 +116,17 @@ class ListGoods extends Component {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
 
+  handleChangeRowsPerPageReducer = (event, id) => {
+    this.props.rowPagination({ page: 0, rowsPerPage: event.target.value, id: id, option: true })
+  };
+
+
   handleChangePage = (event, page) => {
     this.setState({ page });
+  };
+
+  handleChangePageReducer = (id, pages) => (event, page) => {
+    this.props.nextPage({ page: page, id: id, option: true })
   };
 
   toggle = () => {
@@ -132,54 +143,37 @@ class ListGoods extends Component {
 
   filter = () => {
     const arrayList = getArrays(this.props.goods);
-    const result = this.props.search
-      ? arrayList.filter(list => {
+    let eq = this.props.search.toLowerCase(); // variable de comparacion
+    const gt = eq.split(' ')
+    let expresion = ""
+    let data = []
+    let aux = true
 
-        if (this.state.modal === false) {
-          let eq = this.props.search.toLowerCase(); // variable de comparacion
-          return (
-            list.name.toLowerCase().includes(eq) |
-            list.belogings.some(space => {
-              return (
-                space.brand.toLowerCase().includes(eq) ||
-                space.model.toLowerCase().includes(eq) ||
-                space.code.toLowerCase().includes(eq) ||
-                space.year.toLowerCase().includes(eq)
-              )
-            })
-          )
-        } else {
-          return arrayList
-        }
-      })
+    gt.map(datos => {
+      expresion += `^(?=.*${datos})`;
+    });
+
+    let search = new RegExp(expresion, "ism");
+
+    const prueba = eq ? arrayList.map(list => {
+      return (!this.state.modal) ? {
+        ...list,
+        belogings: list.belogings.filter(space => search.test(space.search))
+      } : arrayList
+    })
       : arrayList;
 
-    const prueba = this.props.search
-      ? result.map(list => {
-        if (this.state.modal === false) {
-          let eq = this.props.search.toLowerCase();
-          return {
-            ...list,
-            belogings: list.belogings.filter(space => {
-              return (
-                space.brand.toLowerCase().includes(eq) ||
-                space.model.toLowerCase().includes(eq) ||
-                space.code.toLowerCase().includes(eq) ||
-                space.year.toLowerCase().includes(eq)
-              )
-            })
-          }
-        } else {
-          return arrayList
-        }
-      })
-      : arrayList;
+    prueba.map(dat => {
+      if (dat.belogings.length === 0)
+        aux = false
 
-    if (this.state.modal === false) {
-      return prueba
-    } else {
-      return arrayList
-    }
+      if (aux)
+        data.push({ ...dat});
+
+      aux = true;
+    });
+
+    return (!this.state.modal) ? data : arrayList;
   }
 
 
@@ -227,12 +221,13 @@ class ListGoods extends Component {
             style={{ width: '100%', height: '31rem', overflow: 'auto', "marginBottom": "1rem" }} >
             <Table borderless style={{ "minWidth": "900px" }}>
               <tbody>
-                {this.props.goods ? result.map((list, key) => {
+                {result.length !== 0 ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
                         <ExpansionPanel
                           style={{ "margin": "-11.5px", }}
+                          expanded={list.expanded}
                         >
                           <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
 
@@ -296,7 +291,7 @@ class ListGoods extends Component {
                                 </tr>
                               </thead>
                               <tbody>
-                                {list.belogings.map((beloging, key) => {
+                                {list.belogings.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage).map((beloging, key) => {
                                   return (
                                     <tr key={key}>
                                       <td colSpan="8">
@@ -323,7 +318,10 @@ class ListGoods extends Component {
                                             <IconButton aria-label="Delete"
                                               title="Editar Espacio"
                                               className="iconButtons"
-                                              onClick={(event) => { this.openModal(3, list._id, beloging._id); }}
+                                              onClick={(event) => {
+                                                this.openModal(3, list._id, beloging._id);
+                                              }
+                                              }
                                             >
                                               <Edit className="iconTable" />
                                             </IconButton>
@@ -351,6 +349,16 @@ class ListGoods extends Component {
 
                                 }
                               </tbody>
+                              {list.belogings.length > 5 &&
+                                <PaginationCollapse
+                                  contador={list.belogings}
+                                  page={list.page}
+                                  rowsPerPage={list.rowsPerPage}
+                                  handleChangeRowsPerPage={(e) => this.handleChangeRowsPerPageReducer(e, list._id)}
+                                  handleChangePage={this.handleChangePageReducer(list._id)}
+
+                                />
+                              }
                             </Table>
                           </ExpansionPanelDetails>
                         </ExpansionPanel>
@@ -362,13 +370,14 @@ class ListGoods extends Component {
                 }
               </tbody>
               {
-                this.props.bedrooms && this.props.bedrooms.length > 10 && (
+                this.props.goods && this.props.goods.length > 10 && (
                   <Pagination
-                    contador={this.props.bedrooms}
+                    contador={this.props.goods}
                     page={page}
                     rowsPerPage={rowsPerPage}
                     handleChangeRowsPerPage={this.handleChangeRowsPerPage}
                     handleChangePage={this.handleChangePage}
+
                   />
                 )
               }

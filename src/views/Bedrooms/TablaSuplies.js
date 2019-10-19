@@ -2,9 +2,17 @@ import React, { Component } from 'react';
 import { Table, Input, FormGroup } from 'reactstrap';
 import Search from "../../components/DefaultSearch";
 import { FaPlusCircle } from 'react-icons/fa';
+import { Delete } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
 
 class TablaSuplies extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      cantidadError: this.props.cantidadError
+    }
+  }
 
   optionsPatientsStaffAll = options => {
     if (!options) {
@@ -14,20 +22,62 @@ class TablaSuplies extends Component {
     if (this.props.option === 1) {
       if (this.props.masivo === true) {
         const data = [];
+
         options.map(option => {
-          data.push({
-            label: `${option.name} / ${option.code}`,
-            _id: option._id,
-            specific_id: option.specific_id,
-            brand: option.brand,
-            model: option.model,
-            input: true
-          });
+          let aux = true
+          this.props.dataAccept.map(dat => {
+            if (option._id === dat._id) {
+              aux = false
+              return []
+            }
+          })
+          if (aux) {
+            data.push({
+              label: `${option.name} / ${option.code}`,
+              _id: option._id,
+              specific_id: option.specific_id,
+              brand: option.brand,
+              model: option.model,
+              input: true
+            });
+          }
         });
         return data;
+
       } else {
         const data = [];
         options.map(option => {
+          let aux = true
+          this.props.dataAccept.map(dat => {
+            if (option._id === dat._id && option.specific_id === dat.specific_id) {
+              aux = false
+              return []
+            }
+          })
+          if (aux) {
+            data.push({
+              label: `${option.name} ${option.code} ${option.brand} ${option.model}`,
+              _id: option._id,
+              specific_id: option.specific_id,
+              brand: option.brand,
+              model: option.model,
+              input: false
+            });
+          }
+        });
+        return data;
+      }
+    } else if (this.props.option === 3) {
+      const data = [];
+      options.map(option => {
+        let aux = true
+        this.props.supplies.map(dat => {
+          if (option._id === dat._id && option.specific_id === dat.specific_id) {
+            aux = false
+            return []
+          }
+        })
+        if (aux) {
           data.push({
             label: `${option.name} ${option.code} ${option.brand} ${option.model}`,
             _id: option._id,
@@ -36,33 +86,30 @@ class TablaSuplies extends Component {
             model: option.model,
             input: false
           });
-        });
-        return data;
-      }
-    } else if (this.props.option === 3) {
-      const data = [];
-      options.map(option => {
-        data.push({
-          label: `${option.name} ${option.code} ${option.brand} ${option.model}`,
-          _id: option._id,
-          specific_id: option.specific_id,
-          brand: option.brand,
-          model: option.model,
-          input: false
-        });
+        }
       });
       return data;
     } else if (this.props.option === 4) {
       const data = [];
+
       options.map(option => {
-        data.push({
-          label: `${option.name} / ${option.code}`,
-          _id: option._id,
-          specific_id: option.specific_id,
-          brand: option.brand,
-          model: option.model,
-          input: true
-        });
+        let aux = true
+        this.props.dataAccept.map(dat => {
+          if (option._id === dat._id) {
+            aux = false
+            return []
+          }
+        })
+        if (aux) {
+          data.push({
+            label: `${option.name} / ${option.code}`,
+            _id: option._id,
+            specific_id: option.specific_id,
+            brand: option.brand,
+            model: option.model,
+            input: true
+          });
+        }
       });
       return data;
     }
@@ -116,9 +163,19 @@ class TablaSuplies extends Component {
     }
   }
 
+  deleteSupplies = (id, specific_id, code) => {
+
+    this.props.deleteSupplies({
+      id: id,
+      specific_id: specific_id,
+      option: this.props.option,
+      status: this.props.check,
+      code: code
+    })
+  }
+
   render() {
     const optionsPatientsStaffAll = this.optionsPatientsStaffAll(this.props.searchSupplies);
-
     return (
       <div>
         {this.props.disabled === false &&
@@ -144,6 +201,7 @@ class TablaSuplies extends Component {
                 <th style={{ "width": "6%" }}>Año</th>
                 {/* <th style={{ "width": "11%" }}>Cantidad Disponible</th> */}
                 {/* <th style={{ "width": "10%" }}>Cantidad</th> */}
+                <th style={{ "width": "6%" }}>Acciones</th>
               </tr>
             }
 
@@ -156,6 +214,7 @@ class TablaSuplies extends Component {
                 <th style={{ "width": "6%" }}>Año</th> */}
                 <th style={{ "width": "11%" }}>Cantidad Disponible</th>
                 <th style={{ "width": "10%" }}>Cantidad</th>
+                <th style={{ "width": "6%" }}>Acciones</th>
               </tr>
             }
 
@@ -165,9 +224,11 @@ class TablaSuplies extends Component {
                 <th style={{ "width": "10%" }}>Codigo</th>
                 <th style={{ "width": "10%" }}>Marca</th>
                 <th style={{ "width": "10%" }}>Modelo</th>
+                <th style={{ "width": "10%" }}>Serial</th>
                 <th style={{ "width": "6%" }}>Año</th>
                 {/* <th style={{ "width": "11%" }}>Cantidad Disponible</th> */}
                 {/* <th style={{ "width": "10%" }}>Cantidad</th> */}
+                <th style={{ "width": "6%" }}>Acciones</th>
               </tr>
             }
 
@@ -180,6 +241,7 @@ class TablaSuplies extends Component {
                 <th style={{ "width": "6%" }}>Año</th> */}
                 <th style={{ "width": "11%" }}>Cantidad Disponible</th>
                 <th style={{ "width": "10%" }}>Cantidad</th>
+                <th style={{ "width": "6%" }}>Acciones</th>
               </tr>
             }
 
@@ -189,9 +251,11 @@ class TablaSuplies extends Component {
                 <th style={{ "width": "10%" }}>Codigo</th>
                 <th style={{ "width": "10%" }}>Marca</th>
                 <th style={{ "width": "10%" }}>Modelo</th>
+                <th style={{ "width": "10%" }}>Serial</th>
                 <th style={{ "width": "6%" }}>Año</th>
                 {/* <th style={{ "width": "11%" }}>Cantidad Disponible</th> */}
                 {/* <th style={{ "width": "10%" }}>Cantidad</th> */}
+                <th style={{ "width": "6%" }}>Acciones</th>
               </tr>
             }
           </thead>
@@ -203,8 +267,16 @@ class TablaSuplies extends Component {
                     <td>{list.name}</td>
                     <td>{list.code}</td>
                     {this.props.option === 3 && <td>{list.brand}</td>}
+                    {this.props.option === 2 && <td>{list.brand}</td>}
                     {this.props.option === 3 && <td>{list.model}</td>}
+
+                    {this.props.option === 2 && <td>{list.model}</td>}
+                    {this.props.option === 2 && <td>{list.serial}</td>}
+                    {this.props.option === 3 && <td>{list.serial}</td>}
+
                     {this.props.option === 3 && <td>{list.year}</td>}
+                    {this.props.option === 2 && <td>{list.year}</td>}
+
                     {this.props.option === 4 && <td className="text-center">{list.quantity_stock}</td>}
                     {/* {this.props.option === 4 &&
                       <th>
@@ -247,12 +319,24 @@ class TablaSuplies extends Component {
 
                             />
                             <div style={{ "width": "100%" }} className="errorSelect">
-                              {list.quantity_stock === 0 && this.props.cantidadError}
+                              {list.cantidad === 0 ? this.props.cantidadError : this.props.cantidadError}
                             </div>
                           </FormGroup>
                         </div>
                       </th>
                     }
+                    <td>
+                      <div>
+                        <IconButton aria-label="Delete"
+                          title="Eliminar Reclamo"
+                          className="iconButtons"
+                          onClick={(event) => { this.deleteSupplies(list._id, list.specific_id, list.code) }}
+                          disabled={this.props.disabled}
+                        >
+                          <Delete className="iconTable" />
+                        </IconButton>
+                      </div>
+                    </td>
                   </tr>
                 )
               }) : null
@@ -281,7 +365,7 @@ class TablaSuplies extends Component {
                           <FormGroup>
                             <Input
                               disabled={this.props.disabled}
-                              //invalid={list.cantidad === 0 && this.props.cantidadInvalid}
+                              invalid={this.props.cantidadInvalid}
                               name={`cantidad_${key}`}
                               id="3"
                               onKeyUp={this.handlekeyHabitaciones}
@@ -291,12 +375,13 @@ class TablaSuplies extends Component {
                               placeholder="Cantidad"
 
                             />
-                            {/* <div style={{ "width": "100%" }} className="errorSelect">
-                            {list.cantidad === 0 && this.props.cantidadError}
-                          </div> */}
+                            <div style={{ "width": "100%" }} className="errorSelect">
+                              {list.cantidad === 0 ? this.props.cantidadError : this.props.cantidadError}
+                            </div>
                           </FormGroup>
                         </div>
-                      </td>}
+                      </td>
+                    }
 
                     {this.props.option === 1 && this.props.masivo === true &&
                       <td>
@@ -304,7 +389,8 @@ class TablaSuplies extends Component {
                           <FormGroup>
                             <Input
                               disabled={this.props.disabled}
-                              //invalid={list.cantidad === 0 && this.props.cantidadInvalid}
+                              invalid={list.quantity_stock === 0 ? this.props.cantidadInvalid :
+                                this.props.calculo > list.quantity_stock && this.props.cantidadInvalid}
                               name={`cantidad_${key}`}
                               id="3"
                               onKeyUp={this.handlekeyHabitaciones}
@@ -314,9 +400,9 @@ class TablaSuplies extends Component {
                               placeholder="Cantidad"
 
                             />
-                            {/* <div style={{ "width": "100%" }} className="errorSelect">
-                            {list.cantidad === 0 && this.props.cantidadError}
-                          </div> */}
+                            <div style={{ "width": "100%" }} className="errorSelect">
+                              {list.cantidad === 0 ? this.props.cantidadError : this.props.cantidadError}
+                            </div>
                           </FormGroup>
                         </div>
                       </td>}
@@ -326,6 +412,8 @@ class TablaSuplies extends Component {
                         <div>
                           <Input
                             disabled={this.props.disabled}
+                            invalid={list.quantity_stock === 0 ? this.props.cantidadInvalid :
+                              this.props.calculo > list.quantity_stock && this.props.cantidadInvalid}
                             name={`cantidad_${key}`}
                             id="4"
                             onKeyUp={this.handlekeyHabitaciones}
@@ -337,6 +425,19 @@ class TablaSuplies extends Component {
                         </div>
                       </td>
                     }
+
+                    <td>
+                      <div>
+                        <IconButton aria-label="Delete"
+                          title="Eliminar Reclamo"
+                          className="iconButtons"
+                          onClick={(event) => { this.deleteSupplies(list._id, list.specific_id, list.code) }}
+                          disabled={this.props.disabled}
+                        >
+                          <Delete className="iconTable" />
+                        </IconButton>
+                      </div>
+                    </td>
                   </tr>
                 )
               }) : null

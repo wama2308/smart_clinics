@@ -131,3 +131,31 @@ export const enabledBelongingFunction = (data) => dispatch => {
         });
     })
 }
+
+export const nextPage = (data) => dispatch => {
+  dispatch({
+    type: "NEXT_PAGE",
+    payload: data
+  })
+}
+
+export const backPage = (data) => dispatch => {
+  dispatch({
+    type: "BACK_PAGE",
+    payload: data
+  })
+}
+
+export const dataPagination = (data) => dispatch => {
+  dispatch({
+    type: "DATA_PAGINATION",
+    payload: data
+  })
+}
+
+export const rowPagination = (data) => dispatch => {
+  dispatch({
+    type: "ROW_PAGINATION",
+    payload: data
+  })
+}

@@ -7,13 +7,15 @@ import { getArrays } from '../../core/utils';
 import Search from "../../components/Select";
 import { Collapse, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import PaginationCollapse from '../../components/PaginationCollapse';
 
 class ListGoodDisabled extends Component {
   constructor(props) {
     super(props);
     this.state = {
       page: 0,
-      rowsPerPage: 10
+      rowsPerPage: 10,
+      modal: false
     }
   }
 
@@ -21,9 +23,19 @@ class ListGoodDisabled extends Component {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
 
+  handleChangeRowsPerPageReducer = (event, id) => {
+    this.props.rowPagination({ page: 0, rowsPerPage: event.target.value, id: id, option: false })
+  };
+
+
   handleChangePage = (event, page) => {
     this.setState({ page });
   };
+
+  handleChangePageReducer = (id, pages) => (event, page) => {
+    this.props.nextPage({ page: page, id: id, option: false })
+  };
+
 
   enabledGoods = (id, specifict_id) => {
     const message = {
@@ -40,22 +52,47 @@ class ListGoodDisabled extends Component {
     });
   }
 
+  filter = () => {
+    const arrayList = getArrays(this.props.goods);
+    let eq = this.props.search.toLowerCase(); // variable de comparacion
+    const gt = eq.split(' ')
+    let expresion = ""
+    let data = []
+    let aux = true
+
+    gt.map(datos => {
+      expresion += `^(?=.*${datos})`;
+    });
+
+    let search = new RegExp(expresion, "ism");
+
+    const prueba = eq ? arrayList.map(list => {
+      return (!this.state.modal) ? {
+        ...list,
+        belogings: list.belogings.filter(space => search.test(space.search))
+      } : arrayList
+    })
+      : arrayList;
+
+    prueba.map(dat => {
+      if (dat.belogings.length === 0)
+        aux = false
+
+      if (aux)
+        data.push({ ...dat});
+
+      aux = true;
+    });
+
+    return (!this.state.modal) ? data : arrayList;
+  }
+
   render() {
     const { page, rowsPerPage } = this.state
     const arrayList = getArrays(this.props.goods);
     const { classes } = this.props;
-
-    const result = this.props.search
-      ? arrayList.filter(list => {
-        return (
-          list.quantity.toString().toLowerCase().includes(this.props.search.toLowerCase()) ||
-          list.brand.toLowerCase().includes(this.props.search.toLowerCase()) ||
-          list.code.toLowerCase().includes(this.props.search.toLowerCase()) ||
-          list.name.toLowerCase().includes(this.props.search.toLowerCase())
-        );
-      })
-      : arrayList;
-
+    const prueba = this.filter()
+    
     return (
       <div>
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
@@ -82,7 +119,7 @@ class ListGoodDisabled extends Component {
                 </tr>
               </thead> */}
               <tbody>
-                {this.props.goods ? this.props.goods.map((list, key) => {
+                {this.props.goods ? prueba.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
@@ -153,7 +190,7 @@ class ListGoodDisabled extends Component {
                                 </tr>
                               </thead>
                               <tbody>
-                                {list.belogings.map((beloging, key) => {
+                                {list.belogings.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage).map((beloging, key) => {
                                   return (
                                     <tr key={key}>
                                       <td colSpan="8">
@@ -184,9 +221,17 @@ class ListGoodDisabled extends Component {
                                     </tr>
                                   )
                                 })
-
                                 }
                               </tbody>
+                              <PaginationCollapse
+                                contador={list.belogings}
+                                page={list.page}
+                                rowsPerPage={list.rowsPerPage}
+                                handleChangeRowsPerPage={(e) => this.handleChangeRowsPerPageReducer(e, list._id)}
+                                handleChangePage={this.handleChangePageReducer(list._id)}
+                                nextPage={this.props.nextPage}
+                                idCollapse={this.state.idCollapse}
+                              />
                             </Table>
                           </ExpansionPanelDetails>
                         </ExpansionPanel>

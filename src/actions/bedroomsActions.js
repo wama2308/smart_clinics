@@ -340,3 +340,23 @@ export const setSupplies = (data) => dispatch => {
     payload: []
   })
 }
+
+export const deleteSupplies = (data) => dispatch => {
+  dispatch({
+    type: "DELETE_GOOD",
+    payload: data
+  })
+}
+
+export const nextPage = (data) => dispatch => {
+  dispatch({
+    type: "NEXT_PAGE_BEDROOMS",
+    payload: data
+  })
+}
+export const rowPagination = (data) => dispatch => {
+  dispatch({
+    type: "ROW_PAGINATION_BEDROOMS",
+    payload: data
+  })
+}

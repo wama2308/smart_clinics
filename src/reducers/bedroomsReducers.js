@@ -2,14 +2,30 @@ import { Map } from 'immutable'
 import { deleteDataSupplies, queryOneBelongingFunction, propsAction } from '../actions/bedroomsActions';
 
 const loadbedroons = (state, payload) => {
-
   let estado = state.toJS();
-  estado.bedroomsEnabled = payload.enabled
-  estado.bedroomsDisabled = payload.disabled
+  estado.bedroomsEnabled = []
+  estado.bedroomsDisabled = []
   estado.dataAccept = []
   estado.propsAction = 0
   estado.action = 1
   estado.masivo = false
+
+  payload.enabled.map(data => {
+    estado.bedroomsEnabled.push({
+      ...data,
+      page: 0,
+      rowsPerPage: 5
+    })
+  })
+
+  payload.disabled.map(data => {
+    estado.bedroomsDisabled.push({
+      ...data,
+      page: 0,
+      rowsPerPage: 5
+    })
+  })
+
   return Map(estado);
 }
 
@@ -168,14 +184,12 @@ const setStop = (state, payload) => {
 
 const loadModalTable = (state, payload) => {
   let estado = state.toJS();
-
   estado.loadModal = payload.loadOneTurnos
   return Map(estado);
 }
 
 const setTypeAction = (state, payload) => {
   let estado = state.toJS();
-
   estado.setId = payload.data
   return Map(estado);
 }
@@ -192,70 +206,162 @@ const setStateSupplies = (state, payload) => {
   return Map(estado);
 }
 
+const deleteGoods = (state, payload) => {
+  let estado = state.toJS();
+
+  if (payload.option === 1) {
+    estado.dataAccept = estado.dataAccept.filter(data => {
+      return data.specific_id !== payload.specific_id
+    })
+  } else if (payload.option === 3) {
+    estado.bedroomsOne.supplies = estado.bedroomsOne.supplies.filter(data => {
+      return data.specific_id !== payload.specific_id
+    })
+  } else if (payload.option === 4) {
+    estado.dataAccept = estado.dataAccept.filter(data => {
+      return data._id !== payload.id
+    })
+  }
+  return Map(estado);
+
+}
+
+const nextPage = (state, payload) => {
+  let estado = state.toJS();
+
+  if (payload.option) {
+    if (payload.type_id) {
+      estado.bedroomsEnabled.find(data => {
+        if (data._id === payload.id && data.type_office === payload.type_id) {
+          data.page = payload.page
+        }
+      })
+    } else {
+      estado.bedroomsEnabled.find(data => {
+        if (data._id === payload.id) {
+          data.page = payload.page
+        }
+      })
+    }
+  } else {
+    if (payload.type_id) {
+      estado.bedroomsDisabled.find(data => {
+        if (data._id === payload.id && data.type_office === payload.type_id) {
+          data.page = payload.page
+        }
+      })
+    } else {
+      estado.bedroomsDisabled.find(data => {
+        if (data._id === payload.id) {
+          data.page = payload.page
+        }
+      })
+    }
+  }
+
+  return Map(estado);
+}
+
+const rowPaginationFunction = (state, payload) => {
+  let estado = state.toJS();
+
+  if (payload.option) {
+    if (payload.type_id) {
+      estado.bedroomsEnabled.find(data => {
+        if (data._id === payload.id && data.type_office === payload.type_id) {
+          data.page = payload.page
+          data.rowsPerPage = payload.rowsPerPage
+        }
+      })
+    } else {
+      estado.bedroomsEnabled.find(data => {
+        if (data._id === payload.id) {
+          data.page = payload.page
+          data.rowsPerPage = payload.rowsPerPage
+        }
+      })
+    }
+  } else {
+    if (payload.type_id) {
+      estado.bedroomsDisabled.find(data => {
+        if (data._id === payload.id && data.type_office === payload.type_id) {
+          data.page = payload.page
+          data.rowsPerPage = payload.rowsPerPage
+        }
+      })
+    } else {
+      estado.bedroomsDisabled.find(data => {
+        if (data._id === payload.id) {
+          data.rowsPerPage = payload.page
+          data.rowsPerPage = payload.rowsPerPage
+        }
+      })
+    }
+
+  }
+
+  return Map(estado);
+}
+
 const bedroomsReducer = (state = Map(), action) => {
 
   switch (action.type) {
-    case "LOAD_BEDROOMS": {
+    case "LOAD_BEDROOMS":
       return loadbedroons(state, action.payload)
-    }
-      break;
 
     case "LOAD_ONE_BEDROOMS":
       return loadOneBedroons(state, action.payload)
-      break;
 
     case "SEARCH_SUPPLIES":
       return searchSupplies(state, action.payload)
-      break;
 
     case "DATA_SUPPLIES":
       return acceptData(state, action.payload)
-      break;
 
     case "SET_DATA_SUPPLIES":
       return setSuppliesData(state, action.payload)
-      break;
 
     case "DELETE_DATA_SUPPLIES":
       return setDataSupplies(state, action.payload)
-      break;
 
     case "SET_ONE_SUPPLIES":
       return setOne(state, action.payload)
-      break;
 
     case "ONE_SUPPLIES_SET":
       return setSupplies(state, action.payload)
-      break;
 
     case "QUERY_BELONGING":
       return queryBelongingFunction(state, action.payload)
-      break;
 
     case "PROPS_ACTION":
       return propsActionFucction(state, action.payload)
-      break;
+
     case "COLLAPSE_SET":
       return setCollapse(state, action.payload)
-      break
 
     case "STOP":
       return setStop(state, action.payload)
-      break
+
     case "LOAD_MODAL_TABLE":
       return loadModalTable(state, action.payload)
-      break
 
     case "SET_TYPE_ACTION":
       return setTypeAction(state, action.payload)
-      break
 
     case "SET_OPTION_SEARCH":
       return setSearchOptions(state, action.payload)
-      break
 
     case "SET_SUPPLIES":
       return setStateSupplies(state, action.payload)
+
+    case "DELETE_GOOD":
+      return deleteGoods(state, action.payload)
+
+    case "NEXT_PAGE_BEDROOMS":
+      return nextPage(state, action.payload)
+
+    case "ROW_PAGINATION_BEDROOMS":
+      return rowPaginationFunction(state, action.payload)
 
     default:
       return state
