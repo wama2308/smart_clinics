@@ -15,7 +15,19 @@ import {
 } from "reactstrap";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { connect } from "react-redux";
-import { loadBedroomsFunction, queryOneBedroomsFunction, disabledBedroomsFuntion, enabledBedrooms, enabledBedroomsFunction, collapseFunction, actionStop, queryBedroomsBelongingsFunction, setType } from '../actions/bedroomsActions';
+import {
+  loadBedroomsFunction,
+  queryOneBedroomsFunction,
+  disabledBedroomsFuntion,
+  enabledBedrooms,
+  enabledBedroomsFunction,
+  collapseFunction,
+  actionStop,
+  queryBedroomsBelongingsFunction,
+  setType,
+  nextPage,
+  rowPagination
+} from '../actions/bedroomsActions';
 import { openConfirmDialog, search } from '../actions/aplicantionActions';
 import ListDisabledBedrooms from '../views/Bedrooms/ListDisabledBedrooms';
 
@@ -90,6 +102,8 @@ class BedroomsContainer extends Component {
                           actionStop={this.props.actionStop}
                           queryBedroomsBelongingsFunction={this.props.queryBedroomsBelongingsFunction}
                           setType={this.props.setType}
+                          nextPage={this.props.nextPage}
+                          rowPagination={this.props.rowPagination}
                         />
                       </TabPane>
                     </TabContent>
@@ -100,13 +114,15 @@ class BedroomsContainer extends Component {
                           enabledBedroomsFunction={this.props.enabledBedroomsFunction}
                           confirm={this.props.confirm}
                           bedrooms={this.props.bedrooms.bedroomsDisabled}
+                          nextPage={this.props.nextPage}
+                          rowPagination={this.props.rowPagination}
                         />
                       </TabPane>
                     </TabContent>
-                  </div>:
-                <div style={{ height: "60vh" }}>
-                  <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
-                </div>
+                  </div> :
+                  <div style={{ height: "60vh" }}>
+                    <CircularProgress style={{ position: " absolute", height: 40, top: "45%", right: "50%", zIndex: 2 }} />
+                  </div>
                 }
               </CardBody>
             </Card>
@@ -134,7 +150,9 @@ const mapDispatchToProps = dispatch => ({
   collapseFunction: (id, type) => dispatch(collapseFunction(id, type)),
   actionStop: (data) => dispatch(actionStop(data)),
   queryBedroomsBelongingsFunction: (data) => dispatch(queryBedroomsBelongingsFunction(data)),
-  setType: (data) => dispatch(setType(data))
+  setType: (data) => dispatch(setType(data)),
+  nextPage: (data) => dispatch(nextPage(data)),
+  rowPagination: (data) => dispatch(rowPagination(data))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BedroomsContainer);

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { TablePagination, TableFooter, TableRow, IconButton } from '@material-ui/core'
 import { LastPage, FirstPage, KeyboardArrowRight, KeyboardArrowLeft } from '@material-ui/icons';
 import { withStyles } from '@material-ui/core/styles';
-
+import { connect } from "react-redux";
+import { nextPage } from '../actions/GoodsAction';
 
 const actionsStyles = theme => ({
   root: {
@@ -21,8 +22,9 @@ class TablePaginationActions extends Component {
     this.props.onChangePage(event, this.props.page - 1);
   };
 
-  handleNextButtonClick = event => {
+  handleNextButtonClick = (event) => {
     this.props.onChangePage(event, this.props.page + 1);
+
   };
 
   handleLastPageButtonClick = event => {
@@ -68,12 +70,18 @@ class TablePaginationActions extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  goods: state.goods.toJS()
+})
+const mapDispatchToProps = dispatch => ({
+  nextPage: (data) => dispatch(nextPage(data)),
+})
 
 const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: true })(
-  TablePaginationActions,
+  connect(mapStateToProps, mapDispatchToProps)(TablePaginationActions),
 );
 
-class Pagination extends Component {
+class PaginationCollapse extends Component {
   render() {
     return (
       <TableFooter>
@@ -81,13 +89,13 @@ class Pagination extends Component {
           <TablePagination
             count={this.props.contador.length}
             page={this.props.page}
-            rowsPerPageOptions={[10, 15, 20]}
+            rowsPerPageOptions={[5, 10, 15]}
             rowsPerPage={this.props.rowsPerPage}
             onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
             onChangePage={this.props.handleChangePage}
             ActionsComponent={TablePaginationActionsWrapped}
             labelRowsPerPage={['Filas por página:']}
-            //style={{ "display": "flex", "justifyContent": "flex-end" }}
+          //style={{ "display": "flex", "justifyContent": "flex-end" }}
           >
           </TablePagination>
         </TableRow>
@@ -96,4 +104,4 @@ class Pagination extends Component {
   }
 }
 
-export default Pagination;
+export default PaginationCollapse;

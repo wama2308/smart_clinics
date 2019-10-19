@@ -4,6 +4,7 @@ import { IconButton, ExpansionPanel, ExpansionPanelSummary, Typography, Expansio
 import { Table } from 'reactstrap'
 import Pagination from '../../components/Pagination';
 import { withStyles } from '@material-ui/core/styles';
+import PaginationCollapse from '../../components/PaginationCollapse';
 
 class ListDisabledBedrooms extends Component {
   constructor(props) {
@@ -31,8 +32,17 @@ class ListDisabledBedrooms extends Component {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
 
+  handleChangeRowsPerPageReducer = (event, id, type_id) => {
+    this.props.rowPagination({ type_id: type_id, page: 0, rowsPerPage: event.target.value, id: id, option: false })
+  };
+
+
   handleChangePage = (event, page) => {
     this.setState({ page });
+  };
+
+  handleChangePageReducer = (id, type_id, pages) => (event, page) => {
+    this.props.nextPage({ type_id: type_id, page: page, id: id, option: false })
   };
 
   handleChange = (panel, status) => (event, expanded) => {
@@ -74,7 +84,7 @@ class ListDisabledBedrooms extends Component {
               </tr>
             </thead> */}
               <tbody>
-                {this.props.bedrooms ? this.props.bedrooms.map((list, key) => {
+                {this.props.bedrooms ? this.props.bedrooms.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
@@ -151,7 +161,7 @@ class ListDisabledBedrooms extends Component {
                                 </tr>
                               </thead>
                               <tbody>
-                                {list.spaces.map((spaces, key) => {
+                                {list.spaces.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage).map((spaces, key) => {
                                   return (
                                     <tr key={key}>
                                       <td colSpan="8">
@@ -181,9 +191,17 @@ class ListDisabledBedrooms extends Component {
                                     </tr>
                                   )
                                 })
-
                                 }
                               </tbody>
+                              <PaginationCollapse
+                                contador={list.spaces}
+                                page={list.page}
+                                rowsPerPage={list.rowsPerPage}
+                                handleChangeRowsPerPage={(e) => this.handleChangeRowsPerPageReducer(e, list._id, list.type_office)}
+                                handleChangePage={this.handleChangePageReducer(list._id, list.type_office)}
+                                nextPage={this.props.nextPage}
+                                idCollapse={this.state.idCollapse}
+                              />
                             </Table>
                           </ExpansionPanelDetails>
                         </ExpansionPanel>

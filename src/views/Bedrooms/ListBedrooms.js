@@ -12,6 +12,7 @@ import classnames from "classnames";
 import { withStyles } from '@material-ui/core/styles';
 import ModalTabla from './ModalTabla';
 import '../../components/style.css'
+import PaginationCollapse from '../../components/PaginationCollapse';
 
 class ListBedrooms extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ class ListBedrooms extends Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Ver Espacios',
+        modalHeader: 'Ver Espacio',
         modalFooter: 'Guardar',
         disabled: true,
         showHide: 'hide',
@@ -70,7 +71,7 @@ class ListBedrooms extends Component {
       this.setState({
         modal: true,
         option: option,
-        modalHeader: 'Editar Espacios',
+        modalHeader: 'Editar Espacio',
         modalFooter: 'Editar',
         disabled: false,
         showHide: 'show',
@@ -144,8 +145,17 @@ class ListBedrooms extends Component {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
 
+  handleChangeRowsPerPageReducer = (event, id, type_id) => {
+    this.props.rowPagination({ type_id: type_id, page: 0, rowsPerPage: event.target.value, id: id, option: true })
+  };
+
+
   handleChangePage = (event, page) => {
     this.setState({ page });
+  };
+
+  handleChangePageReducer = (id, type_id, pages) => (event, page) => {
+    this.props.nextPage({ type_id: type_id, page: page, id: id, option: true })
   };
 
   toggle = (id, type) => {
@@ -168,11 +178,12 @@ class ListBedrooms extends Component {
 
   filter = () => {
     const arrayList = getArrays(this.props.bedrooms);
-    const result = this.props.search
+    let search = this.props.search
+    const result = search
       ? arrayList.filter(list => {
 
         if (this.state.modal === false) {
-          let eq = this.props.search.toLowerCase(); // variable de comparacion
+          let eq = search.toLowerCase(); // variable de comparacion
           return (
             list.category.toLowerCase().includes(eq) ||
             list.spaces.some(space => {
@@ -298,7 +309,7 @@ class ListBedrooms extends Component {
                 </tr>
               </thead> */}
               <tbody>
-                {prueba.length !== 0 ? prueba.map((list, key) => {
+                {prueba.length !== 0 ? prueba.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
@@ -374,7 +385,7 @@ class ListBedrooms extends Component {
                                 </tr>
                               </thead>
                               <tbody>
-                                {list.spaces.map((spaces, key) => {
+                                {list.spaces.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage).map((spaces, key) => {
                                   return (
                                     <tr key={key}>
                                       <td colSpan="8">
@@ -434,65 +445,22 @@ class ListBedrooms extends Component {
                                           </Typography>
                                         </ExpansionPanelDetails>
                                       </td>
-                                      {/* <td style={{ width: "6%" }}></td> */}
-                                      {/* <td style={{ width: "14%" }}></td>
-                                        <td style={{ width: "14%" }}></td>
-                                        <td style={{ width: "11%" }}>{spaces.code}</td>
-                                        <td style={{ width: "14%" }}>{spaces.name}</td>
-                                        <td style={{ width: "12%" }}>{spaces.floor}</td>
-                                        <td style={{ width: "12%" }}>{spaces.status}</td>
-                                        <td>
-                                          <div className="float-center" >
-                                            <IconButton aria-label="Delete"
-                                              title="Ver Espacio"
-                                              className="iconButtons"
-                                              onClick={
-                                                (event) => {
-                                                  this.openModal(2, spaces._id, null, null, event, null);
-                                                }
-                                              }
-                                            >
-                                              <Visibility className="iconTable" />
-                                            </IconButton>
-
-                                            <IconButton aria-label="Delete"
-                                              title="Editar Espacio"
-                                              className="iconButtons"
-                                              onClick={(event) => { this.openModal(3, spaces._id, null, null, event, null); }}
-                                            >
-                                              <Edit className="iconTable" />
-                                            </IconButton>
-
-                                            <IconButton aria-label="Delete"
-                                              title="Eliminar Espacio"
-                                              className="iconButtons"
-                                              onClick={
-                                                () => {
-                                                  this.disabledBedroom(list._id);
-                                                }
-                                              }
-                                            >
-                                              <Delete className="iconTable" />
-                                            </IconButton>
-                                            <IconButton aria-label="Delete"
-                                              title="Eliminar Reclamo"
-                                              className="iconButtons"
-                                              onClick={
-                                                (event) => {
-                                                  this.openModal(5, spaces._id, list.type_office, list.type_name, event, 0);
-                                                }
-                                              }
-                                            >
-                                              <List className="iconTable" />
-                                            </IconButton>
-                                          </div>
-                                        </td> */}
                                     </tr>
                                   )
                                 })
-
                                 }
                               </tbody>
+                              {list.spaces > 5 &&
+                                <PaginationCollapse
+                                  contador={list.spaces}
+                                  page={list.page}
+                                  rowsPerPage={list.rowsPerPage}
+                                  handleChangeRowsPerPage={(e) => this.handleChangeRowsPerPageReducer(e, list._id, list.type_office)}
+                                  handleChangePage={this.handleChangePageReducer(list._id, list.type_office)}
+                                  nextPage={this.props.nextPage}
+                                  idCollapse={this.state.idCollapse}
+                                />
+                              }
                             </Table>
                           </ExpansionPanelDetails>
                         </ExpansionPanel>

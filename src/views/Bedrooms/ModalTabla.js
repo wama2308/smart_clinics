@@ -47,9 +47,9 @@ class ModalTabla extends Component {
       })
     }
   }
-  
+
   componentWillReceiveProps(props) {
-    if(props.option === 5 ){
+    if (props.option === 5) {
       this.setState({
         loading: "show"
       })
@@ -76,7 +76,12 @@ class ModalTabla extends Component {
                       <thead className="thead-light">
                         <tr>
                           <th className="text-left">Nombre</th>
-                          <th className="text-left">Cantidad</th>
+                          <th className="text-left">Codigo</th>
+                          {this.props.option === 6 && <th className="text-left">Marca</th>}
+                          {this.props.option === 6 && <th className="text-left">Modelo</th>}
+                          {this.props.option === 6 && <th className="text-left">Ano</th>}
+                          {this.props.option === 6 && <th className="text-left">Serial</th>}
+                          {this.props.option === 5 && <th className="text-left">Cantidad</th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -84,7 +89,12 @@ class ModalTabla extends Component {
                           return (
                             <tr key={key}>
                               <td>{list.name}</td>
-                              <td>{list.quantity}</td>
+                              <td>{list.code}</td>
+                              {this.props.option === 6 && <td>{list.brand}</td>}
+                              {this.props.option === 6 && <td>{list.model}</td>}
+                              {this.props.option === 6 && <td>{list.year}</td>}
+                              {this.props.option === 6 && <td>{list.serial}</td>}
+                              {this.props.option === 5 && <td>{list.quantity}</td>}
                             </tr>
                           )
                         }) : null
