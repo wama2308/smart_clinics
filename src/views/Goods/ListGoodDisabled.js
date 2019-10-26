@@ -36,7 +36,6 @@ class ListGoodDisabled extends Component {
     this.props.nextPage({ page: page, id: id, option: false })
   };
 
-
   enabledGoods = (id, specifict_id) => {
     const message = {
       title: "Activar Mobiliario",

@@ -72,6 +72,12 @@ const rowPaginationFunction = (state, payload) => {
   return Map(estado);
 }
 
+const loadTable = (state, payload) => {
+  let estado = state.toJS();
+  estado.loadTable = payload
+  return Map(estado)
+}
+
 const GoodsReducer = (state = Map(), action) => {
 
   switch (action.type) {
@@ -87,6 +93,9 @@ const GoodsReducer = (state = Map(), action) => {
 
     case "ROW_PAGINATION":
       return rowPaginationFunction(state, action.payload)
+
+    case "LOAD_ALL_TABLE":
+      return loadTable(state, action.payload)
 
     default:
       return state

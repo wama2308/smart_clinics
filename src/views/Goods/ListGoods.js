@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'reactstrap';
 import { IconButton, Collapse, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from '@material-ui/core';
-import { Visibility, ExpandMore } from '@material-ui/icons';
+import { Visibility, ExpandMore, List } from '@material-ui/icons';
 import { Edit } from '@material-ui/icons';
 import { Delete } from '@material-ui/icons';
 import Pagination from '../../components/Pagination';
@@ -12,6 +12,8 @@ import '../../components/style.css'
 import classnames from "classnames";
 import { withStyles } from '@material-ui/core/styles';
 import PaginationCollapse from '../../components/PaginationCollapse';
+import ModalGoodTable from './ModalGoodTable';
+import Select from 'react-select';
 
 class ListGoods extends Component {
   constructor(props) {
@@ -36,57 +38,83 @@ class ListGoods extends Component {
       specifict_id: "",
       name: "",
       code: "",
-      idCollapse: ""
+      idCollapse: "",
+      modalBedrooms: false
     }
   }
 
-  openModal = (option, id, specifict_id, name, event, code) => {
-    if (option === 1) {
-      this.setState({
-        modal: true,
-        option: option,
-        modalHeader: 'Registrar Bienes',
-        modalFooter: 'Guardar',
-        disabled: false,
-        showHide: 'show',
-      })
-    } else if (option === 2) {
-      this.props.queryOneBelongingFunction(id, specifict_id)
-      this.setState({
-        modal: true,
-        option: option,
-        modalHeader: 'Ver Bienes',
-        modalFooter: 'Guardar',
-        disabled: true,
-        showHide: 'hide',
-        id: id
-      })
-    } else if (option === 3) {
-      this.props.queryOneBelongingFunction(id, specifict_id)
-      this.setState({
-        modal: true,
-        option: option,
-        modalHeader: 'Editar Bienes',
-        modalFooter: 'Editar',
-        disabled: false,
-        showHide: 'show',
-        id: id,
-        specifict_id: specifict_id
-      })
-    } else if (option === 4) {
-      event.stopPropagation();
-      this.setState({
-        modal: true,
-        option: option,
-        modalHeader: 'Editar Bienes',
-        modalFooter: 'Editar',
-        disabled: false,
-        showHide: 'show',
-        id: id,
-        specifict_id: specifict_id,
-        name: name,
-        code: code
-      })
+  openModal = (obj) => {
+    switch (obj.option) {
+      case 1:
+        this.setState({
+          modal: true,
+          option: obj.option,
+          modalHeader: 'Registrar Bienes',
+          modalFooter: 'Guardar',
+          disabled: false,
+          showHide: 'show',
+        })
+        break;
+      case 2:
+        this.props.queryOneBelongingFunction(obj.id, obj.specifict_id)
+        this.setState({
+          modal: true,
+          option: obj.option,
+          modalHeader: 'Ver Bienes',
+          modalFooter: 'Guardar',
+          disabled: true,
+          showHide: 'hide',
+          id: obj.id
+        })
+        break;
+      case 3:
+        this.props.queryOneBelongingFunction(obj.id, obj.specifict_id)
+        this.setState({
+          modal: true,
+          option: obj.option,
+          modalHeader: 'Editar Bienes',
+          modalFooter: 'Editar',
+          disabled: false,
+          showHide: 'show',
+          id: obj.id,
+          specifict_id: obj.specifict_id
+        })
+        break;
+      case 4:
+        obj.event.stopPropagation();
+        this.setState({
+          modal: true,
+          option: obj.option,
+          modalHeader: 'Editar Bienes',
+          modalFooter: 'Editar',
+          disabled: false,
+          showHide: 'show',
+          id: obj.id,
+          specifict_id: obj.specifict_id,
+          name: obj.name,
+          code: obj.code
+        })
+        break;
+
+      case 5:
+        obj.event.stopPropagation();
+        this.props.createTable({
+          _id: obj.id
+        })
+        this.setState({
+          modalBedrooms: true,
+          option: obj.option,
+          modalHeader: `${obj.code} en los Espacios`,
+          modalFooter: 'Editar',
+          disabled: false,
+          showHide: 'show',
+
+        })
+        break;
+
+
+      default:
+        break;
     }
   }
 
@@ -112,6 +140,13 @@ class ListGoods extends Component {
     });
   }
 
+  valorCloseModalBedrooms = (valor) => {
+    this.setState({
+      modalBedrooms: valor,
+      option: null,
+    });
+  }
+
   handleChangeRowsPerPage = event => {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
@@ -119,7 +154,6 @@ class ListGoods extends Component {
   handleChangeRowsPerPageReducer = (event, id) => {
     this.props.rowPagination({ page: 0, rowsPerPage: event.target.value, id: id, option: true })
   };
-
 
   handleChangePage = (event, page) => {
     this.setState({ page });
@@ -130,7 +164,7 @@ class ListGoods extends Component {
   };
 
   toggle = () => {
-    if (this.state.collapse === false) {
+    if (!this.state.collapse) {
       this.setState({
         collapse: true
       })
@@ -164,13 +198,15 @@ class ListGoods extends Component {
       : arrayList;
 
     prueba.map(dat => {
-      if (dat.belogings.length === 0)
-        aux = false
+      if (dat.belogings) {
+        if (dat.belogings.length < 1)
+          aux = false
 
-      if (aux)
-        data.push({ ...dat});
+        if (aux)
+          data.push({ ...dat });
 
-      aux = true;
+        aux = true;
+      }
     });
 
     return (!this.state.modal) ? data : arrayList;
@@ -186,7 +222,7 @@ class ListGoods extends Component {
     return (
       <div>
         {
-          this.state.modal === true &&
+          this.state.modal &&
           <ModalGoods
             option={this.state.option}
             modal={this.state.modal}
@@ -202,14 +238,31 @@ class ListGoods extends Component {
             code={this.state.code}
           />
         }
+        {
+          this.state.modalBedrooms &&
+          <ModalGoodTable
+            option={this.state.option}
+            modal={this.state.modalBedrooms}
+            valorCloseModal={this.valorCloseModalBedrooms}
+            modalHeader={this.state.modalHeader}
+            modalFooter={this.state.modalFooter}
+          />
+        }
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
           <div className="container-button" style={{ "height": "35%" }}>
             <Button color="success"
-              onClick={() => this.openModal(1)}>
+              onClick={(event) => this.openModal({
+                option: 1,
+                id: null,
+                specifict_id: null,
+                name: null,
+                event: event,
+                code: null
+              })}>
               Agregar
             </Button>
           </div>
-          {this.state.modal === false &&
+          {!this.state.modal &&
             <div className="containerSearch" >
               <Search value={arrayList} />
             </div>
@@ -230,9 +283,7 @@ class ListGoods extends Component {
                           expanded={list.expanded}
                         >
                           <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
-
                             <Typography className={classes.heading5}>{list.name}</Typography>
-
                             <Typography variant="button" style={{ "height": "10px" }}>
                               <IconButton
                                 aria-label="Delete"
@@ -240,7 +291,14 @@ class ListGoods extends Component {
                                 className="iconButtons"
                                 onClick={
                                   (event) => {
-                                    this.openModal(4, list._id, null, list.name, event, list.code);
+                                    this.openModal({
+                                      option: 4,
+                                      id: list._id,
+                                      specifict_id: null,
+                                      name: list.name,
+                                      event: event,
+                                      code: list.code
+                                    });
                                   }
                                 }
                               >
@@ -248,20 +306,27 @@ class ListGoods extends Component {
                               </IconButton>
                             </Typography>
 
-                            {/* <Typography variant="button" style={{ "height": "10px" }}>
+                            <Typography variant="button" style={{ "height": "10px" }}>
                               <IconButton
                                 aria-label="Delete"
                                 title="Mobiliario General"
                                 className="iconButtons"
                                 onClick={
                                   (event) => {
-                                    this.openModal(5, list._id, list.type_office, list.type_name, event, 1, list.category);
+                                    this.openModal({
+                                      option: 5,
+                                      id: list._id,
+                                      specifict_id: null,
+                                      name: null,
+                                      event: event,
+                                      code: list.name
+                                    });
                                   }
                                 }
                               >
                                 <List className="iconTable" />
                               </IconButton>
-                            </Typography> */}
+                            </Typography>
 
                             <Typography className={classes.spacing}></Typography>
 
@@ -303,11 +368,18 @@ class ListGoods extends Component {
                                           <Typography style={{ "width": "12%" }}>{beloging.year}</Typography>
                                           <Typography variant="button">
                                             <IconButton aria-label="Delete"
-                                              title="Ver Espacio"
+                                              title="Ver Bien"
                                               className="iconButtons"
                                               onClick={
                                                 (event) => {
-                                                  this.openModal(2, list._id, beloging._id);
+                                                  this.openModal({
+                                                    option: 2,
+                                                    id: list._id,
+                                                    specifict_id: beloging._id,
+                                                    name: null,
+                                                    event: event,
+                                                    code: null
+                                                  });
                                                 }
                                               }
                                             >
@@ -316,10 +388,19 @@ class ListGoods extends Component {
                                           </Typography>
                                           <Typography variant="button">
                                             <IconButton aria-label="Delete"
-                                              title="Editar Espacio"
+                                              title="Editar Bien"
                                               className="iconButtons"
                                               onClick={(event) => {
-                                                this.openModal(3, list._id, beloging._id);
+                                                this.openModal(
+                                                  {
+                                                    option: 3,
+                                                    id: list._id,
+                                                    specifict_id: beloging._id,
+                                                    name: null,
+                                                    event: event,
+                                                    code: null
+                                                  }
+                                                );
                                               }
                                               }
                                             >
@@ -328,7 +409,7 @@ class ListGoods extends Component {
                                           </Typography>
                                           <Typography variant="button">
                                             <IconButton aria-label="Delete"
-                                              title="Eliminar Espacio"
+                                              title="Eliminar Bien"
                                               className="iconButtons"
                                               onClick={
                                                 () => {

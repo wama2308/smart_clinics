@@ -20,8 +20,8 @@ class TablaSuplies extends Component {
     }
 
     if (this.props.option === 1) {
-      if (this.props.masivo === true) {
-        const data = [];
+      if (this.props.masivo) {
+        let data = [];
 
         options.map(option => {
           let aux = true

@@ -10,6 +10,7 @@ const disabledBelonging = `${url}/api/disabledBelonging`;
 const createBelonging = `${url}/api/createBelonging`;
 const editBelonging = `${url}/api/editBelonging`;
 const enabledBelonging = `${url}/api/enabledBelonging`;
+const queryBelongingsBedrooms = `${url}/api/queryBelongingsBedrooms`
 
 export const queryAllBelongingFunction = () => dispatch => {
   getDataToken()
@@ -158,4 +159,21 @@ export const rowPagination = (data) => dispatch => {
     type: "ROW_PAGINATION",
     payload: data
   })
+}
+
+export const createTable = (data) => dispatch => {
+  getDataToken()
+    .then(datos => {
+      axios({
+        method: "post",
+        url: queryBelongingsBedrooms,
+        data: data,
+        headers: datos.headers
+      }).then(res => {
+        dispatch({
+          type: "LOAD_ALL_TABLE",
+          payload: res.data
+        })
+      })
+    })
 }

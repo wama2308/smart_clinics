@@ -354,6 +354,7 @@ export const nextPage = (data) => dispatch => {
     payload: data
   })
 }
+
 export const rowPagination = (data) => dispatch => {
   dispatch({
     type: "ROW_PAGINATION_BEDROOMS",

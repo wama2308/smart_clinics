@@ -56,7 +56,7 @@ class BedroomsContainer extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (this.props.bedrooms) {
+    if (props.bedrooms) {
       this.setState({
         loading: "show"
       })
@@ -116,6 +116,7 @@ class BedroomsContainer extends Component {
                           bedrooms={this.props.bedrooms.bedroomsDisabled}
                           nextPage={this.props.nextPage}
                           rowPagination={this.props.rowPagination}
+                          search={this.props.searchData}
                         />
                       </TabPane>
                     </TabContent>
