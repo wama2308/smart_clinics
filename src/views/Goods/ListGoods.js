@@ -112,7 +112,6 @@ class ListGoods extends Component {
         })
         break;
 
-
       default:
         break;
     }
@@ -148,11 +147,19 @@ class ListGoods extends Component {
   }
 
   handleChangeRowsPerPage = event => {
-    this.setState({ page: 0, rowsPerPage: event.target.value });
+    this.setState({
+      page: 0,
+      rowsPerPage: event.target.value
+    });
   };
 
   handleChangeRowsPerPageReducer = (event, id) => {
-    this.props.rowPagination({ page: 0, rowsPerPage: event.target.value, id: id, option: true })
+    this.props.rowPagination({
+      page: 0,
+      rowsPerPage: event.target.value,
+      id: id,
+      option: true
+    })
   };
 
   handleChangePage = (event, page) => {
@@ -160,7 +167,11 @@ class ListGoods extends Component {
   };
 
   handleChangePageReducer = (id, pages) => (event, page) => {
-    this.props.nextPage({ page: page, id: id, option: true })
+    this.props.nextPage({
+      page: page,
+      id: id,
+      option: true
+    })
   };
 
   toggle = () => {
@@ -246,6 +257,7 @@ class ListGoods extends Component {
             valorCloseModal={this.valorCloseModalBedrooms}
             modalHeader={this.state.modalHeader}
             modalFooter={this.state.modalFooter}
+            loadTable={this.props.loadTable}
           />
         }
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
@@ -274,9 +286,9 @@ class ListGoods extends Component {
             style={{ width: '100%', height: '31rem', overflow: 'auto', "marginBottom": "1rem" }} >
             <Table borderless style={{ "minWidth": "900px" }}>
               <tbody>
-                {result.length !== 0 ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
+                {result.length > 0 ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
-                    <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
+                    <tr key={key} className="text-left">
                       <td colSpan="8" >
                         <ExpansionPanel
                           style={{ "margin": "-11.5px", }}
@@ -345,7 +357,7 @@ class ListGoods extends Component {
                           <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
                             <Table responsive borderless style={{ "paddingRight": "0px" }}>
                               <thead className="thead-light">
-                                <tr >
+                                <tr>
                                   {/* <td style={{ width: "6%" }}></td> */}
                                   <td style={{ width: "18%" }}></td>
                                   <th style={{ "width": "12%" }} className="text-left">Codigo</th>
@@ -406,6 +418,7 @@ class ListGoods extends Component {
                                             >
                                               <Edit className="iconTable" />
                                             </IconButton>
+
                                           </Typography>
                                           <Typography variant="button">
                                             <IconButton aria-label="Delete"
@@ -420,6 +433,28 @@ class ListGoods extends Component {
                                               <Delete className="iconTable" />
                                             </IconButton>
                                           </Typography>
+                                          {/* 
+                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
+                                            <IconButton aria-label="Delete"
+                                              title="Mobiliario del Espacio"
+                                              className="iconButtons"
+                                              onClick={
+                                                (event) => {
+                                                  this.openModal({
+                                                    option: 6,
+                                                    id: list._id,
+                                                    specifict_id: beloging._id,
+                                                    name: null,
+                                                    event: event,
+                                                    code: list.name
+                                                  });
+                                                }
+                                              }
+                                            >
+                                              <List className="iconTable" />
+                                            </IconButton>
+                                          </Typography> */}
+
 
                                         </ExpansionPanelDetails>
                                       </td>

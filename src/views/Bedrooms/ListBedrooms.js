@@ -423,14 +423,15 @@ class ListBedrooms extends Component {
                                 {list.spaces.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage).map((spaces, key) => {
                                   return (
                                     <tr key={key}>
-                                      <td colSpan="8">
+                                      <td></td>
+                                      <td colSpan="6" style={{ "padding": "0px" }}>
                                         <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
-                                          <Typography style={{ width: "19%" }}></Typography>
-                                          <Typography style={{ "width": "12%" }}>{spaces.code}</Typography>
-                                          <Typography style={{ "width": "22.5%" }}>{spaces.name}</Typography>
-                                          <Typography style={{ "width": "21%" }}>{spaces.floor}</Typography>
-                                          <Typography style={{ "width": "12%" }}>{spaces.status}</Typography>
-                                          <Typography variant="button">
+                                          {/* <Typography style={{ width: "18%" }}></Typography> */}
+                                          <Typography style={{ "width": "14.3%", "padding": "12px" }}>{spaces.code}</Typography>
+                                          <Typography style={{ "width": "26%", "padding": "12px" }}>{spaces.name}</Typography>
+                                          <Typography style={{ "width": "24.1%", "padding": "12px" }}>{spaces.floor}</Typography>
+                                          <Typography style={{ "width": "15%", "padding": "12px" }}>{spaces.status}</Typography>
+                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
                                             <IconButton aria-label="Delete"
                                               title="Ver Espacio"
                                               className="iconButtons"
@@ -451,7 +452,7 @@ class ListBedrooms extends Component {
                                               <Visibility className="iconTable" />
                                             </IconButton>
                                           </Typography>
-                                          <Typography variant="button">
+                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
                                             <IconButton aria-label="Delete"
                                               title="Editar Espacio"
                                               className="iconButtons"
@@ -470,7 +471,8 @@ class ListBedrooms extends Component {
                                               <Edit className="iconTable" />
                                             </IconButton>
                                           </Typography>
-                                          <Typography variant="button">
+
+                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
                                             <IconButton aria-label="Delete"
                                               title="Eliminar Espacio"
                                               className="iconButtons"
@@ -483,7 +485,8 @@ class ListBedrooms extends Component {
                                               <Delete className="iconTable" />
                                             </IconButton>
                                           </Typography>
-                                          <Typography variant="button">
+
+                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
                                             <IconButton aria-label="Delete"
                                               title="Mobiliario del Espacio"
                                               className="iconButtons"

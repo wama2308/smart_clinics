@@ -96,6 +96,8 @@ class GoodsContainer extends Component {
                           dataPagination={this.props.dataPagination}
                           rowPagination={this.props.rowPagination}
                           createTable={this.props.createTable}
+                          loadTable={this.props.goods.loadTable}
+
                         />
                       </TabPane>
 

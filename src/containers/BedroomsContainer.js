@@ -106,9 +106,7 @@ class BedroomsContainer extends Component {
                           rowPagination={this.props.rowPagination}
                         />
                       </TabPane>
-                    </TabContent>
 
-                    <TabContent activeTab={this.state.activeTab}>
                       <TabPane tabId="2">
                         <ListDisabledBedrooms
                           enabledBedroomsFunction={this.props.enabledBedroomsFunction}
