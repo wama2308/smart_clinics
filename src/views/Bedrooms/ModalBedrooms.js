@@ -631,7 +631,7 @@ class ModalBedrooms extends Component {
   }
 
   disabled = () => {
-    return (this.props.option === 2 || this.props.option === 3) ? true : false
+    return (this.props.option === 2) ? true : false
   }
 
   handleChangeSwitch = name => event => {
@@ -817,7 +817,7 @@ class ModalBedrooms extends Component {
                       <div className={this.state.divBedroomsSelect}>
                         <Select
                           isSearchable="true"
-                          isDisabled={this.props.option !== 4 ? this.props.disabled : true}
+                          isDisabled={this.props.option != 4 && this.props.option != 3 ? this.props.disabled : true}
                           name="tipo"
                           value={this.state.arrayBedroomsTypeSelect}
                           onChange={this.handleTypeBedrooms}
