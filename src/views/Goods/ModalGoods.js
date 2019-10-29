@@ -510,6 +510,7 @@ class ModalGoods extends Component {
       } else if (this.props.option === 3) {
         this.setState({ loading: 'hide' })
         this.props.editBelongingFunction({
+          all: false,
           input: 0,
           _id: this.props.id,
           belongings: this.props.specifict_id,
@@ -527,6 +528,7 @@ class ModalGoods extends Component {
         const arrayFilter = (!this.state.total) ? this.filterFull() : this.allId()
         this.setState({ loading: 'hide' })
         this.props.editBelongingFunction({
+          all: this.state.total,
           input: 1,
           _id: this.props.id,
           belongings: arrayFilter,
@@ -638,7 +640,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 4 && this.state.total === false &&
+                    {this.props.option === 4 && !this.state.total &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="desde">Rango Inicial</Label>
                         <Input
@@ -658,7 +660,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 4 && this.state.total === false &&
+                    {this.props.option === 4 && !this.state.total &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="hasta">Rango Final</Label>
                         <Input
@@ -681,7 +683,7 @@ class ModalGoods extends Component {
                     }
 
 
-                    {this.state.masivo === true && this.props.option !== 4 &&
+                    {this.state.masivo && this.props.option !== 4 &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="cantidad">Cantidad</Label>
                         <Input disabled={this.props.disabled}
@@ -697,7 +699,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.existe === true &&
+                    {this.state.existe &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="bienes">Bienes Registrados</Label>
                         <div className={this.state.divGoodsSelect}>
@@ -716,11 +718,11 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.existe === false &&
+                    {!this.state.existe &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="nombre">Nombre</Label>
                         <Input
-                          disabled={this.state.total === false && this.props.option === 4 ? disable : disable}
+                          disabled={!this.state.total && this.props.option === 4 ? disable : disable}
                           invalid={this.state.nombreInvalid}
                           name="nombre"
                           id="nombre"
@@ -733,7 +735,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.existe === false && this.state.masivo === false &&
+                    {!this.state.existe && !this.state.masivo &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="code">Codigo</Label>
                         <Input disabled={disable}
@@ -749,7 +751,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.existe === false && this.state.masivo === true &&
+                    {!this.state.existe && this.state.masivo &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="code">Codigo</Label>
                         <Input disabled={disable}
@@ -765,7 +767,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.total === false &&
+                    {!this.state.total &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="marca">Marca</Label>
                         <Input disabled={this.props.disabled}
@@ -783,7 +785,7 @@ class ModalGoods extends Component {
                         </div>
                       </FormGroup>
                     }
-                    {this.state.total === false &&
+                    {!this.state.total &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="modelo">Modelo</Label>
                         <Input disabled={this.props.disabled}
@@ -795,10 +797,12 @@ class ModalGoods extends Component {
                           value={this.state.modelo}
                           type="text"
                           placeholder="Modelo" />
-                        <FormFeedback tooltip>{this.state.modeloError}</FormFeedback>
+                        <div className="errorSelect">
+                          {this.state.modeloError}
+                        </div>
                       </FormGroup>
                     }
-                    {this.state.total === false &&
+                    {!this.state.total &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="year">Año</Label>
                         <Input disabled={this.props.disabled}
@@ -817,7 +821,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.masivo === false && this.props.option != 1 && this.props.option != 4 &&
+                    {!this.state.masivo && this.props.option != 1 && this.props.option != 4 &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="serial">Serial</Label>
                         <Input disabled={this.props.disabled}
@@ -833,7 +837,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 3 && this.state.existe === false &&
+                    {this.props.option === 3 && !this.state.existe &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="proveedor">Personal De Mantenimiento:</Label>
                         <div className={this.state.divProveedor}>
@@ -852,7 +856,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option != 2 && this.state.existe === false && this.state.total === true &&
+                    {this.props.option != 2 && !this.state.existe && this.state.total &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="proveedor">Personal De Mantenimiento:</Label>
                         <div className={this.state.divProveedor}>
@@ -871,7 +875,8 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option != 1 && this.props.option != 3 && this.props.option != 4 && this.state.arrayProviderSelect !== "" &&
+                    {this.props.option != 1 && this.props.option != 3 &&
+                      this.props.option != 4 && this.state.arrayProviderSelect !== "" &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="proveedor">Personal De Mantenimiento:</Label>
                         <div className={this.state.divProveedor}>
@@ -890,7 +895,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.arrayProviderSelect !== "" && this.state.existe === false && this.props.option !== 4 &&
+                    {this.state.arrayProviderSelect !== "" && !this.state.existe && this.props.option !== 4 &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="tiempo">Tiempo de Mantenimiento (Dias)</Label>
                         <Input disabled={disable}
@@ -906,8 +911,8 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.arrayProviderSelect !== "" && this.state.existe === false && this.props.option === 4 &&
-                      this.state.total === true &&
+                    {this.state.arrayProviderSelect !== "" && !this.state.existe && this.props.option === 4 &&
+                      this.state.total &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="tiempo">Tiempo de Mantenimiento (Dias)</Label>
                         <Input disabled={this.props.option === 4 ? false : disable}
@@ -923,7 +928,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.masivo === false && this.props.option !== 4 &&
+                    {!this.state.masivo && this.props.option !== 4 &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="foto">Foto:</Label>
                         <InputGroup>

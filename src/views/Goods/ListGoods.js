@@ -198,7 +198,7 @@ class ListGoods extends Component {
       expresion += `^(?=.*${datos})`;
     });
 
-    let search = new RegExp(expresion, "ism");
+    let search = new RegExp(expresion, "im");
 
     const prueba = eq ? arrayList.map(list => {
       return (!this.state.modal) ? {

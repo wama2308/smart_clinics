@@ -63,7 +63,7 @@ class ListGoodDisabled extends Component {
       expresion += `^(?=.*${datos})`;
     });
 
-    let search = new RegExp(expresion, "ism");
+    let search = new RegExp(expresion, "im");
 
     const prueba = eq ? arrayList.map(list => {
       return (!this.state.modal) ? {
@@ -78,7 +78,7 @@ class ListGoodDisabled extends Component {
         aux = false
 
       if (aux)
-        data.push({ ...dat});
+        data.push({ ...dat });
 
       aux = true;
     });
@@ -91,7 +91,7 @@ class ListGoodDisabled extends Component {
     const arrayList = getArrays(this.props.goods);
     const { classes } = this.props;
     const prueba = this.filter()
-    
+
     return (
       <div>
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
@@ -118,21 +118,22 @@ class ListGoodDisabled extends Component {
                 </tr>
               </thead> */}
               <tbody>
-                {this.props.goods ? prueba.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
-                  return (
-                    <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
-                      <td colSpan="8" >
-                        <ExpansionPanel
-                          style={{ "margin": "-11.5px", }}
-                        // onChange={this.handleChange(`panel${key}`)}
-                        >
-                          <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
-                            {/* <Typography className={classes.heading}>{`1 - ${list.rank}`}</Typography> */}
+                {this.props.goods ? prueba.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((list, key) => {
+                    return (
+                      <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
+                        <td colSpan="8" >
+                          <ExpansionPanel
+                            style={{ "margin": "-11.5px", }}
+                          // onChange={this.handleChange(`panel${key}`)}
+                          >
+                            <ExpansionPanelSummary expandIcon={<ExpandMore />} /*style={{ "padding": "0 0px 0 0px" }}*/>
+                              {/* <Typography className={classes.heading}>{`1 - ${list.rank}`}</Typography> */}
 
-                            <Typography className={classes.heading5}>{list.name}</Typography>
+                              <Typography className={classes.heading5}>{list.name}</Typography>
 
-                            <Typography variant="button" style={{ "height": "10px" }}>
-                              {/* <IconButton
+                              <Typography variant="button" style={{ "height": "10px" }}>
+                                {/* <IconButton
                                 aria-label="Delete"
                                 title="Edicion Masiva"
                                 className="iconButtons"
@@ -144,9 +145,9 @@ class ListGoodDisabled extends Component {
                               >
                                 <Edit className="iconTable" />
                               </IconButton> */}
-                            </Typography>
+                              </Typography>
 
-                            {/* <Typography variant="button" style={{ "height": "10px" }}>
+                              {/* <Typography variant="button" style={{ "height": "10px" }}>
                               <IconButton
                                 aria-label="Delete"
                                 title="Mobiliario General"
@@ -161,84 +162,84 @@ class ListGoodDisabled extends Component {
                               </IconButton>
                             </Typography> */}
 
-                            <Typography className={classes.spacing}></Typography>
+                              <Typography className={classes.spacing}></Typography>
 
-                            {
-                              list.type_name != "" ?
-                                <Typography className={classes.heading2}></Typography> :
-                                <Typography className={classes.heading2}></Typography>
-                            }
+                              {
+                                list.type_name != "" ?
+                                  <Typography className={classes.heading2}></Typography> :
+                                  <Typography className={classes.heading2}></Typography>
+                              }
 
-                            <Typography className={classes.heading3}></Typography>
-                            <Typography className={classes.heading2}></Typography>
-                            <Typography className={classes.heading3}></Typography>
-                            <Typography className={classes.heading3}></Typography>
+                              <Typography className={classes.heading3}></Typography>
+                              <Typography className={classes.heading2}></Typography>
+                              <Typography className={classes.heading3}></Typography>
+                              <Typography className={classes.heading3}></Typography>
 
-                          </ExpansionPanelSummary>
-                          <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
-                            <Table responsive borderless style={{ "paddingRight": "0px" }}>
-                              <thead className="thead-light">
-                                <tr >
-                                  {/* <td style={{ width: "6%" }}></td> */}
-                                  <td style={{ width: "18%" }}></td>
-                                  <th style={{ "width": "12%" }} className="text-left">Codigo</th>
-                                  <th style={{ "width": "21%" }} className="text-left">Marca</th>
-                                  <th style={{ "width": "20%" }} className="text-left">Modelo</th>
-                                  <th style={{ "width": "12%" }} className="text-left">Año</th>
-                                  <th className="text-left">Acciones</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {list.belogings.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage).map((beloging, key) => {
-                                  return (
-                                    <tr key={key}>
-                                      <td colSpan="8">
-                                        <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
-                                          <Typography style={{ width: "19%" }}></Typography>
-                                          <Typography style={{ "width": "12%" }}>{beloging.code}</Typography>
-                                          <Typography style={{ "width": "21%" }}>{beloging.brand}</Typography>
-                                          <Typography style={{ "width": "20%" }}>{beloging.model}</Typography>
-                                          <Typography style={{ "width": "12%" }}>{beloging.year}</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
+                              <Table responsive borderless style={{ "paddingRight": "0px" }}>
+                                <thead className="thead-light">
+                                  <tr >
+                                    {/* <td style={{ width: "6%" }}></td> */}
+                                    <td style={{ width: "18%" }}></td>
+                                    <th style={{ "width": "12%" }} className="text-left">Codigo</th>
+                                    <th style={{ "width": "21%" }} className="text-left">Marca</th>
+                                    <th style={{ "width": "20%" }} className="text-left">Modelo</th>
+                                    <th style={{ "width": "12%" }} className="text-left">Año</th>
+                                    <th className="text-left">Acciones</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {list.belogings.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage).map((beloging, key) => {
+                                    return (
+                                      <tr key={key}>
+                                        <td colSpan="8">
+                                          <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
+                                            <Typography style={{ width: "19%" }}></Typography>
+                                            <Typography style={{ "width": "12%" }}>{beloging.code}</Typography>
+                                            <Typography style={{ "width": "21%" }}>{beloging.brand}</Typography>
+                                            <Typography style={{ "width": "20%" }}>{beloging.model}</Typography>
+                                            <Typography style={{ "width": "12%" }}>{beloging.year}</Typography>
 
-                                          <Typography variant="button">
-                                            <IconButton aria-label="Delete"
-                                              title="Eliminar Espacio"
-                                              className="iconButtons"
-                                              onClick={
-                                                () => {
-                                                  this.enabledGoods(list._id, beloging._id);
+                                            <Typography variant="button">
+                                              <IconButton aria-label="Delete"
+                                                title="Eliminar Espacio"
+                                                className="iconButtons"
+                                                onClick={
+                                                  () => {
+                                                    this.enabledGoods(list._id, beloging._id);
+                                                  }
                                                 }
-                                              }
-                                            >
-                                              <HowToReg className="iconTable" />
-                                            </IconButton>
-                                          </Typography>
+                                              >
+                                                <HowToReg className="iconTable" />
+                                              </IconButton>
+                                            </Typography>
 
-                                        </ExpansionPanelDetails>
-                                      </td>
+                                          </ExpansionPanelDetails>
+                                        </td>
 
-                                    </tr>
-                                  )
-                                })
-                                }
-                              </tbody>
-                              <PaginationCollapse
-                                contador={list.belogings}
-                                page={list.page}
-                                rowsPerPage={list.rowsPerPage}
-                                handleChangeRowsPerPage={(e) => this.handleChangeRowsPerPageReducer(e, list._id)}
-                                handleChangePage={this.handleChangePageReducer(list._id)}
-                                nextPage={this.props.nextPage}
-                                idCollapse={this.state.idCollapse}
-                              />
-                            </Table>
-                          </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                      </td>
-                    </tr>
+                                      </tr>
+                                    )
+                                  })
+                                  }
+                                </tbody>
+                                <PaginationCollapse
+                                  contador={list.belogings}
+                                  page={list.page}
+                                  rowsPerPage={list.rowsPerPage}
+                                  handleChangeRowsPerPage={(e) => this.handleChangeRowsPerPageReducer(e, list._id)}
+                                  handleChangePage={this.handleChangePageReducer(list._id)}
+                                  nextPage={this.props.nextPage}
+                                  idCollapse={this.state.idCollapse}
+                                />
+                              </Table>
+                            </ExpansionPanelDetails>
+                          </ExpansionPanel>
+                        </td>
+                      </tr>
 
-                  )
-                }) : null
+                    )
+                  }) : null
                 }
               </tbody>
               {

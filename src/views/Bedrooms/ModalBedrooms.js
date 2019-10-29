@@ -679,8 +679,6 @@ class ModalBedrooms extends Component {
 
   render() {
     const disable = this.disabled()
-    console.log(this.state);
-
     return (
       <span>
         <Modal
@@ -691,11 +689,13 @@ class ModalBedrooms extends Component {
           {this.state.loading === "show" ?
             <div>
               <ModalHeader toggle={this.closeModal}>
-                {this.props.modalHeader}</ModalHeader>
+                {this.props.modalHeader}
+              </ModalHeader>
               <ModalBody className="Scroll">
                 <form onSubmit={this.handleSave.bind(this)} >
                   <div className="row">
-                    {this.props.option === 1 &&
+                    {
+                      this.props.option === 1 &&
                       <FormGroup className="top form-group col-sm-6">
                         <FormControlLabel
                           control={
@@ -711,7 +711,8 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 4 &&
+                    {
+                      this.props.option === 4 &&
                       <FormGroup className="top form-group col-sm-6">
                         <FormControlLabel
                           control={
@@ -727,7 +728,8 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 4 && !this.state.checkAll &&
+                    {
+                      this.props.option === 4 && !this.state.checkAll &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="desde">Rango Inicial</Label>
                         <Input
@@ -747,7 +749,8 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 4 && !this.state.checkAll &&
+                    {
+                      this.props.option === 4 && !this.state.checkAll &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="hasta">Rango Final</Label>
                         <Input
@@ -769,7 +772,8 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.check &&
+                    {
+                      this.state.check &&
                       <FormGroup className="top form-group col-sm-6">
                         {this.props.option === 1 && <Label for="habitaciones">Cantidad de Espacios</Label>}
                         {this.props.option !== 1 && <Label for="habitaciones">Cantidad de Espacios</Label>}
@@ -826,7 +830,8 @@ class ModalBedrooms extends Component {
                       </div>
                     </FormGroup>
 
-                    {this.state.arrayBedroomsTypeSelect !== null &&
+                    {
+                      this.state.arrayBedroomsTypeSelect !== null &&
                       this.state.arrayBedroomsTypeSelect.label === "Departamento" &&
                       this.state.arrayBedroomsTypeSelect.value === "5d7facaa3beda80db3462513" &&
                       <FormGroup className="top form-group col-sm-6">
@@ -848,7 +853,8 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {!this.state.check && this.props.option === 1 &&
+                    {
+                      !this.state.check && this.props.option === 1 &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="nombre">Nombre</Label>
                         <Input
@@ -868,7 +874,8 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option !== 1 && this.props.option !== 4 &&
+                    {
+                      this.props.option !== 1 && this.props.option !== 4 &&
                       this.props.option === 2 && this.props.bedrooms.bedroomsOne &&
                       this.props.bedrooms.bedroomsOne.name !== "" &&
                       <FormGroup className="top form-group col-sm-6">
@@ -890,7 +897,8 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 3 &&
+                    {
+                      this.props.option === 3 &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="nombre">Nombre</Label>
                         <Input
@@ -910,44 +918,45 @@ class ModalBedrooms extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option !== 4 ?
-                      <FormGroup className="top form-group col-sm-6">
-                        <Label for="abreviatura">Abreviatura</Label>
-                        <Input
-                          disabled={this.props.disabled}
-                          invalid={this.state.abreviaturaInvalid}
-                          name="abreviatura"
-                          id="abreviatura"
-                          onKeyUp={this.handlekeyHabitaciones}
-                          onChange={this.handleabreviatura}
-                          value={this.state.abreviatura}
-                          type="text"
-                          placeholder="Abreviatura"
-                          maxLength={3}
-                        />
-                        <div className="errorSelect">
-                          {this.state.abreviaturaError}
-                        </div>
-                      </FormGroup> :
-                      this.props.option === 4 && this.state.checkAll &&
-                      <FormGroup className="top form-group col-sm-6">
-                        <Label for="abreviatura">Abreviatura</Label>
-                        <Input
-                          disabled={this.props.disabled}
-                          invalid={this.state.abreviaturaInvalid}
-                          name="abreviatura"
-                          id="abreviatura"
-                          onKeyUp={this.handlekeyHabitaciones}
-                          onChange={this.handleabreviatura}
-                          value={this.state.abreviatura}
-                          type="text"
-                          placeholder="Abreviatura"
-                          maxLength={3}
-                        />
-                        <div className="errorSelect">
-                          {this.state.abreviaturaError}
-                        </div>
-                      </FormGroup>
+                    {
+                      this.props.option !== 4 ?
+                        <FormGroup className="top form-group col-sm-6">
+                          <Label for="abreviatura">Abreviatura</Label>
+                          <Input
+                            disabled={this.props.disabled}
+                            invalid={this.state.abreviaturaInvalid}
+                            name="abreviatura"
+                            id="abreviatura"
+                            onKeyUp={this.handlekeyHabitaciones}
+                            onChange={this.handleabreviatura}
+                            value={this.state.abreviatura}
+                            type="text"
+                            placeholder="Abreviatura"
+                            maxLength={3}
+                          />
+                          <div className="errorSelect">
+                            {this.state.abreviaturaError}
+                          </div>
+                        </FormGroup> :
+                        this.props.option === 4 && this.state.checkAll &&
+                        <FormGroup className="top form-group col-sm-6">
+                          <Label for="abreviatura">Abreviatura</Label>
+                          <Input
+                            disabled={this.props.disabled}
+                            invalid={this.state.abreviaturaInvalid}
+                            name="abreviatura"
+                            id="abreviatura"
+                            onKeyUp={this.handlekeyHabitaciones}
+                            onChange={this.handleabreviatura}
+                            value={this.state.abreviatura}
+                            type="text"
+                            placeholder="Abreviatura"
+                            maxLength={3}
+                          />
+                          <div className="errorSelect">
+                            {this.state.abreviaturaError}
+                          </div>
+                        </FormGroup>
                     }
 
                     <FormGroup className="top form-group col-sm-6">
@@ -968,7 +977,8 @@ class ModalBedrooms extends Component {
                       </div>
                     </FormGroup>
 
-                    {!this.state.check && this.props.option !== 4 &&
+                    {
+                      !this.state.check && this.props.option !== 4 &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="foto">Foto</Label>
                         <InputGroup>
@@ -1001,7 +1011,8 @@ class ModalBedrooms extends Component {
                   <Col>
                     <Nav tabs>
                       <NavItem>
-                        <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
+                        <NavLink className={classnames({ active: this.state.activeTab === '1' })}
+                          onClick={() => { this.toggleTab('1'); }} >
                           Agregar Bienes
                         </NavLink>
                       </NavItem>

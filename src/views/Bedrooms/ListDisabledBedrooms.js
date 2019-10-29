@@ -79,7 +79,7 @@ class ListDisabledBedrooms extends Component {
       expresion += `^(?=.*${datos})`;
     });
 
-    let search = new RegExp(expresion, "ism");
+    let search = new RegExp(expresion, "im");
 
     const prueba = eq ? arrayList.map(list => {
       return (!this.state.modal) ? {
@@ -90,13 +90,15 @@ class ListDisabledBedrooms extends Component {
       : arrayList;
 
     prueba.map(dat => {
-      if (dat.spaces.length === 0)
-        aux = false
+      if (dat.spaces) {
+        if (dat.spaces.length < 1)
+          aux = false
 
-      if (aux)
-        data.push({ ...dat });
+        if (aux)
+          data.push({ ...dat });
 
-      aux = true;
+        aux = true;
+      }
     });
 
     return (!this.state.modal) ? data : arrayList;

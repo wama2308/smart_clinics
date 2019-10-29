@@ -248,10 +248,47 @@ class ListBedrooms extends Component {
   //   }
   // }
 
+  filter = () => {
+    const arrayList = getArrays(this.props.bedrooms);
+    let eq = this.props.search.toLowerCase(); // variable de comparacion
+    const gt = eq.split(' ')
+    let expresion = ""
+    let data = []
+    let aux = true
+
+    gt.map(datos => {
+      expresion += `^(?=.*${datos})`;
+    });
+
+    let search = new RegExp(expresion, "im");
+
+    const prueba = eq ? arrayList.map(list => {
+      return (!this.state.modal) ? {
+        ...list,
+        spaces: list.spaces.filter(space => search.test(space.search))
+      } : arrayList
+    })
+      : arrayList;
+
+    prueba.map(dat => {
+      if (dat.spaces) {
+        if (dat.spaces.length < 1)
+          aux = false
+
+        if (aux)
+          data.push({ ...dat });
+
+        aux = true;
+      }
+    });
+
+    return (!this.state.modal) ? data : arrayList;
+  }
+
   render() {
     const { rowsPerPage, page } = this.state;
     const arrayList = getArrays(this.props.bedrooms);
-    // const prueba = this.filter()
+    const result = this.filter()
     // const expan = this.collapse();
     const { classes } = this.props;
 
@@ -278,6 +315,7 @@ class ListBedrooms extends Component {
             searchData={this.props.search}
           />
         }
+
         {
           this.state.modalTable &&
           <ModalTabla
@@ -287,6 +325,7 @@ class ListBedrooms extends Component {
             modalHeader={this.state.modalHeader}
           />
         }
+
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
           <div className="container-button" style={{ "height": "35%" }}>
             <Button color="success"
@@ -327,7 +366,7 @@ class ListBedrooms extends Component {
                 </tr>
               </thead> */}
               <tbody>
-                {this.props.bedrooms ? this.props.bedrooms.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
+                {this.props.bedrooms ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
@@ -420,25 +459,73 @@ class ListBedrooms extends Component {
                                 </tr>
                               </thead>
                               <tbody>
-                                {list.spaces.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage).map((spaces, key) => {
-                                  return (
-                                    <tr key={key}>
-                                      <td></td>
-                                      <td colSpan="6" style={{ "padding": "0px" }}>
-                                        <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
-                                          {/* <Typography style={{ width: "18%" }}></Typography> */}
-                                          <Typography style={{ "width": "14.3%", "padding": "12px" }}>{spaces.code}</Typography>
-                                          <Typography style={{ "width": "26%", "padding": "12px" }}>{spaces.name}</Typography>
-                                          <Typography style={{ "width": "24.1%", "padding": "12px" }}>{spaces.floor}</Typography>
-                                          <Typography style={{ "width": "15%", "padding": "12px" }}>{spaces.status}</Typography>
-                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
-                                            <IconButton aria-label="Delete"
-                                              title="Ver Espacio"
-                                              className="iconButtons"
-                                              onClick={
-                                                (event) => {
+                                {list.spaces.slice(list.page * list.rowsPerPage, list.page * list.rowsPerPage + list.rowsPerPage)
+                                  .map((spaces, key) => {
+                                    return (
+                                      <tr key={key}>
+                                        <td></td>
+                                        <td colSpan="6" style={{ "padding": "0px" }}>
+                                          <ExpansionPanelDetails style={{ "padding": "0 0px 0 0px" }}>
+                                            {/* <Typography style={{ width: "18%" }}></Typography> */}
+                                            <Typography
+                                              style={{
+                                                "width": "14.3%",
+                                                "padding": "12px"
+                                              }}>
+                                              {spaces.code}
+                                            </Typography>
+
+                                            <Typography
+                                              style={{
+                                                "width": "26%",
+                                                "padding": "12px"
+                                              }}>{spaces.name}
+                                            </Typography>
+
+                                            <Typography
+                                              style={{
+                                                "width": "24.1%",
+                                                "padding": "12px"
+                                              }}>
+                                              {spaces.floor}
+                                            </Typography>
+
+                                            <Typography
+                                              style={{
+                                                "width": "15%",
+                                                "padding": "12px"
+                                              }}>
+                                              {spaces.status}
+                                            </Typography>
+
+                                            <Typography variant="button" style={{ "paddingTop": "9px" }}>
+                                              <IconButton aria-label="Delete"
+                                                title="Ver Espacio"
+                                                className="iconButtons"
+                                                onClick={
+                                                  (event) => {
+                                                    this.openModal({
+                                                      option: 2,
+                                                      id: spaces._id,
+                                                      category: null,
+                                                      type: null,
+                                                      event: event,
+                                                      value: null,
+                                                      code: null
+                                                    });
+                                                  }
+                                                }
+                                              >
+                                                <Visibility className="iconTable" />
+                                              </IconButton>
+                                            </Typography>
+                                            <Typography variant="button" style={{ "paddingTop": "9px" }}>
+                                              <IconButton aria-label="Delete"
+                                                title="Editar Espacio"
+                                                className="iconButtons"
+                                                onClick={(event) => {
                                                   this.openModal({
-                                                    option: 2,
+                                                    option: 3,
                                                     id: spaces._id,
                                                     category: null,
                                                     type: null,
@@ -446,75 +533,56 @@ class ListBedrooms extends Component {
                                                     value: null,
                                                     code: null
                                                   });
-                                                }
-                                              }
-                                            >
-                                              <Visibility className="iconTable" />
-                                            </IconButton>
-                                          </Typography>
-                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
-                                            <IconButton aria-label="Delete"
-                                              title="Editar Espacio"
-                                              className="iconButtons"
-                                              onClick={(event) => {
-                                                this.openModal({
-                                                  option: 3,
-                                                  id: spaces._id,
-                                                  category: null,
-                                                  type: null,
-                                                  event: event,
-                                                  value: null,
-                                                  code: null
-                                                });
-                                              }}
-                                            >
-                                              <Edit className="iconTable" />
-                                            </IconButton>
-                                          </Typography>
+                                                }}
+                                              >
+                                                <Edit className="iconTable" />
+                                              </IconButton>
+                                            </Typography>
 
-                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
-                                            <IconButton aria-label="Delete"
-                                              title="Eliminar Espacio"
-                                              className="iconButtons"
-                                              onClick={
-                                                () => {
-                                                  this.disabledBedroom(spaces._id);
+                                            <Typography variant="button" style={{ "paddingTop": "9px" }}>
+                                              <IconButton aria-label="Delete"
+                                                title="Eliminar Espacio"
+                                                className="iconButtons"
+                                                onClick={
+                                                  () => {
+                                                    this.disabledBedroom(spaces._id);
+                                                  }
                                                 }
-                                              }
-                                            >
-                                              <Delete className="iconTable" />
-                                            </IconButton>
-                                          </Typography>
+                                              >
+                                                <Delete className="iconTable" />
+                                              </IconButton>
+                                            </Typography>
 
-                                          <Typography variant="button" style={{ "paddingTop": "9px" }}>
-                                            <IconButton aria-label="Delete"
-                                              title="Mobiliario del Espacio"
-                                              className="iconButtons"
-                                              onClick={
-                                                (event) => {
-                                                  this.openModal({
-                                                    option: 6,
-                                                    id: spaces._id,
-                                                    category: list.category,
-                                                    type: list.type_name,
-                                                    event: event,
-                                                    value: 0,
-                                                    code: spaces.name
-                                                  });
+                                            <Typography variant="button" style={{ "paddingTop": "9px" }}>
+                                              <IconButton aria-label="Delete"
+                                                title="Mobiliario del Espacio"
+                                                className="iconButtons"
+                                                onClick={
+                                                  (event) => {
+                                                    this.openModal({
+                                                      option: 6,
+                                                      id: spaces._id,
+                                                      category: list.category,
+                                                      type: list.type_name,
+                                                      event: event,
+                                                      value: 0,
+                                                      code: spaces.name
+                                                    });
+                                                  }
                                                 }
-                                              }
-                                            >
-                                              <List className="iconTable" />
-                                            </IconButton>
-                                          </Typography>
-                                        </ExpansionPanelDetails>
-                                      </td>
-                                    </tr>
-                                  )
-                                })
+                                              >
+                                                <List className="iconTable" />
+                                              </IconButton>
+                                            </Typography>
+                                          </ExpansionPanelDetails>
+                                        </td>
+                                      </tr>
+                                    )
+                                  })
                                 }
                               </tbody>
-                              {list.spaces.length > 5 &&
+                              {
+                                list.spaces.length > 5 &&
                                 <PaginationCollapse
                                   contador={list.spaces}
                                   page={list.page}
@@ -571,7 +639,7 @@ const styles = theme => ({
     flexBasis: '11%',
   },
   heading5: {
-    width: '120px',
+    width: '127px',
   },
   spacing: {
     flexBasis: '35%'
