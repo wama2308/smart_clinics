@@ -16,7 +16,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { connect } from "react-redux";
 import { openConfirmDialog, search } from '../actions/aplicantionActions';
 import ListGoods from '../views/Goods/ListGoods';
-import { queryAllBelongingFunction, queryOneBelongingFunction, enabledBelongingFunction, disabledBelongingFunction, nextPage, backPage, dataPagination, rowPagination } from '../actions/GoodsAction';
+import { queryAllBelongingFunction, queryOneBelongingFunction, enabledBelongingFunction, disabledBelongingFunction, nextPage, backPage, dataPagination, rowPagination, createTable } from '../actions/GoodsAction';
 import ListGoodDisabled from '../views/Goods/ListGoodDisabled';
 
 class GoodsContainer extends Component {
@@ -73,12 +73,12 @@ class GoodsContainer extends Component {
                   <div>
                     <Nav tabs>
                       <NavItem>
-                        <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }} >
+                        <NavLink className={classnames({ active: this.state.activeTab === "1" })} onClick={() => { this.toggleTab("1"); }} >
                           Bienes Activos
                       </NavLink>
                       </NavItem>
                       <NavItem>
-                        <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }} >
+                        <NavLink className={classnames({ active: this.state.activeTab === "2" })} onClick={() => { this.toggleTab("2"); }} >
                           Bienes Inactivos
                       </NavLink>
                       </NavItem>
@@ -95,11 +95,12 @@ class GoodsContainer extends Component {
                           backPage={this.props.backPage}
                           dataPagination={this.props.dataPagination}
                           rowPagination={this.props.rowPagination}
+                          createTable={this.props.createTable}
+                          loadTable={this.props.goods.loadTable}
+
                         />
                       </TabPane>
-                    </TabContent>
 
-                    <TabContent activeTab={this.state.activeTab}>
                       <TabPane tabId="2">
                         <ListGoodDisabled
                           confirm={this.props.confirm}
@@ -140,7 +141,8 @@ const mapDispatchToProps = dispatch => ({
   nextPage: (data) => dispatch(nextPage(data)),
   backPage: (data) => dispatch(backPage(data)),
   dataPagination: (data) => dispatch(dataPagination(data)),
-  rowPagination: (data) => { dispatch(rowPagination(data)) }
+  rowPagination: (data) => dispatch(rowPagination(data)),
+  createTable: (data) => dispatch(createTable(data))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoodsContainer);

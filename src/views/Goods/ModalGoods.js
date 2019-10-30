@@ -37,16 +37,18 @@ class ModalGoods extends Component {
       hasta: 0,
       hastaError: '',
       hastaInvalid: false,
+      espacioAsignado: "",
+      tipoEspacio: ""
     }
   }
 
   componentDidMount() {
-    if (this.props.option !== 1 && this.props.option !== 4) {
+    if (this.props.option > 1 && this.props.option !== 4) {
       this.setState({ loading: 'hide' })
     } else if (this.props.option === 4) {
       const data = this.filter(this.props.data)
       const min = this.getGroup(data)
-      const max = this.getGroupMax(data)
+      //const max = this.getGroupMax(data)
 
       this.setState({
         desde: min,
@@ -136,30 +138,30 @@ class ModalGoods extends Component {
     let hastaError = ""
     let hastaInvalid = false
 
-    if (this.state.nombre === "") {
-      if (this.state.existe === false) {
+    if (!this.state.nombre) {
+      if (!this.state.existe) {
         nombreError = "¡Ingrese el Nombre!"
         nombreInvalid = true
       }
     }
 
-    if (this.state.year === "") {
-      if (this.state.total === false) {
+    if (!this.state.year) {
+      if (!this.state.total) {
         yearError = "¡Ingrese el Año!"
         yearInvalid = true
       }
     }
 
-    if (this.state.code === "") {
-      if (this.state.masivo === false && this.state.existe === false && this.props.option === 1) {
-        if (this.props.option !== 4 && this.state.masivo === false) {
+    if (!this.state.code) {
+      if (!this.state.masivo && !this.state.existe && this.props.option === 1) {
+        if (this.props.option !== 4 && !this.state.masivo) {
           codigoError = "¡Ingrese el Codigo!"
           codigoInvalid = true
         }
-      } else if (this.state.masivo === true && this.state.existe === false) {
+      } else if (this.state.masivo && !this.state.existe) {
         codigoError = "¡Ingrese el Codigo!"
         codigoInvalid = true
-      } else if (this.state.masivo === true && this.state.existe === true) {
+      } else if (this.state.masivo && this.state.existe) {
         codigoError = ''
         codigoInvalid = false
       } else if (this.props.option === 4) {
@@ -168,22 +170,22 @@ class ModalGoods extends Component {
       }
     }
 
-    if (this.state.marca === "") {
-      if (this.state.total === false) {
+    if (!this.state.marca) {
+      if (!this.state.total) {
         marcaError = "¡Ingrese la Marca!"
         marcaInvalid = true
       }
     }
 
-    if (this.state.modelo === "") {
-      if (this.state.total === false) {
+    if (!this.state.modelo) {
+      if (!this.state.total) {
         modeloError = "¡Ingrese el Modelo!"
         modeloInvalid = true
       }
     }
 
-    if (this.state.cantidad === 0) {
-      if (this.state.masivo === true && this.props.option === 1) {
+    if (this.state.cantidad < 1) {
+      if (this.state.masivo && this.props.option === 1) {
         cantidadError = "¡Ingrese la Cantidad!"
         cantidadInvalid = true
       }
@@ -197,22 +199,22 @@ class ModalGoods extends Component {
     //   }
     // }
 
-    if (this.state.desde === 0 && this.props.option === 4) {
-      if (this.state.checkAll === false) {
+    if (this.state.desde < 1 && this.props.option === 4) {
+      if (!this.state.checkAll) {
         desdeError = "¡Ingrese el rango!"
         desdeInvalid = true
       }
     }
 
-    if (this.state.desde === 0 && this.props.option === 4) {
-      if (this.state.checkAll === false) {
+    if (this.state.desde < 1 && this.props.option === 4) {
+      if (!this.state.checkAll) {
         hastaError = "¡Ingrese el rango!"
         hastaInvalid = true
       }
     }
 
-    if (this.state.arrayGoodsSelect === null || this.state.arrayGoodsSelect.length === 0) {
-      if (this.state.existe === true) {
+    if (!this.state.arrayGoodsSelect) {
+      if (this.state.existe) {
         divGoodsSelectError = "¡Seleccione el Bien!"
         divGoodsSelect = "borderColor"
       }
@@ -283,7 +285,7 @@ class ModalGoods extends Component {
   };
 
   handleChangeTime = e => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     if (value > 0) {
       this.setState({
         tiempo: parseInt(value)
@@ -292,7 +294,7 @@ class ModalGoods extends Component {
   }
 
   handleChangeCantidad = e => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     if (value > 0) {
       this.setState({
         cantidad: value
@@ -307,7 +309,7 @@ class ModalGoods extends Component {
   }
 
   getGroup = fields => {
-    if (fields.length !== 0) {
+    if (fields.length > 0) {
       let arrayGroups = [];
       fields[0].belogings.map(field => {
         const number = parseInt(field.number)
@@ -319,7 +321,7 @@ class ModalGoods extends Component {
   };
 
   getGroupMax = fields => {
-    if (fields.length !== 0) {
+    if (fields.length > 0) {
       let arrayGroups = [];
       fields[0].belogings.map(field => {
         arrayGroups.push(field.number)
@@ -330,38 +332,40 @@ class ModalGoods extends Component {
   };
 
   handleDesde = e => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     const data = this.filter(this.props.data)
     const min = this.getGroup(data)
-    const max = this.getGroupMax(data)
+    //const max = this.getGroupMax(data)
+    let number = parseInt(value)
 
-    if (parseInt(value) >= min && value <= data[0].quantity - 1) {
+    if ((number >= min) && (value <= data[0].quantity - 1)) {
       this.setState({
-        desde: parseInt(value),
-        hasta: parseInt(value) + 1
+        desde: number,
+        hasta: number + 1
 
       })
     }
   }
 
   handleHasta = e => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     const data = this.filter(this.props.data)
-    const max = this.getGroupMax(data)
+    // const max = this.getGroupMax(data)
+    let number = parseInt(value)
     const min = this.getGroup(data)
     if (this.props.data.length > 0) {
-      if (parseInt(value) > min && parseInt(value) <= data[0].quantity) {
+      if ((number > min) && (number <= data[0].quantity)) {
         this.setState({
-          hasta: parseInt(value)
+          hasta: number
         });
       }
     }
   }
 
   filter = (data) => {
-    if (data.length != 0) {
-      const date = data.filter(data => {
-        if (this.props.name != "") {
+    if (data.length > 0) {
+      let date = data.filter(data => {
+        if (this.props.name) {
           return data.name === this.props.name
         }
       })
@@ -373,15 +377,16 @@ class ModalGoods extends Component {
   }
 
   filterFull = () => {
-    const data = this.filter(this.props.data)
-    if (data.length !== 0) {
-      const datos = data[0].belogings.filter(data => {
-        return parseInt(data.number) >= this.state.desde && parseInt(data.number) <= this.state.hasta
+    let data = this.filter(this.props.data)
+    if (data.length > 0) {
+      let datos = data[0].belogings.filter(dataNumber => {
+        let number = parseInt(dataNumber.number)
+        return number >= this.state.desde && number <= this.state.hasta
       })
 
       const arrayClean = []
-      datos.map(datos => {
-        arrayClean.push(datos._id)
+      datos.map(dat => {
+        arrayClean.push(dat._id)
       })
 
       return arrayClean
@@ -404,6 +409,8 @@ class ModalGoods extends Component {
           arrayProviderSelect: props.goods.goodsOne.mantenance_staff,
           tiempo: props.goods.goodsOne.maintenance_time,
           serial: props.goods.goodsOne.serial,
+          espacioAsignado: props.goods.goodsOne.space.name,
+          tipoEspacio: props.goods.goodsOne.space.type,
           loading: 'show'
         })
       } else {
@@ -425,11 +432,11 @@ class ModalGoods extends Component {
   }
 
   allId = () => {
-    const data = this.filter(this.props.data)
-    const array = []
+    let data = this.filter(this.props.data)
+    let array = []
     if (data.length !== 0) {
-      data[0].belogings.map(data => {
-        array.push(data._id)
+      data[0].belogings.map(datos => {
+        array.push(datos._id)
       })
     }
     return array
@@ -440,7 +447,7 @@ class ModalGoods extends Component {
     const isValid = this.validate();
     if (isValid) {
       if (this.props.option === 1) {
-        if (this.state.existe === false && this.state.masivo === false) {
+        if (!this.state.existe && !this.state.masivo) {
           this.setState({ loading: 'hide' })
           this.props.createBelongingFunction({
             input: 0,
@@ -455,7 +462,7 @@ class ModalGoods extends Component {
           }, () => {
             this.closeModal()
           })
-        } else if (this.state.existe === true && this.state.masivo === false) {
+        } else if (this.state.existe && !this.state.masivo) {
           this.setState({ loading: 'hide' })
           this.props.createBelongingFunction({
             input: 0,
@@ -470,7 +477,7 @@ class ModalGoods extends Component {
           }, () => {
             this.closeModal()
           })
-        } else if (this.state.existe === false && this.state.masivo === true) {
+        } else if (!this.state.existe && this.state.masivo) {
           this.setState({ loading: 'hide' })
           this.props.createBelongingFunction({
             input: 1,
@@ -487,7 +494,7 @@ class ModalGoods extends Component {
           }, () => {
             this.closeModal()
           })
-        } else if (this.state.existe === true && this.state.masivo === true) {
+        } else if (this.state.existe && this.state.masivo) {
           this.setState({ loading: 'hide' })
           this.props.createBelongingFunction({
             input: 1,
@@ -507,6 +514,7 @@ class ModalGoods extends Component {
       } else if (this.props.option === 3) {
         this.setState({ loading: 'hide' })
         this.props.editBelongingFunction({
+          all: false,
           input: 0,
           _id: this.props.id,
           belongings: this.props.specifict_id,
@@ -521,49 +529,36 @@ class ModalGoods extends Component {
           this.closeModal()
         })
       } else if (this.props.option === 4) {
-        if (this.state.total === false) {
-          const arrayFilter = this.filterFull()
-          this.setState({ loading: 'hide' })
-          this.props.editBelongingFunction({
-            input: 1,
-            _id: this.props.id,
-            belongings: arrayFilter,
-            name: this.state.nombre,
-            code: this.state.code,
-            model: this.state.modelo,
-            brand: this.state.marca,
-            year: this.state.year,
-          }, () => {
-            this.closeModal()
-          })
-        } else {
-          const arrayFilter = this.allId()
-          this.setState({ loading: 'hide' })
-          this.props.editBelongingFunction({
-            input: 1,
-            _id: this.props.id,
-            belongings: arrayFilter,
-            name: this.state.nombre,
-            code: this.state.code,
-            mantenance_staff: this.state.arrayProviderSelect.value,
-            maintenance_time: this.state.tiempo
-          }, () => {
-            this.closeModal()
-          })
-        }
+        const arrayFilter = (!this.state.total) ? this.filterFull() : this.allId()
+        this.setState({ loading: 'hide' })
+        this.props.editBelongingFunction({
+          all: this.state.total,
+          input: 1,
+          _id: this.props.id,
+          belongings: arrayFilter,
+          name: this.state.nombre,
+          code: this.state.code,
+          model: (!this.state.total) ? this.state.modelo : "",
+          brand: this.state.marca,
+          year: this.state.year,
+          mantenance_staff: (this.state.total) ? this.state.arrayProviderSelect.value : "",
+          maintenance_time: (this.state.total) ? this.state.tiempo : ""
+        }, () => {
+          this.closeModal()
+        })
       }
     }
   }
 
   selectGoods = () => {
-    const array = []
+    let arrayGoods = []
     this.props.data.map(data => {
-      array.push({
+      arrayGoods.push({
         label: data.name,
         value: data._id
       })
     })
-    return array
+    return arrayGoods
   }
 
   disabled = () => {
@@ -584,10 +579,7 @@ class ModalGoods extends Component {
 
   render() {
     const filter = this.filterFull(this.props.data)
-    console.log(this.state);
-
     const disable = this.disabled()
-
     const select = this.selectGoods()
     return (
       <span>
@@ -652,7 +644,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 4 && this.state.total === false &&
+                    {this.props.option === 4 && !this.state.total &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="desde">Rango Inicial</Label>
                         <Input
@@ -672,7 +664,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 4 && this.state.total === false &&
+                    {this.props.option === 4 && !this.state.total &&
                       <FormGroup className="top form-group col-sm-3">
                         <Label for="hasta">Rango Final</Label>
                         <Input
@@ -695,7 +687,7 @@ class ModalGoods extends Component {
                     }
 
 
-                    {this.state.masivo === true && this.props.option !== 4 &&
+                    {this.state.masivo && this.props.option !== 4 &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="cantidad">Cantidad</Label>
                         <Input disabled={this.props.disabled}
@@ -711,7 +703,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.existe === true &&
+                    {this.state.existe &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="bienes">Bienes Registrados</Label>
                         <div className={this.state.divGoodsSelect}>
@@ -730,11 +722,11 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.existe === false &&
+                    {!this.state.existe &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="nombre">Nombre</Label>
                         <Input
-                          disabled={this.state.total === false && this.props.option === 4 ? disable : disable}
+                          disabled={!this.state.total && this.props.option === 4 ? disable : disable}
                           invalid={this.state.nombreInvalid}
                           name="nombre"
                           id="nombre"
@@ -747,7 +739,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.existe === false && this.state.masivo === false &&
+                    {!this.state.existe && !this.state.masivo &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="code">Codigo</Label>
                         <Input disabled={disable}
@@ -763,7 +755,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.existe === false && this.state.masivo === true &&
+                    {!this.state.existe && this.state.masivo &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="code">Codigo</Label>
                         <Input disabled={disable}
@@ -779,7 +771,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.total === false &&
+                    {!this.state.total &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="marca">Marca</Label>
                         <Input disabled={this.props.disabled}
@@ -797,7 +789,7 @@ class ModalGoods extends Component {
                         </div>
                       </FormGroup>
                     }
-                    {this.state.total === false &&
+                    {!this.state.total &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="modelo">Modelo</Label>
                         <Input disabled={this.props.disabled}
@@ -809,10 +801,12 @@ class ModalGoods extends Component {
                           value={this.state.modelo}
                           type="text"
                           placeholder="Modelo" />
-                        <FormFeedback tooltip>{this.state.modeloError}</FormFeedback>
+                        <div className="errorSelect">
+                          {this.state.modeloError}
+                        </div>
                       </FormGroup>
                     }
-                    {this.state.total === false &&
+                    {!this.state.total &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="year">Año</Label>
                         <Input disabled={this.props.disabled}
@@ -831,7 +825,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.masivo === false && this.props.option != 1 && this.props.option != 4 &&
+                    {!this.state.masivo && this.props.option != 1 && this.props.option != 4 &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="serial">Serial</Label>
                         <Input disabled={this.props.disabled}
@@ -847,7 +841,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option === 3 && this.state.existe === false &&
+                    {this.props.option === 3 && !this.state.existe &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="proveedor">Personal De Mantenimiento:</Label>
                         <div className={this.state.divProveedor}>
@@ -866,7 +860,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option != 2 && this.state.existe === false && this.state.total === true &&
+                    {this.props.option != 2 && !this.state.existe && this.state.total &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="proveedor">Personal De Mantenimiento:</Label>
                         <div className={this.state.divProveedor}>
@@ -885,7 +879,8 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.props.option != 1 && this.props.option != 3 && this.props.option != 4 && this.state.arrayProviderSelect !== "" &&
+                    {this.props.option != 1 && this.props.option != 3 &&
+                      this.props.option != 4 && this.state.arrayProviderSelect !== "" &&
                       <FormGroup className="top form-group col-sm-6">
                         <Label for="proveedor">Personal De Mantenimiento:</Label>
                         <div className={this.state.divProveedor}>
@@ -904,7 +899,7 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.arrayProviderSelect !== "" && this.state.existe === false && this.props.option !== 4 &&
+                    {this.state.arrayProviderSelect !== "" && !this.state.existe && this.props.option !== 4 &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="tiempo">Tiempo de Mantenimiento (Dias)</Label>
                         <Input disabled={disable}
@@ -920,8 +915,8 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.arrayProviderSelect !== "" && this.state.existe === false && this.props.option === 4 &&
-                      this.state.total === true &&
+                    {this.state.arrayProviderSelect !== "" && !this.state.existe && this.props.option === 4 &&
+                      this.state.total &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="tiempo">Tiempo de Mantenimiento (Dias)</Label>
                         <Input disabled={this.props.option === 4 ? false : disable}
@@ -937,7 +932,42 @@ class ModalGoods extends Component {
                       </FormGroup>
                     }
 
-                    {this.state.masivo === false && this.props.option !== 4 &&
+                    {
+                      this.props.option > 1 && this.props.option !== 4 &&
+                      < FormGroup className="top form-group col-sm-6">
+                        <Label for="tiempo">Espacio Asignado</Label>
+                        <Input disabled={this.props.option === 4 ? false : disable}
+                          //invalid={this.state.tiempoInvalid}
+                          name="tiempo"
+                          id="tiempo"
+                          onKeyUp={this.handlekeyTitulo}
+                          //onChange={this.handleChangeTime}
+                          value={this.state.espacioAsignado}
+                          type="text"
+                          placeholder="No Asignado" />
+                        <FormFeedback tooltip>{this.state.tiempoError}</FormFeedback>
+                      </FormGroup>
+                    }
+
+                    {
+                      this.props.option > 1 && this.props.option !== 4 &&
+                      < FormGroup className="top form-group col-sm-6">
+                        <Label for="tiempo">Tipo de Espacio</Label>
+                        <Input disabled={this.props.option === 4 ? false : disable}
+                          //invalid={this.state.tiempoInvalid}
+                          name="tiempo"
+                          id="tiempo"
+                          //onKeyUp={this.handlekeyTitulo}
+                          //onChange={this.handleChangeTime}
+                          value={this.state.tipoEspacio}
+                          type="text"
+                          placeholder="No Asignado" />
+                        <FormFeedback tooltip>{this.state.tiempoError}</FormFeedback>
+                      </FormGroup>
+                    }
+
+
+                    {!this.state.masivo && this.props.option !== 4 &&
                       < FormGroup className="top form-group col-sm-6">
                         <Label for="foto">Foto:</Label>
                         <InputGroup>

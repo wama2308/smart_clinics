@@ -6,7 +6,7 @@ const loadbedroons = (state, payload) => {
   estado.bedroomsEnabled = []
   estado.bedroomsDisabled = []
   estado.dataAccept = []
-  estado.propsAction = 0
+  estado.propsAction = false
   estado.action = 1
   estado.masivo = false
 
@@ -31,7 +31,7 @@ const loadbedroons = (state, payload) => {
 
 const loadOneBedroons = (state, payload) => {
   let estado = state.toJS();
-  const array = []
+  let array = []
   payload.loadOneTurnos.belogings.map(data => {
     array.push({
       ...data,
@@ -161,7 +161,7 @@ const setCollapse = (state, payload) => {
 
   estado.bedroomsEnabled.find(list => {
     if (list._id === payload.id && list.type_name === payload.type) {
-      if (list.status === false) {
+      if (!list.status) {
         list.status = true
       } else {
         list.status = false

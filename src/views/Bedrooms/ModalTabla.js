@@ -41,7 +41,7 @@ class ModalTabla extends Component {
   };
 
   componentDidMount() {
-    if (this.props.option === 5) {
+    if (this.props.option > 4) {
       this.setState({
         loading: "hide"
       })
@@ -49,7 +49,7 @@ class ModalTabla extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.option === 5) {
+    if (props.option > 4) {
       this.setState({
         loading: "show"
       })
@@ -79,7 +79,7 @@ class ModalTabla extends Component {
                           <th className="text-left">Codigo</th>
                           {this.props.option === 6 && <th className="text-left">Marca</th>}
                           {this.props.option === 6 && <th className="text-left">Modelo</th>}
-                          {this.props.option === 6 && <th className="text-left">Ano</th>}
+                          {this.props.option === 6 && <th className="text-left">Año</th>}
                           {this.props.option === 6 && <th className="text-left">Serial</th>}
                           {this.props.option === 5 && <th className="text-left">Cantidad</th>}
                         </tr>

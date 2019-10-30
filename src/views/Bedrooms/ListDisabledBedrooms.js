@@ -5,6 +5,8 @@ import { Table } from 'reactstrap'
 import Pagination from '../../components/Pagination';
 import { withStyles } from '@material-ui/core/styles';
 import PaginationCollapse from '../../components/PaginationCollapse';
+import { getArrays } from '../../core/utils';
+import Search from "../../components/Select";
 
 class ListDisabledBedrooms extends Component {
   constructor(props) {
@@ -12,9 +14,9 @@ class ListDisabledBedrooms extends Component {
     this.state = {
       page: 0,
       rowsPerPage: 10,
+      modal: false
     }
   }
-
 
   activarEspacio = (id) => {
     const message = {
@@ -29,11 +31,20 @@ class ListDisabledBedrooms extends Component {
   }
 
   handleChangeRowsPerPage = event => {
-    this.setState({ page: 0, rowsPerPage: event.target.value });
+    this.setState({
+      page: 0,
+      rowsPerPage: event.target.value
+    });
   };
 
   handleChangeRowsPerPageReducer = (event, id, type_id) => {
-    this.props.rowPagination({ type_id: type_id, page: 0, rowsPerPage: event.target.value, id: id, option: false })
+    this.props.rowPagination({
+      type_id: type_id,
+      page: 0,
+      rowsPerPage: event.target.value,
+      id: id,
+      option: false
+    })
   };
 
 
@@ -42,7 +53,12 @@ class ListDisabledBedrooms extends Component {
   };
 
   handleChangePageReducer = (id, type_id, pages) => (event, page) => {
-    this.props.nextPage({ type_id: type_id, page: page, id: id, option: false })
+    this.props.nextPage({
+      type_id: type_id,
+      page: page,
+      id: id,
+      option: false
+    })
   };
 
   handleChange = (panel, status) => (event, expanded) => {
@@ -51,21 +67,60 @@ class ListDisabledBedrooms extends Component {
     });
   };
 
+  filter = () => {
+    const arrayList = getArrays(this.props.bedrooms);
+    let eq = this.props.search.toLowerCase(); // variable de comparacion
+    const gt = eq.split(' ')
+    let expresion = ""
+    let data = []
+    let aux = true
+
+    gt.map(datos => {
+      expresion += `^(?=.*${datos})`;
+    });
+
+    let search = new RegExp(expresion, "im");
+
+    const prueba = eq ? arrayList.map(list => {
+      return (!this.state.modal) ? {
+        ...list,
+        spaces: list.spaces.filter(space => search.test(space.search))
+      } : arrayList
+    })
+      : arrayList;
+
+    prueba.map(dat => {
+      if (dat.spaces) {
+        if (dat.spaces.length < 1)
+          aux = false
+
+        if (aux)
+          data.push({ ...dat });
+
+        aux = true;
+      }
+    });
+
+    return (!this.state.modal) ? data : arrayList;
+  }
+
   render() {
     const { rowsPerPage, page } = this.state;
     const { expanded } = this.state;
     const { classes } = this.props;
+    const result = this.filter()
+
     return (
       <div>
         <div className="containerGeneral" style={{ "marginBottom": "1.8%" }}>
           <div className="container-button" style={{ "height": "35%" }}>
 
           </div>
-          {/* {this.state.modal === false &&
-          <div className="containerSearch" >
-            <Search value={arrayList} />
-          </div>
-        } */}
+          {!this.state.modal &&
+            <div className="containerSearch" >
+              <Search value={result} />
+            </div>
+          }
         </div>
 
         <div className="flex">
@@ -84,7 +139,7 @@ class ListDisabledBedrooms extends Component {
               </tr>
             </thead> */}
               <tbody>
-                {this.props.bedrooms ? this.props.bedrooms.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
+                {this.props.bedrooms ? result.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((list, key) => {
                   return (
                     <tr key={key} className="text-left" /*style={{ "border": " 1px solid #c8ced3" }}*/>
                       <td colSpan="8" >
