@@ -923,7 +923,7 @@ class ModalBedrooms extends Component {
                         <FormGroup className="top form-group col-sm-6">
                           <Label for="abreviatura">Abreviatura</Label>
                           <Input
-                            disabled={this.props.disabled}
+                            disabled={this.props.option != 4 && this.props.option != 3 ? this.props.disabled : true}
                             invalid={this.state.abreviaturaInvalid}
                             name="abreviatura"
                             id="abreviatura"

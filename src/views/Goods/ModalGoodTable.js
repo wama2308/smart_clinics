@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { Table } from 'reactstrap'
 import Select from 'react-select';
 import Pagination from '../../components/Pagination';
+import { ListItem } from '@material-ui/core';
 
 class ModalGoodTable extends Component {
   constructor(props) {
@@ -181,11 +182,19 @@ class ModalGoodTable extends Component {
                                             <td style={{
                                               "paddingRight": "0px",
                                               "width": "3cm",
-                                              "borderTop": "1px solid gray"
+                                              "borderTop": "1px solid gray",
+
                                             }}>
                                               {brand.name}
                                             </td>
                                           </tr>
+                                          {brand.model.length > 1 &&
+                                            < tr >
+                                              <td rowSpan={2} style={{ padding: 23 }}>
+
+                                              </td>
+                                            </tr>
+                                          }
                                         </tbody>
                                       </table>
                                     )
@@ -222,8 +231,11 @@ class ModalGoodTable extends Component {
                                                 "paddingTop": "12px",
                                                 "borderTop": "1px solid gray",
                                                 "textAlign": "center"
-                                              }}>{model.name}</td>
+                                              }} rowSpan="4">
+                                                {model.name}
+                                              </td>
                                             </tr>
+                                           
                                           </tbody>
                                         </table>
                                       )

@@ -37,6 +37,8 @@ class ModalGoods extends Component {
       hasta: 0,
       hastaError: '',
       hastaInvalid: false,
+      espacioAsignado: "",
+      tipoEspacio: ""
     }
   }
 
@@ -407,6 +409,8 @@ class ModalGoods extends Component {
           arrayProviderSelect: props.goods.goodsOne.mantenance_staff,
           tiempo: props.goods.goodsOne.maintenance_time,
           serial: props.goods.goodsOne.serial,
+          espacioAsignado: props.goods.goodsOne.space.name,
+          tipoEspacio: props.goods.goodsOne.space.type,
           loading: 'show'
         })
       } else {
@@ -927,6 +931,41 @@ class ModalGoods extends Component {
                         <FormFeedback tooltip>{this.state.tiempoError}</FormFeedback>
                       </FormGroup>
                     }
+
+                    {
+                      this.props.option > 1 && this.props.option !== 4 &&
+                      < FormGroup className="top form-group col-sm-6">
+                        <Label for="tiempo">Espacio Asignado</Label>
+                        <Input disabled={this.props.option === 4 ? false : disable}
+                          //invalid={this.state.tiempoInvalid}
+                          name="tiempo"
+                          id="tiempo"
+                          onKeyUp={this.handlekeyTitulo}
+                          //onChange={this.handleChangeTime}
+                          value={this.state.espacioAsignado}
+                          type="text"
+                          placeholder="No Asignado" />
+                        <FormFeedback tooltip>{this.state.tiempoError}</FormFeedback>
+                      </FormGroup>
+                    }
+
+                    {
+                      this.props.option > 1 && this.props.option !== 4 &&
+                      < FormGroup className="top form-group col-sm-6">
+                        <Label for="tiempo">Tipo de Espacio</Label>
+                        <Input disabled={this.props.option === 4 ? false : disable}
+                          //invalid={this.state.tiempoInvalid}
+                          name="tiempo"
+                          id="tiempo"
+                          //onKeyUp={this.handlekeyTitulo}
+                          //onChange={this.handleChangeTime}
+                          value={this.state.tipoEspacio}
+                          type="text"
+                          placeholder="No Asignado" />
+                        <FormFeedback tooltip>{this.state.tiempoError}</FormFeedback>
+                      </FormGroup>
+                    }
+
 
                     {!this.state.masivo && this.props.option !== 4 &&
                       < FormGroup className="top form-group col-sm-6">

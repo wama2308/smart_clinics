@@ -45,6 +45,8 @@ class BedroomsContainer extends Component {
       this.setState({
         activeTab: tab
       });
+      let set = ""
+      this.props.search(set)
     }
   }
 
